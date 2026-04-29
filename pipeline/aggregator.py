@@ -20,7 +20,7 @@ from supabase import Client
 # I/O helpers
 # ---------------------------------------------------------------------
 
-def read_all_raw(client: Client, batch_size: int = 10000) -> pd.DataFrame:
+def read_all_raw(client: Client, batch_size: int = 1000) -> pd.DataFrame:
     """Page through raw_meta_data and return a typed DataFrame."""
     all_rows = []
     offset = 0
