@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# Secrets (extra safety — never commit JSON keys)
+*.json
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
