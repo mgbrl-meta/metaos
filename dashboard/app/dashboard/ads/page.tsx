@@ -97,3 +97,4 @@ export default async function AdsPage({ searchParams }: { searchParams: { d?: st
     </div>
   );
 }
+
