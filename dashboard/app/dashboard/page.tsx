@@ -1,88 +1,118 @@
-import { createServerSupabase } from '@/lib/supabase-server';
-import { redirect } from 'next/navigation';
+import TopBar from '@/components/TopBar';
+import KpiCard from '@/components/KpiCard';
+import Sparkline from '@/components/Sparkline';
+import {
+  getAccountDailySeries, getAccountTotals, defaultWindow,
+  getAdBreakdown, getDateRange,
+} from '@/lib/queries';
+import { computeDelta } from '@/lib/deltas';
+import { fmtCur, fmtNum, fmtRatio, fmtDateShort } from '@/lib/format';
 
-export default async function DashboardHome() {
-  const supabase = createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect('/login');
+export const dynamic = 'force-dynamic';
 
-  const { data: account } = await supabase
-    .from('daily_account')
-    .select('day, spend, revenue, roas, purchases')
-    .order('day', { ascending: false })
-    .limit(7);
+export default async function PulsePage() {
+  const range = await getDateRange();
 
-  const rows = account || [];
-  const totalSpend = rows.reduce((s, r) => s + (r.spend || 0), 0);
-  const totalRev = rows.reduce((s, r) => s + (r.revenue || 0), 0);
-  const totalPur = rows.reduce((s, r) => s + (r.purchases || 0), 0);
-  const avgRoas = totalSpend > 0 ? totalRev / totalSpend : 0;
+  const yWindow = { start: range.maxDay, end: range.maxDay };
+  const dayBefore = new Date(range.maxDay);
+  dayBefore.setDate(dayBefore.getDate() - 1);
+  const dbStr = dayBefore.toISOString().slice(0, 10);
+  const yPrev = { start: dbStr, end: dbStr };
+
+  const sparkW = defaultWindow(28);
+  const w7 = defaultWindow(7);
+
+  const [yesterday, dayBeforeData, sparkSeries, topAds] = await Promise.all([
+    getAccountTotals(yWindow),
+    getAccountTotals(yPrev),
+    getAccountDailySeries(sparkW),
+    getAdBreakdown(w7),
+  ]);
+
+  const m = (k: string) => computeDelta(yesterday[k] || 0, dayBeforeData[k] || 0, k, yesterday.impressions || 0);
+
+  const winners = topAds.filter((a: any) => a.spend >= 500 && a.purchases > 0).sort((a: any, b: any) => b.roas - a.roas).slice(0, 5);
+  const losers = topAds.filter((a: any) => a.spend >= 500 && a.purchases === 0).sort((a: any, b: any) => b.spend - a.spend).slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 md:p-10">
-      <header className="flex items-center justify-between max-w-6xl mx-auto mb-8">
+    <div>
+      <TopBar title="Morning Briefing" maxDay={range.maxDay} />
+      <div className="p-5 space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold">Meta Growth OS</h1>
-          <p className="text-sm text-slate-500">Welcome, {user.email}</p>
-        </div>
-        <form action="/auth/signout" method="post">
-          <button type="submit" className="text-sm text-slate-600 hover:text-slate-900 px-3 py-1.5 border border-slate-200 rounded-md">
-            Sign out
-          </button>
-        </form>
-      </header>
-
-      <main className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Kpi label="Spend (last 7d)" value={`₹${Math.round(totalSpend).toLocaleString('en-IN')}`} />
-          <Kpi label="Revenue (last 7d)" value={`₹${Math.round(totalRev).toLocaleString('en-IN')}`} />
-          <Kpi label="ROAS (last 7d)" value={avgRoas.toFixed(2)} />
-          <Kpi label="Purchases (last 7d)" value={totalPur.toLocaleString('en-IN')} />
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-xl p-6">
-          <h2 className="font-semibold mb-3">Last 7 days</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-slate-500 border-b border-slate-200">
-                  <th className="pb-2 pr-4">Day</th>
-                  <th className="pb-2 px-4 text-right">Spend</th>
-                  <th className="pb-2 px-4 text-right">Revenue</th>
-                  <th className="pb-2 px-4 text-right">ROAS</th>
-                  <th className="pb-2 pl-4 text-right">Purchases</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.length === 0 ? (
-                  <tr><td colSpan={5} className="py-8 text-center text-slate-400">No data yet</td></tr>
-                ) : rows.map(r => (
-                  <tr key={r.day} className="border-b border-slate-100">
-                    <td className="py-2 pr-4">{r.day}</td>
-                    <td className="py-2 px-4 text-right">₹{Math.round(r.spend || 0).toLocaleString('en-IN')}</td>
-                    <td className="py-2 px-4 text-right">₹{Math.round(r.revenue || 0).toLocaleString('en-IN')}</td>
-                    <td className="py-2 px-4 text-right">{(r.roas || 0).toFixed(2)}</td>
-                    <td className="py-2 pl-4 text-right">{r.purchases || 0}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="text-sm text-slate-500 mb-3">
+            Yesterday — <span className="font-medium text-slate-700">{fmtDateShort(range.maxDay)}</span> · vs day before
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+            <KpiCard label="Spend" value={fmtCur(yesterday.spend, { compact: true })} delta={m('spend')} />
+            <KpiCard label="Revenue" value={fmtCur(yesterday.revenue, { compact: true })} delta={m('revenue')} />
+            <KpiCard label="ROAS" value={fmtRatio(yesterday.roas)} delta={m('roas')} />
+            <KpiCard label="Purchases" value={fmtNum(yesterday.purchases)} delta={m('purchases')} />
+            <KpiCard label="AOV" value={fmtCur(yesterday.aov)} delta={m('aov')} />
           </div>
         </div>
 
-        <p className="text-center text-slate-400 text-sm mt-12">
-          Chunk 4 deployed. Full dashboard pages coming in Chunk 5.
-        </p>
-      </main>
+        <div>
+          <div className="text-sm text-slate-500 mb-3">28-day trend</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <SparkCard title="Spend" data={sparkSeries.map((d: any) => Number(d.spend || 0))} fmt={(v: number) => fmtCur(v, { compact: true })} />
+            <SparkCard title="Revenue" data={sparkSeries.map((d: any) => Number(d.revenue || 0))} fmt={(v: number) => fmtCur(v, { compact: true })} />
+            <SparkCard title="ROAS" data={sparkSeries.map((d: any) => Number(d.roas || 0))} fmt={(v: number) => fmtRatio(v)} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="text-sm font-semibold text-slate-700 mb-3">Top winners (last 7d)</div>
+            {winners.length === 0 ? (
+              <div className="text-xs text-slate-400">No winners with meaningful spend</div>
+            ) : (
+              <table className="w-full text-sm">
+                <tbody>
+                  {winners.map((w: any) => (
+                    <tr key={w.ad_id} className="border-b border-slate-100 last:border-0">
+                      <td className="py-2 truncate max-w-[200px] text-slate-900">{w.ad_name}</td>
+                      <td className="py-2 text-right tabular-nums text-emerald-600 font-medium">{fmtRatio(w.roas)}</td>
+                      <td className="py-2 text-right tabular-nums text-slate-500 text-xs">{fmtCur(w.spend, { compact: true })}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="text-sm font-semibold text-slate-700 mb-3">Top losers (high spend, 0 purchases, last 7d)</div>
+            {losers.length === 0 ? (
+              <div className="text-xs text-slate-400">No high-spend losers</div>
+            ) : (
+              <table className="w-full text-sm">
+                <tbody>
+                  {losers.map((l: any) => (
+                    <tr key={l.ad_id} className="border-b border-slate-100 last:border-0">
+                      <td className="py-2 truncate max-w-[200px] text-slate-900">{l.ad_name}</td>
+                      <td className="py-2 text-right tabular-nums text-rose-600 font-medium">{fmtCur(l.spend, { compact: true })}</td>
+                      <td className="py-2 text-right tabular-nums text-slate-500 text-xs">0 purchases</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-function Kpi({ label, value }: { label: string; value: string | number }) {
+function SparkCard({ title, data, fmt }: { title: string; data: number[]; fmt: (v: number) => string }) {
+  const last = data[data.length - 1] || 0;
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-4">
-      <div className="text-xs text-slate-500 uppercase tracking-wide font-medium">{label}</div>
-      <div className="text-xl font-semibold mt-1">{value}</div>
+      <div className="text-xs text-slate-500 uppercase tracking-wide font-medium">{title}</div>
+      <div className="text-2xl font-semibold text-slate-900 mt-1 tabular-nums">{fmt(last)}</div>
+      <div className="mt-2">
+        <Sparkline data={data} width={300} height={40} />
+      </div>
     </div>
   );
 }
