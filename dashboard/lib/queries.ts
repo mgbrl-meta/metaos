@@ -1,14 +1,10 @@
-// Server-side query helpers using authenticated Supabase client.
-// Always returns aggregated, period-bounded data.
-
 import { createServerSupabase } from './supabase-server';
 
 export interface DateWindow {
-  start: string; // YYYY-MM-DD
+  start: string;
   end: string;
 }
 
-// Returns { current, previous } windows of equal length
 export function previousWindow(w: DateWindow): DateWindow {
   const start = new Date(w.start);
   const end = new Date(w.end);
@@ -22,13 +18,12 @@ export function previousWindow(w: DateWindow): DateWindow {
 
 export function defaultWindow(days = 7): DateWindow {
   const end = new Date();
-  end.setDate(end.getDate() - 1); // yesterday
+  end.setDate(end.getDate() - 1);
   const start = new Date(end);
   start.setDate(start.getDate() - (days - 1));
   return { start: start.toISOString().slice(0, 10), end: end.toISOString().slice(0, 10) };
 }
 
-// Sum aggregation client-side (Supabase REST has no SUM in select)
 function sumRows(rows: any[]): any {
   const t: any = {
     spend: 0, impressions: 0, reach: 0, clicks_all: 0, link_clicks: 0,
@@ -39,7 +34,6 @@ function sumRows(rows: any[]): any {
   for (const r of rows) {
     for (const k of Object.keys(t)) t[k] += Number(r[k] || 0);
   }
-  // Derive ratios
   t.cpm = t.impressions > 0 ? (t.spend * 1000) / t.impressions : 0;
   t.cpc = t.link_clicks > 0 ? t.spend / t.link_clicks : 0;
   t.ctr_link = t.impressions > 0 ? (t.link_clicks / t.impressions) * 100 : 0;
@@ -58,19 +52,19 @@ function sumRows(rows: any[]): any {
   return t;
 }
 
-// Paginate Supabase queries past 1000-row default
-async function fetchAll(table: string, select = '*', filters: Array<[string, string, any]> = []): Promise<any[]> {
+async function fetchAll(table: string, select: string = '*', filters: Array<[string, string, any]> = []): Promise<any[]> {
   const supabase = createServerSupabase();
   let all: any[] = [];
   let offset = 0;
   const batch = 1000;
   while (true) {
-    let q = supabase.from(table).select(select).range(offset, offset + batch - 1);
+    let q: any = supabase.from(table).select(select);
     for (const [col, op, val] of filters) {
       if (op === 'gte') q = q.gte(col, val);
       else if (op === 'lte') q = q.lte(col, val);
       else if (op === 'eq') q = q.eq(col, val);
     }
+    q = q.range(offset, offset + batch - 1);
     const { data, error } = await q;
     if (error) throw error;
     if (!data || data.length === 0) break;
@@ -102,7 +96,6 @@ export async function getCampaignBreakdown(window: DateWindow) {
     ['day', 'gte', window.start],
     ['day', 'lte', window.end],
   ]);
-  // Group by campaign_id
   const map = new Map<string, any[]>();
   for (const r of rows) {
     const k = r.campaign_id || 'unknown';
@@ -151,3 +144,35 @@ export async function getAdBreakdown(window: DateWindow) {
   for (const r of rows) {
     const k = r.ad_id || 'unknown';
     if (!map.has(k)) map.set(k, []);
+    map.get(k)!.push(r);
+  }
+  const out: any[] = [];
+  map.forEach((rs, key) => {
+    const agg = sumRows(rs);
+    agg.ad_id = key;
+    agg.ad_name = rs[0]?.ad_name || '(unknown)';
+    agg.adset_name = rs[0]?.adset_name || '';
+    agg.campaign_name = rs[0]?.campaign_name || '';
+    out.push(agg);
+  });
+  return out.sort((a, b) => b.spend - a.spend);
+}
+
+export async function getLifecycle() {
+  return await fetchAll('ad_lifecycle');
+}
+
+export async function getSettings() {
+  const supabase = createServerSupabase();
+  const { data } = await supabase.from('settings').select('*').eq('id', 1).single();
+  return data || {};
+}
+
+export async function getDateRange(): Promise<{ minDay: string; maxDay: string }> {
+  const supabase = createServerSupabase();
+  const { data: minRow } = await supabase
+    .from('daily_account').select('day').order('day', { ascending: true }).limit(1).single();
+  const { data: maxRow } = await supabase
+    .from('daily_account').select('day').order('day', { ascending: false }).limit(1).single();
+  return { minDay: minRow?.day || '', maxDay: maxRow?.day || '' };
+}
