@@ -43,18 +43,14 @@ export default async function AdsPage({ searchParams }: { searchParams: { d?: st
       render: r => (
         <div>
           <div className="font-medium text-slate-900 truncate max-w-xs">{r.ad_name}</div>
-          <div className="text-[10px] text-slate-400 truncate max-w-xs">
-            {r.adset_name} · {r.campaign_name}
-          </div>
+          <div className="text-[10px] text-slate-400 truncate max-w-xs">{r.adset_name} · {r.campaign_name}</div>
         </div>
       )
     },
     {
       key: 'lifecycle_stage', label: 'Stage',
       render: r => (
-        <span className={`text-[10px] px-1.5 py-0.5 rounded ${stageColor(r.lifecycle_stage)}`}>
-          {r.lifecycle_stage}
-        </span>
+        <span className={`text-[10px] px-1.5 py-0.5 rounded ${stageColor(r.lifecycle_stage)}`}>{r.lifecycle_stage}</span>
       )
     },
     { key: 'days_active', label: 'Days', align: 'right', render: r => r.days_active },
@@ -76,4 +72,28 @@ export default async function AdsPage({ searchParams }: { searchParams: { d?: st
     {
       key: 'performance_score', label: 'Score', align: 'right',
       render: r => {
-        const s
+        const s = r.performance_score;
+        const cls = s >= 80 ? 'bg-emerald-100 text-emerald-700' : s >= 60 ? 'bg-blue-100 text-blue-700' : s >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700';
+        return <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${cls}`}>{s}</span>;
+      }
+    },
+    {
+      key: 'fatigue_score', label: 'Fatigue', align: 'right',
+      render: r => {
+        const f = r.fatigue_score;
+        const cls = f >= 70 ? 'text-rose-600 font-medium' : f >= 50 ? 'text-amber-600' : 'text-slate-400';
+        return <span className={cls}>{f}</span>;
+      }
+    },
+  ];
+
+  return (
+    <div>
+      <TopBar title="Ads" maxDay={range.maxDay} />
+      <div className="p-5">
+        <div className="text-xs text-slate-500 mb-4">{enriched.length} ads · {window.start} → {window.end}</div>
+        <DataTable rows={enriched} columns={columns} searchKeys={['ad_name', 'adset_name', 'campaign_name']} searchPlaceholder="Search ads…" defaultSortKey="spend" pageSize={50} />
+      </div>
+    </div>
+  );
+}
