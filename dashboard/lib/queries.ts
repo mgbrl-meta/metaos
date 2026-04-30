@@ -176,3 +176,7 @@ export async function getDateRange(): Promise<{ minDay: string; maxDay: string }
     .from('daily_account').select('day').order('day', { ascending: false }).limit(1).single();
   return { minDay: minRow?.day || '', maxDay: maxRow?.day || '' };
 }
+export function windowFrom(params: { d?: string; from?: string; to?: string }, defaultDays = 7): DateWindow {
+  if (params.from && params.to) return { start: params.from, end: params.to };
+  return defaultWindow(Number(params.d || defaultDays));
+}
