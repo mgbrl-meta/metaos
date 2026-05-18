@@ -31,7 +31,7 @@ export function MetaChartTooltip({
   labelPrefix = "Date",
 }: {
   active?: boolean;
-  payload?: any[];
+  payload?: readonly any[];
   label?: string | number;
   title?: string;
   valueFormatter?: (value: number, name?: string) => string;
