@@ -30,6 +30,19 @@ const money = (n: number) => `₹${Math.round(n || 0).toLocaleString()}`;
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
 const safeDiv = (a: number, b: number) => (b > 0 ? a / b : 0);
 
+function compactMoney(value: number) {
+  const n = Number(value || 0);
+  if (Math.abs(n) >= 10000000) return `₹${(n / 10000000).toFixed(1)}Cr`;
+  if (Math.abs(n) >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
+  if (Math.abs(n) >= 1000) return `₹${(n / 1000).toFixed(0)}K`;
+  return `₹${Math.round(n)}`;
+}
+
+function shortName(value: string, max = 28) {
+  if (!value) return "Unknown";
+  return value.length > max ? `${value.slice(0, max)}…` : value;
+}
+
 function parseDate(value?: string) {
   if (!value) return null;
   const d = new Date(value);
@@ -37,12 +50,17 @@ function parseDate(value?: string) {
 }
 
 function dateKey(value?: string) {
-  if (!value) return "";
   const d = parseDate(value);
   if (!d) return "";
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
     d.getDate()
   ).padStart(2, "0")}`;
+}
+
+function displayDate(value?: string) {
+  const d = parseDate(value);
+  if (!d) return "";
+  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
 function revenue(row: any) {
@@ -78,6 +96,19 @@ function getDateRange(rows: any[]) {
   };
 }
 
+function getPresetStart(maxDate: string, days: number | "all", minDate: string) {
+  if (days === "all") return minDate;
+
+  const max = parseDate(maxDate);
+  if (!max) return minDate;
+
+  const start = new Date(max);
+  start.setDate(start.getDate() - days + 1);
+
+  const key = dateKey(start.toISOString());
+  return key < minDate ? minDate : key;
+}
+
 function inRange(row: any, start: string, end: string) {
   const key = dateKey(row.date);
   if (!key) return false;
@@ -94,6 +125,7 @@ function groupByDate(rows: any[]) {
     if (!map.has(key)) {
       map.set(key, {
         date: key,
+        label: displayDate(key),
         spend: 0,
         revenue: 0,
         purchases: 0,
@@ -134,6 +166,7 @@ function groupByKey(rows: any[], keyName: "campaignName" | "adSetName" | "adName
     if (!map.has(key)) {
       map.set(key, {
         name: key,
+        short: shortName(key),
         spend: 0,
         revenue: 0,
         purchases: 0,
@@ -168,19 +201,24 @@ export function SpendVisuals() {
   const liveRows = useMemo(() => onlyLiveRows(performanceRows), [performanceRows]);
   const defaultRange = useMemo(() => getDateRange(liveRows), [liveRows]);
 
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [preset, setPreset] = useState<7 | 14 | 30 | 60 | 90 | "all">(30);
+  const [customMode, setCustomMode] = useState(false);
+  const [customStartDate, setCustomStartDate] = useState("");
+  const [customEndDate, setCustomEndDate] = useState("");
 
   const data = useMemo(() => {
-    const start = startDate || defaultRange.min;
-    const end = endDate || defaultRange.max;
+    const start = customMode
+      ? customStartDate || defaultRange.min
+      : getPresetStart(defaultRange.max, preset, defaultRange.min);
+
+    const end = customMode ? customEndDate || defaultRange.max : defaultRange.max;
 
     const filteredRows = liveRows.filter((row) => inRange(row, start, end));
 
     const daily = groupByDate(filteredRows);
-    const campaign = groupByKey(filteredRows, "campaignName").slice(0, 10);
-    const adset = groupByKey(filteredRows, "adSetName").slice(0, 10);
-    const ads = groupByKey(filteredRows, "adName").slice(0, 25);
+    const campaign = groupByKey(filteredRows, "campaignName").slice(0, 8).reverse();
+    const adset = groupByKey(filteredRows, "adSetName").slice(0, 8).reverse();
+    const ads = groupByKey(filteredRows, "adName").slice(0, 20);
 
     const spend = filteredRows.reduce((s, r) => s + Number(r.spend || 0), 0);
     const rev = filteredRows.reduce((s, r) => s + revenue(r), 0);
@@ -205,7 +243,7 @@ export function SpendVisuals() {
       cpa: safeDiv(spend, purchases),
       ctr: safeDiv(clicks, impressions) * 100,
     };
-  }, [liveRows, startDate, endDate, defaultRange]);
+  }, [liveRows, preset, customMode, customStartDate, customEndDate, defaultRange]);
 
   if (!liveRows.length) {
     return (
@@ -218,33 +256,82 @@ export function SpendVisuals() {
     );
   }
 
+  const gridColor = isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.10)";
+  const axisColor = isDark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.50)";
+
   return (
     <div className="grid gap-6">
       <PageHeader
         eyebrow="Spend Visuals"
         title="Spend, CPA, ROAS & Date-Wise Performance"
-        description="Use custom dates to understand where spend is going and how efficiency is moving. This uses live ads only."
+        description="Clean operator charts for reading spend movement, efficiency movement and concentration. Default view is last 30 days."
       />
 
       <GlassCard className="p-5">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <div className="flex flex-wrap gap-2">
-              <TonePill tone="blue">Custom Date Range</TonePill>
+              <TonePill tone="blue">Date Control</TonePill>
               <TonePill tone="neutral">Live Ads Only</TonePill>
             </div>
             <MutedText className="mt-3 text-sm">
-              Available range: {defaultRange.min} to {defaultRange.max}
+              Showing {data.start} to {data.end}. Available range: {defaultRange.min} to {defaultRange.max}
             </MutedText>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="flex flex-wrap gap-2">
+            {[7, 14, 30, 60, 90].map((days) => (
+              <button
+                key={days}
+                onClick={() => {
+                  setPreset(days as 7 | 14 | 30 | 60 | 90);
+                  setCustomMode(false);
+                }}
+                className={
+                  !customMode && preset === days
+                    ? "rounded-full bg-[#0A84FF] px-4 py-2 text-xs font-black text-white"
+                    : "rounded-full border border-current/10 px-4 py-2 text-xs font-black opacity-70"
+                }
+              >
+                {days}D
+              </button>
+            ))}
+
+            <button
+              onClick={() => {
+                setPreset("all");
+                setCustomMode(false);
+              }}
+              className={
+                !customMode && preset === "all"
+                  ? "rounded-full bg-[#0A84FF] px-4 py-2 text-xs font-black text-white"
+                  : "rounded-full border border-current/10 px-4 py-2 text-xs font-black opacity-70"
+              }
+            >
+              All
+            </button>
+
+            <button
+              onClick={() => setCustomMode(true)}
+              className={
+                customMode
+                  ? "rounded-full bg-[#0A84FF] px-4 py-2 text-xs font-black text-white"
+                  : "rounded-full border border-current/10 px-4 py-2 text-xs font-black opacity-70"
+              }
+            >
+              Custom
+            </button>
+          </div>
+        </div>
+
+        {customMode && (
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <label className="grid gap-1 text-xs font-black uppercase tracking-[0.12em] opacity-70">
               Start Date
               <input
                 type="date"
-                value={startDate || defaultRange.min}
-                onChange={(e) => setStartDate(e.target.value)}
+                value={customStartDate || defaultRange.min}
+                onChange={(e) => setCustomStartDate(e.target.value)}
                 className="h-11 rounded-2xl border border-current/10 bg-transparent px-4 text-sm normal-case tracking-normal outline-none"
               />
             </label>
@@ -253,13 +340,13 @@ export function SpendVisuals() {
               End Date
               <input
                 type="date"
-                value={endDate || defaultRange.max}
-                onChange={(e) => setEndDate(e.target.value)}
+                value={customEndDate || defaultRange.max}
+                onChange={(e) => setCustomEndDate(e.target.value)}
                 className="h-11 rounded-2xl border border-current/10 bg-transparent px-4 text-sm normal-case tracking-normal outline-none"
               />
             </label>
           </div>
-        </div>
+        )}
       </GlassCard>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -276,51 +363,108 @@ export function SpendVisuals() {
       <div className="grid gap-6 xl:grid-cols-2">
         <ChartCard title="Daily Spend & Revenue Trend">
           <ResponsiveContainer width="100%" height={320}>
-            <AreaChart data={data.daily}>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-              <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} />
-              <Tooltip formatter={(value: any) => money(Number(value))} />
-              <Area type="monotone" dataKey="spend" strokeWidth={2} />
-              <Area type="monotone" dataKey="revenue" strokeWidth={2} />
+            <AreaChart data={data.daily} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
+              <CartesianGrid stroke={gridColor} strokeDasharray="3 3" />
+              <XAxis
+                dataKey="label"
+                tick={{ fontSize: 11, fill: axisColor }}
+                axisLine={false}
+                tickLine={false}
+                interval="preserveStartEnd"
+                minTickGap={28}
+              />
+              <YAxis
+                tick={{ fontSize: 11, fill: axisColor }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) => compactMoney(Number(v))}
+              />
+              <Tooltip formatter={(value: any) => money(Number(value))} labelFormatter={(label) => `Date: ${label}`} />
+              <Area type="monotone" dataKey="spend" name="Spend" stroke="#0A84FF" fill="#0A84FF" fillOpacity={0.18} strokeWidth={2.5} />
+              <Area type="monotone" dataKey="revenue" name="Revenue" stroke="#34d399" fill="#34d399" fillOpacity={0.12} strokeWidth={2.5} />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
 
         <ChartCard title="Daily CPA & ROAS Trend">
           <ResponsiveContainer width="100%" height={320}>
-            <ComposedChart data={data.daily}>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-              <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-              <YAxis yAxisId="left" tick={{ fontSize: 11 }} />
-              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} />
+            <ComposedChart data={data.daily} margin={{ top: 10, right: 12, left: 0, bottom: 0 }}>
+              <CartesianGrid stroke={gridColor} strokeDasharray="3 3" />
+              <XAxis
+                dataKey="label"
+                tick={{ fontSize: 11, fill: axisColor }}
+                axisLine={false}
+                tickLine={false}
+                interval="preserveStartEnd"
+                minTickGap={28}
+              />
+              <YAxis
+                yAxisId="left"
+                tick={{ fontSize: 11, fill: axisColor }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) => compactMoney(Number(v))}
+              />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                tick={{ fontSize: 11, fill: axisColor }}
+                axisLine={false}
+                tickLine={false}
+              />
               <Tooltip />
-              <Bar yAxisId="left" dataKey="cpa" />
-              <Line yAxisId="right" type="monotone" dataKey="roas" strokeWidth={3} />
+              <Bar yAxisId="left" dataKey="cpa" name="CPA" fill="#94a3b8" radius={[6, 6, 0, 0]} opacity={0.35} />
+              <Line yAxisId="right" type="monotone" dataKey="roas" name="ROAS" stroke="#0A84FF" strokeWidth={3} dot={false} />
             </ComposedChart>
           </ResponsiveContainer>
         </ChartCard>
 
         <ChartCard title="Top Campaigns by Spend">
-          <ResponsiveContainer width="100%" height={320}>
-            <BarChart data={data.campaign}>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-              <XAxis dataKey="name" tick={{ fontSize: 10 }} />
-              <YAxis tick={{ fontSize: 11 }} />
+          <ResponsiveContainer width="100%" height={360}>
+            <BarChart data={data.campaign} layout="vertical" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
+              <CartesianGrid stroke={gridColor} strokeDasharray="3 3" horizontal={false} />
+              <XAxis
+                type="number"
+                tick={{ fontSize: 11, fill: axisColor }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) => compactMoney(Number(v))}
+              />
+              <YAxis
+                dataKey="short"
+                type="category"
+                width={150}
+                tick={{ fontSize: 11, fill: axisColor }}
+                axisLine={false}
+                tickLine={false}
+              />
               <Tooltip formatter={(value: any) => money(Number(value))} />
-              <Bar dataKey="spend" />
+              <Bar dataKey="spend" name="Spend" fill="#0A84FF" radius={[0, 8, 8, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
         <ChartCard title="Top Ad Sets by Spend">
-          <ResponsiveContainer width="100%" height={320}>
-            <BarChart data={data.adset}>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-              <XAxis dataKey="name" tick={{ fontSize: 10 }} />
-              <YAxis tick={{ fontSize: 11 }} />
+          <ResponsiveContainer width="100%" height={360}>
+            <BarChart data={data.adset} layout="vertical" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
+              <CartesianGrid stroke={gridColor} strokeDasharray="3 3" horizontal={false} />
+              <XAxis
+                type="number"
+                tick={{ fontSize: 11, fill: axisColor }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) => compactMoney(Number(v))}
+              />
+              <YAxis
+                dataKey="short"
+                type="category"
+                width={150}
+                tick={{ fontSize: 11, fill: axisColor }}
+                axisLine={false}
+                tickLine={false}
+              />
               <Tooltip formatter={(value: any) => money(Number(value))} />
-              <Bar dataKey="spend" />
+              <Bar dataKey="spend" name="Spend" fill="#34d399" radius={[0, 8, 8, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -379,36 +523,6 @@ export function SpendVisuals() {
           </table>
         </div>
       </GlassCard>
-
-      <GlassCard className="overflow-hidden">
-        <div className="border-b border-current/10 p-5">
-          <h2 className="text-xl font-black">Top Spending Live Ads</h2>
-          <MutedText className="mt-1 text-sm">
-            Full ad names shown. Use this to check where spend is concentrated.
-          </MutedText>
-        </div>
-
-        <div className="grid gap-4 p-5">
-          {data.ads.map((row, index) => (
-            <Surface key={`${row.name}-${index}`} className="p-4">
-              <div className="grid gap-4 lg:grid-cols-[1fr_520px]">
-                <div>
-                  <p className="font-black leading-6 whitespace-normal break-words">{row.name}</p>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
-                  <MiniStat label="Spend" value={money(row.spend)} />
-                  <MiniStat label="Revenue" value={money(row.revenue)} />
-                  <MiniStat label="ROAS" value={num(row.roas)} />
-                  <MiniStat label="CPA" value={money(row.cpa)} />
-                  <MiniStat label="Purchases" value={num(row.purchases, 0)} />
-                  <MiniStat label="CTR" value={`${num(row.ctr)}%`} />
-                </div>
-              </div>
-            </Surface>
-          ))}
-        </div>
-      </GlassCard>
     </div>
   );
 }
@@ -417,18 +531,7 @@ function ChartCard({ title, children }: { title: string; children: React.ReactNo
   return (
     <GlassCard className="p-5">
       <h2 className="text-xl font-black">{title}</h2>
-      <div className="mt-5 h-[320px] w-full min-w-0">{children}</div>
+      <div className="mt-5 h-[360px] w-full min-w-0">{children}</div>
     </GlassCard>
-  );
-}
-
-function MiniStat({ label, value }: { label: string; value: string }) {
-  return (
-    <Surface className="p-3">
-      <p className="text-[10px] font-black uppercase tracking-[0.16em] opacity-45">
-        {label}
-      </p>
-      <p className="mt-2 text-sm font-black">{value}</p>
-    </Surface>
   );
 }
