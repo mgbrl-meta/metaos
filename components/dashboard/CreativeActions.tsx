@@ -1,6 +1,15 @@
 "use client";
 
 import { useMemo } from "react";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { useMetaStore } from "@/store/metaStore";
 import { aggregateRows } from "@/lib/metrics";
 import { onlyLiveRows } from "@/lib/liveFilter";
@@ -15,6 +24,91 @@ import {
 
 const money = (n: number) => `₹${Math.round(n || 0).toLocaleString()}`;
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
+const safeDiv = (a: number, b: number) => (b > 0 ? a / b : 0);
+
+function compactMoney(value: number) {
+  const n = Number(value || 0);
+  if (Math.abs(n) >= 10000000) return `₹${(n / 10000000).toFixed(1)}Cr`;
+  if (Math.abs(n) >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
+  if (Math.abs(n) >= 1000) return `₹${(n / 1000).toFixed(0)}K`;
+  return `₹${Math.round(n)}`;
+}
+
+function parseDate(value?: string) {
+  if (!value) return null;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+function dateKey(value?: string) {
+  const d = parseDate(value);
+  if (!d) return "";
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate()
+  ).padStart(2, "0")}`;
+}
+
+function displayDate(value?: string) {
+  const d = parseDate(value);
+  if (!d) return "";
+  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function adKey(row: any) {
+  return String(row.adId || row.adName || "").trim();
+}
+
+function revenueValue(row: any) {
+  return Number(
+    row.revenue ??
+      row.purchaseValue ??
+      row.purchase_value ??
+      row.purchaseConversionValue ??
+      row.purchase_conversion_value ??
+      row.conversionValue ??
+      row.conversion_value ??
+      row["Purchases conversion value"] ??
+      row["Purchase conversion value"] ??
+      row["Purchase Value"] ??
+      0
+  );
+}
+
+function buildAdDailyTrend(rows: any[], targetAd: any) {
+  const key = adKey(targetAd);
+  const map = new Map<string, any>();
+
+  rows
+    .filter((row) => adKey(row) === key)
+    .forEach((row) => {
+      const date = dateKey(row.date);
+      if (!date) return;
+
+      if (!map.has(date)) {
+        map.set(date, {
+          date,
+          label: displayDate(date),
+          spend: 0,
+          revenue: 0,
+          purchases: 0,
+        });
+      }
+
+      const item = map.get(date);
+      item.spend += Number(row.spend || 0);
+      item.revenue += revenueValue(row);
+      item.purchases += Number(row.purchases || 0);
+    });
+
+  return Array.from(map.values())
+    .map((item) => ({
+      ...item,
+      cpa: safeDiv(item.spend, item.purchases),
+      roas: safeDiv(item.revenue, item.spend),
+      aov: safeDiv(item.revenue, item.purchases),
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
 
 function diagnosis(row: any, settings: any) {
   if (row.spend > 3000 && row.purchases === 0) {
@@ -94,7 +188,7 @@ function creativeBrief(row: any, settings: any) {
   if (d === "Winner angle") {
     return [
       "Make 2 variants using the same core winning hook.",
-      "Create one proof-led version using review, result, before-after or dermatologist/science proof.",
+      "Create one proof-led version using review, result, before-after or science proof.",
       "Create one offer-led version for warm audience.",
       "Do not over-edit the winner. Keep the main promise intact.",
     ];
@@ -147,6 +241,7 @@ export function CreativeActions() {
         ...row,
         creativeDiagnosis: diagnosis(row, settings),
         creativeBrief: creativeBrief(row, settings),
+        trend: buildAdDailyTrend(liveRows, row),
       }))
       .sort((a, b) => {
         const priority = (row: any) => {
@@ -181,7 +276,7 @@ export function CreativeActions() {
       <PageHeader
         eyebrow="Creative Audit"
         title="Creative-Level Actions"
-        description="Only currently live/spending ads are analysed. This screen tells what to keep, scale, refresh, pause or rebuild."
+        description="Only currently live/spending ads are analysed. Each creative now includes CPA, ROAS and AOV trend cards."
       />
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -208,7 +303,7 @@ export function CreativeActions() {
         </h2>
 
         <MutedText className="mt-2">
-          Creative decisions should not be based only on ROAS. Check CTR, CPA, purchases, fatigue and where the funnel is leaking.
+          Use CPA trend to judge efficiency, ROAS trend to judge return quality, and AOV trend to check whether the creative is attracting better orders.
         </MutedText>
       </GlassCard>
 
@@ -272,6 +367,30 @@ export function CreativeActions() {
                 </Surface>
               </div>
             </div>
+
+            <div className="mt-5 grid gap-4 xl:grid-cols-3">
+              <TrendCard
+                title="CPA Trend"
+                metric="cpa"
+                rows={row.trend}
+                lowerIsBetter
+                formatValue={(v) => money(v)}
+              />
+              <TrendCard
+                title="ROAS Trend"
+                metric="roas"
+                rows={row.trend}
+                lowerIsBetter={false}
+                formatValue={(v) => num(v)}
+              />
+              <TrendCard
+                title="AOV Trend"
+                metric="aov"
+                rows={row.trend}
+                lowerIsBetter={false}
+                formatValue={(v) => money(v)}
+              />
+            </div>
           </GlassCard>
         ))}
       </div>
@@ -310,3 +429,169 @@ function MiniStat({
     </Surface>
   );
 }
+
+
+function TrendCard({
+  title,
+  metric,
+  rows,
+  lowerIsBetter,
+  formatValue,
+}: {
+  title: string;
+  metric: "cpa" | "roas" | "aov";
+  rows: any[];
+  lowerIsBetter: boolean;
+  formatValue: (value: number) => string;
+}) {
+  const validRows = rows
+    .filter((row) => Number(row[metric] || 0) > 0)
+    .map((row) => ({
+      ...row,
+      value: Number(row[metric] || 0),
+    }));
+
+  if (validRows.length < 2) {
+    return (
+      <Surface className="p-4">
+        <p className="text-[11px] font-black uppercase tracking-[0.18em] opacity-45">
+          {title}
+        </p>
+        <p className="mt-3 text-sm opacity-60">Not enough current signal yet.</p>
+      </Surface>
+    );
+  }
+
+  const first = Number(validRows[0].value || 0);
+  const latest = Number(validRows[validRows.length - 1].value || 0);
+  const improving = lowerIsBetter ? latest < first : latest > first;
+
+  const color = improving ? "#34d399" : "#fb7185";
+  const label = improving ? "Improving" : "Weakening";
+
+  // Remove extreme visual distortion from outliers without changing actual tooltip values.
+  const values = validRows.map((r) => r.value).sort((a, b) => a - b);
+  const p95 = values[Math.min(values.length - 1, Math.floor(values.length * 0.95))] || latest;
+  const yMax = Math.max(p95 * 1.18, latest * 1.08, first * 1.08, 1);
+
+  const yFormatter = (v: number) => {
+    if (metric === "roas") return Number(v).toFixed(1);
+    return compactMoney(Number(v));
+  };
+
+  return (
+    <Surface className="p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-[11px] font-black uppercase tracking-[0.18em] opacity-45">
+            {title}
+          </p>
+
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span
+              className={
+                improving
+                  ? "rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-xs font-black text-emerald-400"
+                  : "rounded-full border border-rose-400/25 bg-rose-400/10 px-2.5 py-1 text-xs font-black text-rose-400"
+              }
+            >
+              {label}
+            </span>
+
+            <span className="text-xs font-semibold opacity-55">
+              {formatValue(first)} → {formatValue(latest)}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 h-[190px] w-full min-w-0">
+        <ResponsiveContainer width="100%" height={190}>
+          <LineChart data={validRows} margin={{ top: 10, right: 14, left: 2, bottom: 4 }}>
+            <CartesianGrid
+              stroke="currentColor"
+              strokeOpacity={0.10}
+              strokeDasharray="4 4"
+              vertical={false}
+            />
+
+            <XAxis
+              dataKey="label"
+              tick={{
+                fontSize: 11,
+                fill: "currentColor",
+                opacity: 0.72,
+                fontWeight: 600,
+              }}
+              axisLine={false}
+              tickLine={false}
+              minTickGap={26}
+              interval="preserveStartEnd"
+            />
+
+            <YAxis
+              domain={[0, yMax]}
+              width={54}
+              tick={{
+                fontSize: 11,
+                fill: "currentColor",
+                opacity: 0.72,
+                fontWeight: 600,
+              }}
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={yFormatter}
+            />
+
+            <Tooltip
+              cursor={{
+                stroke: color,
+                strokeWidth: 1,
+                strokeDasharray: "4 4",
+              }}
+              content={({ active, payload, label }) => {
+                if (!active || !payload?.length) return null;
+
+                const value = Number(payload[0].value || 0);
+
+                return (
+                  <div className="rounded-2xl border border-white/10 bg-[#111318] px-4 py-3 text-white shadow-2xl">
+                    <p className="text-[11px] font-black uppercase tracking-[0.16em] text-white/45">
+                      {title}
+                    </p>
+                    <p className="mt-1 text-sm font-black text-white">
+                      {formatValue(value)}
+                    </p>
+                    <p className="mt-1 text-xs text-white/45">
+                      Date: {label}
+                    </p>
+                  </div>
+                );
+              }}
+            />
+
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke={color}
+              strokeWidth={3}
+              dot={{
+                r: 3.4,
+                fill: color,
+                stroke: "#111318",
+                strokeWidth: 1.5,
+              }}
+              activeDot={{
+                r: 6,
+                fill: color,
+                stroke: "#ffffff",
+                strokeWidth: 2,
+              }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </Surface>
+  );
+}
+
