@@ -362,7 +362,7 @@ export function SpendVisuals() {
 
       <div className="grid gap-6 xl:grid-cols-2">
         <ChartCard title="Daily Spend & Revenue Trend">
-          <ResponsiveContainer width="100%" height={320}>
+          <ResponsiveContainer width="100%" height={380}>
             <AreaChart data={data.daily} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
               <CartesianGrid stroke={gridColor} strokeDasharray="3 3" />
               <XAxis
@@ -379,7 +379,36 @@ export function SpendVisuals() {
                 tickLine={false}
                 tickFormatter={(v) => compactMoney(Number(v))}
               />
-              <Tooltip formatter={(value: any) => money(Number(value))} labelFormatter={(label) => `Date: ${label}`} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#111318",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  borderRadius: "16px",
+                  color: "#ffffff",
+                  boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
+                  padding: "12px 14px",
+                }}
+                labelStyle={{
+                  color: "rgba(255,255,255,0.55)",
+                  fontSize: "11px",
+                  fontWeight: 800,
+                  marginBottom: "8px",
+                }}
+                itemStyle={{
+                  color: "#ffffff",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                }}
+                formatter={(value: any, name: any) => {
+                  const n = Number(value || 0);
+                  const label = String(name || "").toLowerCase();
+
+                  if (label.includes("roas")) return [n.toFixed(2), name];
+                  if (label.includes("ctr") || label.includes("rate")) return [`${n.toFixed(2)}%`, name];
+
+                  return [`₹${Math.round(n).toLocaleString()}`, name];
+                }}
+              />
               <Area type="monotone" dataKey="spend" name="Spend" stroke="#0A84FF" fill="#0A84FF" fillOpacity={0.18} strokeWidth={2.5} />
               <Area type="monotone" dataKey="revenue" name="Revenue" stroke="#34d399" fill="#34d399" fillOpacity={0.12} strokeWidth={2.5} />
             </AreaChart>
@@ -387,7 +416,7 @@ export function SpendVisuals() {
         </ChartCard>
 
         <ChartCard title="Daily CPA & ROAS Trend">
-          <ResponsiveContainer width="100%" height={320}>
+          <ResponsiveContainer width="100%" height={380}>
             <ComposedChart data={data.daily} margin={{ top: 10, right: 12, left: 0, bottom: 0 }}>
               <CartesianGrid stroke={gridColor} strokeDasharray="3 3" />
               <XAxis
@@ -412,7 +441,36 @@ export function SpendVisuals() {
                 axisLine={false}
                 tickLine={false}
               />
-              <Tooltip />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#111318",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  borderRadius: "16px",
+                  color: "#ffffff",
+                  boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
+                  padding: "12px 14px",
+                }}
+                labelStyle={{
+                  color: "rgba(255,255,255,0.55)",
+                  fontSize: "11px",
+                  fontWeight: 800,
+                  marginBottom: "8px",
+                }}
+                itemStyle={{
+                  color: "#ffffff",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                }}
+                formatter={(value: any, name: any) => {
+                  const n = Number(value || 0);
+                  const label = String(name || "").toLowerCase();
+
+                  if (label.includes("roas")) return [n.toFixed(2), name];
+                  if (label.includes("ctr") || label.includes("rate")) return [`${n.toFixed(2)}%`, name];
+
+                  return [`₹${Math.round(n).toLocaleString()}`, name];
+                }}
+              />
               <Bar yAxisId="left" dataKey="cpa" name="CPA" fill="#94a3b8" radius={[6, 6, 0, 0]} opacity={0.35} />
               <Line yAxisId="right" type="monotone" dataKey="roas" name="ROAS" stroke="#0A84FF" strokeWidth={3} dot={false} />
             </ComposedChart>
@@ -420,7 +478,7 @@ export function SpendVisuals() {
         </ChartCard>
 
         <ChartCard title="Top Campaigns by Spend">
-          <ResponsiveContainer width="100%" height={360}>
+          <ResponsiveContainer width="100%" height={380}>
             <BarChart data={data.campaign} layout="vertical" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
               <CartesianGrid stroke={gridColor} strokeDasharray="3 3" horizontal={false} />
               <XAxis
@@ -438,14 +496,43 @@ export function SpendVisuals() {
                 axisLine={false}
                 tickLine={false}
               />
-              <Tooltip formatter={(value: any) => money(Number(value))} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#111318",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  borderRadius: "16px",
+                  color: "#ffffff",
+                  boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
+                  padding: "12px 14px",
+                }}
+                labelStyle={{
+                  color: "rgba(255,255,255,0.55)",
+                  fontSize: "11px",
+                  fontWeight: 800,
+                  marginBottom: "8px",
+                }}
+                itemStyle={{
+                  color: "#ffffff",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                }}
+                formatter={(value: any, name: any) => {
+                  const n = Number(value || 0);
+                  const label = String(name || "").toLowerCase();
+
+                  if (label.includes("roas")) return [n.toFixed(2), name];
+                  if (label.includes("ctr") || label.includes("rate")) return [`${n.toFixed(2)}%`, name];
+
+                  return [`₹${Math.round(n).toLocaleString()}`, name];
+                }}
+              />
               <Bar dataKey="spend" name="Spend" fill="#0A84FF" radius={[0, 8, 8, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
         <ChartCard title="Top Ad Sets by Spend">
-          <ResponsiveContainer width="100%" height={360}>
+          <ResponsiveContainer width="100%" height={380}>
             <BarChart data={data.adset} layout="vertical" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
               <CartesianGrid stroke={gridColor} strokeDasharray="3 3" horizontal={false} />
               <XAxis
@@ -463,7 +550,36 @@ export function SpendVisuals() {
                 axisLine={false}
                 tickLine={false}
               />
-              <Tooltip formatter={(value: any) => money(Number(value))} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#111318",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  borderRadius: "16px",
+                  color: "#ffffff",
+                  boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
+                  padding: "12px 14px",
+                }}
+                labelStyle={{
+                  color: "rgba(255,255,255,0.55)",
+                  fontSize: "11px",
+                  fontWeight: 800,
+                  marginBottom: "8px",
+                }}
+                itemStyle={{
+                  color: "#ffffff",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                }}
+                formatter={(value: any, name: any) => {
+                  const n = Number(value || 0);
+                  const label = String(name || "").toLowerCase();
+
+                  if (label.includes("roas")) return [n.toFixed(2), name];
+                  if (label.includes("ctr") || label.includes("rate")) return [`${n.toFixed(2)}%`, name];
+
+                  return [`₹${Math.round(n).toLocaleString()}`, name];
+                }}
+              />
               <Bar dataKey="spend" name="Spend" fill="#34d399" radius={[0, 8, 8, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -531,7 +647,7 @@ function ChartCard({ title, children }: { title: string; children: React.ReactNo
   return (
     <GlassCard className="p-5">
       <h2 className="text-xl font-black">{title}</h2>
-      <div className="mt-5 h-[360px] w-full min-w-0">{children}</div>
+      <div className="mt-5 h-[380px] w-full min-w-0">{children}</div>
     </GlassCard>
   );
 }
