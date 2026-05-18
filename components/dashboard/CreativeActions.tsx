@@ -13,6 +13,7 @@ import {
 import { useMetaStore } from "@/store/metaStore";
 import { aggregateRows } from "@/lib/metrics";
 import { onlyLiveRows } from "@/lib/liveFilter";
+import { MetaChartTooltip, compactMoney } from "@/components/charts/MetaChartTooltip";
 import {
   GlassCard,
   MetricCard,
@@ -26,13 +27,6 @@ const money = (n: number) => `₹${Math.round(n || 0).toLocaleString()}`;
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
 const safeDiv = (a: number, b: number) => (b > 0 ? a / b : 0);
 
-function compactMoney(value: number) {
-  const n = Number(value || 0);
-  if (Math.abs(n) >= 10000000) return `₹${(n / 10000000).toFixed(1)}Cr`;
-  if (Math.abs(n) >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
-  if (Math.abs(n) >= 1000) return `₹${(n / 1000).toFixed(0)}K`;
-  return `₹${Math.round(n)}`;
-}
 
 function parseDate(value?: string) {
   if (!value) return null;
@@ -549,25 +543,13 @@ function TrendCard({
                 strokeWidth: 1,
                 strokeDasharray: "4 4",
               }}
-              content={({ active, payload, label }) => {
-                if (!active || !payload?.length) return null;
-
-                const value = Number(payload[0].value || 0);
-
-                return (
-                  <div className="rounded-2xl border border-white/10 bg-[#111318] px-4 py-3 text-white shadow-2xl">
-                    <p className="text-[11px] font-black uppercase tracking-[0.16em] text-white/45">
-                      {title}
-                    </p>
-                    <p className="mt-1 text-sm font-black text-white">
-                      {formatValue(value)}
-                    </p>
-                    <p className="mt-1 text-xs text-white/45">
-                      Date: {label}
-                    </p>
-                  </div>
-                );
-              }}
+              content={(props) => (
+                <MetaChartTooltip
+                  {...props}
+                  title={title}
+                  valueFormatter={(value) => formatValue(value)}
+                />
+              )}
             />
 
             <Line
