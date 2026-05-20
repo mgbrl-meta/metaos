@@ -16,7 +16,6 @@ import { CreativeActions } from "@/components/dashboard/CreativeActions";
 import { StructureReport } from "@/components/dashboard/StructureReport";
 import { DailySummaryExport } from "@/components/dashboard/DailySummaryExport";
 import { MonthlyPerformance } from "@/components/dashboard/MonthlyPerformance";
-import { UploadPanel } from "@/components/upload/UploadPanel";
 import { SettingsPanel } from "@/components/settings/SettingsPanel";
 
 import { GoogleSearchTermAudit } from "@/components/google/GoogleSearchTermAudit";
@@ -26,7 +25,7 @@ export default function Home() {
   const [osMode, setOsMode] = useState<OSMode>("meta");
   const [activeMetaTab, setActiveMetaTab] = useState<MetaTab>("action_report");
   const [activeGoogleTab, setActiveGoogleTab] = useState<GoogleTab>("google_search_terms");
-  const [activeSystemTab, setActiveSystemTab] = useState<"upload" | "settings" | null>(null);
+  const [activeSystemTab, setActiveSystemTab] = useState<"settings" | null>(null);
 
   return (
     <MetaOSShell
@@ -50,7 +49,6 @@ export default function Home() {
       activeSystemTab={activeSystemTab}
       setActiveSystemTab={setActiveSystemTab}
     >
-      {activeSystemTab === "upload" && <UploadPanel />}
       {activeSystemTab === "settings" && <SettingsPanel />}
 
       {!activeSystemTab && osMode === "meta" && (

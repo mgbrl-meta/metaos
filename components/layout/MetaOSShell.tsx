@@ -15,7 +15,6 @@ import {
   ShieldAlert,
   ShieldCheck,
   Sparkles,
-  UploadCloud,
   X,
   Zap,
 } from "lucide-react";
@@ -41,7 +40,7 @@ export type GoogleTab =
   | "google_ad_audit"
   | "google_team_summary";
 
-type SystemTab = "upload" | "settings";
+type SystemTab = "settings";
 
 type NavItem<T extends string> = {
   id: T;
@@ -142,12 +141,6 @@ const googleNav: NavItem<GoogleTab>[] = [
 ];
 
 const systemNav: NavItem<SystemTab>[] = [
-  {
-    id: "upload",
-    label: "Data Input",
-    description: "Upload Meta export",
-    icon: UploadCloud,
-  },
   {
     id: "settings",
     label: "Settings",
@@ -489,7 +482,7 @@ function StatusAndTheme({ osMode }: { osMode: OSMode }) {
           }
         />
         <span className="text-xs font-black uppercase tracking-[0.14em] opacity-70">
-          {osMode === "google" ? "BigQuery Live" : "Live-filtered"}
+          {osMode === "google" ? "BigQuery Live" : "Sheet Connected"}
         </span>
       </div>
 
@@ -662,7 +655,7 @@ function OSHeader({
           System
         </p>
         <h1 className="mt-2 text-3xl font-black">
-          {activeSystemTab === "upload" ? "Data Input" : "Settings"}
+          "Settings"
         </h1>
       </div>
     );

@@ -161,13 +161,13 @@ function mapMetaRow(row: Record<string, any>) {
 export async function GET() {
   try {
     if (!sheetId) {
-      throw new Error("Missing META_SHEET_ID in environment variables");
+      throw new Error("Missing META_SHEET_ID. Add it in Vercel Environment Variables.");
     }
 
     const auth = getAuth();
     const sheets = google.sheets({ version: "v4", auth });
 
-    const range = `'${sheetTab}'!A:AH`;
+    const range = `'${sheetTab}'!A:ZZ`;
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
