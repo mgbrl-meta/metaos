@@ -3,17 +3,17 @@ import { BigQuery } from "@google-cloud/bigquery";
 
 export const dynamic = "force-dynamic";
 
-const projectId = process.env.BIGQUERY_PROJECT_ID || "shopify-colab";
-const dataset = process.env.BIGQUERY_DATASET || "brillare_shopify";
+const projectId = process.env.GCP_PROJECT_ID || "shopify-colab";
+const dataset = process.env.GCP_DATASET || "brillare_shopify";
 
 function getBigQueryClient() {
-  const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
-  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
+  const clientEmail = process.env.GCP_CLIENT_EMAIL;
+  const privateKey = process.env.GCP_PRIVATE_KEY
+    ?.replace(/^"|"$/g, "")
+    .replace(/\\n/g, "\n");
 
   if (!clientEmail || !privateKey) {
-    throw new Error(
-      "Missing BigQuery credentials. Add GOOGLE_CLIENT_EMAIL and GOOGLE_PRIVATE_KEY in .env.local"
-    );
+    throw new Error("Missing GCP_CLIENT_EMAIL or GCP_PRIVATE_KEY in .env.local");
   }
 
   return new BigQuery({
@@ -92,9 +92,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       {
-        error:
-          error?.message ||
-          "Failed to fetch Google OS data. Check BigQuery credentials.",
+        error: error?.message || "Failed to fetch Google OS data",
       },
       { status: 500 }
     );
