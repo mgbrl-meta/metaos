@@ -1,9 +1,17 @@
 "use client";
 
+import {
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
+
 import { useMemo, useState } from "react";
 import { Layers, Megaphone, MousePointerClick, ShieldCheck } from "lucide-react";
 import { useMetaStore } from "@/store/metaStore";
 import { onlyLiveRows } from "@/lib/liveFilter";
+import { MetaChartTooltip } from "@/components/charts/MetaChartTooltip";
 import {
   GlassCard,
   MetricCard,
@@ -51,6 +59,12 @@ function dateKey(value?: string) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
     d.getDate()
   ).padStart(2, "0")}`;
+}
+
+function displayDate(value?: string) {
+  const d = parseDate(value);
+  if (!d) return "";
+  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
 function isLatestDay(row: any, latestDate: Date | null) {
@@ -102,6 +116,39 @@ function summarize(rows: any[]) {
   };
 }
 
+function groupDaily(rows: any[]) {
+  const map = new Map<string, any>();
+
+  rows.forEach((row) => {
+    const key = dateKey(row.date);
+    if (!key) return;
+
+    if (!map.has(key)) {
+      map.set(key, {
+        date: key,
+        label: displayDate(key),
+        spend: 0,
+        revenue: 0,
+        purchases: 0,
+      });
+    }
+
+    const item = map.get(key);
+    item.spend += Number(row.spend || 0);
+    item.revenue += revenueValue(row);
+    item.purchases += Number(row.purchases || 0);
+  });
+
+  return Array.from(map.values())
+    .map((d) => ({
+      ...d,
+      cpa: safeDiv(d.spend, d.purchases),
+      roas: safeDiv(d.revenue, d.spend),
+      aov: safeDiv(d.revenue, d.purchases),
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
 function groupBy(rows: any[], keyFn: (row: any) => string, nameFn: (row: any) => string) {
   const map = new Map<string, any>();
 
@@ -123,6 +170,7 @@ function groupBy(rows: any[], keyFn: (row: any) => string, nameFn: (row: any) =>
     .map((item) => ({
       ...item,
       ...summarize(item.rows),
+      trend: groupDaily(item.rows).slice(-30),
     }))
     .sort((a, b) => b.spend - a.spend);
 }
@@ -466,6 +514,10 @@ function EntityPanel({
               <Mini label="ROAS" value={num(row.roas)} />
               <Mini label="AOV" value={money(row.aov)} />
             </div>
+
+            <div className="mt-3 h-[64px] w-full min-w-0">
+              <StructureMiniTrend rows={row.trend || []} />
+            </div>
           </button>
         ))}
 
@@ -515,5 +567,42 @@ function SummaryRow({
       <td className="px-5 py-4 opacity-75">{money(data.aov)}</td>
       <td className="px-5 py-4 opacity-75">{num(data.ctr)}%</td>
     </tr>
+  );
+}
+
+function StructureMiniTrend({ rows }: { rows: any[] }) {
+  const data = rows.filter(
+    (row) => Number(row.cpa || 0) > 0 || Number(row.roas || 0) > 0 || Number(row.aov || 0) > 0
+  );
+
+  if (data.length < 2) {
+    return <p className="text-xs opacity-45">No trend</p>;
+  }
+
+  return (
+    <ResponsiveContainer width="100%" height={64}>
+      <LineChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+        <Tooltip
+          content={(props) => (
+            <MetaChartTooltip
+              {...props}
+              title="30-Day Trend"
+              valueFormatter={(value, name) => {
+                const metric = String(name || "").toLowerCase();
+
+                if (metric.includes("roas")) {
+                  return Number(value || 0).toFixed(2);
+                }
+
+                return `₹${Math.round(Number(value || 0)).toLocaleString()}`;
+              }}
+            />
+          )}
+        />
+        <Line type="monotone" dataKey="cpa" name="CPA" stroke="#f87171" strokeWidth={2} dot={false} />
+        <Line type="monotone" dataKey="roas" name="ROAS" stroke="#34d399" strokeWidth={2} dot={false} />
+        <Line type="monotone" dataKey="aov" name="AOV" stroke="#0A84FF" strokeWidth={2} dot={false} />
+      </LineChart>
+    </ResponsiveContainer>
   );
 }
