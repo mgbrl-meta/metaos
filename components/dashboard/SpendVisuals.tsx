@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import {
+  LineChart,
   Area,
   AreaChart,
   Bar,
@@ -25,6 +26,7 @@ import {
   TonePill,
 } from "@/components/cards/MetaCards";
 import { useThemeStore } from "@/components/theme/ThemeProvider";
+import { MetaChartTooltip } from "@/components/charts/MetaChartTooltip";
 
 const money = (n: number) => `₹${Math.round(n || 0).toLocaleString()}`;
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
@@ -294,6 +296,17 @@ function deltaTone(value: number, lowerIsBetter = false) {
 function deltaText(value: number) {
   if (!value || !Number.isFinite(value)) return "—";
   return `${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
+}
+
+
+function buildRollingTrendRows(daily: any[], index: number, windowSize = 7) {
+  const start = Math.max(0, index - windowSize + 1);
+  return daily.slice(start, index + 1).map((row) => ({
+    ...row,
+    cpa: Number(row.cpa || 0),
+    roas: Number(row.roas || 0),
+    aov: safeDiv(Number(row.revenue || 0), Number(row.purchases || 0)),
+  }));
 }
 
 export function SpendVisuals() {
@@ -726,6 +739,7 @@ export function SpendVisuals() {
                 <th className="px-5 py-4">CTR</th>
                 <th className="px-5 py-4">Δ CTR</th>
                 <th className="px-5 py-4">ATC Rate</th>
+                <th className="px-5 py-4">Trend</th>
                 <th className="px-5 py-4">Δ ATC</th>
               </tr>
             </thead>
@@ -802,11 +816,12 @@ export function SpendVisuals() {
                 <th className="px-5 py-4">Purchases</th>
                 <th className="px-5 py-4">CTR</th>
                 <th className="px-5 py-4">ATC Rate</th>
+                <th className="px-5 py-4">Trend</th>
               </tr>
             </thead>
 
             <tbody>
-              {data.daily.slice(-28).map((row) => (
+              {data.daily.slice(-28).map((row, index) => (
                 <tr
                   key={row.date}
                   className={
@@ -824,6 +839,9 @@ export function SpendVisuals() {
                   <td className="px-5 py-4 opacity-75">{num(row.purchases, 0)}</td>
                   <td className="px-5 py-4 opacity-75">{num(row.ctr)}%</td>
                   <td className="px-5 py-4 opacity-75">{num(row.atcRate)}%</td>
+                  <td className="min-w-[220px] px-5 py-4">
+                    <DailyMiniTrend rows={buildRollingTrendRows(data.daily, data.daily.findIndex((d) => d.date === row.date))} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -867,5 +885,40 @@ function DeltaTableCell({
     >
       {deltaText(value)}
     </td>
+  );
+}
+
+function DailyMiniTrend({ rows }: { rows: any[] }) {
+  const validRows = rows.filter(
+    (row) => Number(row.cpa || 0) > 0 || Number(row.roas || 0) > 0 || Number(row.aov || 0) > 0
+  );
+
+  if (validRows.length < 2) {
+    return <span className="text-xs opacity-45">Not enough trend</span>;
+  }
+
+  return (
+    <div className="h-[58px] w-full min-w-0">
+      <ResponsiveContainer width="100%" height={58}>
+        <LineChart data={validRows} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+          <Tooltip
+            content={(props) => (
+              <MetaChartTooltip
+                {...props}
+                title="7-Day Rolling Trend"
+                valueFormatter={(value, name) => {
+                  const metric = String(name || "").toLowerCase();
+                  if (metric.includes("roas")) return Number(value || 0).toFixed(2);
+                  return `₹${Math.round(Number(value || 0)).toLocaleString()}`;
+                }}
+              />
+            )}
+          />
+          <Line type="monotone" dataKey="cpa" name="CPA" stroke="#f87171" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="roas" name="ROAS" stroke="#34d399" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="aov" name="AOV" stroke="#0A84FF" strokeWidth={2} dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
