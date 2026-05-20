@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { MetaOSShell, MetaTab } from "@/components/layout/MetaOSShell";
+import {
+  GoogleTab,
+  MetaOSShell,
+  MetaTab,
+  OSMode,
+} from "@/components/layout/MetaOSShell";
 
 import { ActionReport } from "@/components/dashboard/ActionReport";
 import { EfficiencyGaps } from "@/components/dashboard/EfficiencyGaps";
@@ -13,24 +18,58 @@ import { DailySummaryExport } from "@/components/dashboard/DailySummaryExport";
 import { MonthlyPerformance } from "@/components/dashboard/MonthlyPerformance";
 import { UploadPanel } from "@/components/upload/UploadPanel";
 import { SettingsPanel } from "@/components/settings/SettingsPanel";
+
 import { GoogleSearchTermAudit } from "@/components/google/GoogleSearchTermAudit";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<MetaTab>("action_report");
+  const [osMode, setOsMode] = useState<OSMode>("meta");
+  const [activeMetaTab, setActiveMetaTab] = useState<MetaTab>("action_report");
+  const [activeGoogleTab, setActiveGoogleTab] = useState<GoogleTab>("google_search_terms");
+  const [activeSystemTab, setActiveSystemTab] = useState<"upload" | "settings" | null>(null);
 
   return (
-    <MetaOSShell activeTab={activeTab} setActiveTab={setActiveTab}>
-      {activeTab === "action_report" && <ActionReport />}
-      {activeTab === "roi_gap" && <EfficiencyGaps />}
-      {activeTab === "benchmark_audit" && <BenchmarkAudit />}
-      {activeTab === "spend_visuals" && <SpendVisuals />}
-      {activeTab === "creative" && <CreativeActions />}
-      {activeTab === "structure_report" && <StructureReport />}
-      {activeTab === "summary" && <DailySummaryExport />}
-      {activeTab === "monthly" && <MonthlyPerformance />}
-      {activeTab === "upload" && <UploadPanel />}
-      {activeTab === "settings" && <SettingsPanel />}
-      {activeTab === "google_search_terms" && <GoogleSearchTermAudit />}
+    <MetaOSShell
+      osMode={osMode}
+      setOsMode={(mode) => {
+        setOsMode(mode);
+        setActiveSystemTab(null);
+      }}
+      activeMetaTab={activeMetaTab}
+      setActiveMetaTab={(tab) => {
+        setActiveMetaTab(tab);
+        setActiveSystemTab(null);
+        setOsMode("meta");
+      }}
+      activeGoogleTab={activeGoogleTab}
+      setActiveGoogleTab={(tab) => {
+        setActiveGoogleTab(tab);
+        setActiveSystemTab(null);
+        setOsMode("google");
+      }}
+      activeSystemTab={activeSystemTab}
+      setActiveSystemTab={setActiveSystemTab}
+    >
+      {activeSystemTab === "upload" && <UploadPanel />}
+      {activeSystemTab === "settings" && <SettingsPanel />}
+
+      {!activeSystemTab && osMode === "meta" && (
+        <>
+          {activeMetaTab === "action_report" && <ActionReport />}
+          {activeMetaTab === "roi_gap" && <EfficiencyGaps />}
+          {activeMetaTab === "benchmark_audit" && <BenchmarkAudit />}
+          {activeMetaTab === "spend_visuals" && <SpendVisuals />}
+          {activeMetaTab === "creative" && <CreativeActions />}
+          {activeMetaTab === "structure_report" && <StructureReport />}
+          {activeMetaTab === "summary" && <DailySummaryExport />}
+          {activeMetaTab === "monthly" && <MonthlyPerformance />}
+        </>
+      )}
+
+      {!activeSystemTab && osMode === "google" && (
+        <>
+          {activeGoogleTab === "google_search_terms" && <GoogleSearchTermAudit />}
+        </>
+      )}
     </MetaOSShell>
   );
 }
