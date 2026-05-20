@@ -20,6 +20,7 @@ import { UploadPanel } from "@/components/upload/UploadPanel";
 import { SettingsPanel } from "@/components/settings/SettingsPanel";
 
 import { GoogleSearchTermAudit } from "@/components/google/GoogleSearchTermAudit";
+import { AutoMetaSheetLoader } from "@/components/meta/AutoMetaSheetLoader";
 
 export default function Home() {
   const [osMode, setOsMode] = useState<OSMode>("meta");
@@ -54,6 +55,7 @@ export default function Home() {
 
       {!activeSystemTab && osMode === "meta" && (
         <>
+          <AutoMetaSheetLoader />
           {activeMetaTab === "action_report" && <ActionReport />}
           {activeMetaTab === "roi_gap" && <EfficiencyGaps />}
           {activeMetaTab === "benchmark_audit" && <BenchmarkAudit />}
