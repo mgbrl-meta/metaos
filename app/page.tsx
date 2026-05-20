@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MetaOSShell, MetaTab } from "@/components/layout/MetaOSShell";
 
 import { ActionReport } from "@/components/dashboard/ActionReport";
-import { ROIGap } from "@/components/dashboard/ROIGap";
+import { EfficiencyGaps } from "@/components/dashboard/EfficiencyGaps";
 import { BenchmarkAudit } from "@/components/dashboard/BenchmarkAudit";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
 import { CreativeActions } from "@/components/dashboard/CreativeActions";
@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <MetaOSShell activeTab={activeTab} setActiveTab={setActiveTab}>
       {activeTab === "action_report" && <ActionReport />}
-      {activeTab === "roi_gap" && <ROIGap />}
+      {activeTab === "roi_gap" && <EfficiencyGaps />}
       {activeTab === "benchmark_audit" && <BenchmarkAudit />}
       {activeTab === "spend_visuals" && <SpendVisuals />}
       {activeTab === "creative" && <CreativeActions />}
