@@ -427,15 +427,12 @@ function BrandBlock({ collapsed, osMode }: { collapsed: boolean; osMode: OSMode 
             <p
               className={
                 isGoogle
-                  ? "text-base font-black tracking-[0.22em] text-emerald-300"
-                  : "text-base font-black tracking-[0.28em] text-[#0A84FF]"
+                  ? "text-[15px] font-black tracking-[0.20em] text-emerald-300 whitespace-nowrap"
+                  : "text-[15px] font-black tracking-[0.24em] text-[#0A84FF] whitespace-nowrap"
               }
             >
               {isGoogle ? "GOOGLE OS" : "META OS"}
             </p>
-            <span className="rounded-full border border-current/20 bg-current/[0.08] px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.08em] opacity-70">
-              operator
-            </span>
           </div>
           <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.24em] opacity-45">
             Daily Performance OS
