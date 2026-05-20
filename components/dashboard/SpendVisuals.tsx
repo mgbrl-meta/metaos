@@ -193,6 +193,109 @@ function groupByKey(rows: any[], keyName: "campaignName" | "adSetName" | "adName
     .sort((a, b) => b.spend - a.spend);
 }
 
+
+
+function compareWindowRows(rows: any[], days: number, maxDate: string) {
+  const max = parseDate(maxDate);
+  if (!max) return { current: [], previous: [] };
+
+  const currentEnd = new Date(max);
+  const currentStart = new Date(max);
+  currentStart.setDate(currentStart.getDate() - days + 1);
+
+  const previousEnd = new Date(currentStart);
+  previousEnd.setDate(previousEnd.getDate() - 1);
+
+  const previousStart = new Date(previousEnd);
+  previousStart.setDate(previousStart.getDate() - days + 1);
+
+  const current = rows.filter((row) => {
+    const d = parseDate(row.date);
+    if (!d) return false;
+    return d >= currentStart && d <= currentEnd;
+  });
+
+  const previous = rows.filter((row) => {
+    const d = parseDate(row.date);
+    if (!d) return false;
+    return d >= previousStart && d <= previousEnd;
+  });
+
+  return { current, previous };
+}
+
+function summarizeRows(rows: any[]) {
+  const spend = rows.reduce((s, r) => s + Number(r.spend || 0), 0);
+  const rev = rows.reduce((s, r) => s + revenue(r), 0);
+  const purchases = rows.reduce((s, r) => s + Number(r.purchases || 0), 0);
+  const impressions = rows.reduce((s, r) => s + Number(r.impressions || 0), 0);
+  const clicks = rows.reduce((s, r) => s + Number(r.clicks || r.linkClicks || 0), 0);
+  const lpv = rows.reduce((s, r) => s + Number(r.landingPageViews || 0), 0);
+  const atc = rows.reduce((s, r) => s + Number(r.addToCart || 0), 0);
+
+  return {
+    spend,
+    revenue: rev,
+    purchases,
+    impressions,
+    clicks,
+    lpv,
+    atc,
+    roas: safeDiv(rev, spend),
+    cpa: safeDiv(spend, purchases),
+    aov: safeDiv(rev, purchases),
+    cpm: safeDiv(spend, impressions) * 1000,
+    cpc: safeDiv(spend, clicks),
+    ctr: safeDiv(clicks, impressions) * 100,
+    lpvRate: safeDiv(lpv, clicks) * 100,
+    atcRate: safeDiv(atc, lpv) * 100,
+  };
+}
+
+function deltaPct(current: number, previous: number) {
+  if (!previous || !Number.isFinite(previous)) return 0;
+  return ((current - previous) / previous) * 100;
+}
+
+function periodComparison(rows: any[], maxDate: string) {
+  return [7, 14, 28].map((days) => {
+    const { current, previous } = compareWindowRows(rows, days, maxDate);
+    const c = summarizeRows(current);
+    const p = summarizeRows(previous);
+
+    return {
+      period: `Last ${days}D`,
+      days,
+      current: c,
+      previous: p,
+      delta: {
+        spend: deltaPct(c.spend, p.spend),
+        revenue: deltaPct(c.revenue, p.revenue),
+        purchases: deltaPct(c.purchases, p.purchases),
+        roas: deltaPct(c.roas, p.roas),
+        cpa: deltaPct(c.cpa, p.cpa),
+        aov: deltaPct(c.aov, p.aov),
+        cpm: deltaPct(c.cpm, p.cpm),
+        cpc: deltaPct(c.cpc, p.cpc),
+        ctr: deltaPct(c.ctr, p.ctr),
+        lpvRate: deltaPct(c.lpvRate, p.lpvRate),
+        atcRate: deltaPct(c.atcRate, p.atcRate),
+      },
+    };
+  });
+}
+
+function deltaTone(value: number, lowerIsBetter = false) {
+  if (!value || Math.abs(value) < 2) return "neutral";
+  const good = lowerIsBetter ? value < 0 : value > 0;
+  return good ? "green" : "red";
+}
+
+function deltaText(value: number) {
+  if (!value || !Number.isFinite(value)) return "—";
+  return `${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
+}
+
 export function SpendVisuals() {
   const { performanceRows } = useMetaStore();
   const { theme } = useThemeStore();
@@ -586,11 +689,97 @@ export function SpendVisuals() {
         </ChartCard>
       </div>
 
-      <GlassCard className="overflow-hidden">
+      
+      <GlassCard className="overflow-hidden min-w-0">
         <div className="border-b border-current/10 p-5">
-          <h2 className="text-xl font-black">Date-Wise Performance Table</h2>
+          <h2 className="text-xl font-black">Period Performance Comparison</h2>
           <MutedText className="mt-1 text-sm">
-            Date column added so you can validate performance by selected period.
+            Last 7D, 14D and 28D compared against the previous same-length period. Green means improving; red means worsening.
+          </MutedText>
+        </div>
+
+        <div className="metaos-scroll-table overflow-x-auto">
+          <table className="w-full min-w-[1280px] text-left text-sm">
+            <thead
+              className={
+                isDark
+                  ? "border-b border-white/10 bg-white/[0.04] text-[11px] uppercase tracking-[0.16em] text-white/45"
+                  : "border-b border-black/10 bg-black/[0.035] text-[11px] uppercase tracking-[0.16em] text-black/55"
+              }
+            >
+              <tr>
+                <th className="px-5 py-4">Period</th>
+                <th className="px-5 py-4">Spend</th>
+                <th className="px-5 py-4">Δ Spend</th>
+                <th className="px-5 py-4">Revenue</th>
+                <th className="px-5 py-4">Δ Revenue</th>
+                <th className="px-5 py-4">Purchases</th>
+                <th className="px-5 py-4">Δ Purchases</th>
+                <th className="px-5 py-4">ROAS</th>
+                <th className="px-5 py-4">Δ ROAS</th>
+                <th className="px-5 py-4">CPA</th>
+                <th className="px-5 py-4">Δ CPA</th>
+                <th className="px-5 py-4">AOV</th>
+                <th className="px-5 py-4">Δ AOV</th>
+                <th className="px-5 py-4">CPM</th>
+                <th className="px-5 py-4">Δ CPM</th>
+                <th className="px-5 py-4">CTR</th>
+                <th className="px-5 py-4">Δ CTR</th>
+                <th className="px-5 py-4">ATC Rate</th>
+                <th className="px-5 py-4">Δ ATC</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {periodComparison(data.filteredRows, data.end).map((row) => (
+                <tr
+                  key={row.period}
+                  className={
+                    isDark
+                      ? "border-b border-white/5 text-white hover:bg-white/[0.04]"
+                      : "border-b border-black/5 text-black hover:bg-black/[0.035]"
+                  }
+                >
+                  <td className="px-5 py-4 font-black">{row.period}</td>
+
+                  <td className="px-5 py-4 opacity-75">{money(row.current.spend)}</td>
+                  <DeltaTableCell value={row.delta.spend} lowerIsBetter={false} />
+
+                  <td className="px-5 py-4 opacity-75">{money(row.current.revenue)}</td>
+                  <DeltaTableCell value={row.delta.revenue} lowerIsBetter={false} />
+
+                  <td className="px-5 py-4 opacity-75">{num(row.current.purchases, 0)}</td>
+                  <DeltaTableCell value={row.delta.purchases} lowerIsBetter={false} />
+
+                  <td className="px-5 py-4 font-black text-emerald-400">{num(row.current.roas)}</td>
+                  <DeltaTableCell value={row.delta.roas} lowerIsBetter={false} />
+
+                  <td className="px-5 py-4 opacity-75">{money(row.current.cpa)}</td>
+                  <DeltaTableCell value={row.delta.cpa} lowerIsBetter />
+
+                  <td className="px-5 py-4 opacity-75">{money(row.current.aov)}</td>
+                  <DeltaTableCell value={row.delta.aov} lowerIsBetter={false} />
+
+                  <td className="px-5 py-4 opacity-75">{money(row.current.cpm)}</td>
+                  <DeltaTableCell value={row.delta.cpm} lowerIsBetter />
+
+                  <td className="px-5 py-4 opacity-75">{num(row.current.ctr)}%</td>
+                  <DeltaTableCell value={row.delta.ctr} lowerIsBetter={false} />
+
+                  <td className="px-5 py-4 opacity-75">{num(row.current.atcRate)}%</td>
+                  <DeltaTableCell value={row.delta.atcRate} lowerIsBetter={false} />
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </GlassCard>
+
+      <GlassCard className="overflow-hidden min-w-0">
+        <div className="border-b border-current/10 p-5">
+          <h2 className="text-xl font-black">Daily Performance Detail</h2>
+          <MutedText className="mt-1 text-sm">
+            Raw daily view for validation after reading the period comparison.
           </MutedText>
         </div>
 
@@ -609,6 +798,7 @@ export function SpendVisuals() {
                 <th className="px-5 py-4">Revenue</th>
                 <th className="px-5 py-4">ROAS</th>
                 <th className="px-5 py-4">CPA</th>
+                <th className="px-5 py-4">AOV</th>
                 <th className="px-5 py-4">Purchases</th>
                 <th className="px-5 py-4">CTR</th>
                 <th className="px-5 py-4">ATC Rate</th>
@@ -616,7 +806,7 @@ export function SpendVisuals() {
             </thead>
 
             <tbody>
-              {data.daily.map((row) => (
+              {data.daily.slice(-28).map((row) => (
                 <tr
                   key={row.date}
                   className={
@@ -625,11 +815,12 @@ export function SpendVisuals() {
                       : "border-b border-black/5 text-black hover:bg-black/[0.035]"
                   }
                 >
-                  <td className="px-5 py-4 font-black">{row.date}</td>
+                  <td className="px-5 py-4 font-black whitespace-normal break-words">{row.date}</td>
                   <td className="px-5 py-4 opacity-75">{money(row.spend)}</td>
                   <td className="px-5 py-4 opacity-75">{money(row.revenue)}</td>
-                  <td className="px-5 py-4 opacity-75">{num(row.roas)}</td>
+                  <td className="px-5 py-4 font-black text-emerald-400">{num(row.roas)}</td>
                   <td className="px-5 py-4 opacity-75">{money(row.cpa)}</td>
+                  <td className="px-5 py-4 opacity-75">{money(safeDiv(row.revenue, row.purchases))}</td>
                   <td className="px-5 py-4 opacity-75">{num(row.purchases, 0)}</td>
                   <td className="px-5 py-4 opacity-75">{num(row.ctr)}%</td>
                   <td className="px-5 py-4 opacity-75">{num(row.atcRate)}%</td>
@@ -639,6 +830,7 @@ export function SpendVisuals() {
           </table>
         </div>
       </GlassCard>
+
     </div>
   );
 }
@@ -649,5 +841,31 @@ function ChartCard({ title, children }: { title: string; children: React.ReactNo
       <h2 className="text-xl font-black">{title}</h2>
       <div className="mt-5 h-[380px] w-full min-w-0">{children}</div>
     </GlassCard>
+  );
+}
+
+function DeltaTableCell({
+  value,
+  lowerIsBetter = false,
+}: {
+  value: number;
+  lowerIsBetter?: boolean;
+}) {
+  const tone = deltaTone(value, lowerIsBetter);
+
+  if (tone === "neutral") {
+    return <td className="px-5 py-4 font-black opacity-35">—</td>;
+  }
+
+  return (
+    <td
+      className={
+        tone === "green"
+          ? "px-5 py-4 font-black text-emerald-400"
+          : "px-5 py-4 font-black text-red-400"
+      }
+    >
+      {deltaText(value)}
+    </td>
   );
 }
