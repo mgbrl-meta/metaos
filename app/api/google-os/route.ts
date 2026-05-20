@@ -6,9 +6,24 @@ export const dynamic = "force-dynamic";
 const projectId = process.env.BIGQUERY_PROJECT_ID || "shopify-colab";
 const dataset = process.env.BIGQUERY_DATASET || "brillare_shopify";
 
-const bigquery = new BigQuery({
-  projectId,
-});
+function getBigQueryClient() {
+  const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
+
+  if (!clientEmail || !privateKey) {
+    throw new Error(
+      "Missing BigQuery credentials. Add GOOGLE_CLIENT_EMAIL and GOOGLE_PRIVATE_KEY in .env.local"
+    );
+  }
+
+  return new BigQuery({
+    projectId,
+    credentials: {
+      client_email: clientEmail,
+      private_key: privateKey,
+    },
+  });
+}
 
 function toDate(value: string | null) {
   if (!value) return null;
@@ -17,12 +32,13 @@ function toDate(value: string | null) {
 
 export async function GET(req: NextRequest) {
   try {
-    const searchParams = req.nextUrl.searchParams;
+    const bigquery = getBigQueryClient();
 
+    const searchParams = req.nextUrl.searchParams;
     const tab = searchParams.get("tab") || "search_terms";
     const start = toDate(searchParams.get("start"));
     const end = toDate(searchParams.get("end"));
-    const limit = Number(searchParams.get("limit") || 5000);
+    const limit = Math.min(Number(searchParams.get("limit") || 10000), 50000);
 
     if (tab !== "search_terms") {
       return NextResponse.json(
@@ -33,10 +49,10 @@ export async function GET(req: NextRequest) {
 
     const query = `
       SELECT
-        date,
-        campaign_id,
+        CAST(date AS STRING) AS date,
+        CAST(campaign_id AS STRING) AS campaign_id,
         campaign_name,
-        ad_group_id,
+        CAST(ad_group_id AS STRING) AS ad_group_id,
         ad_group_name,
         search_term,
         impressions,
@@ -58,11 +74,7 @@ export async function GET(req: NextRequest) {
 
     const [rows] = await bigquery.query({
       query,
-      params: {
-        start,
-        end,
-        limit,
-      },
+      params: { start, end, limit },
       types: {
         start: "DATE",
         end: "DATE",
@@ -77,9 +89,12 @@ export async function GET(req: NextRequest) {
     });
   } catch (error: any) {
     console.error("Google OS API error:", error);
+
     return NextResponse.json(
       {
-        error: error?.message || "Failed to fetch Google OS data",
+        error:
+          error?.message ||
+          "Failed to fetch Google OS data. Check BigQuery credentials.",
       },
       { status: 500 }
     );
