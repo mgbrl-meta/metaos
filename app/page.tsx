@@ -4,6 +4,7 @@ import { useState } from "react";
 import { MetaOSShell, MetaTab } from "@/components/layout/MetaOSShell";
 
 import { ActionReport } from "@/components/dashboard/ActionReport";
+import { ROILeakage } from "@/components/dashboard/ROILeakage";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
 import { CreativeActions } from "@/components/dashboard/CreativeActions";
 import { StructureReport } from "@/components/dashboard/StructureReport";
@@ -18,6 +19,7 @@ export default function Home() {
   return (
     <MetaOSShell activeTab={activeTab} setActiveTab={setActiveTab}>
       {activeTab === "action_report" && <ActionReport />}
+      {activeTab === "roi_leakage" && <ROILeakage />}
       {activeTab === "spend_visuals" && <SpendVisuals />}
       {activeTab === "creative" && <CreativeActions />}
       {activeTab === "structure_report" && <StructureReport />}
