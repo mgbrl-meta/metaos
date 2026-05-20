@@ -594,8 +594,8 @@ export function SpendVisuals() {
           </MutedText>
         </div>
 
-        <div className="overflow-auto">
-          <table className="w-full min-w-[1100px] text-left text-sm">
+        <div className="metaos-scroll-table overflow-x-auto">
+          <table className="w-full min-w-[980px] text-left text-sm">
             <thead
               className={
                 isDark

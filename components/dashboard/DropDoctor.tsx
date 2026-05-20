@@ -81,7 +81,7 @@ export function DropDoctor() {
         action: "Prepare replacements before CPA rises further.",
       },
       {
-        issue: "Wasted spend leakage",
+        issue: "Wasted spend gap",
         active: wasteAds.length > 0,
         signal: `${wasteAds.length} ads spent above ₹3,000 with zero purchases.`,
         action: "Pause/reduce these before scaling winners.",

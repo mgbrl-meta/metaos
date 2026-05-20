@@ -193,11 +193,11 @@ function makeAuditRows(rows: any[], level: AuditLevel, latestDate: Date | null, 
       } else if (e.yesterday.purchases > 0 && e.yesterday.cpa > Math.max(cpaBench, settings.targetCpa || 0) * 1.5) {
         action = "Cut Today";
         tone = "red";
-        reason = "Yesterday CPA is more than 1.5x strict benchmark.";
+        reason = "Yesterday CPA is more than 1.5x high benchmark.";
       } else if (e.yesterday.roas > 0 && e.yesterday.roas < Math.max(roasBench, settings.targetRoas || 0.8) * 0.5) {
         action = "Reduce / Diagnose";
         tone = "red";
-        reason = "Yesterday ROAS is below 50% of strict benchmark.";
+        reason = "Yesterday ROAS is below 50% of high benchmark.";
       } else if (
         e.yesterday.purchases >= 3 &&
         e.yesterday.roas >= Math.max(roasBench * 0.9, settings.targetRoas || 0.8) &&
@@ -205,7 +205,7 @@ function makeAuditRows(rows: any[], level: AuditLevel, latestDate: Date | null, 
       ) {
         action = "Scale Carefully";
         tone = "green";
-        reason = "Yesterday beats strict benchmark. Scale carefully without editing the winning setup.";
+        reason = "Yesterday beats high benchmark. Scale carefully without editing the winning setup.";
       } else if (e.l7.purchases >= 10 && e.l7.roas >= Math.max(roasBench * 0.85, settings.targetRoas || 0.8)) {
         action = "Protect";
         tone = "blue";
@@ -269,7 +269,7 @@ export function BenchmarkAudit() {
   if (!liveRows.length) {
     return (
       <GlassCard className="p-8 min-w-0">
-        <h2 className="text-2xl font-black">Benchmark Audit</h2>
+        <h2 className="text-2xl font-black">Performance Benchmark</h2>
         <MutedText className="mt-2">Upload Meta data first.</MutedText>
       </GlassCard>
     );
@@ -278,17 +278,17 @@ export function BenchmarkAudit() {
   return (
     <div className="grid min-w-0 gap-6">
       <PageHeader
-        eyebrow="Benchmark Audit"
+        eyebrow="Performance Benchmark"
         title="Yesterday-Led Campaign, Ad Set & Ad Audit"
-        description="Strict audit for live entities only. Yesterday drives today’s action; L7/L30/L60/lifetime provide benchmark context."
+        description="High-standard audit for live entities only. Yesterday drives today’s action; L7/L30/L60/lifetime provide benchmark context."
       />
 
-      <GlassCard className="p-5 min-w-0">
+      <GlassCard className="p-4 min-w-0">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <div className="flex flex-wrap gap-2">
               <TonePill tone="blue">Live Entities Only</TonePill>
-              <TonePill tone="yellow">Strict Benchmark</TonePill>
+              <TonePill tone="yellow">High Benchmark</TonePill>
               <TonePill tone="neutral">Latest: {latestDate ? dateKey(latestDate.toISOString()) : "NA"}</TonePill>
             </div>
 
@@ -343,7 +343,7 @@ export function BenchmarkAudit() {
       </div>
 
       <GlassCard className="overflow-hidden min-w-0">
-        <div className="border-b border-current/10 p-5">
+        <div className="border-b border-current/10 p-4">
           <h2 className="text-xl font-black">{levelLabel(level)} Audit Table</h2>
           <MutedText className="mt-1 text-sm">
             Amount spent, CPA, ROAS and AOV across yesterday, L7, L30, L60 and lifetime while live.
@@ -351,28 +351,28 @@ export function BenchmarkAudit() {
         </div>
 
         <div className="metaos-scroll-table overflow-x-auto">
-          <table className="w-full min-w-[1380px] text-left text-sm">
+          <table className="w-full min-w-[1280px] text-left text-sm">
             <thead className="border-b border-current/10 bg-current/[0.04] text-[11px] uppercase tracking-[0.16em] opacity-55">
               <tr>
-                <th className="px-5 py-4">Name</th>
-                <th className="px-5 py-4">Action</th>
-                <th className="px-5 py-4">Y Spend</th>
-                <th className="px-5 py-4">Y CPA</th>
-                <th className="px-5 py-4">Y ROAS</th>
-                <th className="px-5 py-4">Y AOV</th>
-                <th className="px-5 py-4">L7 Spend</th>
-                <th className="px-5 py-4">L7 CPA</th>
-                <th className="px-5 py-4">L7 ROAS</th>
-                <th className="px-5 py-4">L30 ROAS</th>
-                <th className="px-5 py-4">L60 ROAS</th>
-                <th className="px-5 py-4">Life ROAS</th>
+                <th className="sticky left-0 z-10 bg-[#15181d] px-4 py-3">Name</th>
+                <th className="sticky left-[360px] z-10 bg-[#15181d] px-4 py-3">Action</th>
+                <th className="px-4 py-3">Y Spend</th>
+                <th className="px-4 py-3">Y CPA</th>
+                <th className="px-4 py-3">Y ROAS</th>
+                <th className="px-4 py-3">Y AOV</th>
+                <th className="px-4 py-3">7D Spend</th>
+                <th className="px-4 py-3">7D CPA</th>
+                <th className="px-4 py-3">7D ROAS</th>
+                <th className="px-4 py-3">30D ROAS</th>
+                <th className="px-4 py-3">60D ROAS</th>
+                <th className="px-4 py-3">Life ROAS</th>
               </tr>
             </thead>
 
             <tbody>
               {rows.slice(0, 100).map((row) => (
                 <tr key={row.key} className="border-b border-current/10 align-top">
-                  <td className="max-w-[440px] px-5 py-4">
+                  <td className="sticky left-0 z-10 max-w-[360px] bg-[#101318] px-4 py-3">
                     <p className="font-black leading-6 whitespace-normal break-words">{row.name}</p>
                     {level !== "campaign" && (
                       <p className="mt-1 text-xs leading-5 opacity-55">
@@ -388,21 +388,21 @@ export function BenchmarkAudit() {
                     <p className="mt-2 text-xs leading-5 opacity-70">{row.reason}</p>
                   </td>
 
-                  <td className="px-5 py-4">
+                  <td className="px-4 py-3">
                     <TonePill tone={row.tone}>{row.action}</TonePill>
                   </td>
 
-                  <td className="px-5 py-4 opacity-75">{money(row.yesterday.spend)}</td>
-                  <td className="px-5 py-4 opacity-75">{money(row.yesterday.cpa)}</td>
-                  <td className="px-5 py-4 font-black text-emerald-400">{num(row.yesterday.roas)}</td>
-                  <td className="px-5 py-4 opacity-75">{money(row.yesterday.aov)}</td>
+                  <td className="px-4 py-3 opacity-75">{money(row.yesterday.spend)}</td>
+                  <td className="px-4 py-3 opacity-75">{money(row.yesterday.cpa)}</td>
+                  <td className="px-4 py-3 font-black text-emerald-400">{num(row.yesterday.roas)}</td>
+                  <td className="px-4 py-3 opacity-75">{money(row.yesterday.aov)}</td>
 
-                  <td className="px-5 py-4 opacity-75">{money(row.l7.spend)}</td>
-                  <td className="px-5 py-4 opacity-75">{money(row.l7.cpa)}</td>
-                  <td className="px-5 py-4 opacity-75">{num(row.l7.roas)}</td>
-                  <td className="px-5 py-4 opacity-75">{num(row.l30.roas)}</td>
-                  <td className="px-5 py-4 opacity-75">{num(row.l60.roas)}</td>
-                  <td className="px-5 py-4 opacity-75">{num(row.lifetime.roas)}</td>
+                  <td className="px-4 py-3 opacity-75">{money(row.l7.spend)}</td>
+                  <td className="px-4 py-3 opacity-75">{money(row.l7.cpa)}</td>
+                  <td className="px-4 py-3 opacity-75">{num(row.l7.roas)}</td>
+                  <td className="px-4 py-3 opacity-75">{num(row.l30.roas)}</td>
+                  <td className="px-4 py-3 opacity-75">{num(row.l60.roas)}</td>
+                  <td className="px-4 py-3 opacity-75">{num(row.lifetime.roas)}</td>
                 </tr>
               ))}
             </tbody>

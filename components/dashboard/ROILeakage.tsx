@@ -166,7 +166,7 @@ function severity(score: number) {
   return { label: "Controlled", tone: "green" as const };
 }
 
-function leakageScore({
+function gapScore({
   spendAtRisk,
   totalSpend,
   badSignalCount,
@@ -186,7 +186,7 @@ function confidence(row: any) {
   return "Low";
 }
 
-function actionForLeakage(area: string) {
+function actionForGap(area: string) {
   const actions: Record<string, string> = {
     "Campaign Architecture":
       "Classify every campaign/ad set into TOF, MOF, BOF, Test, Catalog or Retention. Reduce unclassified spend.",
@@ -194,7 +194,7 @@ function actionForLeakage(area: string) {
       "Cut spend from weak/high-CPA ads and reallocate only 30–50% into proven winners. Keep the rest for next-day signal.",
     "Creative Fatigue":
       "Refresh old/high-frequency creatives. Keep winning angle but change creator, first frame, proof and format.",
-    "Funnel Leakage":
+    "Funnel Gap":
       "Fix the stage where users are leaking: hook, landing page, PDP, offer, checkout or tracking.",
     "Audience Hygiene":
       "Check BOF/MOF exclusions, purchaser exclusions, retargeting frequency and prospecting contamination.",
@@ -210,7 +210,7 @@ function actionForLeakage(area: string) {
 function rootCauseFor(row: any, settings: any) {
   if (row.spend > 3000 && row.purchases === 0) {
     if (row.ctr >= settings.targetCtrPct && row.clickToLpv >= 60) {
-      return "Traffic is reaching site but not converting. Likely PDP/offer/checkout leakage.";
+      return "Traffic is reaching site but not converting. Likely PDP/offer/checkout gap.";
     }
 
     if (row.ctr < settings.targetCtrPct) {
@@ -225,10 +225,10 @@ function rootCauseFor(row: any, settings: any) {
   if (row.lpvToAtc < 8) return "PDP/offer/message mismatch.";
   if (row.checkoutToPurchase > 0 && row.checkoutToPurchase < 35) return "Checkout/trust/payment friction.";
   if (row.roas < settings.targetRoas) return "Economics weak despite conversion signal.";
-  return "No major leakage detected.";
+  return "No major gap detected.";
 }
 
-export function ROILeakage() {
+export function ROIGap() {
   const { performanceRows, settings } = useMetaStore();
 
   const liveRows = useMemo(() => onlyLiveRows(performanceRows), [performanceRows]);
@@ -273,7 +273,7 @@ export function ROILeakage() {
     const missingDateRows = liveRows.filter((r) => !r.date).length;
     const missingNameRows = liveRows.filter((r) => !r.adName || !r.campaignName || !r.adSetName).length;
 
-    const leakageAreas = [
+    const gapAreas = [
       {
         area: "Campaign Architecture",
         spendAtRisk: unclassifiedSpend,
@@ -293,7 +293,7 @@ export function ROILeakage() {
         badSignalCount: ads.filter((r) => r.ctr < settings.targetCtrPct * 0.75).length,
       },
       {
-        area: "Funnel Leakage",
+        area: "Funnel Gap",
         spendAtRisk: ads
           .filter((r) => r.clickToLpv < 60 || r.lpvToAtc < 8 || (r.checkoutToPurchase > 0 && r.checkoutToPurchase < 35))
           .reduce((s, r) => s + r.spend, 0),
@@ -323,7 +323,7 @@ export function ROILeakage() {
         badSignalCount: adsets.filter((r) => r.funnel === "BOF/MOF").length,
       },
     ].map((item) => {
-      const score = leakageScore({
+      const score = gapScore({
         spendAtRisk: item.spendAtRisk,
         totalSpend,
         badSignalCount: item.badSignalCount,
@@ -332,7 +332,7 @@ export function ROILeakage() {
         ...item,
         score,
         severity: severity(score),
-        action: actionForLeakage(item.area),
+        action: actionForGap(item.area),
       };
     });
 
@@ -364,7 +364,7 @@ export function ROILeakage() {
       campaigns,
       adsets,
       ads,
-      leakageAreas,
+      gapAreas,
       immediateFixes,
       winners,
       totalSpend,
@@ -381,7 +381,7 @@ export function ROILeakage() {
   if (!liveRows.length) {
     return (
       <GlassCard className="p-8">
-        <h2 className="text-2xl font-black">ROI Leakage</h2>
+        <h2 className="text-2xl font-black">Efficiency Gaps</h2>
         <MutedText className="mt-2">
           Upload Meta data first. This audit uses live ads only.
         </MutedText>
@@ -390,31 +390,31 @@ export function ROILeakage() {
   }
 
   const overallScore = Math.round(
-    data.leakageAreas.reduce((s, r) => s + r.score, 0) / Math.max(data.leakageAreas.length, 1)
+    data.gapAreas.reduce((s, r) => s + r.score, 0) / Math.max(data.gapAreas.length, 1)
   );
   const overallSeverity = severity(overallScore);
 
   return (
     <div className="grid gap-6">
       <PageHeader
-        eyebrow="ROI Leakage"
-        title="KPMG-Proof ROI Leakage Audit"
-        description="Find structural gaps before the external audit: campaign architecture, budget waste, creative fatigue, funnel leakage, audience hygiene, measurement gaps and incrementality risk."
+        eyebrow="Efficiency Gaps"
+        title="Efficiency Gap Audit"
+        description="Find structural gaps before the internal review: campaign architecture, budget waste, creative fatigue, funnel gap, audience hygiene, measurement gaps and incrementality risk."
       />
 
       <GlassCard className="p-5">
         <div className="flex flex-wrap items-center gap-2">
-          <TonePill tone={overallSeverity.tone}>Leakage Risk: {overallSeverity.label}</TonePill>
+          <TonePill tone={overallSeverity.tone}>Gap Risk: {overallSeverity.label}</TonePill>
           <TonePill tone="blue">Last 7 Days</TonePill>
           <TonePill tone="neutral">Live Ads Only</TonePill>
         </div>
 
         <h2 className="mt-4 text-3xl font-black">
-          ROI Leakage Score: {overallScore}/100
+          Efficiency Gaps Score: {overallScore}/100
         </h2>
 
         <MutedText className="mt-2">
-          This score converts KPMG-style audit gaps into immediate execution priorities.
+          This score converts Internal Review-style audit gaps into immediate execution priorities.
         </MutedText>
       </GlassCard>
 
@@ -431,14 +431,14 @@ export function ROILeakage() {
 
       <GlassCard className="overflow-hidden">
         <div className="border-b border-current/10 p-5">
-          <h2 className="text-xl font-black">ROI Leakage Matrix</h2>
+          <h2 className="text-xl font-black">Efficiency Gaps Matrix</h2>
           <MutedText className="mt-1 text-sm">
             Every row is an audit gap converted into evidence and action.
           </MutedText>
         </div>
 
         <div className="grid gap-4 p-5">
-          {data.leakageAreas.map((row) => (
+          {data.gapAreas.map((row) => (
             <Surface key={row.area} className="p-4">
               <div className="grid gap-4 xl:grid-cols-[260px_120px_1fr_1fr] xl:items-start">
                 <div>
@@ -484,7 +484,7 @@ export function ROILeakage() {
           <div className="border-b border-current/10 p-5">
             <h2 className="text-xl font-black">Immediate Fix List</h2>
             <MutedText className="mt-1 text-sm">
-              Ads/ad sets KPMG will likely flag first because spend is leaking now.
+              Ads/ad sets Internal Review will likely flag first because spend is leaking now.
             </MutedText>
           </div>
 
@@ -511,7 +511,7 @@ export function ROILeakage() {
 
             {!data.immediateFixes.length && (
               <Surface className="p-4">
-                <p className="font-black">No major immediate leakage found.</p>
+                <p className="font-black">No major immediate gap found.</p>
               </Surface>
             )}
           </div>

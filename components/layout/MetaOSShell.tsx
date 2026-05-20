@@ -22,7 +22,7 @@ import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/Theme
 
 export type MetaTab =
   | "action_report"
-  | "roi_leakage"
+  | "roi_gap"
   | "benchmark_audit"
   | "spend_visuals"
   | "creative"
@@ -49,16 +49,16 @@ const navItems: NavItem[] = [
     icon: Grid2X2,
   },
   {
-    id: "roi_leakage",
-    label: "ROI Leakage",
-    description: "KPMG-style gaps, leakage and budget risk",
+    id: "roi_gap",
+    label: "Efficiency Gaps",
+    description: "Spend gaps, weak pockets and budget risk",
     group: "Daily OS",
     icon: ShieldAlert,
   },
   {
     id: "benchmark_audit",
-    label: "Benchmark Audit",
-    description: "Campaign, ad set and ad audit vs strict benchmark",
+    label: "Performance Benchmark",
+    description: "Campaign, ad set and ad audit vs high benchmark",
     group: "Daily OS",
     icon: ShieldCheck,
   },
@@ -129,7 +129,7 @@ export function MetaOSShell({
   const { theme } = useThemeStore();
   const isDark = theme === "dark";
 
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -223,10 +223,10 @@ export function MetaOSShell({
           className={
             isDark
               ? `fixed left-6 top-6 z-30 hidden h-[calc(100vh-48px)] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0f14]/92 shadow-2xl backdrop-blur-2xl transition-all duration-300 lg:block ${
-                  collapsed ? "w-[96px]" : "w-[330px]"
+                  collapsed ? "w-[88px]" : "w-[330px]"
                 }`
               : `fixed left-6 top-6 z-30 hidden h-[calc(100vh-48px)] overflow-hidden rounded-[2rem] border border-black/10 bg-white/92 shadow-2xl backdrop-blur-2xl transition-all duration-300 lg:block ${
-                  collapsed ? "w-[96px]" : "w-[330px]"
+                  collapsed ? "w-[88px]" : "w-[330px]"
                 }`
           }
         >
@@ -276,10 +276,10 @@ export function MetaOSShell({
         {/* Main Content */}
         <main
           className={`min-w-0 transition-all duration-300 ${
-            collapsed ? "lg:pl-[130px]" : "lg:pl-[370px]"
+            collapsed ? "lg:pl-[112px]" : "lg:pl-[370px]"
           }`}
         >
-          <div className="mx-auto w-full max-w-[1680px] min-w-0 px-4 py-5 sm:px-5 lg:px-6 lg:py-6">
+          <div className="mx-auto w-full max-w-[1800px] min-w-0 px-4 py-5 sm:px-5 lg:px-6 lg:py-6">
             <div className="min-w-0 overflow-x-hidden">{children}</div>
           </div>
         </main>

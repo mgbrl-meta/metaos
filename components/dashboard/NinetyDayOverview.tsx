@@ -94,7 +94,7 @@ export function NinetyDayOverview() {
         ? `Last 7 days show ${waste7.length} wasted ads. Do not scale before removing waste.`
         : s7.roas >= settings.targetRoas && s7.cpa <= settings.targetCpa
         ? `Last 7 days are healthy against the 90-day context. Scale selected winners carefully.`
-        : `Last 7 days are weaker than target. Hold aggressive scaling and diagnose creative/funnel leakage.`;
+        : `Last 7 days are weaker than target. Hold aggressive scaling and diagnose creative/funnel gap.`;
 
     return {
       latestDate,
@@ -162,8 +162,8 @@ export function NinetyDayOverview() {
           <MutedText className="mt-1 text-sm">Older data is ignored here. This compares current spend pools only.</MutedText>
         </div>
 
-        <div className="overflow-auto">
-          <table className="w-full min-w-[960px] text-left text-sm">
+        <div className="metaos-scroll-table overflow-x-auto">
+          <table className="w-full min-w-[980px] text-left text-sm">
             <thead className={isDark ? "border-b border-white/10 bg-white/[0.04] text-[11px] uppercase tracking-[0.16em] text-white/45" : "border-b border-black/10 bg-black/[0.035] text-[11px] uppercase tracking-[0.16em] text-black/55"}>
               <tr>
                 <th className="px-5 py-4">Window</th>
@@ -237,8 +237,8 @@ function StandoutTable({
         <MutedText className="mt-1 text-sm">{subtitle}</MutedText>
       </div>
 
-      <div className="overflow-auto">
-        <table className="w-full min-w-[760px] text-left text-sm">
+      <div className="metaos-scroll-table overflow-x-auto">
+        <table className="w-full min-w-[980px] text-left text-sm">
           <thead className={isDark ? "border-b border-white/10 bg-white/[0.04] text-[11px] uppercase tracking-[0.16em] text-white/45" : "border-b border-black/10 bg-black/[0.035] text-[11px] uppercase tracking-[0.16em] text-black/55"}>
             <tr>
               <th className="px-5 py-4">Name</th>
@@ -252,7 +252,7 @@ function StandoutTable({
           <tbody>
             {rows.map((row, index) => (
               <tr key={`${row[nameKey]}-${index}`} className={isDark ? "border-b border-white/5 text-white" : "border-b border-black/5 text-black"}>
-                <td className="min-w-[320px] px-5 py-4 font-black whitespace-normal break-words">{row[nameKey]}</td>
+                <td className="min-w-[980px] px-5 py-4 font-black whitespace-normal break-words">{row[nameKey]}</td>
                 <td className="px-5 py-4 opacity-70">{money(row.spend)}</td>
                 <td className="px-5 py-4 opacity-70">{money(row.revenue)}</td>
                 <td className="px-5 py-4 font-black text-emerald-400">{num(row.roas)}</td>

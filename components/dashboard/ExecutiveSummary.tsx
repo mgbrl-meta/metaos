@@ -110,7 +110,7 @@ function InsightCard({ tone, label, title, text }: { tone: "green" | "red" | "ye
   return (
     <Surface className="p-5">
       <TonePill tone={tone}>{label}</TonePill>
-      <h3 className="mt-4 truncate font-black">{title}</h3>
+      <h3 className="mt-4 whitespace-normal break-words font-black">{title}</h3>
       <MutedText className="mt-2 text-sm leading-6">{text}</MutedText>
     </Surface>
   );

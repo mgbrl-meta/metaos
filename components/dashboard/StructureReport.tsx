@@ -270,8 +270,8 @@ export function StructureReport() {
           </MutedText>
         </div>
 
-        <div className="overflow-auto">
-          <table className="w-full min-w-[1800px] text-left text-sm">
+        <div className="metaos-scroll-table overflow-x-auto">
+          <table className="w-full min-w-[980px] text-left text-sm">
             <thead
               className={
                 isDark
@@ -318,9 +318,9 @@ export function StructureReport() {
                         : "border-b border-black/5 text-black hover:bg-black/[0.035]"
                     }
                   >
-                    <td className="min-w-[280px] whitespace-normal break-words px-5 py-4 opacity-75">{row.campaignName}</td>
-                    <td className="min-w-[280px] whitespace-normal break-words px-5 py-4 opacity-75">{row.adSetName}</td>
-                    <td className="min-w-[420px] whitespace-normal break-words px-5 py-4 font-black">{row.adName}</td>
+                    <td className="min-w-[980px] whitespace-normal break-words px-5 py-4 opacity-75">{row.campaignName}</td>
+                    <td className="min-w-[980px] whitespace-normal break-words px-5 py-4 opacity-75">{row.adSetName}</td>
+                    <td className="min-w-[980px] whitespace-normal break-words px-5 py-4 font-black">{row.adName}</td>
                     <td className="px-5 py-4 opacity-75">{money(row.spend)}</td>
                     <td className="px-5 py-4 opacity-75">{money(row.revenue)}</td>
                     <td className="px-5 py-4 font-black text-emerald-400">{num(row.roas)}</td>
@@ -329,7 +329,7 @@ export function StructureReport() {
                     <td className="px-5 py-4 opacity-75">{num(row.ctr)}%</td>
                     <td className="px-5 py-4 opacity-75">{num(row.lpvRate)}%</td>
                     <td className="px-5 py-4 opacity-75">{num(row.atcRate)}%</td>
-                    <td className="min-w-[360px] px-5 py-4">
+                    <td className="min-w-[980px] px-5 py-4">
                       <div className="grid gap-2">
                         <TonePill tone={row.improving ? "green" : row.purchases > 0 ? "yellow" : "neutral"}>
                           {row.improving ? "Optimising" : row.purchases > 0 ? "Not Yet Improving" : "No Purchase"}
@@ -337,7 +337,7 @@ export function StructureReport() {
                         <span className="text-xs leading-5 opacity-70">{row.trendText}</span>
                       </div>
                     </td>
-                    <td className="min-w-[380px] px-5 py-4 text-xs leading-5 opacity-75">{recommendation}</td>
+                    <td className="min-w-[980px] px-5 py-4 text-xs leading-5 opacity-75">{recommendation}</td>
                   </tr>
                 );
               })}

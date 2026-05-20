@@ -86,8 +86,8 @@ export function MoMAnalysis() {
           <MutedText className="mt-1 text-sm">Green = improved efficiency, yellow = watch, red = efficiency pressure.</MutedText>
         </div>
 
-        <div className="overflow-auto">
-          <table className="w-full min-w-[900px] text-left text-sm">
+        <div className="metaos-scroll-table overflow-x-auto">
+          <table className="w-full min-w-[980px] text-left text-sm">
             <thead className="border-b border-current/10 bg-current/[0.035] text-[11px] uppercase tracking-[0.16em] opacity-55">
               <tr>
                 <th className="px-5 py-4">Month</th>

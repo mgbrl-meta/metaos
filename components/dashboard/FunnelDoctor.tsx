@@ -48,7 +48,7 @@ export function FunnelDoctor() {
     <div className="grid gap-6">
       <div>
         <p className="text-xs font-black uppercase tracking-[0.28em] text-[#0A84FF]">Funnel Doctor</p>
-        <h1 className="mt-2 text-4xl font-black tracking-tight">Leakage Analysis</h1>
+        <h1 className="mt-2 text-4xl font-black tracking-tight">Gap Analysis</h1>
         <MutedText className="mt-2">Identify whether the issue is creative, traffic, PDP, checkout or payment.</MutedText>
       </div>
 

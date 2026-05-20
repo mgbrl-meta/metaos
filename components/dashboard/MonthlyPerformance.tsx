@@ -148,7 +148,7 @@ export function MonthlyPerformance() {
         : current.roas >= settings.targetRoas && current.cpa <= settings.targetCpa
         ? `This month is outperforming target. Scale the strongest current-month campaigns/ad sets/creatives gradually by 5–10%, while protecting CPA and fatigue.`
         : current.roas < previous.roas
-        ? `This month ROAS is weaker than last month. Hold aggressive scaling, diagnose creative/funnel leakage, and refresh fatigued assets.`
+        ? `This month ROAS is weaker than last month. Hold aggressive scaling, diagnose creative/funnel gap, and refresh fatigued assets.`
         : `This month is stable but not fully scale-ready. Keep budget steady, cut weak pockets, and build more creative depth.`;
 
     const reportText = `Meta Monthly Performance Report
@@ -289,8 +289,8 @@ ${recommendation}
           <MutedText className="mt-1 text-sm">All uploaded months shown for historical context.</MutedText>
         </div>
 
-        <div className="overflow-auto">
-          <table className="w-full min-w-[1000px] text-left text-sm">
+        <div className="metaos-scroll-table overflow-x-auto">
+          <table className="w-full min-w-[980px] text-left text-sm">
             <thead className={isDark ? "border-b border-white/10 bg-white/[0.04] text-[11px] uppercase tracking-[0.16em] text-white/45" : "border-b border-black/10 bg-black/[0.035] text-[11px] uppercase tracking-[0.16em] text-black/55"}>
               <tr>
                 <th className="px-5 py-4">Month</th>
@@ -367,8 +367,8 @@ function RankTable({
         <MutedText className="mt-1 text-sm">Full names shown for execution clarity.</MutedText>
       </div>
 
-      <div className="overflow-auto">
-        <table className="w-full min-w-[850px] text-left text-sm">
+      <div className="metaos-scroll-table overflow-x-auto">
+        <table className="w-full min-w-[980px] text-left text-sm">
           <thead className={isDark ? "border-b border-white/10 bg-white/[0.04] text-[11px] uppercase tracking-[0.16em] text-white/45" : "border-b border-black/10 bg-black/[0.035] text-[11px] uppercase tracking-[0.16em] text-black/55"}>
             <tr>
               <th className="px-5 py-4">Name</th>
@@ -383,7 +383,7 @@ function RankTable({
             {rows.length ? (
               rows.map((row, index) => (
                 <tr key={`${row[nameKey]}-${index}`} className={isDark ? "border-b border-white/5 text-white" : "border-b border-black/5 text-black"}>
-                  <td className="min-w-[360px] whitespace-normal break-words px-5 py-4 font-black">{row[nameKey]}</td>
+                  <td className="min-w-[980px] whitespace-normal break-words px-5 py-4 font-black">{row[nameKey]}</td>
                   <td className="px-5 py-4 opacity-70">{money(row.spend)}</td>
                   <td className="px-5 py-4 opacity-70">{money(row.revenue)}</td>
                   <td className="px-5 py-4 font-black text-emerald-400">{num(row.roas)}</td>

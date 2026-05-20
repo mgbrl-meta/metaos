@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <MetaOSShell activeTab={activeTab} setActiveTab={setActiveTab}>
       {activeTab === "action_report" && <ActionReport />}
-      {activeTab === "roi_leakage" && <ROILeakage />}
+      {activeTab === "roi_gap" && <ROILeakage />}
       {activeTab === "benchmark_audit" && <BenchmarkAudit />}
       {activeTab === "spend_visuals" && <SpendVisuals />}
       {activeTab === "creative" && <CreativeActions />}
