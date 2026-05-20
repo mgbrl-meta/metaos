@@ -28,7 +28,7 @@ export function AutoMetaSheetLoader() {
           throw new Error(json.error || "Failed to load Meta Sheet");
         }
 
-        const rows = enrichRows(json.rows || []);
+        const rows = enrichRows(json.rows || [], useMetaStore.getState().settings);
 
         useMetaStore.setState({
           performanceRows: rows,
