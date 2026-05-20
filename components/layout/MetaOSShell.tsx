@@ -11,6 +11,7 @@ import {
   Menu,
   Settings,
   ShieldAlert,
+  ShieldCheck,
   Sparkles,
   UploadCloud,
   WalletCards,
@@ -22,6 +23,7 @@ import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/Theme
 export type MetaTab =
   | "action_report"
   | "roi_leakage"
+  | "benchmark_audit"
   | "spend_visuals"
   | "creative"
   | "structure_report"
@@ -52,6 +54,13 @@ const navItems: NavItem[] = [
     description: "KPMG-style gaps, leakage and budget risk",
     group: "Daily OS",
     icon: ShieldAlert,
+  },
+  {
+    id: "benchmark_audit",
+    label: "Benchmark Audit",
+    description: "Campaign, ad set and ad audit vs strict benchmark",
+    group: "Daily OS",
+    icon: ShieldCheck,
   },
   {
     id: "spend_visuals",
