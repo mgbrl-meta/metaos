@@ -13,6 +13,7 @@ import { DailySummaryExport } from "@/components/dashboard/DailySummaryExport";
 import { MonthlyPerformance } from "@/components/dashboard/MonthlyPerformance";
 import { UploadPanel } from "@/components/upload/UploadPanel";
 import { SettingsPanel } from "@/components/settings/SettingsPanel";
+import { GoogleSearchTermAudit } from "@/components/google/GoogleSearchTermAudit";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<MetaTab>("action_report");
@@ -29,6 +30,7 @@ export default function Home() {
       {activeTab === "monthly" && <MonthlyPerformance />}
       {activeTab === "upload" && <UploadPanel />}
       {activeTab === "settings" && <SettingsPanel />}
+      {activeTab === "google_search_terms" && <GoogleSearchTermAudit />}
     </MetaOSShell>
   );
 }

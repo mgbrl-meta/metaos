@@ -260,6 +260,10 @@ export function CreativeActions() {
     );
   }
 
+  const lifetimeWasteCreatives = creatives
+    .filter((row) => Number(row.spend || 0) > 3000 && Number(row.purchases || 0) === 0)
+    .sort((a, b) => Number(b.spend || 0) - Number(a.spend || 0));
+
   const winners = creatives.filter((row) => row.creativeDiagnosis.label === "Winner angle");
   const waste = creatives.filter((row) => row.creativeDiagnosis.tone === "red");
   const fatigue = creatives.filter((row) => row.creativeDiagnosis.label === "Fatigue risk");
@@ -275,6 +279,7 @@ export function CreativeActions() {
 
       <div className="grid gap-4 md:grid-cols-4">
         <MetricCard label="Live Creatives" value={String(creatives.length)} tone="blue" />
+        <MetricCard label="Lifetime Zero Purchase" value={String(lifetimeWasteCreatives.length)} tone={lifetimeWasteCreatives.length ? "red" : "green"} />
         <MetricCard label="Winners" value={String(winners.length)} tone={winners.length ? "green" : "yellow"} />
         <MetricCard label="Waste / Rebuild" value={String(waste.length)} tone={waste.length ? "red" : "green"} />
         <MetricCard label="Fatigue Risk" value={String(fatigue.length)} tone={fatigue.length ? "yellow" : "green"} />
@@ -301,8 +306,95 @@ export function CreativeActions() {
         </MutedText>
       </GlassCard>
 
+      {lifetimeWasteCreatives.length > 0 && (
+        <GlassCard className="overflow-hidden min-w-0 border-red-400/30">
+          <div className="border-b border-red-400/20 bg-red-400/10 p-5">
+            <div className="flex flex-wrap items-center gap-2">
+              <TonePill tone="red">Highest Priority</TonePill>
+              <TonePill tone="neutral">Lifetime Spend &gt; ₹3,000</TonePill>
+              <TonePill tone="neutral">Zero Purchases</TonePill>
+            </div>
+
+            <h2 className="mt-4 text-2xl font-black text-red-400">
+              Lifetime Zero-Purchase Creatives
+            </h2>
+
+            <MutedText className="mt-2 text-sm">
+              These live creatives have spent more than ₹3,000 across available history and have generated zero purchases. Review first before scaling anything else.
+            </MutedText>
+          </div>
+
+          <div className="grid gap-3 p-5">
+            {lifetimeWasteCreatives.slice(0, 25).map((row, index) => (
+              <Surface key={`lifetime-waste-${row.adId || row.adName}-${index}`} className="p-4 border border-red-400/20">
+                <div className="grid gap-4 xl:grid-cols-[1fr_260px] xl:items-start">
+                  <div className="min-w-0">
+                    <p className="text-lg font-black leading-7 whitespace-normal break-words">
+                      {row.adName}
+                    </p>
+
+                    <MutedText className="mt-2 text-sm leading-6">
+                      Campaign: {row.campaignName}
+                      <br />
+                      Ad Set: {row.adSetName}
+                    </MutedText>
+
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                      <MiniStat label="Lifetime Spend" value={money(row.spend)} tone="red" />
+                      <MiniStat label="Purchases" value={num(row.purchases, 0)} tone="red" />
+                      <MiniStat label="ROAS" value={num(row.roas)} tone="red" />
+                      <MiniStat label="CPA" value={money(row.cpa)} tone="neutral" />
+                      <MiniStat label="CTR" value={`${num(row.ctr)}%`} tone={row.ctr >= settings.targetCtrPct ? "green" : "yellow"} />
+                    </div>
+                  </div>
+
+                  <Surface className="p-4 bg-red-400/10 border border-red-400/20">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-red-400">
+                      Recommended Action
+                    </p>
+
+                    <p className="mt-3 text-sm leading-6 opacity-85">
+                      Pause or rebuild before giving more budget. If CTR is healthy, check PDP/offer/message match. If CTR is weak, rebuild hook and first frame.
+                    </p>
+                  </Surface>
+                </div>
+
+                <div className="mt-4 grid gap-4 xl:grid-cols-3">
+                  <TrendCard
+                    title="CPA Trend"
+                    metric="cpa"
+                    rows={row.trend}
+                    lowerIsBetter
+                    formatValue={(v) => money(v)}
+                  />
+                  <TrendCard
+                    title="ROAS Trend"
+                    metric="roas"
+                    rows={row.trend}
+                    lowerIsBetter={false}
+                    formatValue={(v) => num(v)}
+                  />
+                  <TrendCard
+                    title="AOV Trend"
+                    metric="aov"
+                    rows={row.trend}
+                    lowerIsBetter={false}
+                    formatValue={(v) => money(v)}
+                  />
+                </div>
+              </Surface>
+            ))}
+          </div>
+        </GlassCard>
+      )}
+
       <div className="grid gap-4">
-        {creatives.slice(0, 60).map((row, index) => (
+        {[
+          ...lifetimeWasteCreatives,
+          ...creatives.filter(
+            (row) => !(Number(row.spend || 0) > 3000 && Number(row.purchases || 0) === 0)
+          ),
+        ].slice(0, 60).map((row, index) => (
           <GlassCard key={`${row.adId || row.adName}-${index}`} className="p-5">
             <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
               <div>

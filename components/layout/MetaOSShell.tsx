@@ -10,6 +10,7 @@ import {
   LineChart,
   Menu,
   Settings,
+  Search,
   ShieldAlert,
   ShieldCheck,
   Sparkles,
@@ -30,13 +31,14 @@ export type MetaTab =
   | "summary"
   | "monthly"
   | "upload"
-  | "settings";
+  | "settings"
+  | "google_search_terms";
 
 type NavItem = {
   id: MetaTab;
   label: string;
   description: string;
-  group: "Daily OS" | "Review" | "System";
+  group: "Daily OS" | "Google OS" | "Review" | "System";
   icon: any;
 };
 
@@ -89,6 +91,13 @@ const navItems: NavItem[] = [
     description: "Copy/export the daily action note",
     group: "Daily OS",
     icon: FileText,
+  },
+  {
+    id: "google_search_terms",
+    label: "Search Term Audit",
+    description: "Negatives, exact keywords and query waste",
+    group: "Google OS",
+    icon: Search,
   },
   {
     id: "monthly",
@@ -340,7 +349,7 @@ function SidebarNav({
 }) {
   return (
     <nav className="grid gap-7">
-      {(["Daily OS", "Review", "System"] as const).map((group) => (
+      {(["Daily OS", "Google OS", "Review", "System"] as const).map((group) => (
         <div key={group}>
           {!collapsed && (
             <p className="mb-2 px-2 text-[10px] font-black uppercase tracking-[0.22em] opacity-35">
