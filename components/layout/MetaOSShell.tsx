@@ -267,10 +267,10 @@ export function MetaOSShell({
         {/* Main Content */}
         <main
           className={`min-w-0 transition-all duration-300 ${
-            collapsed ? "lg:pl-[138px]" : "lg:pl-[380px]"
+            collapsed ? "lg:pl-[130px]" : "lg:pl-[370px]"
           }`}
         >
-          <div className="mx-auto w-full max-w-[1500px] min-w-0 px-4 py-5 sm:px-5 lg:px-8 lg:py-6">
+          <div className="mx-auto w-full max-w-[1680px] min-w-0 px-4 py-5 sm:px-5 lg:px-6 lg:py-6">
             <div className="min-w-0 overflow-x-hidden">{children}</div>
           </div>
         </main>

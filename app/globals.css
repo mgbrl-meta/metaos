@@ -128,3 +128,40 @@
     @apply font-sans;
   }
 }
+/* MetaOS responsive safety layer */
+html,
+body {
+  overflow-x: hidden;
+}
+
+.metaos-card,
+.metaos-card * {
+  min-width: 0;
+}
+
+.metaos-scroll-table {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.metaos-scroll-table table {
+  width: 100%;
+  min-width: 920px;
+  border-collapse: collapse;
+}
+
+@media (max-width: 768px) {
+  .metaos-scroll-table table {
+    min-width: 760px;
+  }
+
+  .metaos-mobile-stack {
+    grid-template-columns: 1fr !important;
+  }
+
+  .metaos-mobile-card {
+    padding: 16px !important;
+  }
+}
