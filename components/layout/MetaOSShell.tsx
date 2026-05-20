@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import {
   BarChart3,
   ChevronLeft,
@@ -45,57 +45,65 @@ type SystemTab = "settings";
 type NavItem<T extends string> = {
   id: T;
   label: string;
+  shortLabel: string;
   description: string;
   icon: any;
-  disabled?: boolean;
 };
 
 const metaNav: NavItem<MetaTab>[] = [
   {
     id: "action_report",
     label: "Action Report",
-    description: "Today’s exact pause, reduce, scale and refresh actions",
+    shortLabel: "Action",
+    description: "Pause, reduce, scale and refresh actions",
     icon: Grid2X2,
   },
   {
     id: "roi_gap",
     label: "Efficiency Gaps",
+    shortLabel: "Gaps",
     description: "Spend gaps, weak pockets and budget risk",
     icon: ShieldAlert,
   },
   {
     id: "benchmark_audit",
     label: "Performance Benchmark",
-    description: "Campaign, ad set and ad audit vs high benchmark",
+    shortLabel: "Benchmark",
+    description: "Campaign, ad set and ad audit vs benchmark",
     icon: ShieldCheck,
   },
   {
     id: "spend_visuals",
     label: "Spend Visuals",
+    shortLabel: "Spend",
     description: "Spend, CPA, ROAS and trend analysis",
     icon: BarChart3,
   },
   {
     id: "creative",
     label: "Creative Audit",
+    shortLabel: "Creative",
     description: "Creative diagnosis, winners and next briefs",
     icon: Sparkles,
   },
   {
     id: "structure_report",
     label: "Structure Report",
+    shortLabel: "Structure",
     description: "Campaign → ad set → ad structure clarity",
     icon: Layers,
   },
   {
     id: "summary",
     label: "Team Summary",
+    shortLabel: "Summary",
     description: "Daily execution report for team",
     icon: FileText,
   },
   {
     id: "monthly",
     label: "Monthly Report",
+    shortLabel: "Monthly",
     description: "Monthly performance review",
     icon: LineChart,
   },
@@ -105,47 +113,44 @@ const googleNav: NavItem<GoogleTab>[] = [
   {
     id: "google_search_terms",
     label: "Search Term Audit",
+    shortLabel: "Terms",
     description: "Negatives, exact keywords and query waste",
     icon: Search,
   },
   {
     id: "google_campaign_audit",
     label: "Campaign Audit",
+    shortLabel: "Campaign",
     description: "Campaign-level spend and ROAS control",
     icon: BarChart3,
   },
   {
     id: "google_adgroup_audit",
     label: "Ad Group Audit",
+    shortLabel: "Ad Group",
     description: "Ad-group efficiency and query quality",
     icon: Layers,
   },
   {
     id: "google_keyword_audit",
     label: "Keyword Audit",
+    shortLabel: "Keywords",
     description: "Keyword pruning and exact-match scaling",
     icon: Sparkles,
   },
   {
     id: "google_ad_audit",
     label: "Ad Audit",
+    shortLabel: "Ads",
     description: "RSA/ad copy and landing page match",
     icon: FileText,
   },
   {
     id: "google_team_summary",
     label: "Google Summary",
+    shortLabel: "Summary",
     description: "Daily Google Ads action report",
     icon: ShieldCheck,
-  },
-];
-
-const systemNav: NavItem<SystemTab>[] = [
-  {
-    id: "settings",
-    label: "Settings",
-    description: "Targets and decision thresholds",
-    icon: Settings,
   },
 ];
 
@@ -174,116 +179,117 @@ export function MetaOSShell({
   const isDark = theme === "dark";
 
   const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [osMode, activeMetaTab, activeGoogleTab, activeSystemTab]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isGoogle = osMode === "google";
+  const activeNav = osMode === "google" ? googleNav : metaNav;
+
+  const activeTitle = useMemo(() => {
+    if (activeSystemTab === "settings") return "Settings";
+    if (osMode === "google") {
+      return googleNav.find((item) => item.id === activeGoogleTab)?.label || "Google OS";
+    }
+    return metaNav.find((item) => item.id === activeMetaTab)?.label || "Meta OS";
+  }, [activeSystemTab, osMode, activeMetaTab, activeGoogleTab]);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [osMode, activeMetaTab, activeGoogleTab, activeSystemTab]);
+
+  function activateMeta(tab: MetaTab) {
+    setActiveMetaTab(tab);
+    setActiveSystemTab(null);
+    setOsMode("meta");
+  }
+
+  function activateGoogle(tab: GoogleTab) {
+    setActiveGoogleTab(tab);
+    setActiveSystemTab(null);
+    setOsMode("google");
+  }
+
+  function activateSettings() {
+    setActiveSystemTab("settings");
+  }
 
   return (
     <ThemeFrame>
       <div
         className={
           isGoogle
-            ? "min-h-screen bg-[#070b08] text-white"
+            ? "min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,#042416_0,#050706_34%,#020302_100%)] text-white"
             : isDark
-            ? "min-h-screen bg-[#050607] text-white"
-            : "min-h-screen bg-[#f6f7f4] text-[#0b0c0f]"
+            ? "min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,#071a33_0,#050607_34%,#020203_100%)] text-white"
+            : "min-h-screen overflow-x-hidden bg-[#f6f7f4] text-[#0b0c0f]"
         }
       >
-        <MobileTopBar
+        <DesktopSidebar
           osMode={osMode}
-          setMobileOpen={setMobileOpen}
-          isDark={isDark}
+          setOsMode={(mode) => {
+            setOsMode(mode);
+            setActiveSystemTab(null);
+          }}
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
+          activeMetaTab={activeMetaTab}
+          activeGoogleTab={activeGoogleTab}
+          activeSystemTab={activeSystemTab}
+          activateMeta={activateMeta}
+          activateGoogle={activateGoogle}
+          activateSettings={activateSettings}
         />
 
-        {mobileOpen && (
+        <MobileHeader
+          osMode={osMode}
+          setOsMode={(mode) => {
+            setOsMode(mode);
+            setActiveSystemTab(null);
+          }}
+          activeTitle={activeTitle}
+          setMobileMenuOpen={setMobileMenuOpen}
+        />
+
+        <MobileModuleNav
+          osMode={osMode}
+          activeNav={activeNav}
+          activeMetaTab={activeMetaTab}
+          activeGoogleTab={activeGoogleTab}
+          activeSystemTab={activeSystemTab}
+          activateMeta={activateMeta}
+          activateGoogle={activateGoogle}
+          activateSettings={activateSettings}
+        />
+
+        {mobileMenuOpen && (
           <MobileDrawer
             osMode={osMode}
-            setOsMode={setOsMode}
+            setOsMode={(mode) => {
+              setOsMode(mode);
+              setActiveSystemTab(null);
+            }}
             activeMetaTab={activeMetaTab}
-            setActiveMetaTab={setActiveMetaTab}
             activeGoogleTab={activeGoogleTab}
-            setActiveGoogleTab={setActiveGoogleTab}
             activeSystemTab={activeSystemTab}
-            setActiveSystemTab={setActiveSystemTab}
-            setMobileOpen={setMobileOpen}
-            isDark={isDark}
+            activateMeta={activateMeta}
+            activateGoogle={activateGoogle}
+            activateSettings={activateSettings}
+            setMobileMenuOpen={setMobileMenuOpen}
           />
         )}
 
-        <aside
-          className={
-            isGoogle
-              ? `fixed left-6 top-6 z-30 hidden h-[calc(100vh-48px)] overflow-hidden rounded-[2rem] border border-emerald-400/15 bg-[#0b1110]/94 shadow-2xl backdrop-blur-2xl transition-all duration-300 lg:block ${
-                  collapsed ? "w-[96px]" : "w-[340px]"
-                }`
-              : isDark
-              ? `fixed left-6 top-6 z-30 hidden h-[calc(100vh-48px)] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0f14]/92 shadow-2xl backdrop-blur-2xl transition-all duration-300 lg:block ${
-                  collapsed ? "w-[96px]" : "w-[340px]"
-                }`
-              : `fixed left-6 top-6 z-30 hidden h-[calc(100vh-48px)] overflow-hidden rounded-[2rem] border border-black/10 bg-white/92 shadow-2xl backdrop-blur-2xl transition-all duration-300 lg:block ${
-                  collapsed ? "w-[96px]" : "w-[340px]"
-                }`
-          }
-        >
-          <div className="flex h-full min-h-0 flex-col">
-            <div className="shrink-0 p-4">
-              <div className="flex items-start justify-between gap-3">
-                <BrandBlock collapsed={collapsed} osMode={osMode} />
-
-                {!collapsed && (
-                  <button
-                    onClick={() => setCollapsed(true)}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-2xl border border-current/10 bg-current/[0.04] opacity-70 hover:opacity-100"
-                    aria-label="Collapse sidebar"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-
-              {collapsed ? (
-                <button
-                  onClick={() => setCollapsed(false)}
-                  className="mt-5 inline-flex h-10 w-full items-center justify-center rounded-2xl border border-current/10 bg-current/[0.04] opacity-70 hover:opacity-100"
-                  aria-label="Expand sidebar"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              ) : (
-                <>
-                  <OSSwitcher osMode={osMode} setOsMode={setOsMode} />
-                  <StatusAndTheme osMode={osMode} />
-                </>
-              )}
-            </div>
-
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
-              <SidebarNav
-                collapsed={collapsed}
-                osMode={osMode}
-                activeMetaTab={activeMetaTab}
-                setActiveMetaTab={setActiveMetaTab}
-                activeGoogleTab={activeGoogleTab}
-                setActiveGoogleTab={setActiveGoogleTab}
-                activeSystemTab={activeSystemTab}
-                setActiveSystemTab={setActiveSystemTab}
-              />
-            </div>
-          </div>
-        </aside>
-
         <main
           className={`min-w-0 transition-all duration-300 ${
-            collapsed ? "lg:pl-[138px]" : "lg:pl-[390px]"
+            collapsed ? "lg:pl-[128px]" : "lg:pl-[376px]"
           }`}
         >
-          <div className="mx-auto w-full max-w-[1800px] min-w-0 px-4 py-5 sm:px-5 lg:px-6 lg:py-6">
-            <OSHeader osMode={osMode} activeSystemTab={activeSystemTab} />
-            <div className="mt-6 min-w-0 overflow-x-hidden">{children}</div>
+          <div className="mx-auto w-full max-w-[1680px] min-w-0 px-3 pb-24 pt-4 sm:px-5 lg:px-6 lg:py-6">
+            <DesktopOSHeader
+              osMode={osMode}
+              activeSystemTab={activeSystemTab}
+              activeTitle={activeTitle}
+            />
+
+            <div className="min-w-0 overflow-x-hidden lg:mt-6">{children}</div>
           </div>
         </main>
       </div>
@@ -291,36 +297,269 @@ export function MetaOSShell({
   );
 }
 
-function MobileTopBar({
+function DesktopSidebar({
   osMode,
-  setMobileOpen,
-  isDark,
+  setOsMode,
+  collapsed,
+  setCollapsed,
+  activeMetaTab,
+  activeGoogleTab,
+  activeSystemTab,
+  activateMeta,
+  activateGoogle,
+  activateSettings,
 }: {
   osMode: OSMode;
-  setMobileOpen: (open: boolean) => void;
-  isDark: boolean;
+  setOsMode: (mode: OSMode) => void;
+  collapsed: boolean;
+  setCollapsed: (value: boolean) => void;
+  activeMetaTab: MetaTab;
+  activeGoogleTab: GoogleTab;
+  activeSystemTab: SystemTab | null;
+  activateMeta: (tab: MetaTab) => void;
+  activateGoogle: (tab: GoogleTab) => void;
+  activateSettings: () => void;
 }) {
+  const { theme } = useThemeStore();
+  const isDark = theme === "dark";
+  const isGoogle = osMode === "google";
+  const activeNav = isGoogle ? googleNav : metaNav;
+
+  return (
+    <aside
+      className={
+        isGoogle
+          ? `fixed left-5 top-5 z-30 hidden h-[calc(100vh-40px)] overflow-hidden rounded-[2rem] border border-emerald-400/15 bg-[#06100c]/92 shadow-2xl shadow-emerald-950/30 backdrop-blur-2xl transition-all duration-300 lg:block ${
+              collapsed ? "w-[86px]" : "w-[326px]"
+            }`
+          : isDark
+          ? `fixed left-5 top-5 z-30 hidden h-[calc(100vh-40px)] overflow-hidden rounded-[2rem] border border-white/10 bg-[#080d13]/92 shadow-2xl shadow-black/40 backdrop-blur-2xl transition-all duration-300 lg:block ${
+              collapsed ? "w-[86px]" : "w-[326px]"
+            }`
+          : `fixed left-5 top-5 z-30 hidden h-[calc(100vh-40px)] overflow-hidden rounded-[2rem] border border-black/10 bg-white/92 shadow-2xl backdrop-blur-2xl transition-all duration-300 lg:block ${
+              collapsed ? "w-[86px]" : "w-[326px]"
+            }`
+      }
+    >
+      <div className="flex h-full min-h-0 flex-col">
+        <div className="shrink-0 p-4">
+          <div className="flex items-start justify-between gap-3">
+            <BrandBlock osMode={osMode} collapsed={collapsed} />
+
+            {!collapsed && (
+              <button
+                onClick={() => setCollapsed(true)}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-2xl border border-current/10 bg-current/[0.045] opacity-70 hover:opacity-100"
+                aria-label="Collapse sidebar"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
+          {collapsed ? (
+            <button
+              onClick={() => setCollapsed(false)}
+              className="mt-5 inline-flex h-10 w-full items-center justify-center rounded-2xl border border-current/10 bg-current/[0.045] opacity-70 hover:opacity-100"
+              aria-label="Expand sidebar"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          ) : (
+            <>
+              <OSSwitcher osMode={osMode} setOsMode={setOsMode} />
+              <StatusStrip osMode={osMode} />
+            </>
+          )}
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+          <SectionTitle collapsed={collapsed} label={isGoogle ? "Google OS" : "Meta OS"} />
+
+          <div className="grid gap-1.5">
+            {activeNav.map((item) => (
+              <SidebarButton
+                key={item.id}
+                item={item}
+                osMode={osMode}
+                collapsed={collapsed}
+                active={
+                  !activeSystemTab &&
+                  (isGoogle ? activeGoogleTab === item.id : activeMetaTab === item.id)
+                }
+                onClick={() => {
+                  if (isGoogle) activateGoogle(item.id as GoogleTab);
+                  else activateMeta(item.id as MetaTab);
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="mt-7">
+            <SectionTitle collapsed={collapsed} label="System" />
+
+            <SidebarButton
+              item={{
+                id: "settings",
+                label: "Settings",
+                shortLabel: "Settings",
+                description: "Targets and decision thresholds",
+                icon: Settings,
+              }}
+              osMode={osMode}
+              collapsed={collapsed}
+              active={activeSystemTab === "settings"}
+              onClick={activateSettings}
+            />
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function MobileHeader({
+  osMode,
+  setOsMode,
+  activeTitle,
+  setMobileMenuOpen,
+}: {
+  osMode: OSMode;
+  setOsMode: (mode: OSMode) => void;
+  activeTitle: string;
+  setMobileMenuOpen: (value: boolean) => void;
+}) {
+  const isGoogle = osMode === "google";
+
+  return (
+    <header
+      className={
+        isGoogle
+          ? "sticky top-0 z-40 border-b border-emerald-400/15 bg-[#06100c]/90 px-3 py-3 backdrop-blur-2xl lg:hidden"
+          : "sticky top-0 z-40 border-b border-white/10 bg-[#080b0f]/90 px-3 py-3 text-white backdrop-blur-2xl lg:hidden"
+      }
+    >
+      <div className="flex items-center justify-between gap-3">
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05]"
+          aria-label="Open menu"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
+        <div className="min-w-0 flex-1">
+          <p
+            className={
+              isGoogle
+                ? "text-[11px] font-black uppercase tracking-[0.22em] text-emerald-300"
+                : "text-[11px] font-black uppercase tracking-[0.22em] text-[#0A84FF]"
+            }
+          >
+            {isGoogle ? "Google OS" : "Meta OS"}
+          </p>
+          <h1 className="mt-0.5 truncate text-base font-black text-white">{activeTitle}</h1>
+        </div>
+
+        <ThemeToggle />
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-1">
+        <button
+          onClick={() => setOsMode("meta")}
+          className={
+            osMode === "meta"
+              ? "rounded-xl bg-[#0A84FF] px-3 py-2 text-xs font-black text-white"
+              : "rounded-xl px-3 py-2 text-xs font-black text-white/50"
+          }
+        >
+          META
+        </button>
+
+        <button
+          onClick={() => setOsMode("google")}
+          className={
+            osMode === "google"
+              ? "rounded-xl bg-emerald-400 px-3 py-2 text-xs font-black text-black"
+              : "rounded-xl px-3 py-2 text-xs font-black text-white/50"
+          }
+        >
+          GOOGLE
+        </button>
+      </div>
+    </header>
+  );
+}
+
+function MobileModuleNav({
+  osMode,
+  activeNav,
+  activeMetaTab,
+  activeGoogleTab,
+  activeSystemTab,
+  activateMeta,
+  activateGoogle,
+  activateSettings,
+}: {
+  osMode: OSMode;
+  activeNav: NavItem<any>[];
+  activeMetaTab: MetaTab;
+  activeGoogleTab: GoogleTab;
+  activeSystemTab: SystemTab | null;
+  activateMeta: (tab: MetaTab) => void;
+  activateGoogle: (tab: GoogleTab) => void;
+  activateSettings: () => void;
+}) {
+  const isGoogle = osMode === "google";
+
   return (
     <div
       className={
-        osMode === "google"
-          ? "sticky top-0 z-40 flex h-16 items-center justify-between border-b border-emerald-400/15 bg-[#07100c]/90 px-4 backdrop-blur-2xl lg:hidden"
-          : isDark
-          ? "sticky top-0 z-40 flex h-16 items-center justify-between border-b border-white/10 bg-[#080a0d]/90 px-4 backdrop-blur-2xl lg:hidden"
-          : "sticky top-0 z-40 flex h-16 items-center justify-between border-b border-black/10 bg-white/90 px-4 backdrop-blur-2xl lg:hidden"
+        isGoogle
+          ? "sticky top-[116px] z-30 overflow-x-auto border-b border-emerald-400/10 bg-[#06100c]/88 px-3 py-2 backdrop-blur-2xl lg:hidden"
+          : "sticky top-[116px] z-30 overflow-x-auto border-b border-white/10 bg-[#080b0f]/88 px-3 py-2 text-white backdrop-blur-2xl lg:hidden"
       }
     >
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-current/10 bg-current/[0.04]"
-        aria-label="Open menu"
-      >
-        <Menu className="h-5 w-5" />
-      </button>
+      <div className="flex min-w-max gap-2">
+        {activeNav.map((item) => {
+          const Icon = item.icon;
+          const active =
+            !activeSystemTab &&
+            (osMode === "google" ? activeGoogleTab === item.id : activeMetaTab === item.id);
 
-      <BrandBlock collapsed={false} osMode={osMode} />
+          return (
+            <button
+              key={item.id}
+              onClick={() => {
+                if (osMode === "google") activateGoogle(item.id as GoogleTab);
+                else activateMeta(item.id as MetaTab);
+              }}
+              className={
+                active
+                  ? isGoogle
+                    ? "inline-flex items-center gap-2 rounded-full bg-emerald-400 px-4 py-2 text-xs font-black text-black"
+                    : "inline-flex items-center gap-2 rounded-full bg-[#0A84FF] px-4 py-2 text-xs font-black text-white"
+                  : "inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-black text-white/60"
+              }
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {item.shortLabel}
+            </button>
+          );
+        })}
 
-      <ThemeToggle />
+        <button
+          onClick={activateSettings}
+          className={
+            activeSystemTab === "settings"
+              ? "inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-black text-black"
+              : "inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-black text-white/60"
+          }
+        >
+          <Settings className="h-3.5 w-3.5" />
+          Settings
+        </button>
+      </div>
     </div>
   );
 }
@@ -329,47 +568,46 @@ function MobileDrawer({
   osMode,
   setOsMode,
   activeMetaTab,
-  setActiveMetaTab,
   activeGoogleTab,
-  setActiveGoogleTab,
   activeSystemTab,
-  setActiveSystemTab,
-  setMobileOpen,
-  isDark,
+  activateMeta,
+  activateGoogle,
+  activateSettings,
+  setMobileMenuOpen,
 }: {
   osMode: OSMode;
   setOsMode: (mode: OSMode) => void;
   activeMetaTab: MetaTab;
-  setActiveMetaTab: (tab: MetaTab) => void;
   activeGoogleTab: GoogleTab;
-  setActiveGoogleTab: (tab: GoogleTab) => void;
   activeSystemTab: SystemTab | null;
-  setActiveSystemTab: (tab: SystemTab | null) => void;
-  setMobileOpen: (open: boolean) => void;
-  isDark: boolean;
+  activateMeta: (tab: MetaTab) => void;
+  activateGoogle: (tab: GoogleTab) => void;
+  activateSettings: () => void;
+  setMobileMenuOpen: (value: boolean) => void;
 }) {
+  const isGoogle = osMode === "google";
+  const activeNav = isGoogle ? googleNav : metaNav;
+
   return (
     <div className="fixed inset-0 z-50 lg:hidden">
       <button
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={() => setMobileOpen(false)}
-        aria-label="Close menu overlay"
+        onClick={() => setMobileMenuOpen(false)}
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        aria-label="Close overlay"
       />
 
       <aside
         className={
-          osMode === "google"
-            ? "absolute left-0 top-0 h-full w-[88vw] max-w-[370px] overflow-y-auto border-r border-emerald-400/15 bg-[#07100c] p-4 shadow-2xl"
-            : isDark
-            ? "absolute left-0 top-0 h-full w-[88vw] max-w-[370px] overflow-y-auto border-r border-white/10 bg-[#0b0f14] p-4 shadow-2xl"
-            : "absolute left-0 top-0 h-full w-[88vw] max-w-[370px] overflow-y-auto border-r border-black/10 bg-white p-4 shadow-2xl"
+          isGoogle
+            ? "absolute left-0 top-0 h-full w-[88vw] max-w-[380px] overflow-y-auto border-r border-emerald-400/15 bg-[#06100c] p-4 text-white shadow-2xl"
+            : "absolute left-0 top-0 h-full w-[88vw] max-w-[380px] overflow-y-auto border-r border-white/10 bg-[#080b0f] p-4 text-white shadow-2xl"
         }
       >
-        <div className="mb-5 flex items-center justify-between">
-          <BrandBlock collapsed={false} osMode={osMode} />
+        <div className="mb-5 flex items-start justify-between gap-3">
+          <BrandBlock osMode={osMode} collapsed={false} />
           <button
-            onClick={() => setMobileOpen(false)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-current/10 bg-current/[0.04]"
+            onClick={() => setMobileMenuOpen(false)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05]"
             aria-label="Close menu"
           >
             <X className="h-5 w-5" />
@@ -379,27 +617,105 @@ function MobileDrawer({
         <OSSwitcher osMode={osMode} setOsMode={setOsMode} />
 
         <div className="mt-5">
-          <SidebarNav
-            collapsed={false}
-            osMode={osMode}
-            activeMetaTab={activeMetaTab}
-            setActiveMetaTab={setActiveMetaTab}
-            activeGoogleTab={activeGoogleTab}
-            setActiveGoogleTab={setActiveGoogleTab}
-            activeSystemTab={activeSystemTab}
-            setActiveSystemTab={setActiveSystemTab}
-          />
+          <SectionTitle collapsed={false} label={isGoogle ? "Google OS" : "Meta OS"} />
+
+          <div className="grid gap-2">
+            {activeNav.map((item) => (
+              <SidebarButton
+                key={item.id}
+                item={item}
+                osMode={osMode}
+                collapsed={false}
+                active={
+                  !activeSystemTab &&
+                  (isGoogle ? activeGoogleTab === item.id : activeMetaTab === item.id)
+                }
+                onClick={() => {
+                  if (isGoogle) activateGoogle(item.id as GoogleTab);
+                  else activateMeta(item.id as MetaTab);
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="mt-7">
+            <SectionTitle collapsed={false} label="System" />
+            <SidebarButton
+              item={{
+                id: "settings",
+                label: "Settings",
+                shortLabel: "Settings",
+                description: "Targets and decision thresholds",
+                icon: Settings,
+              }}
+              osMode={osMode}
+              collapsed={false}
+              active={activeSystemTab === "settings"}
+              onClick={activateSettings}
+            />
+          </div>
         </div>
       </aside>
     </div>
   );
 }
 
-function BrandBlock({ collapsed, osMode }: { collapsed: boolean; osMode: OSMode }) {
+function DesktopOSHeader({
+  osMode,
+  activeSystemTab,
+  activeTitle,
+}: {
+  osMode: OSMode;
+  activeSystemTab: SystemTab | null;
+  activeTitle: string;
+}) {
+  if (activeSystemTab === "settings") {
+    return (
+      <div className="mb-5 hidden rounded-[2rem] border border-current/10 bg-current/[0.03] p-5 lg:block">
+        <p className="text-xs font-black uppercase tracking-[0.18em] opacity-45">System</p>
+        <h1 className="mt-2 text-3xl font-black">Settings</h1>
+      </div>
+    );
+  }
+
+  if (osMode === "google") {
+    return (
+      <div className="mb-5 hidden rounded-[2rem] border border-emerald-400/15 bg-gradient-to-br from-[#111318] via-[#0d1015] to-[#07170f] p-5 shadow-2xl shadow-emerald-950/20 lg:block">
+        <div className="flex flex-wrap gap-2">
+          <Pill tone="blue">Google Ads</Pill>
+          <Pill tone="green">BigQuery Connected</Pill>
+          <Pill tone="yellow">Query Intelligence</Pill>
+        </div>
+
+        <h1 className="mt-4 text-3xl font-black tracking-tight text-white">Google OS</h1>
+        <p className="mt-2 max-w-4xl text-sm leading-6 text-white/55">
+          {activeTitle}: daily waste control, query intelligence, keyword opportunities and budget efficiency.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-5 hidden rounded-[2rem] border border-current/10 bg-current/[0.03] p-5 lg:block">
+      <div className="flex flex-wrap gap-2">
+        <Pill tone="blue">Meta Ads</Pill>
+        <Pill tone="neutral">Sheet Connected</Pill>
+        <Pill tone="neutral">Yesterday-Led</Pill>
+      </div>
+
+      <h1 className="mt-4 text-3xl font-black tracking-tight">Meta OS</h1>
+      <p className="mt-2 max-w-4xl text-sm leading-6 opacity-55">
+        {activeTitle}: daily action engine for efficiency, creative, spend control and team execution.
+      </p>
+    </div>
+  );
+}
+
+function BrandBlock({ osMode, collapsed }: { osMode: OSMode; collapsed: boolean }) {
   const isGoogle = osMode === "google";
 
   return (
-    <div className={collapsed ? "flex w-full justify-center" : "flex items-center gap-3"}>
+    <div className={collapsed ? "flex w-full justify-center" : "flex min-w-0 items-center gap-3"}>
       <div
         className={
           isGoogle
@@ -407,27 +723,21 @@ function BrandBlock({ collapsed, osMode }: { collapsed: boolean; osMode: OSMode 
             : "flex h-12 w-12 shrink-0 items-center justify-center rounded-[1.3rem] bg-[#0A84FF] shadow-[0_0_34px_rgba(10,132,255,0.38)]"
         }
       >
-        {isGoogle ? (
-          <Search className="h-6 w-6 text-white" />
-        ) : (
-          <Zap className="h-6 w-6 fill-white text-white" />
-        )}
+        {isGoogle ? <Search className="h-6 w-6 text-white" /> : <Zap className="h-6 w-6 fill-white text-white" />}
       </div>
 
       {!collapsed && (
         <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <p
-              className={
-                isGoogle
-                  ? "text-[15px] font-black tracking-[0.20em] text-emerald-300 whitespace-nowrap"
-                  : "text-[15px] font-black tracking-[0.24em] text-[#0A84FF] whitespace-nowrap"
-              }
-            >
-              {isGoogle ? "GOOGLE OS" : "META OS"}
-            </p>
-          </div>
-          <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.24em] opacity-45">
+          <p
+            className={
+              isGoogle
+                ? "whitespace-nowrap text-[15px] font-black tracking-[0.2em] text-emerald-300"
+                : "whitespace-nowrap text-[15px] font-black tracking-[0.24em] text-[#0A84FF]"
+            }
+          >
+            {isGoogle ? "GOOGLE OS" : "META OS"}
+          </p>
+          <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.22em] opacity-45">
             Daily Performance OS
           </p>
         </div>
@@ -470,19 +780,15 @@ function OSSwitcher({
   );
 }
 
-function StatusAndTheme({ osMode }: { osMode: OSMode }) {
+function StatusStrip({ osMode }: { osMode: OSMode }) {
+  const isGoogle = osMode === "google";
+
   return (
     <div className="mt-4 grid grid-cols-[1fr_auto] gap-2">
       <div className="inline-flex h-11 items-center gap-2 rounded-2xl border border-current/10 bg-current/[0.035] px-3">
-        <span
-          className={
-            osMode === "google"
-              ? "h-2 w-2 rounded-full bg-emerald-400"
-              : "h-2 w-2 rounded-full bg-[#0A84FF]"
-          }
-        />
+        <span className={isGoogle ? "h-2 w-2 rounded-full bg-emerald-400" : "h-2 w-2 rounded-full bg-[#0A84FF]"} />
         <span className="text-xs font-black uppercase tracking-[0.14em] opacity-70">
-          {osMode === "google" ? "BigQuery Live" : "Sheet Connected"}
+          {isGoogle ? "BigQuery Live" : "Sheet Live"}
         </span>
       </div>
 
@@ -491,87 +797,13 @@ function StatusAndTheme({ osMode }: { osMode: OSMode }) {
   );
 }
 
-function SidebarNav({
-  collapsed,
-  osMode,
-  activeMetaTab,
-  setActiveMetaTab,
-  activeGoogleTab,
-  setActiveGoogleTab,
-  activeSystemTab,
-  setActiveSystemTab,
-}: {
-  collapsed: boolean;
-  osMode: OSMode;
-  activeMetaTab: MetaTab;
-  setActiveMetaTab: (tab: MetaTab) => void;
-  activeGoogleTab: GoogleTab;
-  setActiveGoogleTab: (tab: GoogleTab) => void;
-  activeSystemTab: SystemTab | null;
-  setActiveSystemTab: (tab: SystemTab | null) => void;
-}) {
+function SectionTitle({ label, collapsed }: { label: string; collapsed: boolean }) {
+  if (collapsed) return null;
+
   return (
-    <nav className="grid gap-7">
-      <div>
-        {!collapsed && (
-          <p className="mb-2 px-2 text-[10px] font-black uppercase tracking-[0.22em] opacity-35">
-            {osMode === "google" ? "Google OS" : "Meta OS"}
-          </p>
-        )}
-
-        <div className="grid gap-1.5">
-          {osMode === "google"
-            ? googleNav.map((item) => (
-                <SidebarButton
-                  key={item.id}
-                  item={item}
-                  active={!activeSystemTab && activeGoogleTab === item.id}
-                  collapsed={collapsed}
-                  osMode={osMode}
-                  onClick={() => {
-                    if (item.disabled) return;
-                    setActiveGoogleTab(item.id);
-                    setActiveSystemTab(null);
-                  }}
-                />
-              ))
-            : metaNav.map((item) => (
-                <SidebarButton
-                  key={item.id}
-                  item={item}
-                  active={!activeSystemTab && activeMetaTab === item.id}
-                  collapsed={collapsed}
-                  osMode={osMode}
-                  onClick={() => {
-                    setActiveMetaTab(item.id);
-                    setActiveSystemTab(null);
-                  }}
-                />
-              ))}
-        </div>
-      </div>
-
-      <div>
-        {!collapsed && (
-          <p className="mb-2 px-2 text-[10px] font-black uppercase tracking-[0.22em] opacity-35">
-            System
-          </p>
-        )}
-
-        <div className="grid gap-1.5">
-          {systemNav.map((item) => (
-            <SidebarButton
-              key={item.id}
-              item={item}
-              active={activeSystemTab === item.id}
-              collapsed={collapsed}
-              osMode={osMode}
-              onClick={() => setActiveSystemTab(item.id)}
-            />
-          ))}
-        </div>
-      </div>
-    </nav>
+    <p className="mb-2 px-2 text-[10px] font-black uppercase tracking-[0.22em] opacity-35">
+      {label}
+    </p>
   );
 }
 
@@ -591,6 +823,7 @@ function SidebarButton<T extends string>({
   const { theme } = useThemeStore();
   const isDark = theme === "dark";
   const Icon = item.icon;
+
   const activeClass =
     osMode === "google"
       ? "bg-emerald-400 text-black shadow-[0_14px_34px_rgba(52,168,83,0.22)]"
@@ -599,14 +832,9 @@ function SidebarButton<T extends string>({
   return (
     <button
       onClick={onClick}
-      disabled={item.disabled}
       title={collapsed ? item.label : undefined}
       className={
-        item.disabled
-          ? collapsed
-            ? "flex h-12 w-full cursor-not-allowed items-center justify-center rounded-2xl opacity-25"
-            : "grid w-full cursor-not-allowed grid-cols-[24px_1fr] items-center gap-3 rounded-2xl px-4 py-3 text-left opacity-25"
-          : active
+        active
           ? collapsed
             ? `flex h-12 w-full items-center justify-center rounded-2xl ${activeClass}`
             : `grid w-full grid-cols-[24px_1fr] items-center gap-3 rounded-2xl px-4 py-3 text-left ${activeClass}`
@@ -624,15 +852,7 @@ function SidebarButton<T extends string>({
       {!collapsed && (
         <span className="min-w-0">
           <span className="block text-sm font-black leading-5">{item.label}</span>
-          <span
-            className={
-              active
-                ? osMode === "google"
-                  ? "mt-0.5 block text-[11px] leading-4 text-black/60"
-                  : "mt-0.5 block text-[11px] leading-4 text-white/72"
-                : "mt-0.5 block text-[11px] leading-4 opacity-52"
-            }
-          >
+          <span className={active ? "mt-0.5 block text-[11px] leading-4 opacity-72" : "mt-0.5 block text-[11px] leading-4 opacity-52"}>
             {item.description}
           </span>
         </span>
@@ -641,71 +861,19 @@ function SidebarButton<T extends string>({
   );
 }
 
-function OSHeader({
-  osMode,
-  activeSystemTab,
-}: {
-  osMode: OSMode;
-  activeSystemTab: SystemTab | null;
-}) {
-  if (activeSystemTab) {
-    return (
-      <div className="rounded-[2rem] border border-current/10 bg-current/[0.025] p-5">
-        <p className="text-xs font-black uppercase tracking-[0.18em] opacity-45">
-          System
-        </p>
-        <h1 className="mt-2 text-3xl font-black">
-          "Settings"
-        </h1>
-      </div>
-    );
-  }
-
-  if (osMode === "google") {
-    return (
-      <div className="rounded-[2rem] border border-emerald-400/15 bg-gradient-to-br from-[#111318] via-[#0d1015] to-[#07170f] p-5 shadow-2xl">
-        <div className="flex flex-wrap gap-2">
-          <span className="rounded-full border border-blue-400/30 bg-blue-400/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-blue-300">
-            Google Ads
-          </span>
-          <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-emerald-300">
-            BigQuery Connected
-          </span>
-          <span className="rounded-full border border-yellow-400/30 bg-yellow-400/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-yellow-300">
-            Query Intelligence
-          </span>
-        </div>
-
-        <h1 className="mt-4 text-3xl font-black tracking-tight text-white">
-          Google OS
-        </h1>
-
-        <p className="mt-2 max-w-4xl text-sm leading-6 text-white/55">
-          Search term, campaign, ad group, keyword and ad intelligence from BigQuery. Built for daily negatives, exact keyword promotion and waste control.
-        </p>
-      </div>
-    );
-  }
+function Pill({ tone, children }: { tone: "blue" | "green" | "yellow" | "neutral"; children: ReactNode }) {
+  const cls =
+    tone === "blue"
+      ? "border-[#0A84FF]/30 bg-[#0A84FF]/10 text-[#0A84FF]"
+      : tone === "green"
+      ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-300"
+      : tone === "yellow"
+      ? "border-yellow-400/30 bg-yellow-400/10 text-yellow-300"
+      : "border-current/10 bg-current/[0.04] opacity-60";
 
   return (
-    <div className="rounded-[2rem] border border-current/10 bg-current/[0.025] p-5">
-      <div className="flex flex-wrap gap-2">
-        <span className="rounded-full border border-[#0A84FF]/30 bg-[#0A84FF]/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#0A84FF]">
-          Meta Ads
-        </span>
-        <span className="rounded-full border border-current/10 bg-current/[0.04] px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] opacity-60">
-          Live Ads Only
-        </span>
-        <span className="rounded-full border border-current/10 bg-current/[0.04] px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] opacity-60">
-          Yesterday-Led
-        </span>
-      </div>
-
-      <h1 className="mt-4 text-3xl font-black tracking-tight">Meta OS</h1>
-
-      <p className="mt-2 max-w-4xl text-sm leading-6 opacity-55">
-        Daily action engine for Meta account efficiency: pause, reduce, protect, scale, benchmark, creative and team execution.
-      </p>
-    </div>
+    <span className={`rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] ${cls}`}>
+      {children}
+    </span>
   );
 }
