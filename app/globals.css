@@ -316,3 +316,104 @@ body {
     min-width: 0 !important;
   }
 }
+
+/* =========================================================
+   MOBILE UX ONLY — Desktop remains unchanged
+   Applies only below 768px
+   ========================================================= */
+@media (max-width: 768px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  main {
+    width: 100%;
+    padding-left: 0 !important;
+  }
+
+  main > div {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    padding-top: 12px !important;
+  }
+
+  aside {
+    display: none !important;
+  }
+
+  .metaos-scroll-table {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .metaos-scroll-table table {
+    min-width: 920px;
+  }
+
+  [class*="grid-cols-4"],
+  [class*="grid-cols-5"],
+  [class*="grid-cols-6"],
+  [class*="xl:grid-cols"],
+  [class*="2xl:grid-cols"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  [class*="md:grid-cols-2"],
+  [class*="lg:grid-cols-2"],
+  [class*="lg:grid-cols-3"],
+  [class*="lg:grid-cols-4"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  [class*="rounded-[2rem]"] {
+    border-radius: 20px !important;
+  }
+
+  h1 {
+    font-size: 26px !important;
+    line-height: 1.15 !important;
+  }
+
+  h2 {
+    font-size: 21px !important;
+    line-height: 1.2 !important;
+  }
+
+  h3 {
+    font-size: 18px !important;
+  }
+
+  p,
+  span,
+  td,
+  th,
+  button {
+    overflow-wrap: anywhere;
+  }
+
+  table td,
+  table th {
+    white-space: normal;
+  }
+
+  .recharts-responsive-container,
+  .recharts-wrapper {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: auto 0 0 0;
+    height: 76px;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(0,0,0,0.55), transparent);
+    z-index: 20;
+  }
+}
