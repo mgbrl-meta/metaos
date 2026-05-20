@@ -1,7 +1,8 @@
 "use client";
 
-import { ShieldAlert, ReactNode } from "react";
+import { ReactNode } from "react";
 import {
+  ShieldAlert,
   BarChart3,
   Circle,
   FileText,
@@ -14,7 +15,7 @@ import {
 } from "lucide-react";
 import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
 
-export export type MetaTab =
+export type MetaTab =
   | "action_report"
   | "roi_leakage"
   | "spend_visuals"
