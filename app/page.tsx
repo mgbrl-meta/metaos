@@ -67,7 +67,12 @@ export default function Home() {
 
       {!activeSystemTab && osMode === "google" && (
         <>
-          {activeGoogleTab === "google_search_terms" && <GoogleSearchTermAudit />}
+          {activeGoogleTab === "google_search_terms" && <GoogleSearchTermAudit initialTab="search_terms" />}
+          {activeGoogleTab === "google_campaign_audit" && <GoogleSearchTermAudit initialTab="campaigns" />}
+          {activeGoogleTab === "google_adgroup_audit" && <GoogleSearchTermAudit initialTab="adgroups" />}
+          {activeGoogleTab === "google_keyword_audit" && <GoogleSearchTermAudit initialTab="keywords" />}
+          {activeGoogleTab === "google_ad_audit" && <GoogleSearchTermAudit initialTab="ads" />}
+          {activeGoogleTab === "google_team_summary" && <GoogleSearchTermAudit initialTab="summary" />}
         </>
       )}
     </MetaOSShell>

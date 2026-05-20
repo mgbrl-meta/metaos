@@ -114,35 +114,30 @@ const googleNav: NavItem<GoogleTab>[] = [
     label: "Campaign Audit",
     description: "Campaign-level spend and ROAS control",
     icon: BarChart3,
-    disabled: true,
   },
   {
     id: "google_adgroup_audit",
     label: "Ad Group Audit",
     description: "Ad-group efficiency and query quality",
     icon: Layers,
-    disabled: true,
   },
   {
     id: "google_keyword_audit",
     label: "Keyword Audit",
     description: "Keyword pruning and exact-match scaling",
     icon: Sparkles,
-    disabled: true,
   },
   {
     id: "google_ad_audit",
     label: "Ad Audit",
     description: "RSA/ad copy and landing page match",
     icon: FileText,
-    disabled: true,
   },
   {
     id: "google_team_summary",
     label: "Google Summary",
     description: "Daily Google Ads action report",
     icon: ShieldCheck,
-    disabled: true,
   },
 ];
 
