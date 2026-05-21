@@ -274,7 +274,7 @@ function filterCreativesWithSpendYesterday(rows: any[]) {
 
   return rows.filter((row) => activeAdKeys.has(getCreativeAdKeyForSpendFilter(row)));
 }
-\nexport function CreativeActions() {
+export function CreativeActions() {
   const { performanceRows, settings } = useMetaStore();
 
   const liveRows = useMemo(() => filterCreativesWithSpendYesterday(onlyLiveRows(performanceRows)), [performanceRows]);
