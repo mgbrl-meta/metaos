@@ -46,7 +46,13 @@ function getRevenue(row: any) {
 }
 
 function getSpend(row: any) {
-  return Number(row.spend ?? row.amountSpent ?? row.amount_spent ?? row["Amount spent (INR)"] ?? 0);
+  return Number(
+    row.spend ??
+      row.amountSpent ??
+      row.amount_spent ??
+      row["Amount spent (INR)"] ??
+      0
+  );
 }
 
 function getPurchases(row: any) {
@@ -78,7 +84,15 @@ function displayDate(value?: string) {
 }
 
 function adKey(row: any) {
-  return String(row.adId || row.ad_id || row["Ad ID"] || row.adName || row.ad_name || row["Ad name"] || "unknown");
+  return String(
+    row.adId ||
+      row.ad_id ||
+      row["Ad ID"] ||
+      row.adName ||
+      row.ad_name ||
+      row["Ad name"] ||
+      "unknown"
+  );
 }
 
 function adName(row: any) {
@@ -91,6 +105,30 @@ function campaignName(row: any) {
 
 function adSetName(row: any) {
   return String(row.adSetName || row.adset_name || row.ad_set_name || row["Ad set name"] || "Unknown Ad Set");
+}
+
+function getLatestDate(rows: any[]) {
+  const dates = rows.map((r) => parseDate(getDate(r))).filter(Boolean) as Date[];
+  if (!dates.length) return "";
+  return dateKey(new Date(Math.max(...dates.map((d) => d.getTime()))).toISOString());
+}
+
+function getYesterdaySpendingAdKeys(rows: any[]) {
+  const latest = getLatestDate(rows);
+
+  const keys = new Set<string>();
+
+  rows.forEach((row) => {
+    if (dateKey(getDate(row)) !== latest) return;
+    if (getSpend(row) <= 0) return;
+
+    keys.add(adKey(row));
+  });
+
+  return {
+    latest,
+    keys,
+  };
 }
 
 function buildDailyTrend(rows: any[]) {
@@ -128,9 +166,13 @@ function buildDailyTrend(rows: any[]) {
 }
 
 function groupCriticalCreatives(rows: any[]) {
+  const { latest, keys: yesterdaySpendingKeys } = getYesterdaySpendingAdKeys(rows);
+
+  const eligibleRows = rows.filter((row) => yesterdaySpendingKeys.has(adKey(row)));
+
   const map = new Map<string, any>();
 
-  rows.forEach((row) => {
+  eligibleRows.forEach((row) => {
     const key = adKey(row);
 
     if (!map.has(key)) {
@@ -143,6 +185,7 @@ function groupCriticalCreatives(rows: any[]) {
         spend: 0,
         purchases: 0,
         revenue: 0,
+        yesterdaySpend: 0,
       });
     }
 
@@ -151,34 +194,46 @@ function groupCriticalCreatives(rows: any[]) {
     item.spend += getSpend(row);
     item.purchases += getPurchases(row);
     item.revenue += getRevenue(row);
+
+    if (dateKey(getDate(row)) === latest) {
+      item.yesterdaySpend += getSpend(row);
+    }
   });
 
-  return Array.from(map.values())
-    .map((item) => ({
-      ...item,
-      cpa: safeDiv(item.spend, item.purchases),
-      roas: safeDiv(item.revenue, item.spend),
-      aov: safeDiv(item.revenue, item.purchases),
-      trend: buildDailyTrend(item.rows),
-    }))
-    .filter((item) => item.purchases > 0 && item.cpa > CRITICAL_CPA)
-    .sort((a, b) => b.cpa - a.cpa);
+  return {
+    latest,
+    eligibleCount: yesterdaySpendingKeys.size,
+    critical: Array.from(map.values())
+      .map((item) => ({
+        ...item,
+        cpa: safeDiv(item.spend, item.purchases),
+        roas: safeDiv(item.revenue, item.spend),
+        aov: safeDiv(item.revenue, item.purchases),
+        trend: buildDailyTrend(item.rows),
+      }))
+      .filter((item) => item.yesterdaySpend > 0 && item.purchases > 0 && item.cpa > CRITICAL_CPA)
+      .sort((a, b) => b.cpa - a.cpa),
+  };
 }
 
 export function CriticalCpaCreatives() {
   const performanceRows = useMetaStore((state) => state.performanceRows);
 
   const data = useMemo(() => {
-    const critical = groupCriticalCreatives(performanceRows || []);
-    const criticalSpend = critical.reduce((s, r) => s + r.spend, 0);
-    const criticalPurchases = critical.reduce((s, r) => s + r.purchases, 0);
-    const criticalRevenue = critical.reduce((s, r) => s + r.revenue, 0);
+    const grouped = groupCriticalCreatives(performanceRows || []);
+    const criticalSpend = grouped.critical.reduce((s, r) => s + r.spend, 0);
+    const criticalPurchases = grouped.critical.reduce((s, r) => s + r.purchases, 0);
+    const criticalRevenue = grouped.critical.reduce((s, r) => s + r.revenue, 0);
+    const yesterdaySpend = grouped.critical.reduce((s, r) => s + r.yesterdaySpend, 0);
 
     return {
-      critical,
+      latest: grouped.latest,
+      eligibleCount: grouped.eligibleCount,
+      critical: grouped.critical,
       criticalSpend,
       criticalPurchases,
       criticalRevenue,
+      yesterdaySpend,
       criticalCpa: safeDiv(criticalSpend, criticalPurchases),
       criticalRoas: safeDiv(criticalRevenue, criticalSpend),
     };
@@ -191,11 +246,12 @@ export function CriticalCpaCreatives() {
           <div>
             <div className="flex flex-wrap gap-2">
               <TonePill tone="green">No Critical CPA Creatives</TonePill>
-              <TonePill tone="neutral">Lifetime CPA Threshold: ₹3,000</TonePill>
+              <TonePill tone="neutral">Only Ads With Spend Yesterday</TonePill>
+              <TonePill tone="neutral">Latest: {data.latest || "NA"}</TonePill>
             </div>
             <h2 className="mt-4 text-2xl font-black">Critical Lifetime CPA Check</h2>
             <MutedText className="mt-2 text-sm leading-6">
-              No active creative in the loaded Meta data has lifetime CPA above ₹3,000 with purchase signal.
+              Checked {data.eligibleCount} creatives that spent yesterday. None have lifetime CPA above ₹3,000 with purchase signal.
             </MutedText>
           </div>
         </div>
@@ -210,25 +266,26 @@ export function CriticalCpaCreatives() {
           <div>
             <div className="flex flex-wrap gap-2">
               <TonePill tone="red">Critical</TonePill>
+              <TonePill tone="neutral">Only Creatives With Spend Yesterday</TonePill>
               <TonePill tone="neutral">Lifetime CPA &gt; ₹3,000</TonePill>
-              <TonePill tone="neutral">Last 30D Daily CPA Trend</TonePill>
+              <TonePill tone="neutral">Latest: {data.latest}</TonePill>
             </div>
 
             <h2 className="mt-4 flex items-center gap-2 text-2xl font-black text-red-300">
               <ShieldAlert className="h-6 w-6" />
-              Critical Lifetime CPA Creatives
+              Critical CPA Creatives Active Yesterday
             </h2>
 
             <MutedText className="mt-2 max-w-5xl text-sm leading-6">
-              These creatives have crossed ₹3,000 lifetime CPA with purchase signal. Review before increasing budget. If CPA is worsening in the last 30 days, reduce or rebuild immediately.
+              This section ignores paused/no-spend creatives. It only audits creatives that spent yesterday, then checks lifetime CPA across history and shows their last 30-day CPA trend.
             </MutedText>
           </div>
 
           <div className="grid min-w-[260px] grid-cols-2 gap-2">
-            <MiniStat label="Creatives" value={String(data.critical.length)} tone="red" />
-            <MiniStat label="Spend" value={money(data.criticalSpend)} tone="red" />
-            <MiniStat label="CPA" value={money(data.criticalCpa)} tone="red" />
-            <MiniStat label="ROAS" value={num(data.criticalRoas)} tone="yellow" />
+            <MiniStat label="Critical Creatives" value={String(data.critical.length)} tone="red" />
+            <MiniStat label="Yesterday Spend" value={money(data.yesterdaySpend)} tone="red" />
+            <MiniStat label="Lifetime CPA" value={money(data.criticalCpa)} tone="red" />
+            <MiniStat label="Lifetime ROAS" value={num(data.criticalRoas)} tone="yellow" />
           </div>
         </div>
       </div>
@@ -253,10 +310,11 @@ export function CriticalCpaCreatives() {
                   <TonePill tone="red">CPA {money(row.cpa)}</TonePill>
                 </div>
 
-                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+                  <MiniStat label="Yesterday Spend" value={money(row.yesterdaySpend)} tone="red" />
                   <MiniStat label="Lifetime Spend" value={money(row.spend)} tone="red" />
                   <MiniStat label="Purchases" value={num(row.purchases, 0)} tone="neutral" />
-                  <MiniStat label="CPA" value={money(row.cpa)} tone="red" />
+                  <MiniStat label="Lifetime CPA" value={money(row.cpa)} tone="red" />
                   <MiniStat label="ROAS" value={num(row.roas)} tone={row.roas >= 1 ? "green" : "yellow"} />
                   <MiniStat label="AOV" value={money(row.aov)} tone="blue" />
                 </div>
@@ -267,7 +325,7 @@ export function CriticalCpaCreatives() {
                     Recommended Action
                   </p>
                   <p className="mt-3 text-sm leading-6 opacity-85">
-                    Do not scale this creative. Check whether the last 30-day CPA trend is worsening. If CPA is consistently above ₹3,000, reduce budget or rebuild the hook/offer. If only one bad spike caused the CPA, keep on watch but avoid adding budget.
+                    This creative was active yesterday and has lifetime CPA above ₹3,000. Do not scale. If last 30-day CPA is still above threshold, reduce budget or rebuild the creative. If yesterday was a controlled retest, keep on watch but cap spend.
                   </p>
                 </div>
               </div>

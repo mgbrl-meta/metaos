@@ -223,10 +223,61 @@ function creativeBrief(row: any, settings: any) {
   ];
 }
 
-export function CreativeActions() {
+
+function getCreativeLatestDateForSpendFilter(rows: any[]) {
+  const dates = rows
+    .map((row) => {
+      const value = row.date || row.day || row.Day;
+      if (!value) return null;
+      const d = new Date(value);
+      return Number.isNaN(d.getTime()) ? null : d;
+    })
+    .filter(Boolean) as Date[];
+
+  if (!dates.length) return "";
+
+  const latest = new Date(Math.max(...dates.map((d) => d.getTime())));
+
+  return `${latest.getFullYear()}-${String(latest.getMonth() + 1).padStart(2, "0")}-${String(
+    latest.getDate()
+  ).padStart(2, "0")}`;
+}
+
+function getCreativeDateKeyForSpendFilter(value?: string) {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate()
+  ).padStart(2, "0")}`;
+}
+
+function getCreativeSpendForSpendFilter(row: any) {
+  return Number(row.spend ?? row.amountSpent ?? row.amount_spent ?? row["Amount spent (INR)"] ?? 0);
+}
+
+function getCreativeAdKeyForSpendFilter(row: any) {
+  return String(row.adId || row.ad_id || row["Ad ID"] || row.adName || row.ad_name || row["Ad name"] || "unknown");
+}
+
+function filterCreativesWithSpendYesterday(rows: any[]) {
+  const latest = getCreativeLatestDateForSpendFilter(rows);
+
+  if (!latest) return rows;
+
+  const activeAdKeys = new Set(
+    rows
+      .filter((row) => getCreativeDateKeyForSpendFilter(row.date || row.day || row.Day) === latest)
+      .filter((row) => getCreativeSpendForSpendFilter(row) > 0)
+      .map((row) => getCreativeAdKeyForSpendFilter(row))
+  );
+
+  return rows.filter((row) => activeAdKeys.has(getCreativeAdKeyForSpendFilter(row)));
+}
+\nexport function CreativeActions() {
   const { performanceRows, settings } = useMetaStore();
 
-  const liveRows = useMemo(() => onlyLiveRows(performanceRows), [performanceRows]);
+  const liveRows = useMemo(() => filterCreativesWithSpendYesterday(onlyLiveRows(performanceRows)), [performanceRows]);
 
   const creatives = useMemo(() => {
     return aggregateRows(liveRows, "ad")
