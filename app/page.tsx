@@ -20,6 +20,7 @@ import { SettingsPanel } from "@/components/settings/SettingsPanel";
 
 import { GoogleSearchTermAudit } from "@/components/google/GoogleSearchTermAudit";
 import { AutoMetaSheetLoader } from "@/components/meta/AutoMetaSheetLoader";
+import { CriticalCpaCreatives } from "@/components/meta/CriticalCpaCreatives";
 
 export default function Home() {
   const [osMode, setOsMode] = useState<OSMode>("meta");
@@ -58,7 +59,12 @@ export default function Home() {
           {activeMetaTab === "roi_gap" && <EfficiencyGaps />}
           {activeMetaTab === "benchmark_audit" && <BenchmarkAudit />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
-          {activeMetaTab === "creative" && <CreativeActions />}
+          {activeMetaTab === "creative" && (
+            <div className="grid gap-6">
+              <CriticalCpaCreatives />
+              <CreativeActions />
+            </div>
+          )}
           {activeMetaTab === "structure_report" && <StructureReport />}
           {activeMetaTab === "summary" && <DailySummaryExport />}
           {activeMetaTab === "monthly" && <MonthlyPerformance />}
