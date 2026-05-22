@@ -1127,3 +1127,215 @@ main h1 + p {
     min-width: 880px;
   }
 }
+
+/* =========================================================
+   FINAL LIGHT/DARK READABILITY SYSTEM
+   Fixes unreadable light mode globally after compact redesign.
+   ========================================================= */
+
+/* Light shell */
+.metaos-light {
+  color: #151515 !important;
+  background:
+    radial-gradient(circle at top left, rgba(10, 132, 255, 0.06), transparent 30%),
+    #f7f8f5 !important;
+}
+
+/* Dark shell */
+.metaos-dark {
+  color: #f7f7f7 !important;
+}
+
+/* LIGHT MODE: cards must be white/off-white, not dark */
+.metaos-light [class*="bg-white/["],
+.metaos-light [class*="bg-current/["],
+.metaos-light .bg-current\/\[0\.025\],
+.metaos-light .bg-current\/\[0\.03\],
+.metaos-light .bg-current\/\[0\.035\],
+.metaos-light .bg-current\/\[0\.04\],
+.metaos-light .bg-current\/\[0\.05\],
+.metaos-light .bg-current\/\[0\.06\] {
+  background: rgba(255, 255, 255, 0.88) !important;
+}
+
+/* LIGHT MODE: surfaces */
+.metaos-light [class*="border-current/10"],
+.metaos-light [class*="border-white/10"] {
+  border-color: rgba(20, 20, 20, 0.12) !important;
+}
+
+/* LIGHT MODE: force inherited text to dark unless intentionally red/green/blue */
+.metaos-light,
+.metaos-light p,
+.metaos-light span,
+.metaos-light div,
+.metaos-light td,
+.metaos-light th,
+.metaos-light button,
+.metaos-light label {
+  color: inherit;
+}
+
+/* LIGHT MODE: muted text should be visible */
+.metaos-light .opacity-35,
+.metaos-light .opacity-40,
+.metaos-light .opacity-45,
+.metaos-light .opacity-50,
+.metaos-light .opacity-55,
+.metaos-light .opacity-60,
+.metaos-light .opacity-65,
+.metaos-light .opacity-70,
+.metaos-light .opacity-75 {
+  opacity: 1 !important;
+  color: rgba(20, 20, 20, 0.58) !important;
+}
+
+/* LIGHT MODE: headings/numbers stay dark */
+.metaos-light h1,
+.metaos-light h2,
+.metaos-light h3,
+.metaos-light h4,
+.metaos-light strong,
+.metaos-light .font-black,
+.metaos-light .font-bold {
+  color: #111111 !important;
+}
+
+/* Preserve active blue nav text */
+.metaos-light button.bg-\[\#0A84FF\],
+.metaos-light button.bg-\[\#0A84FF\] *,
+.metaos-light .bg-\[\#0A84FF\],
+.metaos-light .bg-\[\#0A84FF\] * {
+  color: #ffffff !important;
+}
+
+/* Preserve active Google nav text */
+.metaos-light button.bg-emerald-400,
+.metaos-light button.bg-emerald-400 *,
+.metaos-light .bg-emerald-400,
+.metaos-light .bg-emerald-400 * {
+  color: #052014 !important;
+}
+
+/* Red/green judgment colors */
+.metaos-light .text-red-300,
+.metaos-light .text-red-400,
+.metaos-light .text-rose-300,
+.metaos-light .text-rose-400,
+.metaos-dark .text-red-300,
+.metaos-dark .text-red-400,
+.metaos-dark .text-rose-300,
+.metaos-dark .text-rose-400 {
+  color: #b42318 !important;
+}
+
+.metaos-light .text-emerald-300,
+.metaos-light .text-emerald-400,
+.metaos-light .text-green-300,
+.metaos-light .text-green-400,
+.metaos-dark .text-emerald-300,
+.metaos-dark .text-emerald-400,
+.metaos-dark .text-green-300,
+.metaos-dark .text-green-400 {
+  color: #087f5b !important;
+}
+
+.metaos-light .text-\[\#0A84FF\],
+.metaos-dark .text-\[\#0A84FF\] {
+  color: #0A84FF !important;
+}
+
+/* Light mode critical red panels should be readable */
+.metaos-light [class*="bg-red-400/10"],
+.metaos-light [class*="bg-rose-400/10"] {
+  background: #fff3f1 !important;
+  border-color: rgba(180, 35, 24, 0.22) !important;
+  color: #211110 !important;
+}
+
+.metaos-light [class*="border-red-400"],
+.metaos-light [class*="border-rose-400"] {
+  border-color: rgba(180, 35, 24, 0.24) !important;
+}
+
+/* Light mode success panels */
+.metaos-light [class*="bg-emerald-400/10"],
+.metaos-light [class*="bg-green-400/10"] {
+  background: #eefaf4 !important;
+  border-color: rgba(8, 127, 91, 0.2) !important;
+  color: #0f241b !important;
+}
+
+/* Light mode neutral pills/cards */
+.metaos-light .rounded-full,
+.metaos-light .rounded-xl,
+.metaos-light .rounded-lg,
+.metaos-light .rounded-2xl,
+.metaos-light .rounded-3xl {
+  color: inherit;
+}
+
+/* Tables in light mode */
+.metaos-light table {
+  background: rgba(255, 255, 255, 0.88) !important;
+}
+
+.metaos-light thead {
+  background: rgba(0, 0, 0, 0.035) !important;
+}
+
+.metaos-light tbody tr {
+  border-color: rgba(20, 20, 20, 0.1) !important;
+}
+
+/* Tooltip stays dark for readability */
+.recharts-tooltip-wrapper * {
+  color: #ffffff !important;
+}
+
+/* Chart axis in light mode */
+.metaos-light .recharts-text,
+.metaos-light .recharts-cartesian-axis-tick-value {
+  fill: rgba(20, 20, 20, 0.55) !important;
+}
+
+/* Avoid pale white-on-white issue in creative cards */
+.metaos-light [class*="text-white"] {
+  color: #151515 !important;
+}
+
+/* But if inside active blue/green button, keep correct contrast */
+.metaos-light button.bg-\[\#0A84FF\] [class*="text-white"],
+.metaos-light .bg-\[\#0A84FF\] [class*="text-white"] {
+  color: #ffffff !important;
+}
+
+.metaos-light button.bg-emerald-400 [class*="text-white"],
+.metaos-light .bg-emerald-400 [class*="text-white"] {
+  color: #052014 !important;
+}
+
+/* Dark mode should not inherit light card override */
+.metaos-dark [class*="bg-current/["],
+.metaos-dark [class*="bg-white/["] {
+  color: inherit;
+}
+
+/* Compact light mode border + depth */
+.metaos-light .shadow-2xl,
+.metaos-light .shadow-xl,
+.metaos-light [class*="shadow-["] {
+  box-shadow: none !important;
+}
+
+/* Mobile light mode */
+@media (max-width: 768px) {
+  .metaos-light header {
+    background: rgba(255, 255, 255, 0.94) !important;
+  }
+
+  .metaos-light aside {
+    background: #ffffff !important;
+    color: #151515 !important;
+  }
+}

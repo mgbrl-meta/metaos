@@ -16,7 +16,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { ThemeFrame, ThemeToggle } from "@/components/theme/ThemeProvider";
+import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
 
 export type OSMode = "meta" | "google";
 
@@ -174,6 +174,8 @@ export function MetaOSShell({
   setActiveSystemTab: (tab: SystemTab | null) => void;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { theme } = useThemeStore();
+  const isDark = theme === "dark";
 
   const isGoogle = osMode === "google";
   const activeNav = isGoogle ? googleNav : metaNav;
@@ -219,17 +221,21 @@ export function MetaOSShell({
     <ThemeFrame>
       <div
         className={
-          isGoogle
-            ? "min-h-screen overflow-x-hidden bg-[#050806] text-white"
-            : "min-h-screen overflow-x-hidden bg-[#050607] text-white"
+          isDark
+            ? isGoogle
+              ? "metaos-app metaos-dark min-h-screen overflow-x-hidden bg-[#050806] text-white"
+              : "metaos-app metaos-dark min-h-screen overflow-x-hidden bg-[#050607] text-white"
+            : isGoogle
+            ? "metaos-app metaos-light min-h-screen overflow-x-hidden bg-[#f7f8f5] text-[#141414]"
+            : "metaos-app metaos-light min-h-screen overflow-x-hidden bg-[#f7f8f5] text-[#141414]"
         }
       >
-        <header className="sticky top-0 z-40 border-b border-white/10 bg-[#080a0d]/92 backdrop-blur-2xl">
+        <header className={isDark ? "sticky top-0 z-40 border-b border-white/10 bg-[#080a0d]/92 backdrop-blur-2xl" : "sticky top-0 z-40 border-b border-black/10 bg-white/92 backdrop-blur-2xl"}>
           <div className="mx-auto max-w-[1920px] px-3 py-2 lg:px-4">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setMobileOpen(true)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] lg:hidden"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-current/10 bg-current/[0.04] lg:hidden"
                 aria-label="Open menu"
               >
                 <Menu className="h-4 w-4" />
@@ -260,19 +266,19 @@ export function MetaOSShell({
                   >
                     {isGoogle ? "Google OS" : "Meta OS"}
                   </p>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/35">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] opacity-45">
                     Daily Performance OS
                   </p>
                 </div>
               </div>
 
-              <div className="ml-1 hidden rounded-xl border border-white/10 bg-white/[0.04] p-1 md:flex">
+              <div className="ml-1 hidden rounded-xl border border-current/10 bg-current/[0.04] p-1 md:flex">
                 <button
                   onClick={() => switchOS("meta")}
                   className={
                     osMode === "meta"
                       ? "rounded-lg bg-[#0A84FF] px-4 py-2 text-xs font-black text-white"
-                      : "rounded-lg px-4 py-2 text-xs font-black text-white/50 hover:text-white"
+                      : "rounded-lg px-4 py-2 text-xs font-black opacity-55 hover:text-white"
                   }
                 >
                   META OS
@@ -282,7 +288,7 @@ export function MetaOSShell({
                   className={
                     osMode === "google"
                       ? "rounded-lg bg-emerald-400 px-4 py-2 text-xs font-black text-black"
-                      : "rounded-lg px-4 py-2 text-xs font-black text-white/50 hover:text-white"
+                      : "rounded-lg px-4 py-2 text-xs font-black opacity-55 hover:text-white"
                   }
                 >
                   GOOGLE OS
@@ -291,9 +297,9 @@ export function MetaOSShell({
 
               <div className="min-w-0 flex-1" />
 
-              <div className="hidden items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 lg:flex">
+              <div className="hidden items-center gap-2 rounded-xl border border-current/10 bg-current/[0.04] px-3 py-2 lg:flex">
                 <span className={isGoogle ? "h-2 w-2 rounded-full bg-emerald-400" : "h-2 w-2 rounded-full bg-[#0A84FF]"} />
-                <span className="text-[11px] font-black uppercase tracking-[0.14em] text-white/55">
+                <span className="text-[11px] font-black uppercase tracking-[0.14em] opacity-60">
                   {isGoogle ? "BigQuery Live" : "Sheet Live"}
                 </span>
               </div>
@@ -303,7 +309,7 @@ export function MetaOSShell({
                 className={
                   activeSystemTab === "settings"
                     ? "inline-flex h-9 items-center gap-2 rounded-xl bg-white px-3 text-xs font-black text-black"
-                    : "inline-flex h-9 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 text-xs font-black text-white/60 hover:text-white"
+                    : "inline-flex h-9 items-center gap-2 rounded-xl border border-current/10 bg-current/[0.04] px-3 text-xs font-black opacity-65 hover:text-white"
                 }
               >
                 <Settings className="h-4 w-4" />
@@ -314,13 +320,13 @@ export function MetaOSShell({
             </div>
 
             <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
-              <div className="flex rounded-xl border border-white/10 bg-white/[0.04] p-1 md:hidden">
+              <div className="flex rounded-xl border border-current/10 bg-current/[0.04] p-1 md:hidden">
                 <button
                   onClick={() => switchOS("meta")}
                   className={
                     osMode === "meta"
                       ? "rounded-lg bg-[#0A84FF] px-3 py-1.5 text-[11px] font-black text-white"
-                      : "rounded-lg px-3 py-1.5 text-[11px] font-black text-white/45"
+                      : "rounded-lg px-3 py-1.5 text-[11px] font-black opacity-45"
                   }
                 >
                   META
@@ -330,7 +336,7 @@ export function MetaOSShell({
                   className={
                     osMode === "google"
                       ? "rounded-lg bg-emerald-400 px-3 py-1.5 text-[11px] font-black text-black"
-                      : "rounded-lg px-3 py-1.5 text-[11px] font-black text-white/45"
+                      : "rounded-lg px-3 py-1.5 text-[11px] font-black opacity-45"
                   }
                 >
                   GOOGLE
@@ -355,7 +361,7 @@ export function MetaOSShell({
                         ? isGoogle
                           ? "inline-flex shrink-0 items-center gap-2 rounded-xl bg-emerald-400 px-3 py-2 text-xs font-black text-black"
                           : "inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#0A84FF] px-3 py-2 text-xs font-black text-white"
-                        : "inline-flex shrink-0 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.035] px-3 py-2 text-xs font-black text-white/55 hover:text-white"
+                        : "inline-flex shrink-0 items-center gap-2 rounded-xl border border-current/10 bg-current/[0.035] px-3 py-2 text-xs font-black opacity-60 hover:text-white"
                     }
                   >
                     <Icon className="h-3.5 w-3.5" />
@@ -389,25 +395,25 @@ export function MetaOSShell({
                   </div>
                   <div>
                     <p className="text-sm font-black">{isGoogle ? "Google OS" : "Meta OS"}</p>
-                    <p className="text-xs text-white/45">Daily Performance OS</p>
+                    <p className="text-xs opacity-45">Daily Performance OS</p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => setMobileOpen(false)}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04]"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-current/10 bg-current/[0.04]"
                 >
                   <X className="h-4 w-4" />
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 rounded-xl border border-white/10 bg-white/[0.04] p-1">
+              <div className="grid grid-cols-2 gap-2 rounded-xl border border-current/10 bg-current/[0.04] p-1">
                 <button
                   onClick={() => switchOS("meta")}
                   className={
                     osMode === "meta"
                       ? "rounded-lg bg-[#0A84FF] px-3 py-2 text-xs font-black text-white"
-                      : "rounded-lg px-3 py-2 text-xs font-black text-white/50"
+                      : "rounded-lg px-3 py-2 text-xs font-black opacity-55"
                   }
                 >
                   META OS
@@ -417,7 +423,7 @@ export function MetaOSShell({
                   className={
                     osMode === "google"
                       ? "rounded-lg bg-emerald-400 px-3 py-2 text-xs font-black text-black"
-                      : "rounded-lg px-3 py-2 text-xs font-black text-white/50"
+                      : "rounded-lg px-3 py-2 text-xs font-black opacity-55"
                   }
                 >
                   GOOGLE OS
@@ -443,7 +449,7 @@ export function MetaOSShell({
                           ? isGoogle
                             ? "grid grid-cols-[20px_1fr] gap-3 rounded-xl bg-emerald-400 px-4 py-3 text-left text-black"
                             : "grid grid-cols-[20px_1fr] gap-3 rounded-xl bg-[#0A84FF] px-4 py-3 text-left text-white"
-                          : "grid grid-cols-[20px_1fr] gap-3 rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-left text-white/65"
+                          : "grid grid-cols-[20px_1fr] gap-3 rounded-xl border border-current/10 bg-current/[0.035] px-4 py-3 text-left opacity-70"
                       }
                     >
                       <Icon className="h-4 w-4" />
@@ -460,7 +466,7 @@ export function MetaOSShell({
                   className={
                     activeSystemTab === "settings"
                       ? "grid grid-cols-[20px_1fr] gap-3 rounded-xl bg-white px-4 py-3 text-left text-black"
-                      : "grid grid-cols-[20px_1fr] gap-3 rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-left text-white/65"
+                      : "grid grid-cols-[20px_1fr] gap-3 rounded-xl border border-current/10 bg-current/[0.035] px-4 py-3 text-left opacity-70"
                   }
                 >
                   <Settings className="h-4 w-4" />
@@ -476,7 +482,7 @@ export function MetaOSShell({
 
         <main className="min-w-0">
           <div className="mx-auto w-full max-w-[1920px] min-w-0 px-3 py-3 lg:px-4">
-            <section className="mb-3 rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3">
+            <section className={isDark ? "mb-3 rounded-xl border border-current/10 bg-current/[0.035] px-4 py-3" : "mb-3 rounded-xl border border-black/10 bg-white px-4 py-3"}>
               <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap gap-1.5">
@@ -489,7 +495,7 @@ export function MetaOSShell({
                     >
                       {isGoogle ? "Google Ads" : "Meta Ads"}
                     </span>
-                    <span className="rounded-full border border-white/10 bg-white/[0.035] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white/45">
+                    <span className="rounded-full border border-current/10 bg-current/[0.035] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] opacity-45">
                       {isGoogle ? "BigQuery Live" : "Sheet Live"}
                     </span>
                   </div>
@@ -497,7 +503,7 @@ export function MetaOSShell({
                   <h1 className="mt-2 text-2xl font-black tracking-tight lg:text-3xl">
                     {activeSystemTab === "settings" ? "Settings" : isGoogle ? "Google OS" : "Meta OS"}
                   </h1>
-                  <p className="mt-1 text-sm leading-5 text-white/52">
+                  <p className="mt-1 text-sm leading-5 opacity-60">
                     {activeTitle} · {activeDescription}
                   </p>
                 </div>
