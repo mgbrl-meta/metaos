@@ -1339,3 +1339,255 @@ main h1 + p {
     color: #151515 !important;
   }
 }
+
+/* =========================================================
+   FINAL THEME READABILITY FIX — GLOBAL
+   Fixes white text on light cards and pale panels in dark mode.
+   Keep this at the END of globals.css.
+   ========================================================= */
+
+/* ---------- DARK MODE SAFE RED/GREEN PANELS ---------- */
+/* In dark mode, red/green panels must stay dark translucent, not pale */
+.metaos-dark [class*="bg-red-400/10"],
+.metaos-dark [class*="bg-rose-400/10"],
+html.dark [class*="bg-red-400/10"],
+html.dark [class*="bg-rose-400/10"],
+body.dark [class*="bg-red-400/10"],
+body.dark [class*="bg-rose-400/10"] {
+  background: rgba(180, 35, 24, 0.13) !important;
+  border-color: rgba(180, 35, 24, 0.32) !important;
+  color: #f5f5f5 !important;
+}
+
+.metaos-dark [class*="bg-emerald-400/10"],
+.metaos-dark [class*="bg-green-400/10"],
+html.dark [class*="bg-emerald-400/10"],
+html.dark [class*="bg-green-400/10"],
+body.dark [class*="bg-emerald-400/10"],
+body.dark [class*="bg-green-400/10"] {
+  background: rgba(8, 127, 91, 0.14) !important;
+  border-color: rgba(8, 127, 91, 0.32) !important;
+  color: #f5f5f5 !important;
+}
+
+/* Make all text inside dark red/green panels readable */
+.metaos-dark [class*="bg-red-400/10"] *,
+.metaos-dark [class*="bg-rose-400/10"] *,
+.metaos-dark [class*="bg-emerald-400/10"] *,
+.metaos-dark [class*="bg-green-400/10"] *,
+html.dark [class*="bg-red-400/10"] *,
+html.dark [class*="bg-rose-400/10"] *,
+html.dark [class*="bg-emerald-400/10"] *,
+html.dark [class*="bg-green-400/10"] * {
+  color: inherit !important;
+}
+
+/* But preserve red/green emphasis text inside those panels */
+.metaos-dark .text-red-300,
+.metaos-dark .text-red-400,
+.metaos-dark .text-rose-300,
+.metaos-dark .text-rose-400,
+html.dark .text-red-300,
+html.dark .text-red-400,
+html.dark .text-rose-300,
+html.dark .text-rose-400 {
+  color: #ff6b5f !important;
+}
+
+.metaos-dark .text-emerald-300,
+.metaos-dark .text-emerald-400,
+.metaos-dark .text-green-300,
+.metaos-dark .text-green-400,
+html.dark .text-emerald-300,
+html.dark .text-emerald-400,
+html.dark .text-green-300,
+html.dark .text-green-400 {
+  color: #34d399 !important;
+}
+
+/* ---------- LIGHT MODE GLOBAL READABILITY ---------- */
+/* In light mode, any forced white text inside content becomes dark */
+.metaos-light main [class*="text-white"],
+html:not(.dark) main [class*="text-white"],
+body:not(.dark) main [class*="text-white"] {
+  color: #151515 !important;
+}
+
+/* Light mode muted text */
+.metaos-light main .opacity-35,
+.metaos-light main .opacity-40,
+.metaos-light main .opacity-45,
+.metaos-light main .opacity-50,
+.metaos-light main .opacity-55,
+.metaos-light main .opacity-60,
+.metaos-light main .opacity-65,
+.metaos-light main .opacity-70,
+.metaos-light main .opacity-75,
+html:not(.dark) main .opacity-35,
+html:not(.dark) main .opacity-40,
+html:not(.dark) main .opacity-45,
+html:not(.dark) main .opacity-50,
+html:not(.dark) main .opacity-55,
+html:not(.dark) main .opacity-60,
+html:not(.dark) main .opacity-65,
+html:not(.dark) main .opacity-70,
+html:not(.dark) main .opacity-75 {
+  opacity: 1 !important;
+  color: rgba(20, 20, 20, 0.62) !important;
+}
+
+/* Light mode headings/numbers */
+.metaos-light main h1,
+.metaos-light main h2,
+.metaos-light main h3,
+.metaos-light main h4,
+.metaos-light main .font-black,
+.metaos-light main .font-bold,
+html:not(.dark) main h1,
+html:not(.dark) main h2,
+html:not(.dark) main h3,
+html:not(.dark) main h4,
+html:not(.dark) main .font-black,
+html:not(.dark) main .font-bold {
+  color: #111111 !important;
+}
+
+/* Light mode cards/surfaces */
+.metaos-light main [class*="bg-current/"],
+html:not(.dark) main [class*="bg-current/"] {
+  background: rgba(255, 255, 255, 0.88) !important;
+}
+
+/* Light mode red sections */
+.metaos-light main [class*="bg-red-400/10"],
+.metaos-light main [class*="bg-rose-400/10"],
+html:not(.dark) main [class*="bg-red-400/10"],
+html:not(.dark) main [class*="bg-rose-400/10"] {
+  background: #fff3f1 !important;
+  border-color: rgba(180, 35, 24, 0.25) !important;
+  color: #241110 !important;
+}
+
+.metaos-light main [class*="bg-red-400/10"] *,
+.metaos-light main [class*="bg-rose-400/10"] *,
+html:not(.dark) main [class*="bg-red-400/10"] *,
+html:not(.dark) main [class*="bg-rose-400/10"] * {
+  color: inherit !important;
+}
+
+/* Light mode green sections */
+.metaos-light main [class*="bg-emerald-400/10"],
+.metaos-light main [class*="bg-green-400/10"],
+html:not(.dark) main [class*="bg-emerald-400/10"],
+html:not(.dark) main [class*="bg-green-400/10"] {
+  background: #eefaf4 !important;
+  border-color: rgba(8, 127, 91, 0.24) !important;
+  color: #0f241b !important;
+}
+
+.metaos-light main [class*="bg-emerald-400/10"] *,
+.metaos-light main [class*="bg-green-400/10"] *,
+html:not(.dark) main [class*="bg-emerald-400/10"] *,
+html:not(.dark) main [class*="bg-green-400/10"] * {
+  color: inherit !important;
+}
+
+/* Restore judgment colors after inherited panel rules */
+.metaos-light .text-red-300,
+.metaos-light .text-red-400,
+.metaos-light .text-rose-300,
+.metaos-light .text-rose-400,
+html:not(.dark) .text-red-300,
+html:not(.dark) .text-red-400,
+html:not(.dark) .text-rose-300,
+html:not(.dark) .text-rose-400 {
+  color: #b42318 !important;
+}
+
+.metaos-light .text-emerald-300,
+.metaos-light .text-emerald-400,
+.metaos-light .text-green-300,
+.metaos-light .text-green-400,
+html:not(.dark) .text-emerald-300,
+html:not(.dark) .text-emerald-400,
+html:not(.dark) .text-green-300,
+html:not(.dark) .text-green-400 {
+  color: #087f5b !important;
+}
+
+.metaos-light .text-\[\#0A84FF\],
+html:not(.dark) .text-\[\#0A84FF\] {
+  color: #0A84FF !important;
+}
+
+/* Active navigation contrast must never break */
+button.bg-\[\#0A84FF\],
+button.bg-\[\#0A84FF\] *,
+.bg-\[\#0A84FF\],
+.bg-\[\#0A84FF\] * {
+  color: #ffffff !important;
+}
+
+button.bg-emerald-400,
+button.bg-emerald-400 *,
+.bg-emerald-400,
+.bg-emerald-400 * {
+  color: #04140d !important;
+}
+
+/* Header: dark stays dark, light stays readable */
+.metaos-light header,
+html:not(.dark) header {
+  color: #151515 !important;
+}
+
+.metaos-light header [class*="text-white"],
+html:not(.dark) header [class*="text-white"] {
+  color: #151515 !important;
+}
+
+.metaos-light header button.bg-\[\#0A84FF\],
+.metaos-light header button.bg-\[\#0A84FF\] *,
+html:not(.dark) header button.bg-\[\#0A84FF\],
+html:not(.dark) header button.bg-\[\#0A84FF\] * {
+  color: #ffffff !important;
+}
+
+/* Charts */
+.metaos-light .recharts-text,
+html:not(.dark) .recharts-text {
+  fill: rgba(20, 20, 20, 0.58) !important;
+}
+
+.metaos-dark .recharts-text,
+html.dark .recharts-text {
+  fill: rgba(255, 255, 255, 0.58) !important;
+}
+
+/* Tooltips should stay dark */
+.recharts-tooltip-wrapper,
+.recharts-tooltip-wrapper * {
+  color: #ffffff !important;
+}
+
+/* Tables */
+.metaos-light table,
+html:not(.dark) table {
+  color: #151515 !important;
+}
+
+.metaos-light thead,
+html:not(.dark) thead {
+  background: rgba(0, 0, 0, 0.035) !important;
+}
+
+.metaos-light tbody tr,
+html:not(.dark) tbody tr {
+  border-color: rgba(20, 20, 20, 0.1) !important;
+}
+
+/* Nuclear fix for any remaining invisible text inside pale panels */
+.metaos-light main [style*="background"] [class*="text-white"],
+html:not(.dark) main [style*="background"] [class*="text-white"] {
+  color: #151515 !important;
+}

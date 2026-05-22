@@ -348,13 +348,13 @@ export function CriticalCpaCreatives() {
                     <LineChart data={row.trend} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                       <XAxis
                         dataKey="label"
-                        tick={{ fontSize: 10, fill: "rgba(255,255,255,0.45)" }}
+                        tick={{ fontSize: 10, fill: "currentColor" }}
                         axisLine={false}
                         tickLine={false}
                         minTickGap={18}
                       />
                       <YAxis
-                        tick={{ fontSize: 10, fill: "rgba(255,255,255,0.45)" }}
+                        tick={{ fontSize: 10, fill: "currentColor" }}
                         axisLine={false}
                         tickLine={false}
                         width={54}
