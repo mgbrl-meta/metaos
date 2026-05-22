@@ -11,6 +11,7 @@ import {
   LineChart,
   Menu,
   Search,
+  RadioTower,
   Settings,
   ShieldAlert,
   ShieldCheck,
@@ -30,7 +31,8 @@ export type MetaTab =
   | "creative"
   | "structure_report"
   | "summary"
-  | "monthly";
+  | "monthly"
+  | "reach_frequency";
 
 export type GoogleTab =
   | "google_search_terms"
@@ -71,6 +73,13 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "Benchmark",
     description: "Campaign, ad set and ad audit vs benchmark",
     icon: ShieldCheck,
+  },
+  {
+    id: "reach_frequency",
+    label: "Reach & Frequency",
+    shortLabel: "Reach",
+    description: "Reach, impressions, frequency and CPR",
+    icon: RadioTower,
   },
   {
     id: "spend_visuals",
