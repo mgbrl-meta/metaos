@@ -798,3 +798,332 @@ main > div > div:first-child {
     padding: 12px !important;
   }
 }
+
+/* =========================================================
+   AOP-STYLE COMPACT META OS OVERRIDE
+   Goal: more data above fold, smaller typography, red/green only,
+   compact cards, compact charts, compact tables.
+   ========================================================= */
+
+/* Global compact density */
+main {
+  font-size: 12px !important;
+}
+
+main > div {
+  padding-top: 8px !important;
+}
+
+/* Reduce section/header height */
+main section {
+  padding: 10px 14px !important;
+  margin-bottom: 8px !important;
+  border-radius: 10px !important;
+}
+
+main section h1 {
+  font-size: 20px !important;
+  line-height: 1.1 !important;
+  margin-top: 4px !important;
+}
+
+main section p {
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+/* Compact all dashboard cards */
+[class*="rounded-[2rem]"],
+[class*="rounded-[1.5rem]"],
+.rounded-3xl,
+.rounded-2xl {
+  border-radius: 10px !important;
+}
+
+/* Reduce padding everywhere inside dashboard content */
+.p-8,
+.p-7,
+.p-6 {
+  padding: 12px !important;
+}
+
+.p-5,
+.p-4 {
+  padding: 10px !important;
+}
+
+.p-3 {
+  padding: 8px !important;
+}
+
+/* Tighter grid spacing */
+.gap-8,
+.gap-7,
+.gap-6 {
+  gap: 10px !important;
+}
+
+.gap-5,
+.gap-4 {
+  gap: 8px !important;
+}
+
+.gap-3 {
+  gap: 6px !important;
+}
+
+/* Compact headings */
+.text-5xl {
+  font-size: 28px !important;
+  line-height: 1.05 !important;
+}
+
+.text-4xl {
+  font-size: 24px !important;
+  line-height: 1.08 !important;
+}
+
+.text-3xl {
+  font-size: 21px !important;
+  line-height: 1.1 !important;
+}
+
+.text-2xl {
+  font-size: 18px !important;
+  line-height: 1.15 !important;
+}
+
+.text-xl {
+  font-size: 15px !important;
+  line-height: 1.2 !important;
+}
+
+.text-lg {
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+}
+
+.text-base {
+  font-size: 12px !important;
+}
+
+/* KPI card numbers smaller and compact */
+main [class*="MetricCard"] p,
+main [class*="MetricCard"] span {
+  line-height: 1.1 !important;
+}
+
+/* Reduce giant metric values */
+main .text-4xl,
+main .text-5xl,
+main .text-3xl {
+  letter-spacing: -0.04em !important;
+}
+
+/* Pills compact */
+.rounded-full {
+  border-radius: 999px !important;
+}
+
+button.rounded-full,
+span.rounded-full {
+  padding: 5px 9px !important;
+  font-size: 10px !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Top nav compact */
+header {
+  min-height: auto !important;
+}
+
+header button {
+  height: 30px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  font-size: 11px !important;
+}
+
+header .mt-2 {
+  margin-top: 6px !important;
+}
+
+/* Remove glow-heavy appearance */
+.shadow-2xl,
+.shadow-xl,
+[class*="shadow-["] {
+  box-shadow: none !important;
+}
+
+/* Softer borders */
+.border,
+[class*="border-"] {
+  border-color: rgba(150, 150, 150, 0.16) !important;
+}
+
+/* Compact tables like AOP */
+table {
+  border-collapse: collapse !important;
+}
+
+table th {
+  font-size: 9.5px !important;
+  padding: 6px 8px !important;
+  line-height: 1.15 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.11em !important;
+  opacity: 0.55 !important;
+}
+
+table td {
+  font-size: 11px !important;
+  padding: 6px 8px !important;
+  line-height: 1.22 !important;
+  vertical-align: middle !important;
+}
+
+tbody tr {
+  min-height: 28px !important;
+  border-color: rgba(130, 130, 130, 0.12) !important;
+}
+
+/* Compact chart containers */
+.recharts-wrapper,
+.recharts-responsive-container {
+  min-width: 0 !important;
+}
+
+.recharts-text {
+  font-size: 9.5px !important;
+}
+
+.recharts-cartesian-grid line {
+  stroke-opacity: 0.18 !important;
+}
+
+/* Red and green only for judgment */
+.text-emerald-300,
+.text-emerald-400,
+.text-green-300,
+.text-green-400 {
+  color: #0b8f61 !important;
+}
+
+.text-red-300,
+.text-red-400,
+.text-rose-300,
+.text-rose-400 {
+  color: #b42318 !important;
+}
+
+.bg-emerald-400,
+.bg-green-400 {
+  background: rgba(11, 143, 97, 0.12) !important;
+  color: #0b8f61 !important;
+  border-color: rgba(11, 143, 97, 0.28) !important;
+}
+
+.bg-red-400,
+.bg-rose-400 {
+  background: rgba(180, 35, 24, 0.11) !important;
+  color: #b42318 !important;
+  border-color: rgba(180, 35, 24, 0.28) !important;
+}
+
+/* Active nav should still be clearly visible */
+button.bg-\[\#0A84FF\] {
+  background: #0A84FF !important;
+  color: white !important;
+}
+
+header button.bg-emerald-400 {
+  background: #13c98b !important;
+  color: #03120c !important;
+}
+
+/* Make descriptive text less tall */
+.opacity-55,
+.opacity-60,
+.opacity-65,
+.opacity-70,
+.opacity-75 {
+  line-height: 1.35 !important;
+}
+
+/* Action Report specific density */
+main h2 + p,
+main h1 + p {
+  margin-top: 4px !important;
+}
+
+/* Reduce vertical margin blocks */
+.mt-5,
+.mt-6,
+.mt-7,
+.mt-8 {
+  margin-top: 10px !important;
+}
+
+.mt-4 {
+  margin-top: 8px !important;
+}
+
+.mt-3 {
+  margin-top: 6px !important;
+}
+
+.mb-5,
+.mb-6,
+.mb-7,
+.mb-8 {
+  margin-bottom: 10px !important;
+}
+
+.mb-4 {
+  margin-bottom: 8px !important;
+}
+
+.mb-3 {
+  margin-bottom: 6px !important;
+}
+
+/* Better compact scrollbars */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(140, 140, 140, 0.35);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Mobile still usable */
+@media (max-width: 768px) {
+  main > div {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .text-3xl {
+    font-size: 20px !important;
+  }
+
+  .text-2xl {
+    font-size: 17px !important;
+  }
+
+  table td,
+  table th {
+    font-size: 10.5px !important;
+    padding: 6px 8px !important;
+  }
+
+  .metaos-scroll-table table {
+    min-width: 880px;
+  }
+}
