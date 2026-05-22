@@ -223,11 +223,11 @@ export function MetaOSShell({
         className={
           isDark
             ? isGoogle
-              ? "metaos-app metaos-dark min-h-screen overflow-x-hidden bg-[#050806] text-white"
-              : "metaos-app metaos-dark min-h-screen overflow-x-hidden bg-[#050607] text-white"
+              ? "metaos-app metaos-dark min-h-screen overflow-x-hidden"
+              : "metaos-app metaos-dark min-h-screen overflow-x-hidden"
             : isGoogle
-            ? "metaos-app metaos-light min-h-screen overflow-x-hidden bg-[#f7f8f5] text-[#141414]"
-            : "metaos-app metaos-light min-h-screen overflow-x-hidden bg-[#f7f8f5] text-[#141414]"
+            ? "metaos-app metaos-light min-h-screen overflow-x-hidden"
+            : "metaos-app metaos-light min-h-screen overflow-x-hidden"
         }
       >
         <header className={isDark ? "sticky top-0 z-40 border-b border-white/10 bg-[#080a0d]/92 backdrop-blur-2xl" : "sticky top-0 z-40 border-b border-black/10 bg-white/92 backdrop-blur-2xl"}>

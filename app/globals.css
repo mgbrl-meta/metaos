@@ -1591,3 +1591,309 @@ html:not(.dark) tbody tr {
 html:not(.dark) main [style*="background"] [class*="text-white"] {
   color: #151515 !important;
 }
+
+/* =========================================================
+   FINAL OS THEME CONTRACT — DO NOT ADD COLOR OVERRIDES ABOVE THIS
+   Fixes dark/light readability globally across Meta OS + Google OS.
+   ========================================================= */
+
+/* ---------- DARK MODE: every normal surface/text must be readable ---------- */
+.metaos-app.metaos-dark,
+.metaos-app.metaos-dark header,
+.metaos-app.metaos-dark main,
+.metaos-app.metaos-dark aside {
+  background-color: #050607 !important;
+  color: #f4f4f5 !important;
+}
+
+.metaos-app.metaos-dark main *,
+.metaos-app.metaos-dark header *,
+.metaos-app.metaos-dark aside * {
+  color: inherit;
+}
+
+/* Dark cards/surfaces */
+.metaos-app.metaos-dark main [class*="bg-current/"],
+.metaos-app.metaos-dark main [class*="bg-white/"],
+.metaos-app.metaos-dark header [class*="bg-current/"],
+.metaos-app.metaos-dark header [class*="bg-white/"] {
+  background-color: rgba(255, 255, 255, 0.035) !important;
+  color: #f4f4f5 !important;
+}
+
+/* Dark borders */
+.metaos-app.metaos-dark [class*="border-current/"],
+.metaos-app.metaos-dark [class*="border-white/"],
+.metaos-app.metaos-dark .border {
+  border-color: rgba(255, 255, 255, 0.11) !important;
+}
+
+/* Dark muted text */
+.metaos-app.metaos-dark .opacity-35,
+.metaos-app.metaos-dark .opacity-40,
+.metaos-app.metaos-dark .opacity-45,
+.metaos-app.metaos-dark .opacity-50,
+.metaos-app.metaos-dark .opacity-55,
+.metaos-app.metaos-dark .opacity-60,
+.metaos-app.metaos-dark .opacity-65,
+.metaos-app.metaos-dark .opacity-70,
+.metaos-app.metaos-dark .opacity-75 {
+  opacity: 1 !important;
+  color: rgba(244, 244, 245, 0.58) !important;
+}
+
+/* Dark red panels */
+.metaos-app.metaos-dark [class*="bg-red-400/10"],
+.metaos-app.metaos-dark [class*="bg-rose-400/10"] {
+  background: rgba(180, 35, 24, 0.14) !important;
+  border-color: rgba(180, 35, 24, 0.34) !important;
+  color: #f4f4f5 !important;
+}
+
+/* Dark green panels */
+.metaos-app.metaos-dark [class*="bg-emerald-400/10"],
+.metaos-app.metaos-dark [class*="bg-green-400/10"] {
+  background: rgba(8, 127, 91, 0.15) !important;
+  border-color: rgba(8, 127, 91, 0.34) !important;
+  color: #f4f4f5 !important;
+}
+
+/* ---------- LIGHT MODE: every normal surface/text must be readable ---------- */
+.metaos-app.metaos-light,
+.metaos-app.metaos-light header,
+.metaos-app.metaos-light main,
+.metaos-app.metaos-light aside {
+  background-color: #f7f8f5 !important;
+  color: #151515 !important;
+}
+
+.metaos-app.metaos-light main *,
+.metaos-app.metaos-light header *,
+.metaos-app.metaos-light aside * {
+  color: inherit;
+}
+
+/* Light cards/surfaces */
+.metaos-app.metaos-light main [class*="bg-current/"],
+.metaos-app.metaos-light main [class*="bg-white/"],
+.metaos-app.metaos-light header [class*="bg-current/"],
+.metaos-app.metaos-light header [class*="bg-white/"] {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  color: #151515 !important;
+}
+
+/* Light borders */
+.metaos-app.metaos-light [class*="border-current/"],
+.metaos-app.metaos-light [class*="border-white/"],
+.metaos-app.metaos-light .border {
+  border-color: rgba(20, 20, 20, 0.12) !important;
+}
+
+/* Light muted text */
+.metaos-app.metaos-light .opacity-35,
+.metaos-app.metaos-light .opacity-40,
+.metaos-app.metaos-light .opacity-45,
+.metaos-app.metaos-light .opacity-50,
+.metaos-app.metaos-light .opacity-55,
+.metaos-app.metaos-light .opacity-60,
+.metaos-app.metaos-light .opacity-65,
+.metaos-app.metaos-light .opacity-70,
+.metaos-app.metaos-light .opacity-75 {
+  opacity: 1 !important;
+  color: rgba(20, 20, 20, 0.58) !important;
+}
+
+/* Light red panels */
+.metaos-app.metaos-light [class*="bg-red-400/10"],
+.metaos-app.metaos-light [class*="bg-rose-400/10"] {
+  background: #fff3f1 !important;
+  border-color: rgba(180, 35, 24, 0.24) !important;
+  color: #23110f !important;
+}
+
+/* Light green panels */
+.metaos-app.metaos-light [class*="bg-emerald-400/10"],
+.metaos-app.metaos-light [class*="bg-green-400/10"] {
+  background: #eefaf4 !important;
+  border-color: rgba(8, 127, 91, 0.24) !important;
+  color: #0f241b !important;
+}
+
+/* ---------- Judgment colors must always survive ---------- */
+.metaos-app .text-red-300,
+.metaos-app .text-red-400,
+.metaos-app .text-rose-300,
+.metaos-app .text-rose-400 {
+  color: #b42318 !important;
+}
+
+.metaos-app.metaos-dark .text-red-300,
+.metaos-app.metaos-dark .text-red-400,
+.metaos-app.metaos-dark .text-rose-300,
+.metaos-app.metaos-dark .text-rose-400 {
+  color: #ff6b5f !important;
+}
+
+.metaos-app .text-emerald-300,
+.metaos-app .text-emerald-400,
+.metaos-app .text-green-300,
+.metaos-app .text-green-400 {
+  color: #087f5b !important;
+}
+
+.metaos-app.metaos-dark .text-emerald-300,
+.metaos-app.metaos-dark .text-emerald-400,
+.metaos-app.metaos-dark .text-green-300,
+.metaos-app.metaos-dark .text-green-400 {
+  color: #34d399 !important;
+}
+
+.metaos-app .text-\[\#0A84FF\] {
+  color: #0A84FF !important;
+}
+
+/* ---------- Active nav buttons must keep contrast ---------- */
+.metaos-app button.bg-\[\#0A84FF\],
+.metaos-app button.bg-\[\#0A84FF\] *,
+.metaos-app .bg-\[\#0A84FF\],
+.metaos-app .bg-\[\#0A84FF\] * {
+  background-color: #0A84FF !important;
+  color: #ffffff !important;
+}
+
+.metaos-app button.bg-emerald-400,
+.metaos-app button.bg-emerald-400 *,
+.metaos-app .bg-emerald-400,
+.metaos-app .bg-emerald-400 * {
+  background-color: #13c98b !important;
+  color: #04140d !important;
+}
+
+/* ---------- Compact AOP-style density ---------- */
+.metaos-app main {
+  font-size: 12px !important;
+}
+
+.metaos-app main > div {
+  padding-top: 8px !important;
+}
+
+.metaos-app section {
+  padding: 10px 14px !important;
+  margin-bottom: 8px !important;
+  border-radius: 10px !important;
+}
+
+.metaos-app .rounded-\[2rem\],
+.metaos-app .rounded-\[1\.5rem\],
+.metaos-app .rounded-3xl,
+.metaos-app .rounded-2xl,
+.metaos-app .rounded-xl {
+  border-radius: 10px !important;
+}
+
+.metaos-app .p-8,
+.metaos-app .p-7,
+.metaos-app .p-6 {
+  padding: 12px !important;
+}
+
+.metaos-app .p-5,
+.metaos-app .p-4 {
+  padding: 10px !important;
+}
+
+.metaos-app .gap-8,
+.metaos-app .gap-7,
+.metaos-app .gap-6 {
+  gap: 10px !important;
+}
+
+.metaos-app .gap-5,
+.metaos-app .gap-4 {
+  gap: 8px !important;
+}
+
+.metaos-app .text-5xl {
+  font-size: 28px !important;
+  line-height: 1.05 !important;
+}
+
+.metaos-app .text-4xl {
+  font-size: 24px !important;
+  line-height: 1.08 !important;
+}
+
+.metaos-app .text-3xl {
+  font-size: 21px !important;
+  line-height: 1.1 !important;
+}
+
+.metaos-app .text-2xl {
+  font-size: 18px !important;
+  line-height: 1.15 !important;
+}
+
+.metaos-app .text-xl {
+  font-size: 15px !important;
+  line-height: 1.2 !important;
+}
+
+.metaos-app .text-lg {
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+}
+
+/* ---------- Tables ---------- */
+.metaos-app table th {
+  font-size: 9.5px !important;
+  padding: 6px 8px !important;
+  line-height: 1.15 !important;
+}
+
+.metaos-app table td {
+  font-size: 11px !important;
+  padding: 6px 8px !important;
+  line-height: 1.22 !important;
+}
+
+.metaos-app tbody tr {
+  border-color: rgba(130, 130, 130, 0.14) !important;
+}
+
+/* ---------- Charts ---------- */
+.metaos-app .recharts-text {
+  fill: currentColor !important;
+  opacity: 0.62 !important;
+  font-size: 10px !important;
+}
+
+.metaos-app .recharts-cartesian-grid line {
+  stroke-opacity: 0.18 !important;
+}
+
+.recharts-tooltip-wrapper,
+.recharts-tooltip-wrapper * {
+  color: #ffffff !important;
+}
+
+/* ---------- Remove heavy glow ---------- */
+.metaos-app .shadow-2xl,
+.metaos-app .shadow-xl,
+.metaos-app [class*="shadow-["] {
+  box-shadow: none !important;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 768px) {
+  .metaos-app main > div {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .metaos-app table td,
+  .metaos-app table th {
+    font-size: 10.5px !important;
+    padding: 6px 8px !important;
+  }
+}
