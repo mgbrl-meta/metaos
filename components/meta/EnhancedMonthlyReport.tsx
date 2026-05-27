@@ -61,6 +61,16 @@ function shortWeekLabel(value?: string) {
   return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
+function monthNameLabel(value?: string) {
+  const d = parseDate(value);
+  if (!d) return "";
+
+  return d.toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+  });
+}
+
 const MONTH_COLORS = [
   "#2563eb",
   "#16a34a",
@@ -92,15 +102,18 @@ function buildWeeklyRows(rows: Row[]) {
     map.get(key)!.push(row);
   });
 
-  return Array.from(map.entries())
+  const weekly = Array.from(map.entries())
     .map(([week, weekRows]) => {
       const s = summarize(weekRows);
       const month = monthKey(week);
+      const monthLabel = monthNameLabel(week);
 
       return {
         week,
         label: shortWeekLabel(week),
         month,
+        monthLabel,
+        monthTick: "",
         spend: s.spend,
         spendLog: Math.max(s.spend, 1),
         revenue: s.revenue,
@@ -111,68 +124,23 @@ function buildWeeklyRows(rows: Row[]) {
       };
     })
     .sort((a, b) => a.week.localeCompare(b.week));
-}
 
-function getSpend(row: Row) {
-  return Number(row.spend ?? row.amountSpent ?? row.amount_spent ?? row["Amount spent (INR)"] ?? 0);
-}
+  const seenMonths = new Set<string>();
 
-function getRevenue(row: Row) {
-  return Number(
-    row.revenue ??
-      row.purchaseValue ??
-      row.purchase_value ??
-      row.conversionValue ??
-      row.conversion_value ??
-      row["Purchases conversion value"] ??
-      0
-  );
-}
+  return weekly.map((row) => {
+    if (!seenMonths.has(row.month)) {
+      seenMonths.add(row.month);
+      return {
+        ...row,
+        monthTick: row.monthLabel,
+      };
+    }
 
-function getPurchases(row: Row) {
-  return Number(row.purchases ?? row.Purchases ?? 0);
-}
-
-function getImpressions(row: Row) {
-  return Number(row.impressions ?? row.Impressions ?? 0);
-}
-
-function getClicks(row: Row) {
-  return Number(
-    row.clicks ??
-      row.linkClicks ??
-      row.link_clicks ??
-      row.outboundClicks ??
-      row.outbound_clicks ??
-      row["Link clicks"] ??
-      row["Clicks (all)"] ??
-      0
-  );
-}
-
-function summarize(rows: Row[]) {
-  const spend = rows.reduce((s, r) => s + getSpend(r), 0);
-  const revenue = rows.reduce((s, r) => s + getRevenue(r), 0);
-  const purchases = rows.reduce((s, r) => s + getPurchases(r), 0);
-  const impressions = rows.reduce((s, r) => s + getImpressions(r), 0);
-  const clicks = rows.reduce((s, r) => s + getClicks(r), 0);
-
-  return {
-    spend,
-    revenue,
-    purchases,
-    impressions,
-    clicks,
-    roas: safeDiv(revenue, spend),
-    cpa: safeDiv(spend, purchases),
-    ctr: safeDiv(clicks, impressions),
-    purchaseCvr: safeDiv(purchases, clicks),
-  };
-}
-
-function change(current: number, prior: number) {
-  if (!prior) return 0;
-  return (current - prior) / prior;
+    return {
+      ...row,
+      monthTick: "",
+    };
+  });
 }
 
 function buildMonthlyRows(rows: Row[]) {
@@ -352,7 +320,7 @@ export function EnhancedMonthlyReport() {
             <BarChart data={data.weeklyRows} margin={{ top: 10, right: 24, left: 16, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.18)" />
               <XAxis
-                dataKey="label"
+                dataKey="monthTick"
                 tick={{ fontSize: 10, fill: "currentColor" }}
                 axisLine={false}
                 tickLine={false}
@@ -398,7 +366,7 @@ export function EnhancedMonthlyReport() {
                 }}
                 labelFormatter={(_, payload) => {
                   const row = Array.isArray(payload) ? payload?.[0]?.payload : undefined;
-                  return row ? `Week ${row.week} · ${row.month}` : "";
+                  return row ? `${row.monthLabel} · Week starting ${row.week}` : "";
                 }}
               />
 
@@ -432,7 +400,7 @@ export function EnhancedMonthlyReport() {
                 className="h-2.5 w-2.5 rounded-full"
                 style={{ backgroundColor: monthColor(month) }}
               />
-              {month}
+              {monthNameLabel(`${month}-01`)}
             </span>
           ))}
         </div>
@@ -506,7 +474,7 @@ export function EnhancedMonthlyReport() {
                 }}
                 labelFormatter={(_, payload) => {
                   const row = Array.isArray(payload) ? payload?.[0]?.payload : undefined;
-                  return row ? `Week ${row.week} · ${row.month}` : "";
+                  return row ? `${row.monthLabel} · Week starting ${row.week}` : "";
                 }}
               />
 
