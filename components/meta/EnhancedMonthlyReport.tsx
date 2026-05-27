@@ -8,6 +8,8 @@ import {
   CartesianGrid,
   Cell,
   Line,
+  Scatter,
+  ScatterChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -433,6 +435,117 @@ export function EnhancedMonthlyReport() {
               {month}
             </span>
           ))}
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-current/10 bg-current/[0.025] p-4">
+        <div className="mb-3 flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#0A84FF]">
+              Weekly Scale Efficiency
+            </p>
+            <h2 className="text-lg font-black">Weekly Spend vs Weekly CPA Scatter</h2>
+            <p className="mt-1 text-sm opacity-60">
+              Each dot is one week. X-axis shows weekly spend, Y-axis shows weekly CPA. Dot color changes by month.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.1em] opacity-70">
+            <span>X: Weekly Spend</span>
+            <span>Y: Weekly CPA</span>
+            <span>Dot: Week</span>
+          </div>
+        </div>
+
+        <div className="h-[320px] w-full">
+          <ResponsiveContainer width="100%" height={320}>
+            <ScatterChart margin={{ top: 10, right: 24, left: 16, bottom: 12 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.18)" />
+
+              <XAxis
+                type="number"
+                dataKey="spend"
+                name="Weekly Spend"
+                tick={{ fontSize: 10, fill: "currentColor" }}
+                axisLine={false}
+                tickLine={false}
+                width={72}
+                tickFormatter={(v) => {
+                  const n = Number(v || 0);
+                  if (n >= 10000000) return `₹${(n / 10000000).toFixed(1)}Cr`;
+                  if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
+                  if (n >= 1000) return `₹${Math.round(n / 1000)}K`;
+                  return `₹${Math.round(n)}`;
+                }}
+              />
+
+              <YAxis
+                type="number"
+                dataKey="cpa"
+                name="Weekly CPA"
+                tick={{ fontSize: 10, fill: "currentColor" }}
+                axisLine={false}
+                tickLine={false}
+                width={72}
+                tickFormatter={(v) => `₹${Math.round(Number(v || 0))}`}
+              />
+
+              <Tooltip
+                cursor={{ strokeDasharray: "3 3" }}
+                contentStyle={{
+                  background: "#111318",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  borderRadius: 10,
+                  color: "white",
+                  fontSize: 11,
+                }}
+                formatter={(value: any, name: any) => {
+                  if (name === "Weekly Spend") return [money(Number(value || 0)), "Weekly Spend"];
+                  if (name === "Weekly CPA") return [money(Number(value || 0)), "Weekly CPA"];
+                  return [value, name];
+                }}
+                labelFormatter={(_, payload) => {
+                  const row = Array.isArray(payload) ? payload?.[0]?.payload : undefined;
+                  return row ? `Week ${row.week} · ${row.month}` : "";
+                }}
+              />
+
+              <Scatter
+                name="Weekly Spend vs CPA"
+                data={data.weeklyRows.filter((row: any) => row.spend > 0 && row.cpa !== null && row.cpa > 0)}
+                fill="#0A84FF"
+              >
+                {data.weeklyRows
+                  .filter((row: any) => row.spend > 0 && row.cpa !== null && row.cpa > 0)
+                  .map((entry: any) => (
+                    <Cell key={`scatter-${entry.week}`} fill={entry.color} />
+                  ))}
+              </Scatter>
+            </ScatterChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="mt-3 grid gap-2 md:grid-cols-3">
+          <div className="rounded-lg border border-current/10 bg-current/[0.025] p-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-55">How to read</p>
+            <p className="mt-1 text-xs leading-5 opacity-70">
+              Dots moving right means higher weekly spend. Dots moving up means CPA became worse.
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-current/10 bg-current/[0.025] p-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-55">Good scale zone</p>
+            <p className="mt-1 text-xs leading-5 text-emerald-600 dark:text-emerald-300">
+              Higher spend with flat or lower CPA means scaling is healthy.
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-current/10 bg-current/[0.025] p-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-55">Bad scale zone</p>
+            <p className="mt-1 text-xs leading-5 text-red-600 dark:text-red-300">
+              Higher spend with sharply higher CPA means marginal efficiency is breaking.
+            </p>
+          </div>
         </div>
       </section>
 
