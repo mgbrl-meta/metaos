@@ -133,37 +133,110 @@ function getRevenue(row: Row) {
  *
  * If your sheet uses different names, just add them inside these key arrays.
  */
+function getRawNumber(row: Row, possibleNames: string[]) {
+  const normalize = (x: string) =>
+    String(x || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+
+  const wanted = possibleNames.map(normalize);
+
+  for (const [key, raw] of Object.entries(row)) {
+    const nk = normalize(key);
+    const matched = wanted.some((w) => nk === w || nk.includes(w) || w.includes(nk));
+    if (!matched) continue;
+
+    if (raw === undefined || raw === null || raw === "") return 0;
+
+    if (typeof raw === "number") return Number.isFinite(raw) ? raw : 0;
+
+    const cleaned = String(raw)
+      .replace(/₹/g, "")
+      .replace(/,/g, "")
+      .replace(/%/g, "")
+      .trim();
+
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  return 0;
+}
+
 function getHookViews(row: Row) {
-  return value(row, [
-    "threeSecondVideoViews",
-    "three_second_video_views",
-    "3SecondVideoViews",
-    "3_second_video_views",
-    "video_3_sec_watched_actions",
-    "Video plays at 3 seconds",
+  // Google Sheet exact column:
+  // "3-second video plays"
+  return getRawNumber(row, [
     "3-second video plays",
-    "3-second video views",
-    "ThruPlay 3 sec",
+    "3 second video plays",
+    "3-second video play",
+    "3 second video play",
+    "3_second_video_plays",
+    "three second video plays",
+    "three_second_video_plays",
+  ]);
+}
+
+function getVideoPlays(row: Row) {
+  // Google Sheet exact column:
+  // "Video plays"
+  return getRawNumber(row, [
+    "Video plays",
+    "video plays",
+    "video_plays",
+    "Video play",
+    "video play",
   ]);
 }
 
 function getHoldViews(row: Row) {
-  return value(row, [
-    "thruPlays",
+  // Google Sheet exact column:
+  // "Thruplays"
+  return getRawNumber(row, [
+    "Thruplays",
     "thruplays",
-    "thru_play",
-    "ThruPlays",
-    "ThruPlay",
-    "video_thruplay_watched_actions",
-    "Video thruplays",
-    "15SecondVideoViews",
-    "fifteenSecondVideoViews",
-    "video_15_sec_watched_actions",
-    "Video plays at 15 seconds",
-    "video_p25_watched_actions",
-    "Video plays at 25%",
-    "25% video views",
+    "Thruplay",
+    "thruplay",
+    "Thru plays",
+    "thru plays",
+    "thru_plays",
   ]);
+}
+
+function getAvgPlayTime(row: Row) {
+  // Google Sheet exact column:
+  // "video average play time (in seconds)"
+  return getRawNumber(row, [
+    "video average play time (in seconds)",
+    "Video average play time (in seconds)",
+    "video_average_play_time_in_seconds",
+    "video average play time",
+    "average play time",
+    "avg play time",
+  ]);
+}
+
+function getAvailableVideoColumns(rows: Row[]) {
+  const keys = new Set<string>();
+
+  rows.slice(0, 200).forEach((row) => {
+    Object.keys(row || {}).forEach((key) => {
+      const k = String(key || "").toLowerCase();
+
+      if (
+        k.includes("video") ||
+        k.includes("thru") ||
+        k.includes("play") ||
+        k.includes("3-second") ||
+        k.includes("3 second") ||
+        k.includes("average play")
+      ) {
+        keys.add(key);
+      }
+    });
+  });
+
+  return Array.from(keys).sort();
 }
 
 function latestDate(rows: Row[]) {
@@ -179,11 +252,15 @@ function summarize(rows: Row[]) {
   const clicks = rows.reduce((s, r) => s + getClicks(r), 0);
   const purchases = rows.reduce((s, r) => s + getPurchases(r), 0);
   const revenue = rows.reduce((s, r) => s + getRevenue(r), 0);
+  const videoPlays = rows.reduce((s, r) => s + getVideoPlays(r), 0);
   const hookViews = rows.reduce((s, r) => s + getHookViews(r), 0);
   const holdViews = rows.reduce((s, r) => s + getHoldViews(r), 0);
+  const avgPlayTimeNumerator = rows.reduce((s, r) => s + getAvgPlayTime(r) * Math.max(getVideoPlays(r), getHookViews(r), 1), 0);
+  const avgPlayTimeDenominator = rows.reduce((s, r) => s + Math.max(getVideoPlays(r), getHookViews(r), 0), 0);
 
   const hookRate = safeDiv(hookViews, impressions);
   const holdRate = safeDiv(holdViews, hookViews);
+  const avgPlayTime = safeDiv(avgPlayTimeNumerator, avgPlayTimeDenominator);
 
   return {
     spend,
@@ -192,10 +269,12 @@ function summarize(rows: Row[]) {
     clicks,
     purchases,
     revenue,
+    videoPlays,
     hookViews,
     holdViews,
     hookRate,
     holdRate,
+    avgPlayTime,
     roas: safeDiv(revenue, spend),
     cpa: safeDiv(spend, purchases),
     ctr: safeDiv(clicks, impressions),
@@ -224,6 +303,7 @@ function dailyTrend(rows: Row[]) {
         label: displayDate(date),
         hookRate: s.hookRate,
         holdRate: s.holdRate,
+        avgPlayTime: s.avgPlayTime,
         roas: s.roas,
         cpa: s.cpa,
         spend: s.spend,
@@ -288,8 +368,9 @@ function buildCreatives(rows: Row[]) {
 function learningBullets(item: any) {
   const bullets = [];
 
-  bullets.push(`Hook rate is ${pct(item.lifetime.hookRate)} from ${num(item.lifetime.hookViews, 0)} hook views.`);
-  bullets.push(`Hold rate is ${pct(item.lifetime.holdRate)} from ${num(item.lifetime.holdViews, 0)} hold views.`);
+  bullets.push(`Hook rate is ${pct(item.lifetime.hookRate)} from ${num(item.lifetime.hookViews, 0)} 3-second video plays.`);
+  bullets.push(`Hold rate is ${pct(item.lifetime.holdRate)} from ${num(item.lifetime.holdViews, 0)} Thruplays.`);
+  bullets.push(`Average video play time is ${num(item.lifetime.avgPlayTime, 1)} seconds.`);
   bullets.push(`Lifetime ROAS is ${num(item.lifetime.roas)}x with ${num(item.lifetime.purchases, 0)} purchases.`);
 
   if (item.lifetime.hookRate >= 0.25) {
@@ -439,7 +520,7 @@ export function HookHoldCreativeTab() {
         <div className="divide-y divide-current/10">
           {data.creatives.map((item, index) => (
             <details key={item.key} className="group">
-              <summary className="grid cursor-pointer list-none grid-cols-[1fr_90px_90px_90px_85px_75px_75px_24px] items-center gap-3 px-4 py-3 text-xs hover:bg-current/[0.035]">
+              <summary className="grid cursor-pointer list-none grid-cols-[1fr_90px_90px_90px_85px_75px_75px_75px_24px] items-center gap-3 px-4 py-3 text-xs hover:bg-current/[0.035]">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <WinnerPill>{topLabel(item)}</WinnerPill>
@@ -462,6 +543,7 @@ export function HookHoldCreativeTab() {
                 <Metric label="ROAS" value={num(item.lifetime.roas)} tone={item.lifetime.roas >= 1 ? "green" : "red"} />
                 <Metric label="Hook" value={pct(item.lifetime.hookRate)} tone={item.lifetime.hookRate >= 0.25 ? "green" : undefined} />
                 <Metric label="Hold" value={pct(item.lifetime.holdRate)} tone={item.lifetime.holdRate >= 0.3 ? "green" : undefined} />
+                <Metric label="Avg Time" value={`${num(item.lifetime.avgPlayTime, 1)}s`} />
                 <Metric label="CPA" value={money(item.lifetime.cpa)} />
                 <ChevronDown className="h-4 w-4 opacity-45 transition group-open:rotate-180" />
               </summary>
