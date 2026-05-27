@@ -394,8 +394,8 @@ export function EnhancedMonthlyReport() {
                   if (name === "CPA") return [money(Number(value || 0)), "CPA"];
                   return [value, name];
                 }}
-                labelFormatter={(_, payload: any[]) => {
-                  const row = payload?.[0]?.payload;
+                labelFormatter={(_, payload) => {
+                  const row = Array.isArray(payload) ? payload?.[0]?.payload : undefined;
                   return row ? `Week ${row.week} · ${row.month}` : "";
                 }}
               />
