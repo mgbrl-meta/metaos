@@ -21,6 +21,7 @@ import { HookHoldCreativeTab } from "@/components/meta/HookHoldCreativeTab";
 import { StructureReport } from "@/components/dashboard/StructureReport";
 import { DailySummaryExport } from "@/components/dashboard/DailySummaryExport";
 import { MetaExecutiveSummary } from "@/components/meta/MetaExecutiveSummary";
+import { EnhancedMonthlyReport } from "@/components/meta/EnhancedMonthlyReport";
 import { MonthlyPerformance } from "@/components/dashboard/MonthlyPerformance";
 import { SettingsPanel } from "@/components/settings/SettingsPanel";
 
@@ -72,6 +73,7 @@ export default function Home() {
           {activeMetaTab === "hook_hold" && <HookHoldCreativeTab />}
           {activeMetaTab === "structure_report" && <StructureReport />}
           {activeMetaTab === "summary" && <MetaExecutiveSummary />}
+          {activeMetaTab === "monthly" && <EnhancedMonthlyReport />}
           {activeMetaTab === "monthly" && <MonthlyPerformance />}
         </>
       )}
