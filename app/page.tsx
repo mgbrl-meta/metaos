@@ -15,6 +15,7 @@ import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
 import { CreativeActions } from "@/components/dashboard/CreativeActions";
 import { StructureReport } from "@/components/dashboard/StructureReport";
 import { DailySummaryExport } from "@/components/dashboard/DailySummaryExport";
+import { MetaExecutiveSummary } from "@/components/meta/MetaExecutiveSummary";
 import { MonthlyPerformance } from "@/components/dashboard/MonthlyPerformance";
 import { SettingsPanel } from "@/components/settings/SettingsPanel";
 
@@ -68,7 +69,7 @@ export default function Home() {
             </div>
           )}
           {activeMetaTab === "structure_report" && <StructureReport />}
-          {activeMetaTab === "summary" && <DailySummaryExport />}
+          {activeMetaTab === "summary" && <MetaExecutiveSummary />}
           {activeMetaTab === "monthly" && <MonthlyPerformance />}
         </>
       )}
