@@ -16,6 +16,7 @@ import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
 import { CreativeActions } from "@/components/dashboard/CreativeActions";
 import { CompactCreativeAudit } from "@/components/meta/CompactCreativeAudit";
 import { WinnerCreativeTab } from "@/components/meta/WinnerCreativeTab";
+import { HookHoldCreativeTab } from "@/components/meta/HookHoldCreativeTab";
 import { StructureReport } from "@/components/dashboard/StructureReport";
 import { DailySummaryExport } from "@/components/dashboard/DailySummaryExport";
 import { MetaExecutiveSummary } from "@/components/meta/MetaExecutiveSummary";
@@ -66,6 +67,7 @@ export default function Home() {
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
           {activeMetaTab === "creative" && <CompactCreativeAudit />}
           {activeMetaTab === "winner" && <WinnerCreativeTab />}
+          {activeMetaTab === "hook_hold" && <HookHoldCreativeTab />}
           {activeMetaTab === "structure_report" && <StructureReport />}
           {activeMetaTab === "summary" && <MetaExecutiveSummary />}
           {activeMetaTab === "monthly" && <MonthlyPerformance />}

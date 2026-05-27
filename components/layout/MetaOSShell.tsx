@@ -16,6 +16,7 @@ import {
   X,
   Zap,
   Trophy,
+  MousePointerClick,
 } from "lucide-react";
 import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
 
@@ -28,6 +29,7 @@ export type MetaTab =
   | "spend_visuals"
   | "creative"
   | "winner"
+  | "hook_hold"
   | "structure_report"
   | "summary"
   | "monthly";
@@ -92,6 +94,13 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "Winner",
     description: "Top performing creative learnings",
     icon: Trophy,
+  },
+  {
+    id: "hook_hold",
+    label: "Hook / Hold",
+    shortLabel: "Hook / Hold",
+    description: "Top hook rate and hold rate creatives",
+    icon: MousePointerClick,
   },
   {
     id: "structure_report",
