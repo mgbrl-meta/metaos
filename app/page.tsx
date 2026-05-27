@@ -10,6 +10,7 @@ import {
 
 import { ActionReport } from "@/components/dashboard/ActionReport";
 import { CompactActionReport } from "@/components/meta/CompactActionReport";
+import { BudgetIntelligenceTab } from "@/components/meta/BudgetIntelligenceTab";
 import { EfficiencyGaps } from "@/components/dashboard/EfficiencyGaps";
 import { BenchmarkAudit } from "@/components/dashboard/BenchmarkAudit";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
@@ -62,6 +63,7 @@ export default function Home() {
         <>
           <AutoMetaSheetLoader />
           {activeMetaTab === "action_report" && <CompactActionReport />}
+          {activeMetaTab === "budget_intelligence" && <BudgetIntelligenceTab />}
           {activeMetaTab === "roi_gap" && <EfficiencyGaps />}
           {activeMetaTab === "benchmark_audit" && <BenchmarkAudit />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}

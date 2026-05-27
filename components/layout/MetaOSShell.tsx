@@ -15,6 +15,7 @@ import {
   Sparkles,
   X,
   Zap,
+  PiggyBank,
   Trophy,
   MousePointerClick,
 } from "lucide-react";
@@ -25,6 +26,7 @@ export type OSMode = "meta" | "google";
 export type MetaTab =
   | "action_report"
   | "roi_gap"
+  | "budget_intelligence"
   | "benchmark_audit"
   | "spend_visuals"
   | "creative"
@@ -59,6 +61,13 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "Action",
     description: "Pause, reduce, scale, protect",
     icon: Grid2X2,
+  },
+  {
+    id: "budget_intelligence",
+    label: "Budget Intelligence",
+    shortLabel: "Budget",
+    description: "Winner share, waste share and marginal scale",
+    icon: PiggyBank,
   },
   {
     id: "roi_gap",
