@@ -379,3 +379,85 @@ html.os-dark .metaos-app .recharts-text {
     min-width: 900px;
   }
 }
+
+
+/* =========================================================
+   FINAL TABLE HEADER FIX
+   Reason: broad bg-[#...] overrides were catching bg-[#14233b].
+   This must stay at the END of the file.
+   ========================================================= */
+
+[data-os-root="true"] table thead,
+[data-os-root="true"] table thead tr,
+[data-os-root="true"] table thead th,
+[data-os-root="true"] table tr[class*="bg-[#14233b]"],
+[data-os-root="true"] table tr[class*="bg-[#14233b]"] th {
+  background: #14233b !important;
+  background-color: #14233b !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+[data-os-root="true"] table thead *,
+[data-os-root="true"] table thead th *,
+[data-os-root="true"] table tr[class*="bg-[#14233b]"] *,
+[data-os-root="true"] table tr[class*="bg-[#14233b]"] th * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  background: transparent !important;
+}
+
+[data-os-root="true"] table tbody,
+[data-os-root="true"] table tbody tr,
+[data-os-root="true"] table tbody td,
+[data-os-root="true"] table tbody th {
+  background: var(--os-card) !important;
+  color: var(--os-text) !important;
+}
+
+[data-os-root="true"] table tbody .font-black,
+[data-os-root="true"] table tbody .font-bold {
+  color: var(--os-text) !important;
+}
+
+[data-os-root="true"] table tbody .text-red-300,
+[data-os-root="true"] table tbody .text-red-400,
+[data-os-root="true"] table tbody .text-red-500,
+[data-os-root="true"] table tbody .text-red-600,
+[data-os-root="true"] table tbody .text-red-700 {
+  color: var(--os-bad) !important;
+}
+
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-red-300,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-red-400,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-red-500,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-red-600,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-red-700 {
+  color: var(--os-bad-dark) !important;
+}
+
+[data-os-root="true"] table tbody .text-emerald-300,
+[data-os-root="true"] table tbody .text-emerald-400,
+[data-os-root="true"] table tbody .text-emerald-500,
+[data-os-root="true"] table tbody .text-emerald-600,
+[data-os-root="true"] table tbody .text-emerald-700,
+[data-os-root="true"] table tbody .text-green-300,
+[data-os-root="true"] table tbody .text-green-400,
+[data-os-root="true"] table tbody .text-green-500,
+[data-os-root="true"] table tbody .text-green-600,
+[data-os-root="true"] table tbody .text-green-700 {
+  color: var(--os-good) !important;
+}
+
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-emerald-300,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-emerald-400,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-emerald-500,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-emerald-600,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-emerald-700,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-green-300,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-green-400,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-green-500,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-green-600,
+[data-os-root="true"][data-os-theme="dark"] table tbody .text-green-700 {
+  color: var(--os-good-dark) !important;
+}
