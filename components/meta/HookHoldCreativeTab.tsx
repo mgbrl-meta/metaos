@@ -236,8 +236,21 @@ function buildCreatives(rows: Row[]) {
   const map = new Map<string, Row[]>();
   const latest = latestDate(rows);
 
+  const yesterdayActiveAdIds = new Set(
+    rows
+      .filter((row) => dateKey(getDate(row)) === latest)
+      .filter((row) => getSpend(row) > 0)
+      .map((row) => getAdId(row))
+  );
+
   rows.forEach((row) => {
     const key = getAdId(row);
+
+    // IMPORTANT:
+    // Only include ads that spent yesterday.
+    // Lifetime data is used only after the creative qualifies as active.
+    if (!yesterdayActiveAdIds.has(key)) return;
+
     if (!map.has(key)) map.set(key, []);
     map.get(key)!.push(row);
   });
@@ -266,8 +279,8 @@ function buildCreatives(rows: Row[]) {
         combinedScore,
       };
     })
+    .filter((item) => item.yesterday.spend > 0)
     .filter((item) => item.lifetime.spend > MIN_LIFETIME_SPEND)
-    .filter((item) => item.lifetime.purchases > MIN_LIFETIME_PURCHASES)
     .filter((item) => item.lifetime.impressions > 0)
     .sort((a, b) => b.combinedScore - a.combinedScore);
 }
@@ -369,12 +382,12 @@ export function HookHoldCreativeTab() {
             </p>
             <h1 className="mt-1 text-2xl font-black">Top Hook Rate & Hold Rate Creatives</h1>
             <p className="mt-1 text-sm opacity-60">
-              Lifetime spend above ₹10,000 and lifetime purchases above 5. Expand any row for learnings and timeline.
+              Only creatives that spent yesterday are shown. Lifetime spend must be above ₹10,000. Expand any row for learnings and timeline.
             </p>
           </div>
 
           <div className="grid grid-cols-4 gap-2 text-xs">
-            <Kpi label="Qualified" value={String(data.creatives.length)} />
+            <Kpi label="Active Qualified" value={String(data.creatives.length)} />
             <Kpi label="Hook Rate" value={pct(data.summary.hookRate)} />
             <Kpi label="Hold Rate" value={pct(data.summary.holdRate)} />
             <Kpi label="Latest" value={data.latest || "NA"} />
@@ -432,6 +445,9 @@ export function HookHoldCreativeTab() {
                     <WinnerPill>{topLabel(item)}</WinnerPill>
                     <span className="rounded-full border border-current/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] opacity-70">
                       Rank #{index + 1}
+                    </span>
+                    <span className="rounded-full border border-current/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] opacity-70">
+                      Y Spend {money(item.yesterday.spend)}
                     </span>
                   </div>
 
