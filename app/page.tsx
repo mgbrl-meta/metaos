@@ -9,6 +9,7 @@ import {
 } from "@/components/layout/MetaOSShell";
 
 import { ActionReport } from "@/components/dashboard/ActionReport";
+import { CompactActionReport } from "@/components/meta/CompactActionReport";
 import { EfficiencyGaps } from "@/components/dashboard/EfficiencyGaps";
 import { BenchmarkAudit } from "@/components/dashboard/BenchmarkAudit";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
@@ -57,7 +58,7 @@ export default function Home() {
       {!activeSystemTab && osMode === "meta" && (
         <>
           <AutoMetaSheetLoader />
-          {activeMetaTab === "action_report" && <ActionReport />}
+          {activeMetaTab === "action_report" && <CompactActionReport />}
           {activeMetaTab === "roi_gap" && <EfficiencyGaps />}
           {activeMetaTab === "benchmark_audit" && <BenchmarkAudit />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
