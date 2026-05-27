@@ -15,6 +15,7 @@ import {
   Sparkles,
   X,
   Zap,
+  Trophy,
 } from "lucide-react";
 import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
 
@@ -26,6 +27,7 @@ export type MetaTab =
   | "benchmark_audit"
   | "spend_visuals"
   | "creative"
+  | "winner"
   | "structure_report"
   | "summary"
   | "monthly";
@@ -83,6 +85,13 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "Creative",
     description: "Winning and breaking creatives",
     icon: Sparkles,
+  },
+  {
+    id: "winner",
+    label: "Winner Creatives",
+    shortLabel: "Winner",
+    description: "Top performing creative learnings",
+    icon: Trophy,
   },
   {
     id: "structure_report",

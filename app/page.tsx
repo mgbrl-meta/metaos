@@ -15,6 +15,7 @@ import { BenchmarkAudit } from "@/components/dashboard/BenchmarkAudit";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
 import { CreativeActions } from "@/components/dashboard/CreativeActions";
 import { CompactCreativeAudit } from "@/components/meta/CompactCreativeAudit";
+import { WinnerCreativeTab } from "@/components/meta/WinnerCreativeTab";
 import { StructureReport } from "@/components/dashboard/StructureReport";
 import { DailySummaryExport } from "@/components/dashboard/DailySummaryExport";
 import { MetaExecutiveSummary } from "@/components/meta/MetaExecutiveSummary";
@@ -64,6 +65,7 @@ export default function Home() {
           {activeMetaTab === "benchmark_audit" && <BenchmarkAudit />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
           {activeMetaTab === "creative" && <CompactCreativeAudit />}
+          {activeMetaTab === "winner" && <WinnerCreativeTab />}
           {activeMetaTab === "structure_report" && <StructureReport />}
           {activeMetaTab === "summary" && <MetaExecutiveSummary />}
           {activeMetaTab === "monthly" && <MonthlyPerformance />}
