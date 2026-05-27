@@ -2,6 +2,17 @@
 
 import { useMemo } from "react";
 import { TrendingUp, FileText } from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { useMetaStore } from "@/store/metaStore";
 
 type Row = Record<string, any>;
@@ -25,6 +36,79 @@ function monthKey(value?: string) {
   const d = parseDate(value);
   if (!d) return "";
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function weekStartKey(value?: string) {
+  const d = parseDate(value);
+  if (!d) return "";
+
+  const copy = new Date(d);
+  const day = copy.getDay();
+  const diff = copy.getDate() - day + (day === 0 ? -6 : 1); // Monday week start
+  copy.setDate(diff);
+
+  return `${copy.getFullYear()}-${String(copy.getMonth() + 1).padStart(2, "0")}-${String(
+    copy.getDate()
+  ).padStart(2, "0")}`;
+}
+
+function shortWeekLabel(value?: string) {
+  const d = parseDate(value);
+  if (!d) return "";
+
+  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+const MONTH_COLORS = [
+  "#2563eb",
+  "#16a34a",
+  "#dc2626",
+  "#ca8a04",
+  "#9333ea",
+  "#0891b2",
+  "#ea580c",
+  "#4f46e5",
+  "#be123c",
+  "#0f766e",
+  "#7c3aed",
+  "#65a30d",
+];
+
+function monthColor(month: string) {
+  const m = Number(String(month || "").split("-")[1] || 1);
+  return MONTH_COLORS[(m - 1) % MONTH_COLORS.length];
+}
+
+function buildWeeklyRows(rows: Row[]) {
+  const map = new Map<string, Row[]>();
+
+  rows.forEach((row) => {
+    const key = weekStartKey(getDate(row));
+    if (!key) return;
+
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(row);
+  });
+
+  return Array.from(map.entries())
+    .map(([week, weekRows]) => {
+      const s = summarize(weekRows);
+      const month = monthKey(week);
+
+      return {
+        week,
+        label: shortWeekLabel(week),
+        month,
+        spend: s.spend,
+        spendLog: Math.max(s.spend, 1),
+        revenue: s.revenue,
+        purchases: s.purchases,
+        cpa: s.cpa > 0 ? s.cpa : null,
+        roas: s.roas,
+        color: monthColor(month),
+      };
+    })
+    .sort((a, b) => a.week.localeCompare(b.week));
 }
 
 function getSpend(row: Row) {
@@ -158,11 +242,13 @@ export function EnhancedMonthlyReport() {
 
   const data = useMemo(() => {
     const monthlyRows = buildMonthlyRows(rows || []);
+    const weeklyRows = buildWeeklyRows(rows || []);
     const current = monthlyRows[monthlyRows.length - 1];
     const prior = monthlyRows[monthlyRows.length - 2];
 
     return {
       monthlyRows,
+      weeklyRows,
       current,
       prior,
       spendChange: current && prior ? change(current.spend, prior.spend) : 0,
@@ -237,6 +323,116 @@ export function EnhancedMonthlyReport() {
             sub={data.current ? num(data.current.purchases, 0) : "NA"}
             tone={data.purchaseChange >= 0 ? "green" : "red"}
           />
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-current/10 bg-current/[0.025] p-4">
+        <div className="mb-3 flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#0A84FF]">
+              Lifetime Weekly Trend
+            </p>
+            <h2 className="text-lg font-black">Weekly Spend vs CPA</h2>
+            <p className="mt-1 text-sm opacity-60">
+              Spend is shown as weekly bars on a log scale. CPA is shown as a line. Bar color changes by month.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.1em] opacity-70">
+            <span>Bar: Spend</span>
+            <span>Line: CPA</span>
+            <span>Color: Month</span>
+          </div>
+        </div>
+
+        <div className="h-[320px] w-full">
+          <ResponsiveContainer width="100%" height={320}>
+            <BarChart data={data.weeklyRows} margin={{ top: 10, right: 24, left: 16, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.18)" />
+              <XAxis
+                dataKey="label"
+                tick={{ fontSize: 10, fill: "currentColor" }}
+                axisLine={false}
+                tickLine={false}
+                minTickGap={14}
+              />
+              <YAxis
+                yAxisId="spend"
+                scale="log"
+                domain={[1, "auto"]}
+                tick={{ fontSize: 10, fill: "currentColor" }}
+                axisLine={false}
+                tickLine={false}
+                width={72}
+                tickFormatter={(v) => {
+                  const n = Number(v || 0);
+                  if (n >= 10000000) return `₹${(n / 10000000).toFixed(1)}Cr`;
+                  if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
+                  if (n >= 1000) return `₹${Math.round(n / 1000)}K`;
+                  return `₹${Math.round(n)}`;
+                }}
+              />
+              <YAxis
+                yAxisId="cpa"
+                orientation="right"
+                tick={{ fontSize: 10, fill: "currentColor" }}
+                axisLine={false}
+                tickLine={false}
+                width={72}
+                tickFormatter={(v) => `₹${Math.round(Number(v || 0))}`}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "#111318",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  borderRadius: 10,
+                  color: "white",
+                  fontSize: 11,
+                }}
+                formatter={(value: any, name: any) => {
+                  if (name === "Spend") return [money(Number(value || 0)), "Spend"];
+                  if (name === "CPA") return [money(Number(value || 0)), "CPA"];
+                  return [value, name];
+                }}
+                labelFormatter={(_, payload: any[]) => {
+                  const row = payload?.[0]?.payload;
+                  return row ? `Week ${row.week} · ${row.month}` : "";
+                }}
+              />
+
+              <Bar yAxisId="spend" dataKey="spendLog" name="Spend" radius={[4, 4, 0, 0]}>
+                {data.weeklyRows.map((entry: any) => (
+                  <Cell key={entry.week} fill={entry.color} />
+                ))}
+              </Bar>
+
+              <Line
+                yAxisId="cpa"
+                type="monotone"
+                dataKey="cpa"
+                name="CPA"
+                stroke="#b42318"
+                strokeWidth={2}
+                dot={false}
+                connectNulls
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-2">
+          {Array.from(new Set(data.weeklyRows.map((row: any) => row.month))).map((month: any) => (
+            <span
+              key={month}
+              className="inline-flex items-center gap-2 rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em]"
+            >
+              <span
+                className="h-2.5 w-2.5 rounded-full"
+                style={{ backgroundColor: monthColor(month) }}
+              />
+              {month}
+            </span>
+          ))}
         </div>
       </section>
 
