@@ -584,16 +584,18 @@ function ScatterPointTooltip({ active, payload }: any) {
   const row = payload?.[0]?.payload;
   if (!row) return null;
 
+  const monthLabel = row.monthLabel || monthNameLabel(row.week) || row.month || "Unknown Month";
+
   return (
     <div
       style={{
         background: "#111318",
         border: "1px solid rgba(255,255,255,0.14)",
         borderRadius: 10,
-        color: "white",
+        color: "#ffffff",
         fontSize: 11,
         padding: "10px 12px",
-        minWidth: 190,
+        minWidth: 220,
         boxShadow: "0 12px 30px rgba(0,0,0,0.28)",
       }}
     >
@@ -603,41 +605,46 @@ function ScatterPointTooltip({ active, payload }: any) {
             width: 10,
             height: 10,
             borderRadius: 999,
-            backgroundColor: row.color,
+            backgroundColor: row.color || "#0A84FF",
             display: "inline-block",
+            flex: "0 0 auto",
           }}
         />
-        <strong style={{ color: "white", fontSize: 12 }}>{row.monthLabel}</strong>
+        <strong style={{ color: "#ffffff", fontSize: 12, opacity: 1 }}>
+          Month: {monthLabel}
+        </strong>
       </div>
 
-      <div style={{ color: "rgba(255,255,255,0.72)", marginBottom: 8 }}>
-        Week starting: {row.week}
-      </div>
-
-      <div style={{ display: "grid", gap: 5 }}>
+      <div style={{ display: "grid", gap: 6 }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
-          <span style={{ color: "rgba(255,255,255,0.65)" }}>Weekly Spend</span>
-          <strong style={{ color: "white" }}>{money(row.spend)}</strong>
+          <span style={{ color: "rgba(255,255,255,0.68)" }}>Week starting</span>
+          <strong style={{ color: "#ffffff" }}>{row.week}</strong>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
-          <span style={{ color: "rgba(255,255,255,0.65)" }}>Weekly CPA</span>
-          <strong style={{ color: "white" }}>{money(row.cpa)}</strong>
+          <span style={{ color: "rgba(255,255,255,0.68)" }}>Weekly Spend</span>
+          <strong style={{ color: "#ffffff" }}>{money(row.spend)}</strong>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
-          <span style={{ color: "rgba(255,255,255,0.65)" }}>Purchases</span>
-          <strong style={{ color: "white" }}>{num(row.purchases, 0)}</strong>
+          <span style={{ color: "rgba(255,255,255,0.68)" }}>Weekly CPA</span>
+          <strong style={{ color: "#ffffff" }}>{money(row.cpa)}</strong>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
-          <span style={{ color: "rgba(255,255,255,0.65)" }}>ROAS</span>
-          <strong style={{ color: "white" }}>{num(row.roas)}x</strong>
+          <span style={{ color: "rgba(255,255,255,0.68)" }}>Purchases</span>
+          <strong style={{ color: "#ffffff" }}>{num(row.purchases, 0)}</strong>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.68)" }}>ROAS</span>
+          <strong style={{ color: "#ffffff" }}>{num(row.roas)}x</strong>
         </div>
       </div>
     </div>
   );
 }
+
 
 function MonthLegend({
   rows,
