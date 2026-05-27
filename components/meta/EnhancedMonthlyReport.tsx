@@ -473,22 +473,7 @@ export function EnhancedMonthlyReport() {
               />
               <Tooltip
                 cursor={{ strokeDasharray: "3 3" }}
-                contentStyle={{
-                  background: "#111318",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  borderRadius: 10,
-                  color: "white",
-                  fontSize: 11,
-                }}
-                formatter={(value: any, name: any) => {
-                  if (name === "Weekly Spend") return [money(Number(value || 0)), "Weekly Spend"];
-                  if (name === "Weekly CPA") return [money(Number(value || 0)), "Weekly CPA"];
-                  return [value, name];
-                }}
-                labelFormatter={(_, payload) => {
-                  const row = Array.isArray(payload) ? payload?.[0]?.payload : undefined;
-                  return row ? `${row.monthLabel} · Week starting ${row.week}` : "";
-                }}
+                content={<ScatterPointTooltip />}
               />
 
               <Scatter name="Weekly Spend vs CPA" data={scatterRows} fill="#0A84FF">
@@ -589,6 +574,67 @@ export function EnhancedMonthlyReport() {
           </table>
         </div>
       </section>
+    </div>
+  );
+}
+
+function ScatterPointTooltip({ active, payload }: any) {
+  if (!active || !payload?.length) return null;
+
+  const row = payload?.[0]?.payload;
+  if (!row) return null;
+
+  return (
+    <div
+      style={{
+        background: "#111318",
+        border: "1px solid rgba(255,255,255,0.14)",
+        borderRadius: 10,
+        color: "white",
+        fontSize: 11,
+        padding: "10px 12px",
+        minWidth: 190,
+        boxShadow: "0 12px 30px rgba(0,0,0,0.28)",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+        <span
+          style={{
+            width: 10,
+            height: 10,
+            borderRadius: 999,
+            backgroundColor: row.color,
+            display: "inline-block",
+          }}
+        />
+        <strong style={{ color: "white", fontSize: 12 }}>{row.monthLabel}</strong>
+      </div>
+
+      <div style={{ color: "rgba(255,255,255,0.72)", marginBottom: 8 }}>
+        Week starting: {row.week}
+      </div>
+
+      <div style={{ display: "grid", gap: 5 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.65)" }}>Weekly Spend</span>
+          <strong style={{ color: "white" }}>{money(row.spend)}</strong>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.65)" }}>Weekly CPA</span>
+          <strong style={{ color: "white" }}>{money(row.cpa)}</strong>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.65)" }}>Purchases</span>
+          <strong style={{ color: "white" }}>{num(row.purchases, 0)}</strong>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.65)" }}>ROAS</span>
+          <strong style={{ color: "white" }}>{num(row.roas)}x</strong>
+        </div>
+      </div>
     </div>
   );
 }
