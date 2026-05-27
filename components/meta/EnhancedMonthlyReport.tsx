@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { FileText, TrendingUp } from "lucide-react";
 import {
   Bar,
@@ -269,6 +269,7 @@ function formatAxisMoney(v: any) {
 
 export function EnhancedMonthlyReport() {
   const rows = useMetaStore((state) => state.performanceRows);
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
   const data = useMemo(() => {
     const monthlyRows = buildMonthlyRows(rows || []);
@@ -291,7 +292,11 @@ export function EnhancedMonthlyReport() {
     };
   }, [rows]);
 
-  const scatterRows = data.weeklyRows.filter((row: any) => row.spend > 0 && row.cpa !== null && row.cpa > 0);
+  const scatterRows = data.weeklyRows.filter((row: any) => {
+    const hasValidPoint = row.spend > 0 && row.cpa !== null && row.cpa > 0;
+    const matchesMonth = selectedMonth ? row.month === selectedMonth : true;
+    return hasValidPoint && matchesMonth;
+  });
 
   return (
     <div className="grid gap-3">
@@ -495,7 +500,14 @@ export function EnhancedMonthlyReport() {
           </ResponsiveContainer>
         </div>
 
-        <MonthLegend rows={data.weeklyRows} />
+        <MonthLegend
+          rows={data.weeklyRows}
+          selectedMonth={selectedMonth}
+          onSelectMonth={(month) => {
+            setSelectedMonth((current) => (current === month ? null : month));
+          }}
+          showAllReset
+        />
       </section>
 
       <section className="rounded-xl border border-current/10 bg-current/[0.025]">
@@ -581,23 +593,78 @@ export function EnhancedMonthlyReport() {
   );
 }
 
-function MonthLegend({ rows }: { rows: any[] }) {
+function MonthLegend({
+  rows,
+  selectedMonth,
+  onSelectMonth,
+  showAllReset = false,
+}: {
+  rows: any[];
+  selectedMonth?: string | null;
+  onSelectMonth?: (month: string | null) => void;
+  showAllReset?: boolean;
+}) {
   const months = Array.from(new Map(rows.map((row: any) => [row.month, row])).values());
 
   return (
     <div className="mt-3 flex flex-wrap gap-2">
-      {months.map((row: any) => (
-        <span
-          key={row.month}
-          className="inline-flex items-center gap-2 rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em]"
+      {showAllReset ? (
+        <button
+          type="button"
+          onClick={() => onSelectMonth?.(null)}
+          className={
+            !selectedMonth
+              ? "inline-flex items-center gap-2 rounded-full border border-[#0A84FF] bg-[#0A84FF] px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-white"
+              : "inline-flex items-center gap-2 rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em]"
+          }
         >
-          <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: row.color }} />
-          {row.monthLabel}
-        </span>
-      ))}
+          All Months
+        </button>
+      ) : null}
+
+      {months.map((row: any) => {
+        const isActive = selectedMonth === row.month;
+        const isDimmed = selectedMonth && !isActive;
+
+        const className = onSelectMonth
+          ? isActive
+            ? "inline-flex items-center gap-2 rounded-full border border-[#0A84FF] bg-[#0A84FF] px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-white"
+            : isDimmed
+            ? "inline-flex items-center gap-2 rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em] opacity-35"
+            : "inline-flex items-center gap-2 rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em]"
+          : "inline-flex items-center gap-2 rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em]";
+
+        const content = (
+          <>
+            <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: row.color }} />
+            {row.monthLabel}
+          </>
+        );
+
+        if (!onSelectMonth) {
+          return (
+            <span key={row.month} className={className}>
+              {content}
+            </span>
+          );
+        }
+
+        return (
+          <button
+            key={row.month}
+            type="button"
+            onClick={() => onSelectMonth(row.month)}
+            className={className}
+            title={isActive ? "Click again to show all months" : `Show only ${row.monthLabel}`}
+          >
+            {content}
+          </button>
+        );
+      })}
     </div>
   );
 }
+
 
 function Kpi({
   label,
