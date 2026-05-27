@@ -1,16 +1,16 @@
 "use client";
 
 import { useMemo } from "react";
-import { TrendingUp, FileText } from "lucide-react";
+import { FileText, TrendingUp } from "lucide-react";
 import {
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
   Line,
+  ResponsiveContainer,
   Scatter,
   ScatterChart,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
@@ -23,6 +23,21 @@ const money = (n: number) => `₹${Math.round(Number(n || 0)).toLocaleString()}`
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
 const pct = (n: number, d = 1) => `${num(Number(n || 0) * 100, d)}%`;
 const safeDiv = (a: number, b: number) => (b > 0 ? a / b : 0);
+
+const MONTH_COLORS = [
+  "#ef4444",
+  "#eab308",
+  "#a855f7",
+  "#06b6d4",
+  "#f97316",
+  "#6366f1",
+  "#e11d48",
+  "#0f766e",
+  "#7c3aed",
+  "#65a30d",
+  "#3b82f6",
+  "#22c55e",
+];
 
 function parseDate(value?: string) {
   if (!value) return null;
@@ -40,13 +55,22 @@ function monthKey(value?: string) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
+function monthNameLabel(value?: string) {
+  const d = parseDate(value);
+  if (!d) return "";
+  return d.toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+  });
+}
+
 function weekStartKey(value?: string) {
   const d = parseDate(value);
   if (!d) return "";
 
   const copy = new Date(d);
   const day = copy.getDay();
-  const diff = copy.getDate() - day + (day === 0 ? -6 : 1); // Monday week start
+  const diff = copy.getDate() - day + (day === 0 ? -6 : 1);
   copy.setDate(diff);
 
   return `${copy.getFullYear()}-${String(copy.getMonth() + 1).padStart(2, "0")}-${String(
@@ -54,45 +78,49 @@ function weekStartKey(value?: string) {
   ).padStart(2, "0")}`;
 }
 
-function shortWeekLabel(value?: string) {
-  const d = parseDate(value);
-  if (!d) return "";
-
-  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
-}
-
-function monthNameLabel(value?: string) {
-  const d = parseDate(value);
-  if (!d) return "";
-
-  return d.toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-  });
-}
-
-const MONTH_COLORS = [
-  "#2563eb",
-  "#16a34a",
-  "#dc2626",
-  "#ca8a04",
-  "#9333ea",
-  "#0891b2",
-  "#ea580c",
-  "#4f46e5",
-  "#be123c",
-  "#0f766e",
-  "#7c3aed",
-  "#65a30d",
-];
-
 function monthColor(month: string) {
   const m = Number(String(month || "").split("-")[1] || 1);
   return MONTH_COLORS[(m - 1) % MONTH_COLORS.length];
 }
 
+function getSpend(row: Row) {
+  return Number(row.spend ?? row.amountSpent ?? row.amount_spent ?? row["Amount spent (INR)"] ?? 0);
+}
 
-function summarizeWeeklyRows(rows: Row[]) {
+function getRevenue(row: Row) {
+  return Number(
+    row.revenue ??
+      row.purchaseValue ??
+      row.purchase_value ??
+      row.conversionValue ??
+      row.conversion_value ??
+      row["Purchases conversion value"] ??
+      0
+  );
+}
+
+function getPurchases(row: Row) {
+  return Number(row.purchases ?? row.Purchases ?? 0);
+}
+
+function getImpressions(row: Row) {
+  return Number(row.impressions ?? row.Impressions ?? 0);
+}
+
+function getClicks(row: Row) {
+  return Number(
+    row.clicks ??
+      row.linkClicks ??
+      row.link_clicks ??
+      row.outboundClicks ??
+      row.outbound_clicks ??
+      row["Link clicks"] ??
+      row["Clicks (all)"] ??
+      0
+  );
+}
+
+function summarize(rows: Row[]) {
   const spend = rows.reduce((s, r) => s + getSpend(r), 0);
   const revenue = rows.reduce((s, r) => s + getRevenue(r), 0);
   const purchases = rows.reduce((s, r) => s + getPurchases(r), 0);
@@ -112,56 +140,9 @@ function summarizeWeeklyRows(rows: Row[]) {
   };
 }
 
-function buildWeeklyRows(rows: Row[]) {
-  const map = new Map<string, Row[]>();
-
-  rows.forEach((row) => {
-    const key = weekStartKey(getDate(row));
-    if (!key) return;
-
-    if (!map.has(key)) map.set(key, []);
-    map.get(key)!.push(row);
-  });
-
-  const weekly = Array.from(map.entries())
-    .map(([week, weekRows]) => {
-      const s = summarizeWeeklyRows(weekRows);
-      const month = monthKey(week);
-      const monthLabel = monthNameLabel(week);
-
-      return {
-        week,
-        label: shortWeekLabel(week),
-        month,
-        monthLabel,
-        monthTick: "",
-        spend: s.spend,
-        spendLog: Math.max(s.spend, 1),
-        revenue: s.revenue,
-        purchases: s.purchases,
-        cpa: s.cpa > 0 ? s.cpa : null,
-        roas: s.roas,
-        color: monthColor(month),
-      };
-    })
-    .sort((a, b) => a.week.localeCompare(b.week));
-
-  const seenMonths = new Set<string>();
-
-  return weekly.map((row) => {
-    if (!seenMonths.has(row.month)) {
-      seenMonths.add(row.month);
-      return {
-        ...row,
-        monthTick: row.monthLabel,
-      };
-    }
-
-    return {
-      ...row,
-      monthTick: "",
-    };
-  });
+function change(current: number, prior: number) {
+  if (!prior) return 0;
+  return (current - prior) / prior;
 }
 
 function buildMonthlyRows(rows: Row[]) {
@@ -206,6 +187,56 @@ function buildMonthlyRows(rows: Row[]) {
   });
 }
 
+function buildWeeklyRows(rows: Row[]) {
+  const map = new Map<string, Row[]>();
+
+  rows.forEach((row) => {
+    const key = weekStartKey(getDate(row));
+    if (!key) return;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(row);
+  });
+
+  const weekly = Array.from(map.entries())
+    .map(([week, weekRows]) => {
+      const s = summarize(weekRows);
+      const month = monthKey(week);
+      const monthLabel = monthNameLabel(week);
+
+      return {
+        week,
+        month,
+        monthLabel,
+        monthTick: "",
+        spend: s.spend,
+        spendLog: Math.max(s.spend, 1),
+        revenue: s.revenue,
+        purchases: s.purchases,
+        cpa: s.cpa > 0 ? s.cpa : null,
+        roas: s.roas,
+        color: monthColor(month),
+      };
+    })
+    .sort((a, b) => a.week.localeCompare(b.week));
+
+  const seenMonths = new Set<string>();
+
+  return weekly.map((row) => {
+    if (!seenMonths.has(row.month)) {
+      seenMonths.add(row.month);
+      return {
+        ...row,
+        monthTick: row.monthLabel,
+      };
+    }
+
+    return {
+      ...row,
+      monthTick: "",
+    };
+  });
+}
+
 function toneClass(tone: "green" | "red" | "amber" | "neutral") {
   if (tone === "green") return "text-emerald-600 dark:text-emerald-300";
   if (tone === "red") return "text-red-600 dark:text-red-300";
@@ -226,6 +257,14 @@ function cpaTone(row: any) {
   if (row.incrementalCpaAmount < 0) return "green";
   if (row.incrementalCpaAmount > 0) return "red";
   return "neutral";
+}
+
+function formatAxisMoney(v: any) {
+  const n = Number(v || 0);
+  if (n >= 10000000) return `₹${(n / 10000000).toFixed(1)}Cr`;
+  if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
+  if (n >= 1000) return `₹${Math.round(n / 1000)}K`;
+  return `₹${Math.round(n)}`;
 }
 
 export function EnhancedMonthlyReport() {
@@ -252,27 +291,23 @@ export function EnhancedMonthlyReport() {
     };
   }, [rows]);
 
+  const scatterRows = data.weeklyRows.filter((row: any) => row.spend > 0 && row.cpa !== null && row.cpa > 0);
+
   return (
     <div className="grid gap-3">
       <section className="rounded-xl border border-current/10 bg-current/[0.03] p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-[11px] font-black uppercase tracking-[0.16em]">
-              Monthly Performance
-            </p>
+            <p className="text-[11px] font-black uppercase tracking-[0.16em]">Monthly Performance</p>
             <h1 className="mt-1 text-2xl font-black">This Month vs Last Month</h1>
             <p className="mt-1 text-sm opacity-60">
-              Monthly performance with incremental spend and incremental CPA impact added.
+              Monthly performance with incremental spend, incremental CPA, weekly scale trend and spend/CPA scatter.
             </p>
           </div>
 
           <div className="flex gap-2">
-            <button className="rounded-lg border border-current/10 px-4 py-2 text-xs font-black">
-              Copy Report
-            </button>
-            <button className="rounded-lg bg-[#0A84FF] px-4 py-2 text-xs font-black text-white">
-              Export PDF
-            </button>
+            <button className="rounded-lg border border-current/10 px-4 py-2 text-xs font-black">Copy Report</button>
+            <button className="rounded-lg bg-[#0A84FF] px-4 py-2 text-xs font-black text-white">Export PDF</button>
           </div>
         </div>
       </section>
@@ -320,9 +355,7 @@ export function EnhancedMonthlyReport() {
       <section className="rounded-xl border border-current/10 bg-current/[0.025] p-4">
         <div className="mb-3 flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#0A84FF]">
-              Lifetime Weekly Trend
-            </p>
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#0A84FF]">Lifetime Weekly Trend</p>
             <h2 className="text-lg font-black">Weekly Spend vs CPA</h2>
             <p className="mt-1 text-sm opacity-60">
               Spend is shown as weekly bars on a log scale. CPA is shown as a line. Bar color changes by month.
@@ -340,13 +373,7 @@ export function EnhancedMonthlyReport() {
           <ResponsiveContainer width="100%" height={320}>
             <BarChart data={data.weeklyRows} margin={{ top: 10, right: 24, left: 16, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.18)" />
-              <XAxis
-                dataKey="monthTick"
-                tick={{ fontSize: 10, fill: "currentColor" }}
-                axisLine={false}
-                tickLine={false}
-                minTickGap={14}
-              />
+              <XAxis dataKey="monthTick" tick={{ fontSize: 10, fill: "currentColor" }} axisLine={false} tickLine={false} minTickGap={14} />
               <YAxis
                 yAxisId="spend"
                 scale="log"
@@ -355,13 +382,7 @@ export function EnhancedMonthlyReport() {
                 axisLine={false}
                 tickLine={false}
                 width={72}
-                tickFormatter={(v) => {
-                  const n = Number(v || 0);
-                  if (n >= 10000000) return `₹${(n / 10000000).toFixed(1)}Cr`;
-                  if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
-                  if (n >= 1000) return `₹${Math.round(n / 1000)}K`;
-                  return `₹${Math.round(n)}`;
-                }}
+                tickFormatter={formatAxisMoney}
               />
               <YAxis
                 yAxisId="cpa"
@@ -397,42 +418,18 @@ export function EnhancedMonthlyReport() {
                 ))}
               </Bar>
 
-              <Line
-                yAxisId="cpa"
-                type="monotone"
-                dataKey="cpa"
-                name="CPA"
-                stroke="#b42318"
-                strokeWidth={2}
-                dot={false}
-                connectNulls
-              />
+              <Line yAxisId="cpa" type="monotone" dataKey="cpa" name="CPA" stroke="#b42318" strokeWidth={2} dot={false} connectNulls />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
-          {Array.from(new Set(data.weeklyRows.map((row: any) => row.month))).map((month: any) => (
-            <span
-              key={month}
-              className="inline-flex items-center gap-2 rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em]"
-            >
-              <span
-                className="h-2.5 w-2.5 rounded-full"
-                style={{ backgroundColor: monthColor(month) }}
-              />
-              {monthNameLabel(`${month}-01`)}
-            </span>
-          ))}
-        </div>
+        <MonthLegend rows={data.weeklyRows} />
       </section>
 
       <section className="rounded-xl border border-current/10 bg-current/[0.025] p-4">
         <div className="mb-3 flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#0A84FF]">
-              Weekly Scale Efficiency
-            </p>
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#0A84FF]">Weekly Scale Efficiency</p>
             <h2 className="text-lg font-black">Weekly Spend vs Weekly CPA Scatter</h2>
             <p className="mt-1 text-sm opacity-60">
               Each dot is one week. X-axis shows weekly spend, Y-axis shows weekly CPA. Dot color changes by month.
@@ -450,7 +447,6 @@ export function EnhancedMonthlyReport() {
           <ResponsiveContainer width="100%" height={320}>
             <ScatterChart margin={{ top: 10, right: 24, left: 16, bottom: 12 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.18)" />
-
               <XAxis
                 type="number"
                 dataKey="spend"
@@ -458,16 +454,8 @@ export function EnhancedMonthlyReport() {
                 tick={{ fontSize: 10, fill: "currentColor" }}
                 axisLine={false}
                 tickLine={false}
-                width={72}
-                tickFormatter={(v) => {
-                  const n = Number(v || 0);
-                  if (n >= 10000000) return `₹${(n / 10000000).toFixed(1)}Cr`;
-                  if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
-                  if (n >= 1000) return `₹${Math.round(n / 1000)}K`;
-                  return `₹${Math.round(n)}`;
-                }}
+                tickFormatter={formatAxisMoney}
               />
-
               <YAxis
                 type="number"
                 dataKey="cpa"
@@ -478,7 +466,6 @@ export function EnhancedMonthlyReport() {
                 width={72}
                 tickFormatter={(v) => `₹${Math.round(Number(v || 0))}`}
               />
-
               <Tooltip
                 cursor={{ strokeDasharray: "3 3" }}
                 contentStyle={{
@@ -499,43 +486,16 @@ export function EnhancedMonthlyReport() {
                 }}
               />
 
-              <Scatter
-                name="Weekly Spend vs CPA"
-                data={data.weeklyRows.filter((row: any) => row.spend > 0 && row.cpa !== null && row.cpa > 0)}
-                fill="#0A84FF"
-              >
-                {data.weeklyRows
-                  .filter((row: any) => row.spend > 0 && row.cpa !== null && row.cpa > 0)
-                  .map((entry: any) => (
-                    <Cell key={`scatter-${entry.week}`} fill={entry.color} />
-                  ))}
+              <Scatter name="Weekly Spend vs CPA" data={scatterRows} fill="#0A84FF">
+                {scatterRows.map((entry: any) => (
+                  <Cell key={`scatter-${entry.week}`} fill={entry.color} />
+                ))}
               </Scatter>
             </ScatterChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="mt-3 grid gap-2 md:grid-cols-3">
-          <div className="rounded-lg border border-current/10 bg-current/[0.025] p-3">
-            <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-55">How to read</p>
-            <p className="mt-1 text-xs leading-5 opacity-70">
-              Dots moving right means higher weekly spend. Dots moving up means CPA became worse.
-            </p>
-          </div>
-
-          <div className="rounded-lg border border-current/10 bg-current/[0.025] p-3">
-            <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-55">Good scale zone</p>
-            <p className="mt-1 text-xs leading-5 text-emerald-600 dark:text-emerald-300">
-              Higher spend with flat or lower CPA means scaling is healthy.
-            </p>
-          </div>
-
-          <div className="rounded-lg border border-current/10 bg-current/[0.025] p-3">
-            <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-55">Bad scale zone</p>
-            <p className="mt-1 text-xs leading-5 text-red-600 dark:text-red-300">
-              Higher spend with sharply higher CPA means marginal efficiency is breaking.
-            </p>
-          </div>
-        </div>
+        <MonthLegend rows={data.weeklyRows} />
       </section>
 
       <section className="rounded-xl border border-current/10 bg-current/[0.025]">
@@ -551,20 +511,41 @@ export function EnhancedMonthlyReport() {
 
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1280px] border-collapse text-left">
-            <thead>
-              <tr className="bg-[#14233b] text-white">
-                <th>Month</th>
-                <th>Spend</th>
-                <th>Revenue</th>
-                <th>ROAS</th>
-                <th>CPA</th>
-                <th>Purchases</th>
-                <th>CTR</th>
-                <th>Purchase CVR</th>
-                <th>Incr. Spend ₹</th>
-                <th>Incr. Spend %</th>
-                <th>Incr. CPA ₹</th>
-                <th>Incr. CPA %</th>
+            <thead className="monthly-table-head">
+              <tr>
+                {[
+                  "Month",
+                  "Spend",
+                  "Revenue",
+                  "ROAS",
+                  "CPA",
+                  "Purchases",
+                  "CTR",
+                  "Purchase CVR",
+                  "Incr. Spend ₹",
+                  "Incr. Spend %",
+                  "Incr. CPA ₹",
+                  "Incr. CPA %",
+                ].map((heading) => (
+                  <th
+                    key={heading}
+                    className="monthly-table-th"
+                    style={{
+                      backgroundColor: "#14233b",
+                      color: "#ffffff",
+                      opacity: 1,
+                      fontWeight: 900,
+                      fontSize: 10,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      padding: "8px 10px",
+                      borderBottom: "1px solid rgba(255,255,255,0.16)",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {heading}
+                  </th>
+                ))}
               </tr>
             </thead>
 
@@ -585,22 +566,10 @@ export function EnhancedMonthlyReport() {
                     <td>{num(row.purchases, 0)}</td>
                     <td>{pct(row.ctr, 2)}</td>
                     <td>{pct(row.purchaseCvr, 2)}</td>
-
-                    <td className={`font-black ${toneClass(sTone)}`}>
-                      {row.prior ? money(row.incrementalSpendAmount) : "—"}
-                    </td>
-
-                    <td className={`font-black ${toneClass(sTone)}`}>
-                      {row.prior ? pct(row.incrementalSpendPct) : "—"}
-                    </td>
-
-                    <td className={`font-black ${toneClass(cTone)}`}>
-                      {row.prior ? money(row.incrementalCpaAmount) : "—"}
-                    </td>
-
-                    <td className={`font-black ${toneClass(cTone)}`}>
-                      {row.prior ? pct(row.incrementalCpaPct) : "—"}
-                    </td>
+                    <td className={`font-black ${toneClass(sTone)}`}>{row.prior ? money(row.incrementalSpendAmount) : "—"}</td>
+                    <td className={`font-black ${toneClass(sTone)}`}>{row.prior ? pct(row.incrementalSpendPct) : "—"}</td>
+                    <td className={`font-black ${toneClass(cTone)}`}>{row.prior ? money(row.incrementalCpaAmount) : "—"}</td>
+                    <td className={`font-black ${toneClass(cTone)}`}>{row.prior ? pct(row.incrementalCpaPct) : "—"}</td>
                   </tr>
                 );
               })}
@@ -608,6 +577,24 @@ export function EnhancedMonthlyReport() {
           </table>
         </div>
       </section>
+    </div>
+  );
+}
+
+function MonthLegend({ rows }: { rows: any[] }) {
+  const months = Array.from(new Map(rows.map((row: any) => [row.month, row])).values());
+
+  return (
+    <div className="mt-3 flex flex-wrap gap-2">
+      {months.map((row: any) => (
+        <span
+          key={row.month}
+          className="inline-flex items-center gap-2 rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em]"
+        >
+          <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: row.color }} />
+          {row.monthLabel}
+        </span>
+      ))}
     </div>
   );
 }
