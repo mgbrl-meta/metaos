@@ -180,6 +180,11 @@ export function MetaOSShell({
   const isGoogle = osMode === "google";
   const activeNav = isGoogle ? googleNav : metaNav;
 
+  useEffect(() => {
+    document.documentElement.classList.toggle("os-dark", isDark);
+    document.documentElement.classList.toggle("os-light", !isDark);
+  }, [isDark]);
+
   const activeTitle = useMemo(() => {
     if (activeSystemTab === "settings") return "Settings";
     if (isGoogle) return googleNav.find((x) => x.id === activeGoogleTab)?.label || "Google OS";
@@ -219,17 +224,7 @@ export function MetaOSShell({
 
   return (
     <ThemeFrame>
-      <div
-        className={
-          isDark
-            ? isGoogle
-              ? "metaos-app metaos-dark min-h-screen overflow-x-hidden"
-              : "metaos-app metaos-dark min-h-screen overflow-x-hidden"
-            : isGoogle
-            ? "metaos-app metaos-light min-h-screen overflow-x-hidden"
-            : "metaos-app metaos-light min-h-screen overflow-x-hidden"
-        }
-      >
+      <div className={isDark ? "metaos-app metaos-dark min-h-screen overflow-x-hidden" : "metaos-app metaos-light min-h-screen overflow-x-hidden"}>
         <header className={isDark ? "sticky top-0 z-40 border-b border-white/10 bg-[#080a0d]/92 backdrop-blur-2xl" : "sticky top-0 z-40 border-b border-black/10 bg-white/92 backdrop-blur-2xl"}>
           <div className="mx-auto max-w-[1920px] px-3 py-2 lg:px-4">
             <div className="flex items-center gap-2">

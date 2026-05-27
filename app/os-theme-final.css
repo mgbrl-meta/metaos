@@ -1,0 +1,381 @@
+
+/* =========================================================
+   FINAL OS THEME SYSTEM — LOADS LAST
+   Single source of truth for light/dark readability.
+   ========================================================= */
+
+html.os-light {
+  --os-page: #f6f7f4;
+  --os-surface: #ffffff;
+  --os-surface-soft: #f1f2ef;
+  --os-border: rgba(20, 20, 20, 0.12);
+  --os-text: #111111;
+  --os-muted: rgba(17, 17, 17, 0.62);
+  --os-head: #111111;
+  --os-table-head: #14233b;
+  --os-good: #087f5b;
+  --os-bad: #b42318;
+  --os-blue: #0a84ff;
+  --os-amber: #b45309;
+}
+
+html.os-dark {
+  --os-page: #050607;
+  --os-surface: #0f1217;
+  --os-surface-soft: #171a20;
+  --os-border: rgba(255, 255, 255, 0.12);
+  --os-text: #f5f5f5;
+  --os-muted: rgba(245, 245, 245, 0.62);
+  --os-head: #ffffff;
+  --os-table-head: #14233b;
+  --os-good: #34d399;
+  --os-bad: #ff6b5f;
+  --os-blue: #54a6ff;
+  --os-amber: #fbbf24;
+}
+
+html.os-light,
+html.os-light body,
+html.os-light .metaos-app,
+html.os-light .metaos-app * {
+  color: var(--os-text);
+}
+
+html.os-dark,
+html.os-dark body,
+html.os-dark .metaos-app,
+html.os-dark .metaos-app * {
+  color: var(--os-text);
+}
+
+html.os-light body,
+html.os-light .metaos-app {
+  background: var(--os-page) !important;
+}
+
+html.os-dark body,
+html.os-dark .metaos-app {
+  background: var(--os-page) !important;
+}
+
+html.os-light .metaos-app header {
+  background: rgba(255,255,255,0.96) !important;
+  border-color: var(--os-border) !important;
+}
+
+html.os-dark .metaos-app header {
+  background: rgba(8,10,13,0.96) !important;
+  border-color: var(--os-border) !important;
+}
+
+html.os-light .metaos-app main section,
+html.os-light .metaos-app main article,
+html.os-light .metaos-app main details,
+html.os-light .metaos-app main summary,
+html.os-light .metaos-app main table,
+html.os-light .metaos-app main [class*="bg-current"],
+html.os-light .metaos-app main [class*="bg-white"],
+html.os-light .metaos-app main [class*="bg-[#"] {
+  background: var(--os-surface) !important;
+  color: var(--os-text) !important;
+}
+
+html.os-dark .metaos-app main section,
+html.os-dark .metaos-app main article,
+html.os-dark .metaos-app main details,
+html.os-dark .metaos-app main summary,
+html.os-dark .metaos-app main table,
+html.os-dark .metaos-app main [class*="bg-current"],
+html.os-dark .metaos-app main [class*="bg-white"] {
+  background: var(--os-surface) !important;
+  color: var(--os-text) !important;
+}
+
+html.os-light .metaos-app [class*="border"],
+html.os-dark .metaos-app [class*="border"] {
+  border-color: var(--os-border) !important;
+}
+
+html.os-light .metaos-app .opacity-35,
+html.os-light .metaos-app .opacity-40,
+html.os-light .metaos-app .opacity-45,
+html.os-light .metaos-app .opacity-50,
+html.os-light .metaos-app .opacity-55,
+html.os-light .metaos-app .opacity-60,
+html.os-light .metaos-app .opacity-65,
+html.os-light .metaos-app .opacity-70,
+html.os-light .metaos-app .opacity-75,
+html.os-dark .metaos-app .opacity-35,
+html.os-dark .metaos-app .opacity-40,
+html.os-dark .metaos-app .opacity-45,
+html.os-dark .metaos-app .opacity-50,
+html.os-dark .metaos-app .opacity-55,
+html.os-dark .metaos-app .opacity-60,
+html.os-dark .metaos-app .opacity-65,
+html.os-dark .metaos-app .opacity-70,
+html.os-dark .metaos-app .opacity-75 {
+  opacity: 1 !important;
+  color: var(--os-muted) !important;
+}
+
+html.os-light .metaos-app h1,
+html.os-light .metaos-app h2,
+html.os-light .metaos-app h3,
+html.os-light .metaos-app h4,
+html.os-light .metaos-app .font-black,
+html.os-light .metaos-app .font-bold,
+html.os-dark .metaos-app h1,
+html.os-dark .metaos-app h2,
+html.os-dark .metaos-app h3,
+html.os-dark .metaos-app h4,
+html.os-dark .metaos-app .font-black,
+html.os-dark .metaos-app .font-bold {
+  color: var(--os-head) !important;
+}
+
+html.os-light .metaos-app main [class*="text-white"],
+html.os-light .metaos-app main [class*="text-slate"],
+html.os-light .metaos-app main [class*="text-gray"] {
+  color: var(--os-text) !important;
+}
+
+html.os-dark .metaos-app main [class*="text-black"],
+html.os-dark .metaos-app main [class*="text-slate"],
+html.os-dark .metaos-app main [class*="text-gray"] {
+  color: var(--os-text) !important;
+}
+
+html.os-light .metaos-app thead tr,
+html.os-dark .metaos-app thead tr {
+  background: var(--os-table-head) !important;
+}
+
+html.os-light .metaos-app thead th,
+html.os-dark .metaos-app thead th,
+html.os-light .metaos-app thead th *,
+html.os-dark .metaos-app thead th * {
+  color: #ffffff !important;
+}
+
+html.os-light .metaos-app tbody td,
+html.os-dark .metaos-app tbody td {
+  color: var(--os-text) !important;
+}
+
+html.os-light .metaos-app tbody td[class*="bg-"],
+html.os-light .metaos-app tbody th[class*="bg-"] {
+  background: var(--os-surface) !important;
+  color: var(--os-text) !important;
+}
+
+html.os-dark .metaos-app tbody td[class*="bg-white"],
+html.os-dark .metaos-app tbody th[class*="bg-white"] {
+  background: var(--os-surface) !important;
+  color: var(--os-text) !important;
+}
+
+html.os-light .metaos-app .text-red-300,
+html.os-light .metaos-app .text-red-400,
+html.os-light .metaos-app .text-red-500,
+html.os-light .metaos-app .text-red-600,
+html.os-light .metaos-app .text-red-700,
+html.os-light .metaos-app .text-rose-300,
+html.os-light .metaos-app .text-rose-400,
+html.os-light .metaos-app .text-rose-500,
+html.os-light .metaos-app .text-rose-600,
+html.os-light .metaos-app .text-rose-700,
+html.os-dark .metaos-app .text-red-300,
+html.os-dark .metaos-app .text-red-400,
+html.os-dark .metaos-app .text-red-500,
+html.os-dark .metaos-app .text-red-600,
+html.os-dark .metaos-app .text-red-700,
+html.os-dark .metaos-app .text-rose-300,
+html.os-dark .metaos-app .text-rose-400,
+html.os-dark .metaos-app .text-rose-500,
+html.os-dark .metaos-app .text-rose-600,
+html.os-dark .metaos-app .text-rose-700 {
+  color: var(--os-bad) !important;
+}
+
+html.os-light .metaos-app .text-emerald-300,
+html.os-light .metaos-app .text-emerald-400,
+html.os-light .metaos-app .text-emerald-500,
+html.os-light .metaos-app .text-emerald-600,
+html.os-light .metaos-app .text-emerald-700,
+html.os-light .metaos-app .text-green-300,
+html.os-light .metaos-app .text-green-400,
+html.os-light .metaos-app .text-green-500,
+html.os-light .metaos-app .text-green-600,
+html.os-light .metaos-app .text-green-700,
+html.os-dark .metaos-app .text-emerald-300,
+html.os-dark .metaos-app .text-emerald-400,
+html.os-dark .metaos-app .text-emerald-500,
+html.os-dark .metaos-app .text-emerald-600,
+html.os-dark .metaos-app .text-emerald-700,
+html.os-dark .metaos-app .text-green-300,
+html.os-dark .metaos-app .text-green-400,
+html.os-dark .metaos-app .text-green-500,
+html.os-dark .metaos-app .text-green-600,
+html.os-dark .metaos-app .text-green-700 {
+  color: var(--os-good) !important;
+}
+
+html.os-light .metaos-app .text-blue-300,
+html.os-light .metaos-app .text-blue-400,
+html.os-light .metaos-app .text-blue-500,
+html.os-light .metaos-app .text-blue-600,
+html.os-light .metaos-app .text-blue-700,
+html.os-dark .metaos-app .text-blue-300,
+html.os-dark .metaos-app .text-blue-400,
+html.os-dark .metaos-app .text-blue-500,
+html.os-dark .metaos-app .text-blue-600,
+html.os-dark .metaos-app .text-blue-700 {
+  color: var(--os-blue) !important;
+}
+
+html.os-light .metaos-app [class*="bg-red-"],
+html.os-light .metaos-app [class*="bg-rose-"] {
+  background: #fff3f1 !important;
+  border-color: rgba(180,35,24,0.24) !important;
+  color: #23110f !important;
+}
+
+html.os-dark .metaos-app [class*="bg-red-"],
+html.os-dark .metaos-app [class*="bg-rose-"] {
+  background: rgba(180,35,24,0.16) !important;
+  border-color: rgba(180,35,24,0.34) !important;
+  color: #fff2f0 !important;
+}
+
+html.os-light .metaos-app [class*="bg-emerald-"],
+html.os-light .metaos-app [class*="bg-green-"] {
+  background: #eefaf4 !important;
+  border-color: rgba(8,127,91,0.24) !important;
+  color: #0f241b !important;
+}
+
+html.os-dark .metaos-app [class*="bg-emerald-"],
+html.os-dark .metaos-app [class*="bg-green-"] {
+  background: rgba(8,127,91,0.16) !important;
+  border-color: rgba(8,127,91,0.34) !important;
+  color: #ecfdf5 !important;
+}
+
+html.os-light .metaos-app [class*="bg-orange-"],
+html.os-light .metaos-app [class*="bg-yellow-"] {
+  background: #fff7ed !important;
+  border-color: rgba(180,83,9,0.24) !important;
+  color: #2b1705 !important;
+}
+
+html.os-dark .metaos-app [class*="bg-orange-"],
+html.os-dark .metaos-app [class*="bg-yellow-"] {
+  background: rgba(180,83,9,0.16) !important;
+  border-color: rgba(251,191,36,0.34) !important;
+  color: #fff7ed !important;
+}
+
+html.os-light .metaos-app button.bg-\[\#0A84FF\],
+html.os-light .metaos-app button.bg-\[\#0A84FF\] *,
+html.os-dark .metaos-app button.bg-\[\#0A84FF\],
+html.os-dark .metaos-app button.bg-\[\#0A84FF\] *,
+html.os-light .metaos-app .bg-\[\#0A84FF\],
+html.os-light .metaos-app .bg-\[\#0A84FF\] *,
+html.os-dark .metaos-app .bg-\[\#0A84FF\],
+html.os-dark .metaos-app .bg-\[\#0A84FF\] * {
+  background: #0a84ff !important;
+  color: #ffffff !important;
+}
+
+html.os-light .metaos-app button.bg-emerald-400,
+html.os-light .metaos-app button.bg-emerald-400 *,
+html.os-dark .metaos-app button.bg-emerald-400,
+html.os-dark .metaos-app button.bg-emerald-400 *,
+html.os-light .metaos-app .bg-emerald-400,
+html.os-light .metaos-app .bg-emerald-400 *,
+html.os-dark .metaos-app .bg-emerald-400,
+html.os-dark .metaos-app .bg-emerald-400 * {
+  background: #13c98b !important;
+  color: #04140d !important;
+}
+
+html.os-light .metaos-app .recharts-text {
+  fill: rgba(17,17,17,0.62) !important;
+}
+
+html.os-dark .metaos-app .recharts-text {
+  fill: rgba(245,245,245,0.62) !important;
+}
+
+.recharts-tooltip-wrapper,
+.recharts-tooltip-wrapper * {
+  color: #ffffff !important;
+}
+
+.metaos-app main {
+  font-size: 12px !important;
+}
+
+.metaos-app .text-5xl { font-size: 28px !important; line-height: 1.05 !important; }
+.metaos-app .text-4xl { font-size: 24px !important; line-height: 1.08 !important; }
+.metaos-app .text-3xl { font-size: 21px !important; line-height: 1.1 !important; }
+.metaos-app .text-2xl { font-size: 18px !important; line-height: 1.15 !important; }
+.metaos-app .text-xl { font-size: 15px !important; line-height: 1.2 !important; }
+.metaos-app .text-lg { font-size: 14px !important; line-height: 1.25 !important; }
+
+.metaos-app .rounded-\[2rem\],
+.metaos-app .rounded-\[1\.5rem\],
+.metaos-app .rounded-3xl,
+.metaos-app .rounded-2xl,
+.metaos-app .rounded-xl {
+  border-radius: 10px !important;
+}
+
+.metaos-app .p-8,
+.metaos-app .p-7,
+.metaos-app .p-6 { padding: 12px !important; }
+
+.metaos-app .p-5,
+.metaos-app .p-4 { padding: 10px !important; }
+
+.metaos-app .gap-8,
+.metaos-app .gap-7,
+.metaos-app .gap-6 { gap: 10px !important; }
+
+.metaos-app .gap-5,
+.metaos-app .gap-4 { gap: 8px !important; }
+
+.metaos-app .shadow-2xl,
+.metaos-app .shadow-xl,
+.metaos-app [class*="shadow-"] {
+  box-shadow: none !important;
+}
+
+.metaos-app table th {
+  font-size: 9.5px !important;
+  padding: 6px 8px !important;
+  line-height: 1.15 !important;
+}
+
+.metaos-app table td {
+  font-size: 11px !important;
+  padding: 6px 8px !important;
+  line-height: 1.22 !important;
+}
+
+@media (max-width: 768px) {
+  .metaos-app main > div {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .metaos-app table td,
+  .metaos-app table th {
+    font-size: 10.5px !important;
+    padding: 6px 8px !important;
+  }
+
+  .metaos-scroll-table table {
+    min-width: 900px;
+  }
+}
