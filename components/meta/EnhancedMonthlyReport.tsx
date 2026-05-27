@@ -91,6 +91,27 @@ function monthColor(month: string) {
   return MONTH_COLORS[(m - 1) % MONTH_COLORS.length];
 }
 
+
+function summarizeWeeklyRows(rows: Row[]) {
+  const spend = rows.reduce((s, r) => s + getSpend(r), 0);
+  const revenue = rows.reduce((s, r) => s + getRevenue(r), 0);
+  const purchases = rows.reduce((s, r) => s + getPurchases(r), 0);
+  const impressions = rows.reduce((s, r) => s + getImpressions(r), 0);
+  const clicks = rows.reduce((s, r) => s + getClicks(r), 0);
+
+  return {
+    spend,
+    revenue,
+    purchases,
+    impressions,
+    clicks,
+    roas: safeDiv(revenue, spend),
+    cpa: safeDiv(spend, purchases),
+    ctr: safeDiv(clicks, impressions),
+    purchaseCvr: safeDiv(purchases, clicks),
+  };
+}
+
 function buildWeeklyRows(rows: Row[]) {
   const map = new Map<string, Row[]>();
 
@@ -104,7 +125,7 @@ function buildWeeklyRows(rows: Row[]) {
 
   const weekly = Array.from(map.entries())
     .map(([week, weekRows]) => {
-      const s = summarize(weekRows);
+      const s = summarizeWeeklyRows(weekRows);
       const month = monthKey(week);
       const monthLabel = monthNameLabel(week);
 
