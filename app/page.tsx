@@ -8,8 +8,6 @@ import {
   OSMode,
 } from "@/components/layout/MetaOSShell";
 
-import { ActionReport } from "@/components/dashboard/ActionReport";
-import { CompactActionReport } from "@/components/meta/CompactActionReport";
 import { BudgetIntelligenceTab } from "@/components/meta/BudgetIntelligenceTab";
 import { ZeroPurchaseTab } from "@/components/meta/ZeroPurchaseTab";
 import { ZeroPurchaseFastTab } from "@/components/meta/ZeroPurchaseFastTab";
@@ -66,7 +64,6 @@ export default function Home() {
         <>
           <AutoMetaSheetLoader />
           {activeMetaTab === "zero_purchase" && <ZeroPurchaseFastTab />}
-          {activeMetaTab === "action_report" && <CompactActionReport />}
           {activeMetaTab === "budget_intelligence" && <BudgetIntelligenceTab />}
           {activeMetaTab === "roi_gap" && <EfficiencyGaps />}
           {activeMetaTab === "benchmark_audit" && <BenchmarkAudit />}
