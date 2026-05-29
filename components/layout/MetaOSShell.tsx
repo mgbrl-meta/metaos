@@ -24,6 +24,7 @@ import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/Theme
 export type OSMode = "meta" | "google";
 
 export type MetaTab =
+  | "zero_purchase"
   | "action_report"
   | "roi_gap"
   | "budget_intelligence"
@@ -55,6 +56,13 @@ type NavItem<T extends string> = {
 };
 
 const metaNav: NavItem<MetaTab>[] = [
+  {
+    id: "zero_purchase",
+    label: "Zero Purchase",
+    shortLabel: "Zero Purchase",
+    description: "Live ads with lifetime spend and no purchases",
+    icon: Ban,
+  },
   {
     id: "action_report",
     label: "Action Report",
