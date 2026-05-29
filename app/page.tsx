@@ -11,6 +11,7 @@ import {
 import { BudgetIntelligenceTab } from "@/components/meta/BudgetIntelligenceTab";
 import { ZeroPurchaseTab } from "@/components/meta/ZeroPurchaseTab";
 import { HighCpaTab } from "@/components/meta/HighCpaTab";
+import { HighRoasTab } from "@/components/meta/HighRoasTab";
 import { EfficiencyGaps } from "@/components/dashboard/EfficiencyGaps";
 import { BenchmarkAudit } from "@/components/dashboard/BenchmarkAudit";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
@@ -65,6 +66,7 @@ export default function Home() {
           <AutoMetaSheetLoader />
           {activeMetaTab === "zero_purchase" && <ZeroPurchaseTab />}
           {activeMetaTab === "high_cpa" && <HighCpaTab />}
+          {activeMetaTab === "high_roas" && <HighRoasTab />}
           {activeMetaTab === "budget_intelligence" && <BudgetIntelligenceTab />}
           {activeMetaTab === "roi_gap" && <EfficiencyGaps />}
           {activeMetaTab === "benchmark_audit" && <BenchmarkAudit />}

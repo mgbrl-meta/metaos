@@ -19,6 +19,7 @@ import {
   PiggyBank,
   Trophy,
   MousePointerClick,
+  TrendingUp,
 } from "lucide-react";
 import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
 
@@ -27,6 +28,7 @@ export type OSMode = "meta" | "google";
 export type MetaTab =
   | "zero_purchase"
   | "high_cpa"
+  | "high_roas"
   | "roi_gap"
   | "budget_intelligence"
   | "benchmark_audit"
@@ -70,6 +72,13 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "High CPA",
     description: "Live ads with high lifetime CPA",
     icon: AlertTriangle,
+  },
+  {
+    id: "high_roas",
+    label: "High ROAS",
+    shortLabel: "High ROAS",
+    description: "Live ads with strong lifetime ROAS",
+    icon: TrendingUp,
   },
   {
     id: "budget_intelligence",
