@@ -210,7 +210,7 @@ export function HighCpaFastTab() {
           <div>
             <h2 className="text-lg font-black">High CPA Ads</h2>
             <p className="mt-1 text-sm opacity-60">
-              Showing ads live yesterday where lifetime purchases > 0 and lifetime CPA is above {money(threshold)}.
+              Showing ads live yesterday where lifetime purchases &gt; 0 and lifetime CPA is above {money(threshold)}.
             </p>
           </div>
 
