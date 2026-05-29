@@ -61,7 +61,7 @@ const metaNav: NavItem<MetaTab>[] = [
     label: "Zero Purchase",
     shortLabel: "Zero Purchase",
     description: "Live ads with lifetime spend and no purchases",
-    icon: Ban,
+    icon: AlertTriangle,
   },
   {
     id: "action_report",
