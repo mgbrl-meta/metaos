@@ -33,7 +33,6 @@ export type MetaTab =
   | "budget_intelligence"
   | "benchmark_audit"
   | "spend_visuals"
-  | "creative"
   | "winner"
   | "hook_hold"
   | "structure_report"
@@ -107,13 +106,6 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "Spend",
     description: "Spend, CPA, ROAS trends",
     icon: BarChart3,
-  },
-  {
-    id: "creative",
-    label: "Creative Audit",
-    shortLabel: "Creative",
-    description: "Winning and breaking creatives",
-    icon: Sparkles,
   },
   {
     id: "winner",

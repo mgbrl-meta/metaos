@@ -15,7 +15,6 @@ import { HighRoasTab } from "@/components/meta/HighRoasTab";
 import { EfficiencyGaps } from "@/components/dashboard/EfficiencyGaps";
 import { BenchmarkAudit } from "@/components/dashboard/BenchmarkAudit";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
-import { CreativeActions } from "@/components/dashboard/CreativeActions";
 import { CompactCreativeAudit } from "@/components/meta/CompactCreativeAudit";
 import { WinnerCreativeTab } from "@/components/meta/WinnerCreativeTab";
 import { HookHoldCreativeTab } from "@/components/meta/HookHoldCreativeTab";
