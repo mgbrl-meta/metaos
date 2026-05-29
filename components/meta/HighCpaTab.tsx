@@ -356,7 +356,7 @@ export function HighCpaTab() {
         <div className="divide-y divide-current/10">
           {data.items.map((item) => (
             <details key={item.key} className="group">
-              <summary className="grid cursor-pointer list-none grid-cols-[1fr_90px_78px_78px_78px_78px_78px_24px] items-center gap-3 px-4 py-3 text-xs hover:bg-current/[0.035]">
+              <summary className="grid cursor-pointer list-none grid-cols-[1fr_90px_72px_72px_72px_72px_72px_72px_24px] items-center gap-3 px-4 py-3 text-xs hover:bg-current/[0.035]">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full border border-red-300 bg-red-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300">
@@ -376,6 +376,7 @@ export function HighCpaTab() {
                 <Metric label="Spend" value={money(item.lifetime.spend)} />
                 <Metric label="CPM" value={money(item.lifetime.cpm)} />
                 <Metric label="CTR" value={pct(item.lifetime.ctr)} />
+                <Metric label="Purch." value={num(item.lifetime.purchases, 0)} />
                 <Metric label="CPA" value={money(item.lifetime.cpa)} tone="red" />
                 <Metric label="AOV" value={money(item.lifetime.aov)} />
                 <Metric label="ROAS" value={`${num(item.lifetime.roas)}x`} tone={item.lifetime.roas >= 1 ? "green" : "red"} />
