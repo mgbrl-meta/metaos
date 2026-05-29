@@ -267,3 +267,84 @@ export function buildZeroPurchaseFast(rows: MetaRawRow[], threshold: number) {
     activeAdCount: activeYesterdayIds.size,
   };
 }
+
+
+export function buildHighCpaFast(rows: MetaRawRow[], cpaThreshold: number) {
+  const latest = latestDate(rows);
+
+  const activeYesterdayIds = new Set(
+    rows
+      .filter((row) => dateKey(getDate(row)) === latest)
+      .filter((row) => getSpend(row) > 0)
+      .map((row) => getAdId(row))
+  );
+
+  const map = new Map<string, MetaRawRow[]>();
+
+  rows.forEach((row) => {
+    const key = getAdId(row);
+    if (!activeYesterdayIds.has(key)) return;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(row);
+  });
+
+  const items: MetaCreativeItem[] = Array.from(map.entries())
+    .map(([key, adRows]) => {
+      const sample = adRows[0];
+      const lifetime = summarize(adRows);
+      const yesterday = summarize(adRows.filter((row) => dateKey(getDate(row)) === latest));
+
+      return {
+        key,
+        ad: getAd(sample),
+        campaign: getCampaign(sample),
+        adSet: getAdSet(sample),
+        lifetime,
+        yesterday,
+        trend: dailyTrend(adRows),
+      };
+    })
+    .filter((item) => item.yesterday.spend > 0)
+    .filter((item) => item.lifetime.purchases > 0)
+    .filter((item) => item.lifetime.cpa >= cpaThreshold)
+    .sort((a, b) => b.lifetime.cpa - a.lifetime.cpa);
+
+  const campaignMap = new Map<string, MetaCreativeItem[]>();
+
+  items.forEach((item) => {
+    if (!campaignMap.has(item.campaign)) campaignMap.set(item.campaign, []);
+    campaignMap.get(item.campaign)!.push(item);
+  });
+
+  const campaigns = Array.from(campaignMap.entries())
+    .map(([campaign, campaignItems]) => {
+      const spend = campaignItems.reduce((sum, item) => sum + item.lifetime.spend, 0);
+      const revenue = campaignItems.reduce((sum, item) => sum + item.lifetime.revenue, 0);
+      const purchases = campaignItems.reduce((sum, item) => sum + item.lifetime.purchases, 0);
+      const yesterdaySpend = campaignItems.reduce((sum, item) => sum + item.yesterday.spend, 0);
+
+      return {
+        campaign,
+        ads: campaignItems.length,
+        spend,
+        revenue,
+        purchases,
+        yesterdaySpend,
+        cpa: safeDiv(spend, purchases),
+        roas: safeDiv(revenue, spend),
+      };
+    })
+    .sort((a, b) => b.cpa - a.cpa);
+
+  return {
+    latest,
+    items,
+    campaigns,
+    cpaThreshold,
+    totalSpend: items.reduce((s, x) => s + x.lifetime.spend, 0),
+    totalPurchases: items.reduce((s, x) => s + x.lifetime.purchases, 0),
+    yesterdaySpend: items.reduce((s, x) => s + x.yesterday.spend, 0),
+    rawRowsUsed: rows.length,
+    activeAdCount: activeYesterdayIds.size,
+  };
+}

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BigQuery } from "@google-cloud/bigquery";
-import { buildZeroPurchaseFast } from "@/lib/meta/metaFastEngine";
+import { buildHighCpaFast, buildZeroPurchaseFast } from "@/lib/meta/metaFastEngine";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -109,6 +109,8 @@ export async function GET(req: NextRequest) {
 
     if (view === "zero_purchase") {
       data = buildZeroPurchaseFast(rows, threshold);
+    } else if (view === "high_cpa") {
+      data = buildHighCpaFast(rows, threshold);
     } else {
       return NextResponse.json(
         {

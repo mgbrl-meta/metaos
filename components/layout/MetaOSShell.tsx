@@ -26,6 +26,7 @@ export type OSMode = "meta" | "google";
 
 export type MetaTab =
   | "zero_purchase"
+  | "high_cpa"
   | "roi_gap"
   | "budget_intelligence"
   | "benchmark_audit"
@@ -61,6 +62,13 @@ const metaNav: NavItem<MetaTab>[] = [
     label: "Zero Purchase",
     shortLabel: "Zero Purchase",
     description: "Live ads with lifetime spend and no purchases",
+    icon: AlertTriangle,
+  },
+  {
+    id: "high_cpa",
+    label: "High CPA",
+    shortLabel: "High CPA",
+    description: "Live ads with high lifetime CPA",
     icon: AlertTriangle,
   },
   {
