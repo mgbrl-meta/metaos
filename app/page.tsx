@@ -15,7 +15,6 @@ import { HighRoasTab } from "@/components/meta/HighRoasTab";
 import { EfficiencyGaps } from "@/components/dashboard/EfficiencyGaps";
 import { BenchmarkAudit } from "@/components/dashboard/BenchmarkAudit";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
-import { CompactCreativeAudit } from "@/components/meta/CompactCreativeAudit";
 import { WinnerCreativeTab } from "@/components/meta/WinnerCreativeTab";
 import { HookHoldCreativeTab } from "@/components/meta/HookHoldCreativeTab";
 import { StructureReport } from "@/components/dashboard/StructureReport";
@@ -70,7 +69,6 @@ export default function Home() {
           {activeMetaTab === "roi_gap" && <EfficiencyGaps />}
           {activeMetaTab === "benchmark_audit" && <BenchmarkAudit />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
-          {activeMetaTab === "creative" && <CompactCreativeAudit />}
           {activeMetaTab === "winner" && <WinnerCreativeTab />}
           {activeMetaTab === "hook_hold" && <HookHoldCreativeTab />}
           {activeMetaTab === "structure_report" && <StructureReport />}
