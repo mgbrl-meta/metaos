@@ -1,0 +1,332 @@
+export type MetaRawRow = Record<string, any>;
+
+const safeDiv = (a: number, b: number) => (b > 0 ? a / b : 0);
+
+function normalizeKey(key: string) {
+  return String(key || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function toNumber(value: any) {
+  if (value === undefined || value === null || value === "") return 0;
+  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+
+  const cleaned = String(value)
+    .replace(/₹/g, "")
+    .replace(/,/g, "")
+    .replace(/%/g, "")
+    .trim();
+
+  const n = Number(cleaned);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function pick(row: MetaRawRow, names: string[]) {
+  const wanted = names.map(normalizeKey);
+
+  for (const [key, value] of Object.entries(row || {})) {
+    const nk = normalizeKey(key);
+    if (wanted.some((w) => nk === w || nk.includes(w) || w.includes(nk))) {
+      return value;
+    }
+  }
+
+  return undefined;
+}
+
+function parseDateValue(value?: string) {
+  if (!value) return null;
+
+  const raw = String(value).trim();
+
+  // Handles YYYY-MM-DD
+  const iso = new Date(raw);
+  if (!Number.isNaN(iso.getTime())) return iso;
+
+  // Handles DD/MM/YYYY or DD-MM-YYYY
+  const match = raw.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+  if (match) {
+    const day = Number(match[1]);
+    const month = Number(match[2]) - 1;
+    const year = Number(match[3].length === 2 ? `20${match[3]}` : match[3]);
+    const d = new Date(year, month, day);
+    if (!Number.isNaN(d.getTime())) return d;
+  }
+
+  return null;
+}
+
+export function dateKey(value?: string) {
+  const d = parseDateValue(value);
+  if (!d) return "";
+
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate()
+  ).padStart(2, "0")}`;
+}
+
+function displayDate(value?: string) {
+  const d = parseDateValue(value);
+  if (!d) return value || "";
+  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+export function getDate(row: MetaRawRow) {
+  return String(pick(row, ["date", "day", "Date", "Day"]) || "");
+}
+
+export function getCampaign(row: MetaRawRow) {
+  return String(
+    pick(row, ["campaign_name", "campaignName", "Campaign name", "campaign name"]) ||
+      "Unknown Campaign"
+  );
+}
+
+export function getAdSet(row: MetaRawRow) {
+  return String(
+    pick(row, ["adset_name", "adSetName", "ad_set_name", "Ad set name", "ad set name"]) ||
+      "Unknown Ad Set"
+  );
+}
+
+export function getAd(row: MetaRawRow) {
+  return String(pick(row, ["ad_name", "adName", "Ad name", "ad name"]) || "Unknown Creative");
+}
+
+export function getAdId(row: MetaRawRow) {
+  return String(pick(row, ["ad_id", "adId", "Ad ID", "ad id"]) || getAd(row));
+}
+
+export function getSpend(row: MetaRawRow) {
+  return toNumber(
+    pick(row, ["spend", "amountSpent", "amount_spent", "Amount spent (INR)", "amount spent"])
+  );
+}
+
+export function getRevenue(row: MetaRawRow) {
+  return toNumber(
+    pick(row, [
+      "revenue",
+      "purchaseValue",
+      "purchase_value",
+      "conversionValue",
+      "conversion_value",
+      "Purchases conversion value",
+      "purchase conversion value",
+    ])
+  );
+}
+
+export function getPurchases(row: MetaRawRow) {
+  return toNumber(pick(row, ["purchases", "Purchases", "purchase"]));
+}
+
+export function getImpressions(row: MetaRawRow) {
+  return toNumber(pick(row, ["impressions", "Impressions"]));
+}
+
+export function getReach(row: MetaRawRow) {
+  return toNumber(pick(row, ["reach", "Reach"]));
+}
+
+export function getClicks(row: MetaRawRow) {
+  return toNumber(
+    pick(row, [
+      "clicks",
+      "linkClicks",
+      "link_clicks",
+      "outboundClicks",
+      "outbound_clicks",
+      "Link clicks",
+      "Clicks (all)",
+    ])
+  );
+}
+
+export function summarize(rows: MetaRawRow[]) {
+  const spend = rows.reduce((s, r) => s + getSpend(r), 0);
+  const revenue = rows.reduce((s, r) => s + getRevenue(r), 0);
+  const purchases = rows.reduce((s, r) => s + getPurchases(r), 0);
+  const impressions = rows.reduce((s, r) => s + getImpressions(r), 0);
+  const reach = rows.reduce((s, r) => s + getReach(r), 0);
+  const clicks = rows.reduce((s, r) => s + getClicks(r), 0);
+
+  return {
+    spend,
+    revenue,
+    purchases,
+    impressions,
+    reach,
+    clicks,
+    roas: safeDiv(revenue, spend),
+    cpa: safeDiv(spend, purchases),
+    aov: safeDiv(revenue, purchases),
+    cpm: safeDiv(spend * 1000, impressions),
+    ctr: safeDiv(clicks, impressions),
+    cpc: safeDiv(spend, clicks),
+    freq: safeDiv(impressions, reach),
+  };
+}
+
+export function latestSpendDate(rows: MetaRawRow[]) {
+  const dates = rows
+    .filter((row) => getSpend(row) > 0)
+    .map((row) => dateKey(getDate(row)))
+    .filter(Boolean)
+    .sort();
+
+  return dates[dates.length - 1] || "";
+}
+
+export function dailyTrend(rows: MetaRawRow[]) {
+  const map = new Map<string, MetaRawRow[]>();
+
+  rows.forEach((row) => {
+    const key = dateKey(getDate(row));
+    if (!key) return;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(row);
+  });
+
+  return Array.from(map.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(-30)
+    .map(([date, dayRows]) => {
+      const s = summarize(dayRows);
+
+      return {
+        date,
+        label: displayDate(date),
+        spend: s.spend,
+        cpm: s.cpm,
+        ctr: s.ctr,
+        roas: s.roas,
+        cpa: s.purchases > 0 ? s.cpa : null,
+        aov: s.purchases > 0 ? s.aov : null,
+        purchases: s.purchases,
+      };
+    });
+}
+
+function activeLatestAdRows(rows: MetaRawRow[]) {
+  const latest = latestSpendDate(rows);
+
+  const activeIds = new Set(
+    rows
+      .filter((row) => dateKey(getDate(row)) === latest)
+      .filter((row) => getSpend(row) > 0)
+      .map((row) => getAdId(row))
+  );
+
+  const map = new Map<string, MetaRawRow[]>();
+
+  rows.forEach((row) => {
+    const adId = getAdId(row);
+    if (!activeIds.has(adId)) return;
+
+    if (!map.has(adId)) map.set(adId, []);
+    map.get(adId)!.push(row);
+  });
+
+  return {
+    latest,
+    activeIds,
+    map,
+  };
+}
+
+function buildCreativeItems(rows: MetaRawRow[]) {
+  const { latest, activeIds, map } = activeLatestAdRows(rows);
+
+  const items = Array.from(map.entries())
+    .map(([key, adRows]) => {
+      const sample = adRows[0];
+      const lifetime = summarize(adRows);
+      const yesterday = summarize(adRows.filter((row) => dateKey(getDate(row)) === latest));
+
+      return {
+        key,
+        ad: getAd(sample),
+        campaign: getCampaign(sample),
+        adSet: getAdSet(sample),
+        lifetime,
+        yesterday,
+        trend: dailyTrend(adRows),
+      };
+    })
+    .filter((item) => item.yesterday.spend > 0);
+
+  return {
+    latest,
+    activeAdCount: activeIds.size,
+    items,
+  };
+}
+
+export function buildZeroPurchaseFast(rows: MetaRawRow[], threshold: number) {
+  const base = buildCreativeItems(rows);
+
+  const items = base.items
+    .filter((item) => item.lifetime.spend >= threshold)
+    .filter((item) => item.lifetime.purchases === 0)
+    .sort((a, b) => b.lifetime.spend - a.lifetime.spend);
+
+  return {
+    latest: base.latest,
+    items,
+    threshold,
+    totalSpend: items.reduce((s, x) => s + x.lifetime.spend, 0),
+    yesterdaySpend: items.reduce((s, x) => s + x.yesterday.spend, 0),
+    rawRowsUsed: rows.length,
+    activeAdCount: base.activeAdCount,
+  };
+}
+
+export function buildHighCpaFast(rows: MetaRawRow[], cpaThreshold: number) {
+  const base = buildCreativeItems(rows);
+
+  const items = base.items
+    .filter((item) => item.lifetime.purchases > 0)
+    .filter((item) => item.lifetime.cpa >= cpaThreshold)
+    .sort((a, b) => b.lifetime.cpa - a.lifetime.cpa);
+
+  const campaignMap = new Map<string, typeof items>();
+
+  items.forEach((item) => {
+    if (!campaignMap.has(item.campaign)) campaignMap.set(item.campaign, []);
+    campaignMap.get(item.campaign)!.push(item);
+  });
+
+  const campaigns = Array.from(campaignMap.entries())
+    .map(([campaign, campaignItems]) => {
+      const spend = campaignItems.reduce((sum, item) => sum + item.lifetime.spend, 0);
+      const revenue = campaignItems.reduce((sum, item) => sum + item.lifetime.revenue, 0);
+      const purchases = campaignItems.reduce((sum, item) => sum + item.lifetime.purchases, 0);
+      const yesterdaySpend = campaignItems.reduce((sum, item) => sum + item.yesterday.spend, 0);
+
+      return {
+        campaign,
+        ads: campaignItems.length,
+        spend,
+        revenue,
+        purchases,
+        yesterdaySpend,
+        cpa: safeDiv(spend, purchases),
+        roas: safeDiv(revenue, spend),
+      };
+    })
+    .sort((a, b) => b.cpa - a.cpa);
+
+  return {
+    latest: base.latest,
+    items,
+    campaigns,
+    cpaThreshold,
+    totalSpend: items.reduce((s, x) => s + x.lifetime.spend, 0),
+    totalPurchases: items.reduce((s, x) => s + x.lifetime.purchases, 0),
+    yesterdaySpend: items.reduce((s, x) => s + x.yesterday.spend, 0),
+    rawRowsUsed: rows.length,
+    activeAdCount: base.activeAdCount,
+  };
+}
