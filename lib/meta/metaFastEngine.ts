@@ -213,6 +213,7 @@ export function dailyTrend(rows: MetaRawRow[]) {
         ctr: s.ctr,
         roas: s.roas,
         cpa: s.purchases > 0 ? s.cpa : null,
+        aov: s.purchases > 0 ? s.aov : null,
         purchases: s.purchases,
       };
     });

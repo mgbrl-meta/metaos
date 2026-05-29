@@ -82,7 +82,7 @@ export function HighCpaFastTab() {
             </p>
             <h1 className="mt-1 text-2xl font-black">Live High CPA Ads</h1>
             <p className="mt-1 text-sm opacity-60">
-              Server-side cached view. Only ads that spent yesterday are checked against lifetime CPA.
+              Only ads that spent yesterday are shown. Lifetime CPA is calculated as lifetime spend divided by lifetime purchases.
             </p>
           </div>
 
@@ -122,7 +122,7 @@ export function HighCpaFastTab() {
             <SlidersHorizontal className="h-4 w-4 text-[#0A84FF]" />
             <div>
               <h2 className="text-lg font-black">Lifetime CPA Threshold</h2>
-              <p className="text-sm opacity-60">Filter active ads by lifetime CPA.</p>
+              <p className="text-sm opacity-60">Show active-yesterday ads where lifetime purchases are above 0 and lifetime CPA crosses your selected threshold.</p>
             </div>
           </div>
 
@@ -210,7 +210,7 @@ export function HighCpaFastTab() {
           <div>
             <h2 className="text-lg font-black">High CPA Ads</h2>
             <p className="mt-1 text-sm opacity-60">
-              Showing ads live yesterday with lifetime CPA above {money(threshold)}.
+              Showing ads live yesterday where lifetime purchases > 0 and lifetime CPA is above {money(threshold)}.
             </p>
           </div>
 
@@ -224,7 +224,7 @@ export function HighCpaFastTab() {
 
           {items.map((item) => (
             <details key={item.key} className="group">
-              <summary className="grid cursor-pointer list-none grid-cols-[1fr_94px_84px_84px_84px_84px_24px] items-center gap-3 px-4 py-3 text-xs hover:bg-current/[0.035]">
+              <summary className="grid cursor-pointer list-none grid-cols-[1fr_90px_78px_78px_78px_78px_78px_24px] items-center gap-3 px-4 py-3 text-xs hover:bg-current/[0.035]">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full border border-red-300 bg-red-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300">
@@ -245,6 +245,7 @@ export function HighCpaFastTab() {
                 <Metric label="CPM" value={money(item.lifetime.cpm)} />
                 <Metric label="CTR" value={pct(item.lifetime.ctr)} />
                 <Metric label="CPA" value={money(item.lifetime.cpa)} tone="red" />
+                <Metric label="AOV" value={money(item.lifetime.aov)} />
                 <Metric label="ROAS" value={`${num(item.lifetime.roas)}x`} tone={item.lifetime.roas >= 1 ? "green" : "red"} />
                 <ChevronDown className="h-4 w-4 opacity-45 transition group-open:rotate-180" />
               </summary>
@@ -348,7 +349,7 @@ function TrendBox({ data }: { data: any[] }) {
       <div className="mb-2 flex items-center justify-between">
         <p className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.14em] opacity-55">
           <LineChartIcon className="h-4 w-4" />
-          CPM / CTR / ROAS Trend
+          CPM / CTR / CPA / AOV / ROAS Trend
         </p>
       </div>
 
@@ -369,14 +370,18 @@ function TrendBox({ data }: { data: any[] }) {
               }}
               formatter={(value: any, name: any) => {
                 if (name === "CPM") return [money(Number(value || 0)), "CPM"];
+                if (name === "CPA") return [money(Number(value || 0)), "CPA"];
+                if (name === "AOV") return [money(Number(value || 0)), "AOV"];
                 if (name === "CTR") return [pct(Number(value || 0)), "CTR"];
                 if (name === "ROAS") return [`${num(Number(value || 0))}x`, "ROAS"];
                 return [value, name];
               }}
             />
             <Line yAxisId="money" type="monotone" dataKey="cpm" name="CPM" stroke="#0A84FF" strokeWidth={2} dot={false} connectNulls />
+            <Line yAxisId="money" type="monotone" dataKey="cpa" name="CPA" stroke="#b42318" strokeWidth={2} dot={false} connectNulls />
+            <Line yAxisId="money" type="monotone" dataKey="aov" name="AOV" stroke="#9333ea" strokeWidth={2} dot={false} connectNulls />
             <Line yAxisId="rate" type="monotone" dataKey="ctr" name="CTR" stroke="#087f5b" strokeWidth={2} dot={false} connectNulls />
-            <Line yAxisId="rate" type="monotone" dataKey="roas" name="ROAS" stroke="#b42318" strokeWidth={2} dot={false} connectNulls />
+            <Line yAxisId="rate" type="monotone" dataKey="roas" name="ROAS" stroke="#f97316" strokeWidth={2} dot={false} connectNulls />
           </LineChart>
         </ResponsiveContainer>
       </div>
