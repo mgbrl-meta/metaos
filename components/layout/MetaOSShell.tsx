@@ -29,9 +29,6 @@ export type MetaTab =
   | "zero_purchase"
   | "high_cpa"
   | "high_roas"
-  | "roi_gap"
-  | "budget_intelligence"
-  | "benchmark_audit"
   | "spend_visuals"
   | "winner"
   | "hook_hold"
@@ -78,27 +75,6 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "High ROAS",
     description: "Live ads with strong lifetime ROAS",
     icon: TrendingUp,
-  },
-  {
-    id: "budget_intelligence",
-    label: "Budget Intelligence",
-    shortLabel: "Budget",
-    description: "Winner share, waste share and marginal scale",
-    icon: PiggyBank,
-  },
-  {
-    id: "roi_gap",
-    label: "Efficiency Gaps",
-    shortLabel: "Gaps",
-    description: "Spend leaks and weak pockets",
-    icon: ShieldAlert,
-  },
-  {
-    id: "benchmark_audit",
-    label: "Performance Benchmark",
-    shortLabel: "Benchmark",
-    description: "Strict benchmark audit",
-    icon: ShieldCheck,
   },
   {
     id: "spend_visuals",

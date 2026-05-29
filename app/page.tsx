@@ -8,12 +8,9 @@ import {
   OSMode,
 } from "@/components/layout/MetaOSShell";
 
-import { BudgetIntelligenceTab } from "@/components/meta/BudgetIntelligenceTab";
 import { ZeroPurchaseTab } from "@/components/meta/ZeroPurchaseTab";
 import { HighCpaTab } from "@/components/meta/HighCpaTab";
 import { HighRoasTab } from "@/components/meta/HighRoasTab";
-import { EfficiencyGaps } from "@/components/dashboard/EfficiencyGaps";
-import { BenchmarkAudit } from "@/components/dashboard/BenchmarkAudit";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
 import { WinnerCreativeTab } from "@/components/meta/WinnerCreativeTab";
 import { HookHoldCreativeTab } from "@/components/meta/HookHoldCreativeTab";
@@ -65,9 +62,6 @@ export default function Home() {
           {activeMetaTab === "zero_purchase" && <ZeroPurchaseTab />}
           {activeMetaTab === "high_cpa" && <HighCpaTab />}
           {activeMetaTab === "high_roas" && <HighRoasTab />}
-          {activeMetaTab === "budget_intelligence" && <BudgetIntelligenceTab />}
-          {activeMetaTab === "roi_gap" && <EfficiencyGaps />}
-          {activeMetaTab === "benchmark_audit" && <BenchmarkAudit />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
           {activeMetaTab === "winner" && <WinnerCreativeTab />}
           {activeMetaTab === "hook_hold" && <HookHoldCreativeTab />}
