@@ -1,86 +1,85 @@
 /* =========================================================
-   META / GOOGLE OS FINAL UI CONTRACT
-   This file must load LAST after globals.css.
-   Scope: [data-os-root="true"] only.
-   Goal: one source of truth for light/dark readability.
+   META OS FINAL THEME CONTRACT
+   Fixes light/dark readability across cards, tables, charts,
+   tooltips, headers, tabs and duplicated old dark text issues.
    ========================================================= */
 
-/* -----------------------------
-   Theme tokens
------------------------------ */
-
-[data-os-root="true"] {
+:root {
   --os-blue: #0a84ff;
-
-  --os-good: #087f5b;
-  --os-good-dark: #34d399;
-
-  --os-bad: #b42318;
-  --os-bad-dark: #ff6b5f;
-
-  --os-amber: #b45309;
-  --os-amber-dark: #fbbf24;
-
-  --os-table-head: #14233b;
+  --os-table-head: #13223a;
   --os-table-head-text: #ffffff;
 
-  font-feature-settings: "tnum";
-  text-rendering: geometricPrecision;
+  --os-good-light: #047857;
+  --os-good-dark: #34d399;
+
+  --os-bad-light: #b42318;
+  --os-bad-dark: #ff6b5f;
+
+  --os-amber-light: #b45309;
+  --os-amber-dark: #fbbf24;
 }
 
+html:not(.dark),
+html.os-light,
+[data-os-theme="light"],
+.metaos-light,
 [data-os-root="true"][data-os-theme="light"] {
   --os-page: #f6f7f4;
-  --os-card: #ffffff;
-  --os-card-soft: #f1f2ef;
+  --os-surface: #ffffff;
+  --os-surface-soft: #f1f2ef;
   --os-border: rgba(17, 17, 17, 0.12);
-
   --os-text: #111111;
-  --os-muted: rgba(17, 17, 17, 0.58);
-  --os-faint: rgba(17, 17, 17, 0.38);
-
-  --os-red-bg: #fff3f1;
-  --os-red-text: #7f1d1d;
-
-  --os-green-bg: #eefaf4;
-  --os-green-text: #064e3b;
-
-  --os-amber-bg: #fff7ed;
-  --os-amber-text: #7c2d12;
+  --os-muted: rgba(17, 17, 17, 0.62);
+  --os-faint: rgba(17, 17, 17, 0.42);
+  --os-good: var(--os-good-light);
+  --os-bad: var(--os-bad-light);
+  --os-amber: var(--os-amber-light);
 }
 
+html.dark,
+html.os-dark,
+[data-os-theme="dark"],
+.metaos-dark,
 [data-os-root="true"][data-os-theme="dark"] {
   --os-page: #050607;
-  --os-card: #0f1217;
-  --os-card-soft: #171a20;
-  --os-border: rgba(255, 255, 255, 0.12);
-
+  --os-surface: #0f1217;
+  --os-surface-soft: #171a20;
+  --os-border: rgba(255, 255, 255, 0.13);
   --os-text: #f4f4f5;
-  --os-muted: rgba(244, 244, 245, 0.62);
-  --os-faint: rgba(244, 244, 245, 0.42);
-
-  --os-red-bg: rgba(180, 35, 24, 0.16);
-  --os-red-text: #fecaca;
-
-  --os-green-bg: rgba(8, 127, 91, 0.16);
-  --os-green-text: #bbf7d0;
-
-  --os-amber-bg: rgba(180, 83, 9, 0.16);
-  --os-amber-text: #fed7aa;
+  --os-muted: rgba(244, 244, 245, 0.66);
+  --os-faint: rgba(244, 244, 245, 0.46);
+  --os-good: var(--os-good-dark);
+  --os-bad: var(--os-bad-dark);
+  --os-amber: var(--os-amber-dark);
 }
 
-/* -----------------------------
-   Base app
------------------------------ */
-
+/* App base */
+body,
+.metaos-app,
 [data-os-root="true"] {
   background: var(--os-page) !important;
   color: var(--os-text) !important;
 }
 
-[data-os-root="true"] body,
+/* Force readable text everywhere inside Meta OS */
+.metaos-app,
+.metaos-app *,
+[data-os-root="true"],
+[data-os-root="true"] * {
+  color: inherit;
+}
+
+.metaos-app main,
+.metaos-app header,
+.metaos-app section,
+.metaos-app article,
+.metaos-app div,
+.metaos-app p,
+.metaos-app span,
+.metaos-app button,
+.metaos-app label,
 [data-os-root="true"] main,
 [data-os-root="true"] header,
-[data-os-root="true"] aside,
 [data-os-root="true"] section,
 [data-os-root="true"] article,
 [data-os-root="true"] div,
@@ -88,92 +87,19 @@
 [data-os-root="true"] span,
 [data-os-root="true"] button,
 [data-os-root="true"] label {
-  color: inherit;
-}
-
-[data-os-root="true"] main,
-[data-os-root="true"] header,
-[data-os-root="true"] aside,
-[data-os-root="true"] section {
   color: var(--os-text) !important;
 }
 
-/* -----------------------------
-   Header / top nav
------------------------------ */
-
-[data-os-root="true"][data-os-theme="light"] header {
-  background: rgba(255, 255, 255, 0.96) !important;
-  border-color: var(--os-border) !important;
-}
-
-[data-os-root="true"][data-os-theme="dark"] header {
-  background: rgba(8, 10, 13, 0.96) !important;
-  border-color: var(--os-border) !important;
-}
-
-[data-os-root="true"] header,
-[data-os-root="true"] header * {
-  color: var(--os-text) !important;
-}
-
-[data-os-root="true"] header button {
-  border-color: var(--os-border) !important;
-}
-
-/* -----------------------------
-   Cards / surfaces
------------------------------ */
-
-[data-os-root="true"] main section,
-[data-os-root="true"] main article,
-[data-os-root="true"] main details,
-[data-os-root="true"] main summary {
-  background: var(--os-card) !important;
-  color: var(--os-text) !important;
-}
-
-[data-os-root="true"] main [class*="bg-current"],
-[data-os-root="true"] main [class*="bg-white"] {
-  background: var(--os-card) !important;
-  color: var(--os-text) !important;
-}
-
-[data-os-root="true"][data-os-theme="dark"] main [class*="bg-slate-50"],
-[data-os-root="true"][data-os-theme="dark"] main [class*="bg-gray-50"],
-[data-os-root="true"][data-os-theme="dark"] main [class*="bg-zinc-50"],
-[data-os-root="true"][data-os-theme="dark"] main [class*="bg-neutral-50"] {
-  background: var(--os-card) !important;
-  color: var(--os-text) !important;
-}
-
-/* IMPORTANT:
-   Do NOT globally override bg-[#14233b].
-   Table headers need navy background.
-*/
-
-/* -----------------------------
-   Borders
------------------------------ */
-
-[data-os-root="true"] [class*="border"],
-[data-os-root="true"] .border {
-  border-color: var(--os-border) !important;
-}
-
-/* -----------------------------
-   Text hierarchy
------------------------------ */
-
-[data-os-root="true"] h1,
-[data-os-root="true"] h2,
-[data-os-root="true"] h3,
-[data-os-root="true"] h4,
-[data-os-root="true"] .font-black,
-[data-os-root="true"] .font-bold {
-  color: var(--os-text) !important;
-}
-
+/* Muted text should not disappear */
+.metaos-app .opacity-35,
+.metaos-app .opacity-40,
+.metaos-app .opacity-45,
+.metaos-app .opacity-50,
+.metaos-app .opacity-55,
+.metaos-app .opacity-60,
+.metaos-app .opacity-65,
+.metaos-app .opacity-70,
+.metaos-app .opacity-75,
 [data-os-root="true"] .opacity-35,
 [data-os-root="true"] .opacity-40,
 [data-os-root="true"] .opacity-45,
@@ -187,166 +113,135 @@
   color: var(--os-muted) !important;
 }
 
-/* Kill accidental white text in light mode */
-[data-os-root="true"][data-os-theme="light"] main [class*="text-white"],
-[data-os-root="true"][data-os-theme="light"] main [class*="text-slate"],
-[data-os-root="true"][data-os-theme="light"] main [class*="text-gray"],
-[data-os-root="true"][data-os-theme="light"] main [class*="text-zinc"],
-[data-os-root="true"][data-os-theme="light"] main [class*="text-neutral"] {
+/* Surfaces */
+.metaos-app main section,
+.metaos-app main article,
+.metaos-app main details,
+.metaos-app main summary,
+[data-os-root="true"] main section,
+[data-os-root="true"] main article,
+[data-os-root="true"] main details,
+[data-os-root="true"] main summary {
+  background: var(--os-surface) !important;
+  color: var(--os-text) !important;
+  border-color: var(--os-border) !important;
+}
+
+.metaos-app [class*="bg-current"],
+.metaos-app [class*="bg-white"],
+[data-os-root="true"] [class*="bg-current"],
+[data-os-root="true"] [class*="bg-white"] {
+  background: var(--os-surface) !important;
   color: var(--os-text) !important;
 }
 
-/* Kill accidental black text in dark mode */
-[data-os-root="true"][data-os-theme="dark"] main [class*="text-black"],
-[data-os-root="true"][data-os-theme="dark"] main [class*="text-slate"],
-[data-os-root="true"][data-os-theme="dark"] main [class*="text-gray"],
-[data-os-root="true"][data-os-theme="dark"] main [class*="text-zinc"],
-[data-os-root="true"][data-os-theme="dark"] main [class*="text-neutral"] {
+/* Header/nav */
+.metaos-app header,
+[data-os-root="true"] header {
+  background: var(--os-surface) !important;
+  color: var(--os-text) !important;
+  border-color: var(--os-border) !important;
+}
+
+.metaos-app header *,
+[data-os-root="true"] header * {
   color: var(--os-text) !important;
 }
 
-/* -----------------------------
-   Status colors must always win
------------------------------ */
-
-[data-os-root="true"][data-os-theme="light"] .text-red-300,
-[data-os-root="true"][data-os-theme="light"] .text-red-400,
-[data-os-root="true"][data-os-theme="light"] .text-red-500,
-[data-os-root="true"][data-os-theme="light"] .text-red-600,
-[data-os-root="true"][data-os-theme="light"] .text-red-700,
-[data-os-root="true"][data-os-theme="light"] .text-rose-300,
-[data-os-root="true"][data-os-theme="light"] .text-rose-400,
-[data-os-root="true"][data-os-theme="light"] .text-rose-500,
-[data-os-root="true"][data-os-theme="light"] .text-rose-600,
-[data-os-root="true"][data-os-theme="light"] .text-rose-700 {
-  color: var(--os-bad) !important;
-}
-
-[data-os-root="true"][data-os-theme="dark"] .text-red-300,
-[data-os-root="true"][data-os-theme="dark"] .text-red-400,
-[data-os-root="true"][data-os-theme="dark"] .text-red-500,
-[data-os-root="true"][data-os-theme="dark"] .text-red-600,
-[data-os-root="true"][data-os-theme="dark"] .text-red-700,
-[data-os-root="true"][data-os-theme="dark"] .text-rose-300,
-[data-os-root="true"][data-os-theme="dark"] .text-rose-400,
-[data-os-root="true"][data-os-theme="dark"] .text-rose-500,
-[data-os-root="true"][data-os-theme="dark"] .text-rose-600,
-[data-os-root="true"][data-os-theme="dark"] .text-rose-700 {
-  color: var(--os-bad-dark) !important;
-}
-
-[data-os-root="true"][data-os-theme="light"] .text-emerald-300,
-[data-os-root="true"][data-os-theme="light"] .text-emerald-400,
-[data-os-root="true"][data-os-theme="light"] .text-emerald-500,
-[data-os-root="true"][data-os-theme="light"] .text-emerald-600,
-[data-os-root="true"][data-os-theme="light"] .text-emerald-700,
-[data-os-root="true"][data-os-theme="light"] .text-green-300,
-[data-os-root="true"][data-os-theme="light"] .text-green-400,
-[data-os-root="true"][data-os-theme="light"] .text-green-500,
-[data-os-root="true"][data-os-theme="light"] .text-green-600,
-[data-os-root="true"][data-os-theme="light"] .text-green-700 {
-  color: var(--os-good) !important;
-}
-
-[data-os-root="true"][data-os-theme="dark"] .text-emerald-300,
-[data-os-root="true"][data-os-theme="dark"] .text-emerald-400,
-[data-os-root="true"][data-os-theme="dark"] .text-emerald-500,
-[data-os-root="true"][data-os-theme="dark"] .text-emerald-600,
-[data-os-root="true"][data-os-theme="dark"] .text-emerald-700,
-[data-os-root="true"][data-os-theme="dark"] .text-green-300,
-[data-os-root="true"][data-os-theme="dark"] .text-green-400,
-[data-os-root="true"][data-os-theme="dark"] .text-green-500,
-[data-os-root="true"][data-os-theme="dark"] .text-green-600,
-[data-os-root="true"][data-os-theme="dark"] .text-green-700 {
-  color: var(--os-good-dark) !important;
-}
-
-[data-os-root="true"] .text-blue-300,
-[data-os-root="true"] .text-blue-400,
-[data-os-root="true"] .text-blue-500,
-[data-os-root="true"] .text-blue-600,
-[data-os-root="true"] .text-blue-700,
-[data-os-root="true"] .text-\[\#0A84FF\] {
-  color: var(--os-blue) !important;
-}
-
-/* -----------------------------
-   Status panels / badges
------------------------------ */
-
-[data-os-root="true"][data-os-theme="light"] [class*="bg-red-"],
-[data-os-root="true"][data-os-theme="light"] [class*="bg-rose-"] {
-  background: var(--os-red-bg) !important;
-  color: var(--os-red-text) !important;
-  border-color: rgba(180, 35, 24, 0.24) !important;
-}
-
-[data-os-root="true"][data-os-theme="dark"] [class*="bg-red-"],
-[data-os-root="true"][data-os-theme="dark"] [class*="bg-rose-"] {
-  background: var(--os-red-bg) !important;
-  color: var(--os-red-text) !important;
-  border-color: rgba(180, 35, 24, 0.34) !important;
-}
-
-[data-os-root="true"][data-os-theme="light"] [class*="bg-emerald-"],
-[data-os-root="true"][data-os-theme="light"] [class*="bg-green-"] {
-  background: var(--os-green-bg) !important;
-  color: var(--os-green-text) !important;
-  border-color: rgba(8, 127, 91, 0.24) !important;
-}
-
-[data-os-root="true"][data-os-theme="dark"] [class*="bg-emerald-"],
-[data-os-root="true"][data-os-theme="dark"] [class*="bg-green-"] {
-  background: var(--os-green-bg) !important;
-  color: var(--os-green-text) !important;
-  border-color: rgba(8, 127, 91, 0.34) !important;
-}
-
-[data-os-root="true"][data-os-theme="light"] [class*="bg-orange-"],
-[data-os-root="true"][data-os-theme="light"] [class*="bg-yellow-"] {
-  background: var(--os-amber-bg) !important;
-  color: var(--os-amber-text) !important;
-  border-color: rgba(180, 83, 9, 0.24) !important;
-}
-
-[data-os-root="true"][data-os-theme="dark"] [class*="bg-orange-"],
-[data-os-root="true"][data-os-theme="dark"] [class*="bg-yellow-"] {
-  background: var(--os-amber-bg) !important;
-  color: var(--os-amber-text) !important;
-  border-color: rgba(251, 191, 36, 0.34) !important;
-}
-
-/* -----------------------------
-   Active nav buttons
------------------------------ */
-
-[data-os-root="true"] button.bg-\[\#0A84FF\],
-[data-os-root="true"] button.bg-\[\#0A84FF\] *,
+/* Active blue buttons must stay white text */
+.metaos-app .bg-\[\#0A84FF\],
+.metaos-app .bg-\[\#0A84FF\] *,
+.metaos-app button.bg-\[\#0A84FF\],
+.metaos-app button.bg-\[\#0A84FF\] *,
 [data-os-root="true"] .bg-\[\#0A84FF\],
-[data-os-root="true"] .bg-\[\#0A84FF\] * {
-  background: #0a84ff !important;
+[data-os-root="true"] .bg-\[\#0A84FF\] *,
+[data-os-root="true"] button.bg-\[\#0A84FF\],
+[data-os-root="true"] button.bg-\[\#0A84FF\] * {
+  background: var(--os-blue) !important;
   color: #ffffff !important;
 }
 
-[data-os-root="true"] button.bg-emerald-400,
-[data-os-root="true"] button.bg-emerald-400 *,
-[data-os-root="true"] .bg-emerald-400,
-[data-os-root="true"] .bg-emerald-400 * {
-  background: #13c98b !important;
-  color: #04140d !important;
+/* Status colors */
+.metaos-app .text-red-300,
+.metaos-app .text-red-400,
+.metaos-app .text-red-500,
+.metaos-app .text-red-600,
+.metaos-app .text-red-700,
+.metaos-app .text-rose-300,
+.metaos-app .text-rose-400,
+.metaos-app .text-rose-500,
+.metaos-app .text-rose-600,
+.metaos-app .text-rose-700,
+[data-os-root="true"] .text-red-300,
+[data-os-root="true"] .text-red-400,
+[data-os-root="true"] .text-red-500,
+[data-os-root="true"] .text-red-600,
+[data-os-root="true"] .text-red-700,
+[data-os-root="true"] .text-rose-300,
+[data-os-root="true"] .text-rose-400,
+[data-os-root="true"] .text-rose-500,
+[data-os-root="true"] .text-rose-600,
+[data-os-root="true"] .text-rose-700 {
+  color: var(--os-bad) !important;
 }
 
-/* -----------------------------
-   Tables
------------------------------ */
+.metaos-app .text-emerald-300,
+.metaos-app .text-emerald-400,
+.metaos-app .text-emerald-500,
+.metaos-app .text-emerald-600,
+.metaos-app .text-emerald-700,
+.metaos-app .text-green-300,
+.metaos-app .text-green-400,
+.metaos-app .text-green-500,
+.metaos-app .text-green-600,
+.metaos-app .text-green-700,
+[data-os-root="true"] .text-emerald-300,
+[data-os-root="true"] .text-emerald-400,
+[data-os-root="true"] .text-emerald-500,
+[data-os-root="true"] .text-emerald-600,
+[data-os-root="true"] .text-emerald-700,
+[data-os-root="true"] .text-green-300,
+[data-os-root="true"] .text-green-400,
+[data-os-root="true"] .text-green-500,
+[data-os-root="true"] .text-green-600,
+[data-os-root="true"] .text-green-700 {
+  color: var(--os-good) !important;
+}
 
+.metaos-app .text-orange-300,
+.metaos-app .text-orange-400,
+.metaos-app .text-orange-500,
+.metaos-app .text-orange-600,
+.metaos-app .text-yellow-300,
+.metaos-app .text-yellow-400,
+.metaos-app .text-yellow-500,
+.metaos-app .text-yellow-600,
+[data-os-root="true"] .text-orange-300,
+[data-os-root="true"] .text-orange-400,
+[data-os-root="true"] .text-orange-500,
+[data-os-root="true"] .text-orange-600,
+[data-os-root="true"] .text-yellow-300,
+[data-os-root="true"] .text-yellow-400,
+[data-os-root="true"] .text-yellow-500,
+[data-os-root="true"] .text-yellow-600 {
+  color: var(--os-amber) !important;
+}
+
+/* Tables */
+.metaos-app table,
 [data-os-root="true"] table {
-  width: 100%;
-  border-collapse: collapse !important;
-  background: var(--os-card) !important;
+  background: var(--os-surface) !important;
   color: var(--os-text) !important;
+  border-collapse: collapse !important;
 }
 
+.metaos-app table thead,
+.metaos-app table thead tr,
+.metaos-app table thead th,
+.metaos-app .monthly-table-head,
+.metaos-app .monthly-table-head tr,
+.metaos-app .monthly-table-head th,
+.metaos-app .monthly-table-th,
 [data-os-root="true"] table thead,
 [data-os-root="true"] table thead tr,
 [data-os-root="true"] table thead th,
@@ -358,190 +253,113 @@
   background-color: var(--os-table-head) !important;
   color: var(--os-table-head-text) !important;
   opacity: 1 !important;
+  font-weight: 900 !important;
 }
 
+.metaos-app table thead *,
+.metaos-app .monthly-table-head *,
+.metaos-app .monthly-table-th *,
 [data-os-root="true"] table thead *,
-[data-os-root="true"] table thead th *,
 [data-os-root="true"] .monthly-table-head *,
 [data-os-root="true"] .monthly-table-th * {
-  background: transparent !important;
-  color: var(--os-table-head-text) !important;
+  color: #ffffff !important;
   opacity: 1 !important;
+  background: transparent !important;
 }
 
+.metaos-app table tbody,
+.metaos-app table tbody tr,
+.metaos-app table tbody td,
 [data-os-root="true"] table tbody,
 [data-os-root="true"] table tbody tr,
-[data-os-root="true"] table tbody td,
-[data-os-root="true"] table tbody th {
-  background: var(--os-card) !important;
+[data-os-root="true"] table tbody td {
+  background: var(--os-surface) !important;
   color: var(--os-text) !important;
-}
-
-[data-os-root="true"] table tbody tr {
   border-color: var(--os-border) !important;
 }
 
-[data-os-root="true"][data-os-theme="light"] table tbody td[class*="sticky"],
-[data-os-root="true"][data-os-theme="light"] table tbody th[class*="sticky"] {
-  background: var(--os-card) !important;
-  color: var(--os-text) !important;
+/* Charts */
+.metaos-app .recharts-text,
+.metaos-app .recharts-cartesian-axis-tick-value,
+[data-os-root="true"] .recharts-text,
+[data-os-root="true"] .recharts-cartesian-axis-tick-value {
+  fill: var(--os-muted) !important;
+  color: var(--os-muted) !important;
+  opacity: 1 !important;
 }
 
-/* -----------------------------
-   Recharts axes / labels
------------------------------ */
-
-[data-os-root="true"][data-os-theme="light"] .recharts-text,
-[data-os-root="true"][data-os-theme="light"] .recharts-cartesian-axis-tick-value {
-  fill: rgba(17, 17, 17, 0.62) !important;
-  color: rgba(17, 17, 17, 0.62) !important;
-}
-
-[data-os-root="true"][data-os-theme="dark"] .recharts-text,
-[data-os-root="true"][data-os-theme="dark"] .recharts-cartesian-axis-tick-value {
-  fill: rgba(244, 244, 245, 0.62) !important;
-  color: rgba(244, 244, 245, 0.62) !important;
-}
-
+.metaos-app .recharts-cartesian-grid line,
 [data-os-root="true"] .recharts-cartesian-grid line {
   stroke-opacity: 0.18 !important;
 }
 
-/* -----------------------------
-   Recharts tooltips
-   Recharts renders tooltip outside normal SVG flow, so this must be global.
------------------------------ */
-
+/* Recharts tooltip is outside some component scopes */
 .recharts-tooltip-wrapper,
 .recharts-tooltip-wrapper *,
-[data-os-root="true"] .recharts-tooltip-wrapper,
-[data-os-root="true"] .recharts-tooltip-wrapper * {
+.recharts-default-tooltip,
+.recharts-default-tooltip *,
+.recharts-tooltip-item,
+.recharts-tooltip-label,
+.scatter-tooltip-card,
+.scatter-tooltip-card * {
   color: #ffffff !important;
   opacity: 1 !important;
 }
 
 .recharts-default-tooltip,
-.recharts-default-tooltip *,
-.recharts-tooltip-item,
-.recharts-tooltip-label {
+.scatter-tooltip-card {
   background: #111318 !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-  border-color: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255,255,255,0.16) !important;
+  border-radius: 10px !important;
 }
 
-/* Custom tooltip cards across full app */
-.scatter-tooltip-card,
-.scatter-tooltip-card *,
-.recharts-tooltip-wrapper .scatter-tooltip-card,
-.recharts-tooltip-wrapper .scatter-tooltip-card *,
-[data-os-root="true"] .scatter-tooltip-card,
-[data-os-root="true"] .scatter-tooltip-card * {
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-.scatter-tooltip-card .scatter-tooltip-label,
-.recharts-tooltip-wrapper .scatter-tooltip-card .scatter-tooltip-label,
-[data-os-root="true"] .scatter-tooltip-card .scatter-tooltip-label {
-  color: rgba(255, 255, 255, 0.72) !important;
-  opacity: 1 !important;
-}
-
-.scatter-tooltip-card .scatter-tooltip-value,
-.scatter-tooltip-card .scatter-tooltip-title,
-.recharts-tooltip-wrapper .scatter-tooltip-card .scatter-tooltip-value,
-.recharts-tooltip-wrapper .scatter-tooltip-card .scatter-tooltip-title,
-[data-os-root="true"] .scatter-tooltip-card .scatter-tooltip-value,
-[data-os-root="true"] .scatter-tooltip-card .scatter-tooltip-title {
-  color: #ffffff !important;
-  opacity: 1 !important;
-  font-weight: 900 !important;
-}
-
-/* Generic custom tooltip safety */
-[class*="tooltip"],
-[class*="tooltip"] * {
-  opacity: 1;
-}
-
-.recharts-tooltip-wrapper [class*="tooltip"],
-.recharts-tooltip-wrapper [class*="tooltip"] * {
-  color: #ffffff !important;
-}
-
-/* -----------------------------
-   Compact density
------------------------------ */
-
+/* Compact layout */
+.metaos-app main,
 [data-os-root="true"] main {
   font-size: 12px !important;
 }
 
+.metaos-app .text-5xl,
 [data-os-root="true"] .text-5xl { font-size: 28px !important; line-height: 1.05 !important; }
+.metaos-app .text-4xl,
 [data-os-root="true"] .text-4xl { font-size: 24px !important; line-height: 1.08 !important; }
+.metaos-app .text-3xl,
 [data-os-root="true"] .text-3xl { font-size: 21px !important; line-height: 1.1 !important; }
+.metaos-app .text-2xl,
 [data-os-root="true"] .text-2xl { font-size: 18px !important; line-height: 1.15 !important; }
+.metaos-app .text-xl,
 [data-os-root="true"] .text-xl { font-size: 15px !important; line-height: 1.2 !important; }
+.metaos-app .text-lg,
 [data-os-root="true"] .text-lg { font-size: 14px !important; line-height: 1.25 !important; }
 
-[data-os-root="true"] .rounded-\[2rem\],
-[data-os-root="true"] .rounded-\[1\.5rem\],
-[data-os-root="true"] .rounded-3xl,
-[data-os-root="true"] .rounded-2xl,
-[data-os-root="true"] .rounded-xl {
-  border-radius: 10px !important;
-}
-
+.metaos-app .p-8,
+.metaos-app .p-7,
+.metaos-app .p-6,
 [data-os-root="true"] .p-8,
 [data-os-root="true"] .p-7,
 [data-os-root="true"] .p-6 { padding: 12px !important; }
 
+.metaos-app .p-5,
+.metaos-app .p-4,
 [data-os-root="true"] .p-5,
 [data-os-root="true"] .p-4 { padding: 10px !important; }
 
-[data-os-root="true"] .gap-8,
-[data-os-root="true"] .gap-7,
-[data-os-root="true"] .gap-6 { gap: 10px !important; }
-
-[data-os-root="true"] .gap-5,
-[data-os-root="true"] .gap-4 { gap: 8px !important; }
-
-[data-os-root="true"] .shadow-2xl,
-[data-os-root="true"] .shadow-xl,
-[data-os-root="true"] [class*="shadow-"] {
-  box-shadow: none !important;
-}
-
+.metaos-app table th,
 [data-os-root="true"] table th {
   font-size: 9.5px !important;
   padding: 7px 9px !important;
   line-height: 1.15 !important;
 }
 
+.metaos-app table td,
 [data-os-root="true"] table td {
   font-size: 11px !important;
   padding: 7px 9px !important;
   line-height: 1.22 !important;
 }
 
-/* -----------------------------
-   Mobile
------------------------------ */
-
-@media (max-width: 768px) {
-  [data-os-root="true"] main > div {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-  }
-
-  [data-os-root="true"] table td,
-  [data-os-root="true"] table th {
-    font-size: 10.5px !important;
-    padding: 6px 8px !important;
-  }
-
-  .metaos-scroll-table table {
-    min-width: 900px;
-  }
+/* Remove heavy shadows that make dark/light look dirty */
+.metaos-app [class*="shadow"],
+[data-os-root="true"] [class*="shadow"] {
+  box-shadow: none !important;
 }

@@ -68,7 +68,6 @@ export default function Home() {
           {activeMetaTab === "structure_report" && <StructureReport />}
           {activeMetaTab === "summary" && <MetaExecutiveSummary />}
           {activeMetaTab === "monthly" && <EnhancedMonthlyReport />}
-          {activeMetaTab === "monthly" && <MonthlyPerformance />}
         </>
       )}
 
