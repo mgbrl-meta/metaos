@@ -294,7 +294,7 @@ export function MetaOSShell({
                 </div>
               </div>
 
-              <div className="ml-1 hidden rounded-2xl border border-current/10 bg-current/[0.04] p-1 md:flex">
+              <div className="ml-1 hidden gap-1.5 rounded-2xl border border-current/10 bg-current/[0.04] p-1 md:flex">
                 <button
                   type="button"
                   onClick={() => switchOS("meta")}
