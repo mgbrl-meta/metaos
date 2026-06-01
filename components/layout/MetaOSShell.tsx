@@ -192,7 +192,6 @@ export function MetaOSShell({
 
   const isGoogle = osMode === "google";
 
-  
   function osModePillClass(isActive: boolean) {
     return isActive
       ? "metaos-apple-pill metaos-apple-pill-active"
@@ -204,6 +203,7 @@ export function MetaOSShell({
       ? "metaos-apple-tab metaos-apple-pill-active"
       : "metaos-apple-tab metaos-apple-pill-inactive";
   }
+
 
   const activeNav = isGoogle ? googleNav : metaNav;
 
