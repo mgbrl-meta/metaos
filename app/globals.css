@@ -1898,821 +1898,163 @@ html:not(.dark) main [style*="background"] [class*="text-white"] {
   }
 }
 
-/* =========================================================
-   META OS HARD THEME OVERRIDE — FINAL READABILITY FIX
-   Purpose:
-   - Dark mode: dark cards + readable light text
-   - Light mode: light cards + readable dark text
-   - Active blue buttons remain white text
-   - Tables keep navy header
-   - Chart tooltips stay dark
-   ========================================================= */
-
-/* ---------- DARK MODE HARD FIX ---------- */
-
-.metaos-app.metaos-dark,
-[data-os-root="true"][data-os-theme="dark"] {
-  background: #050607 !important;
-  color: #f4f4f5 !important;
-}
-
-.metaos-app.metaos-dark main,
-.metaos-app.metaos-dark header,
-.metaos-app.metaos-dark section,
-.metaos-app.metaos-dark article,
-.metaos-app.metaos-dark details,
-.metaos-app.metaos-dark summary,
-.metaos-app.metaos-dark div:not(.recharts-tooltip-wrapper):not(.recharts-wrapper):not(.recharts-surface),
-[data-os-root="true"][data-os-theme="dark"] main,
-[data-os-root="true"][data-os-theme="dark"] header,
-[data-os-root="true"][data-os-theme="dark"] section,
-[data-os-root="true"][data-os-theme="dark"] article,
-[data-os-root="true"][data-os-theme="dark"] details,
-[data-os-root="true"][data-os-theme="dark"] summary,
-[data-os-root="true"][data-os-theme="dark"] div:not(.recharts-tooltip-wrapper):not(.recharts-wrapper):not(.recharts-surface) {
-  background-color: #101318 !important;
-  color: #f4f4f5 !important;
-  border-color: rgba(255, 255, 255, 0.14) !important;
-}
-
-.metaos-app.metaos-dark h1,
-.metaos-app.metaos-dark h2,
-.metaos-app.metaos-dark h3,
-.metaos-app.metaos-dark h4,
-.metaos-app.metaos-dark p,
-.metaos-app.metaos-dark span,
-.metaos-app.metaos-dark label,
-.metaos-app.metaos-dark button,
-.metaos-app.metaos-dark summary,
-.metaos-app.metaos-dark td,
-.metaos-app.metaos-dark th,
-.metaos-app.metaos-dark li,
-.metaos-app.metaos-dark input,
-.metaos-app.metaos-dark select,
-.metaos-app.metaos-dark textarea,
-[data-os-root="true"][data-os-theme="dark"] h1,
-[data-os-root="true"][data-os-theme="dark"] h2,
-[data-os-root="true"][data-os-theme="dark"] h3,
-[data-os-root="true"][data-os-theme="dark"] h4,
-[data-os-root="true"][data-os-theme="dark"] p,
-[data-os-root="true"][data-os-theme="dark"] span,
-[data-os-root="true"][data-os-theme="dark"] label,
-[data-os-root="true"][data-os-theme="dark"] button,
-[data-os-root="true"][data-os-theme="dark"] summary,
-[data-os-root="true"][data-os-theme="dark"] td,
-[data-os-root="true"][data-os-theme="dark"] th,
-[data-os-root="true"][data-os-theme="dark"] li,
-[data-os-root="true"][data-os-theme="dark"] input,
-[data-os-root="true"][data-os-theme="dark"] select,
-[data-os-root="true"][data-os-theme="dark"] textarea {
-  color: #f4f4f5 !important;
-}
-
-/* Kill accidental black/dark text in dark mode */
-.metaos-app.metaos-dark [class*="text-black"],
-.metaos-app.metaos-dark [class*="text-neutral"],
-.metaos-app.metaos-dark [class*="text-zinc"],
-.metaos-app.metaos-dark [class*="text-slate"],
-.metaos-app.metaos-dark [class*="text-gray"],
-[data-os-root="true"][data-os-theme="dark"] [class*="text-black"],
-[data-os-root="true"][data-os-theme="dark"] [class*="text-neutral"],
-[data-os-root="true"][data-os-theme="dark"] [class*="text-zinc"],
-[data-os-root="true"][data-os-theme="dark"] [class*="text-slate"],
-[data-os-root="true"][data-os-theme="dark"] [class*="text-gray"] {
-  color: #f4f4f5 !important;
-}
-
-/* Muted text in dark mode */
-.metaos-app.metaos-dark .opacity-30,
-.metaos-app.metaos-dark .opacity-35,
-.metaos-app.metaos-dark .opacity-40,
-.metaos-app.metaos-dark .opacity-45,
-.metaos-app.metaos-dark .opacity-50,
-.metaos-app.metaos-dark .opacity-55,
-.metaos-app.metaos-dark .opacity-60,
-.metaos-app.metaos-dark .opacity-65,
-.metaos-app.metaos-dark .opacity-70,
-.metaos-app.metaos-dark .opacity-75,
-[data-os-root="true"][data-os-theme="dark"] .opacity-30,
-[data-os-root="true"][data-os-theme="dark"] .opacity-35,
-[data-os-root="true"][data-os-theme="dark"] .opacity-40,
-[data-os-root="true"][data-os-theme="dark"] .opacity-45,
-[data-os-root="true"][data-os-theme="dark"] .opacity-50,
-[data-os-root="true"][data-os-theme="dark"] .opacity-55,
-[data-os-root="true"][data-os-theme="dark"] .opacity-60,
-[data-os-root="true"][data-os-theme="dark"] .opacity-65,
-[data-os-root="true"][data-os-theme="dark"] .opacity-70,
-[data-os-root="true"][data-os-theme="dark"] .opacity-75 {
-  opacity: 1 !important;
-  color: rgba(244, 244, 245, 0.7) !important;
-}
-
-/* ---------- LIGHT MODE HARD FIX ---------- */
-
-.metaos-app.metaos-light,
-[data-os-root="true"][data-os-theme="light"] {
-  background: #f6f7f4 !important;
-  color: #111111 !important;
-}
-
-.metaos-app.metaos-light main,
-.metaos-app.metaos-light header,
-.metaos-app.metaos-light section,
-.metaos-app.metaos-light article,
-.metaos-app.metaos-light details,
-.metaos-app.metaos-light summary,
-.metaos-app.metaos-light div:not(.recharts-tooltip-wrapper):not(.recharts-wrapper):not(.recharts-surface),
-[data-os-root="true"][data-os-theme="light"] main,
-[data-os-root="true"][data-os-theme="light"] header,
-[data-os-root="true"][data-os-theme="light"] section,
-[data-os-root="true"][data-os-theme="light"] article,
-[data-os-root="true"][data-os-theme="light"] details,
-[data-os-root="true"][data-os-theme="light"] summary,
-[data-os-root="true"][data-os-theme="light"] div:not(.recharts-tooltip-wrapper):not(.recharts-wrapper):not(.recharts-surface) {
-  background-color: #ffffff !important;
-  color: #111111 !important;
-  border-color: rgba(17, 17, 17, 0.12) !important;
-}
-
-.metaos-app.metaos-light h1,
-.metaos-app.metaos-light h2,
-.metaos-app.metaos-light h3,
-.metaos-app.metaos-light h4,
-.metaos-app.metaos-light p,
-.metaos-app.metaos-light span,
-.metaos-app.metaos-light label,
-.metaos-app.metaos-light button,
-.metaos-app.metaos-light summary,
-.metaos-app.metaos-light td,
-.metaos-app.metaos-light th,
-.metaos-app.metaos-light li,
-.metaos-app.metaos-light input,
-.metaos-app.metaos-light select,
-.metaos-app.metaos-light textarea,
-[data-os-root="true"][data-os-theme="light"] h1,
-[data-os-root="true"][data-os-theme="light"] h2,
-[data-os-root="true"][data-os-theme="light"] h3,
-[data-os-root="true"][data-os-theme="light"] h4,
-[data-os-root="true"][data-os-theme="light"] p,
-[data-os-root="true"][data-os-theme="light"] span,
-[data-os-root="true"][data-os-theme="light"] label,
-[data-os-root="true"][data-os-theme="light"] button,
-[data-os-root="true"][data-os-theme="light"] summary,
-[data-os-root="true"][data-os-theme="light"] td,
-[data-os-root="true"][data-os-theme="light"] th,
-[data-os-root="true"][data-os-theme="light"] li,
-[data-os-root="true"][data-os-theme="light"] input,
-[data-os-root="true"][data-os-theme="light"] select,
-[data-os-root="true"][data-os-theme="light"] textarea {
-  color: #111111 !important;
-}
-
-/* Kill accidental white text in light mode */
-.metaos-app.metaos-light [class*="text-white"],
-.metaos-app.metaos-light [class*="text-slate"],
-.metaos-app.metaos-light [class*="text-gray"],
-.metaos-app.metaos-light [class*="text-zinc"],
-.metaos-app.metaos-light [class*="text-neutral"],
-[data-os-root="true"][data-os-theme="light"] [class*="text-white"],
-[data-os-root="true"][data-os-theme="light"] [class*="text-slate"],
-[data-os-root="true"][data-os-theme="light"] [class*="text-gray"],
-[data-os-root="true"][data-os-theme="light"] [class*="text-zinc"],
-[data-os-root="true"][data-os-theme="light"] [class*="text-neutral"] {
-  color: #111111 !important;
-}
-
-/* Muted text in light mode */
-.metaos-app.metaos-light .opacity-30,
-.metaos-app.metaos-light .opacity-35,
-.metaos-app.metaos-light .opacity-40,
-.metaos-app.metaos-light .opacity-45,
-.metaos-app.metaos-light .opacity-50,
-.metaos-app.metaos-light .opacity-55,
-.metaos-app.metaos-light .opacity-60,
-.metaos-app.metaos-light .opacity-65,
-.metaos-app.metaos-light .opacity-70,
-.metaos-app.metaos-light .opacity-75,
-[data-os-root="true"][data-os-theme="light"] .opacity-30,
-[data-os-root="true"][data-os-theme="light"] .opacity-35,
-[data-os-root="true"][data-os-theme="light"] .opacity-40,
-[data-os-root="true"][data-os-theme="light"] .opacity-45,
-[data-os-root="true"][data-os-theme="light"] .opacity-50,
-[data-os-root="true"][data-os-theme="light"] .opacity-55,
-[data-os-root="true"][data-os-theme="light"] .opacity-60,
-[data-os-root="true"][data-os-theme="light"] .opacity-65,
-[data-os-root="true"][data-os-theme="light"] .opacity-70,
-[data-os-root="true"][data-os-theme="light"] .opacity-75 {
-  opacity: 1 !important;
-  color: rgba(17, 17, 17, 0.62) !important;
-}
-
-/* ---------- ACTIVE BUTTONS ---------- */
-
-.metaos-app .bg-\[\#0A84FF\],
-.metaos-app .bg-\[\#0A84FF\] *,
-.metaos-app button.bg-\[\#0A84FF\],
-.metaos-app button.bg-\[\#0A84FF\] *,
-[data-os-root="true"] .bg-\[\#0A84FF\],
-[data-os-root="true"] .bg-\[\#0A84FF\] *,
-[data-os-root="true"] button.bg-\[\#0A84FF\],
-[data-os-root="true"] button.bg-\[\#0A84FF\] * {
-  background: #0a84ff !important;
-  color: #ffffff !important;
-}
-
-/* ---------- STATUS COLORS ---------- */
-
-.metaos-app.metaos-dark .text-red-300,
-.metaos-app.metaos-dark .text-red-400,
-.metaos-app.metaos-dark .text-red-500,
-.metaos-app.metaos-dark .text-red-600,
-.metaos-app.metaos-dark .text-red-700,
-[data-os-root="true"][data-os-theme="dark"] .text-red-300,
-[data-os-root="true"][data-os-theme="dark"] .text-red-400,
-[data-os-root="true"][data-os-theme="dark"] .text-red-500,
-[data-os-root="true"][data-os-theme="dark"] .text-red-600,
-[data-os-root="true"][data-os-theme="dark"] .text-red-700 {
-  color: #ff6b5f !important;
-}
-
-.metaos-app.metaos-light .text-red-300,
-.metaos-app.metaos-light .text-red-400,
-.metaos-app.metaos-light .text-red-500,
-.metaos-app.metaos-light .text-red-600,
-.metaos-app.metaos-light .text-red-700,
-[data-os-root="true"][data-os-theme="light"] .text-red-300,
-[data-os-root="true"][data-os-theme="light"] .text-red-400,
-[data-os-root="true"][data-os-theme="light"] .text-red-500,
-[data-os-root="true"][data-os-theme="light"] .text-red-600,
-[data-os-root="true"][data-os-theme="light"] .text-red-700 {
-  color: #b42318 !important;
-}
-
-.metaos-app.metaos-dark .text-emerald-300,
-.metaos-app.metaos-dark .text-emerald-400,
-.metaos-app.metaos-dark .text-emerald-500,
-.metaos-app.metaos-dark .text-emerald-600,
-.metaos-app.metaos-dark .text-emerald-700,
-[data-os-root="true"][data-os-theme="dark"] .text-emerald-300,
-[data-os-root="true"][data-os-theme="dark"] .text-emerald-400,
-[data-os-root="true"][data-os-theme="dark"] .text-emerald-500,
-[data-os-root="true"][data-os-theme="dark"] .text-emerald-600,
-[data-os-root="true"][data-os-theme="dark"] .text-emerald-700 {
-  color: #34d399 !important;
-}
-
-.metaos-app.metaos-light .text-emerald-300,
-.metaos-app.metaos-light .text-emerald-400,
-.metaos-app.metaos-light .text-emerald-500,
-.metaos-app.metaos-light .text-emerald-600,
-.metaos-app.metaos-light .text-emerald-700,
-[data-os-root="true"][data-os-theme="light"] .text-emerald-300,
-[data-os-root="true"][data-os-theme="light"] .text-emerald-400,
-[data-os-root="true"][data-os-theme="light"] .text-emerald-500,
-[data-os-root="true"][data-os-theme="light"] .text-emerald-600,
-[data-os-root="true"][data-os-theme="light"] .text-emerald-700 {
-  color: #047857 !important;
-}
-
-/* ---------- TABLES ---------- */
-
-.metaos-app table thead,
-.metaos-app table thead tr,
-.metaos-app table thead th,
-.metaos-app .monthly-table-head,
-.metaos-app .monthly-table-head tr,
-.metaos-app .monthly-table-head th,
-.metaos-app .monthly-table-th,
-[data-os-root="true"] table thead,
-[data-os-root="true"] table thead tr,
-[data-os-root="true"] table thead th,
-[data-os-root="true"] .monthly-table-head,
-[data-os-root="true"] .monthly-table-head tr,
-[data-os-root="true"] .monthly-table-head th,
-[data-os-root="true"] .monthly-table-th {
-  background: #13223a !important;
-  color: #ffffff !important;
-}
-
-.metaos-app table thead *,
-.metaos-app .monthly-table-head *,
-.metaos-app .monthly-table-th *,
-[data-os-root="true"] table thead *,
-[data-os-root="true"] .monthly-table-head *,
-[data-os-root="true"] .monthly-table-th * {
-  color: #ffffff !important;
-  background: transparent !important;
-}
-
-/* ---------- CHARTS ---------- */
-
-.recharts-tooltip-wrapper,
-.recharts-tooltip-wrapper *,
-.recharts-default-tooltip,
-.recharts-default-tooltip *,
-.recharts-tooltip-item,
-.recharts-tooltip-label,
-.scatter-tooltip-card,
-.scatter-tooltip-card * {
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-.recharts-default-tooltip,
-.scatter-tooltip-card {
-  background: #111318 !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
-  border-radius: 10px !important;
-}
-
-.metaos-app .recharts-text,
-.metaos-app .recharts-cartesian-axis-tick-value,
-[data-os-root="true"] .recharts-text,
-[data-os-root="true"] .recharts-cartesian-axis-tick-value {
-  fill: currentColor !important;
-  opacity: 1 !important;
-}
-
-/* ---------- CLEAN ---------- */
-
-.metaos-app [class*="shadow"],
-[data-os-root="true"] [class*="shadow"] {
-  box-shadow: none !important;
-}
-
 
 /* =========================================================
-   META OS FINAL STICKY HEADER + CONTRAST OVERRIDE
-   Applied after all previous CSS so it wins.
+   META OS CLEAN FINAL THEME
+   Single clean block. Do not append duplicate MetaOS theme CSS below.
    ========================================================= */
 
-/* 1) Sticky top navigation/header including MetaOS tab row */
+/* Fixed header */
 .metaos-app > header,
 [data-os-root="true"] > header,
 .metaos-app header:first-of-type,
 [data-os-root="true"] header:first-of-type {
-  position: sticky !important;
+  position: fixed !important;
   top: 0 !important;
-  z-index: 9999 !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 999999 !important;
+  width: 100vw !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
 }
 
-/* Keep the nav clean while sticky */
-.metaos-app.metaos-dark > header,
-.metaos-app.metaos-dark header:first-of-type,
-[data-os-root="true"][data-os-theme="dark"] > header,
-[data-os-root="true"][data-os-theme="dark"] header:first-of-type {
-  background: rgba(5, 6, 7, 0.94) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+.metaos-app main,
+[data-os-root="true"] main {
+  padding-top: 110px !important;
 }
 
-.metaos-app.metaos-light > header,
-.metaos-app.metaos-light header:first-of-type,
-[data-os-root="true"][data-os-theme="light"] > header,
-[data-os-root="true"][data-os-theme="light"] header:first-of-type {
-  background: rgba(246, 247, 244, 0.94) !important;
-  border-bottom: 1px solid rgba(17, 17, 17, 0.10) !important;
-}
-
-/* 2) DARK MODE: force readable text globally inside MetaOS */
-.metaos-app.metaos-dark,
-.metaos-app.metaos-dark *,
-[data-os-root="true"][data-os-theme="dark"],
-[data-os-root="true"][data-os-theme="dark"] * {
-  color: #f4f4f5 !important;
-  border-color: rgba(255, 255, 255, 0.14) !important;
-}
-
-/* Dark surfaces */
-.metaos-app.metaos-dark main,
-.metaos-app.metaos-dark section,
-.metaos-app.metaos-dark article,
-.metaos-app.metaos-dark details,
-.metaos-app.metaos-dark summary,
-.metaos-app.metaos-dark table,
-.metaos-app.metaos-dark tbody,
-.metaos-app.metaos-dark tr,
-.metaos-app.metaos-dark td,
-.metaos-app.metaos-dark .rounded-lg,
-.metaos-app.metaos-dark .rounded-xl,
-.metaos-app.metaos-dark .rounded-2xl,
-.metaos-app.metaos-dark .rounded-3xl,
-[data-os-root="true"][data-os-theme="dark"] main,
-[data-os-root="true"][data-os-theme="dark"] section,
-[data-os-root="true"][data-os-theme="dark"] article,
-[data-os-root="true"][data-os-theme="dark"] details,
-[data-os-root="true"][data-os-theme="dark"] summary,
-[data-os-root="true"][data-os-theme="dark"] table,
-[data-os-root="true"][data-os-theme="dark"] tbody,
-[data-os-root="true"][data-os-theme="dark"] tr,
-[data-os-root="true"][data-os-theme="dark"] td,
-[data-os-root="true"][data-os-theme="dark"] .rounded-lg,
-[data-os-root="true"][data-os-theme="dark"] .rounded-xl,
-[data-os-root="true"][data-os-theme="dark"] .rounded-2xl,
-[data-os-root="true"][data-os-theme="dark"] .rounded-3xl {
-  background-color: #101318 !important;
-  color: #f4f4f5 !important;
-}
-
-/* Dark page background */
-.metaos-app.metaos-dark,
-[data-os-root="true"][data-os-theme="dark"] {
-  background-color: #050607 !important;
-}
-
-/* Dark muted text must be visible */
-.metaos-app.metaos-dark .opacity-20,
-.metaos-app.metaos-dark .opacity-25,
-.metaos-app.metaos-dark .opacity-30,
-.metaos-app.metaos-dark .opacity-35,
-.metaos-app.metaos-dark .opacity-40,
-.metaos-app.metaos-dark .opacity-45,
-.metaos-app.metaos-dark .opacity-50,
-.metaos-app.metaos-dark .opacity-55,
-.metaos-app.metaos-dark .opacity-60,
-.metaos-app.metaos-dark .opacity-65,
-.metaos-app.metaos-dark .opacity-70,
-.metaos-app.metaos-dark .opacity-75,
-[data-os-root="true"][data-os-theme="dark"] .opacity-20,
-[data-os-root="true"][data-os-theme="dark"] .opacity-25,
-[data-os-root="true"][data-os-theme="dark"] .opacity-30,
-[data-os-root="true"][data-os-theme="dark"] .opacity-35,
-[data-os-root="true"][data-os-theme="dark"] .opacity-40,
-[data-os-root="true"][data-os-theme="dark"] .opacity-45,
-[data-os-root="true"][data-os-theme="dark"] .opacity-50,
-[data-os-root="true"][data-os-theme="dark"] .opacity-55,
-[data-os-root="true"][data-os-theme="dark"] .opacity-60,
-[data-os-root="true"][data-os-theme="dark"] .opacity-65,
-[data-os-root="true"][data-os-theme="dark"] .opacity-70,
-[data-os-root="true"][data-os-theme="dark"] .opacity-75 {
-  opacity: 1 !important;
-  color: rgba(244, 244, 245, 0.72) !important;
-}
-
-/* 3) LIGHT MODE: force readable text globally inside MetaOS */
-.metaos-app.metaos-light,
-.metaos-app.metaos-light *,
-[data-os-root="true"][data-os-theme="light"],
-[data-os-root="true"][data-os-theme="light"] * {
-  color: #111111 !important;
-  border-color: rgba(17, 17, 17, 0.12) !important;
-}
-
-/* Light surfaces */
-.metaos-app.metaos-light main,
-.metaos-app.metaos-light section,
-.metaos-app.metaos-light article,
-.metaos-app.metaos-light details,
-.metaos-app.metaos-light summary,
-.metaos-app.metaos-light table,
-.metaos-app.metaos-light tbody,
-.metaos-app.metaos-light tr,
-.metaos-app.metaos-light td,
-.metaos-app.metaos-light .rounded-lg,
-.metaos-app.metaos-light .rounded-xl,
-.metaos-app.metaos-light .rounded-2xl,
-.metaos-app.metaos-light .rounded-3xl,
-[data-os-root="true"][data-os-theme="light"] main,
-[data-os-root="true"][data-os-theme="light"] section,
-[data-os-root="true"][data-os-theme="light"] article,
-[data-os-root="true"][data-os-theme="light"] details,
-[data-os-root="true"][data-os-theme="light"] summary,
-[data-os-root="true"][data-os-theme="light"] table,
-[data-os-root="true"][data-os-theme="light"] tbody,
-[data-os-root="true"][data-os-theme="light"] tr,
-[data-os-root="true"][data-os-theme="light"] td,
-[data-os-root="true"][data-os-theme="light"] .rounded-lg,
-[data-os-root="true"][data-os-theme="light"] .rounded-xl,
-[data-os-root="true"][data-os-theme="light"] .rounded-2xl,
-[data-os-root="true"][data-os-theme="light"] .rounded-3xl {
-  background-color: #ffffff !important;
-  color: #111111 !important;
-}
-
-/* Light page background */
-.metaos-app.metaos-light,
-[data-os-root="true"][data-os-theme="light"] {
-  background-color: #f6f7f4 !important;
-}
-
-/* Light muted text */
-.metaos-app.metaos-light .opacity-20,
-.metaos-app.metaos-light .opacity-25,
-.metaos-app.metaos-light .opacity-30,
-.metaos-app.metaos-light .opacity-35,
-.metaos-app.metaos-light .opacity-40,
-.metaos-app.metaos-light .opacity-45,
-.metaos-app.metaos-light .opacity-50,
-.metaos-app.metaos-light .opacity-55,
-.metaos-app.metaos-light .opacity-60,
-.metaos-app.metaos-light .opacity-65,
-.metaos-app.metaos-light .opacity-70,
-.metaos-app.metaos-light .opacity-75,
-[data-os-root="true"][data-os-theme="light"] .opacity-20,
-[data-os-root="true"][data-os-theme="light"] .opacity-25,
-[data-os-root="true"][data-os-theme="light"] .opacity-30,
-[data-os-root="true"][data-os-theme="light"] .opacity-35,
-[data-os-root="true"][data-os-theme="light"] .opacity-40,
-[data-os-root="true"][data-os-theme="light"] .opacity-45,
-[data-os-root="true"][data-os-theme="light"] .opacity-50,
-[data-os-root="true"][data-os-theme="light"] .opacity-55,
-[data-os-root="true"][data-os-theme="light"] .opacity-60,
-[data-os-root="true"][data-os-theme="light"] .opacity-65,
-[data-os-root="true"][data-os-theme="light"] .opacity-70,
-[data-os-root="true"][data-os-theme="light"] .opacity-75 {
-  opacity: 1 !important;
-  color: rgba(17, 17, 17, 0.64) !important;
-}
-
-/* 4) Preserve active blue tabs/buttons */
-.metaos-app .bg-\[\#0A84FF\],
-.metaos-app .bg-\[\#0A84FF\] *,
-.metaos-app button.bg-\[\#0A84FF\],
-.metaos-app button.bg-\[\#0A84FF\] *,
-[data-os-root="true"] .bg-\[\#0A84FF\],
-[data-os-root="true"] .bg-\[\#0A84FF\] *,
-[data-os-root="true"] button.bg-\[\#0A84FF\],
-[data-os-root="true"] button.bg-\[\#0A84FF\] * {
-  background-color: #0a84ff !important;
-  color: #ffffff !important;
-  border-color: #0a84ff !important;
-}
-
-/* 5) Preserve table headers */
-.metaos-app table thead,
-.metaos-app table thead tr,
-.metaos-app table thead th,
-.metaos-app .monthly-table-head,
-.metaos-app .monthly-table-head tr,
-.metaos-app .monthly-table-head th,
-.metaos-app .monthly-table-th,
-[data-os-root="true"] table thead,
-[data-os-root="true"] table thead tr,
-[data-os-root="true"] table thead th,
-[data-os-root="true"] .monthly-table-head,
-[data-os-root="true"] .monthly-table-head tr,
-[data-os-root="true"] .monthly-table-head th,
-[data-os-root="true"] .monthly-table-th {
-  background-color: #13223a !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-.metaos-app table thead *,
-.metaos-app .monthly-table-head *,
-.metaos-app .monthly-table-th *,
-[data-os-root="true"] table thead *,
-[data-os-root="true"] .monthly-table-head *,
-[data-os-root="true"] .monthly-table-th * {
-  color: #ffffff !important;
-  background: transparent !important;
-}
-
-/* 6) Preserve red/green status after global text override */
-.metaos-app .text-red-300,
-.metaos-app .text-red-400,
-.metaos-app .text-red-500,
-.metaos-app .text-red-600,
-.metaos-app .text-red-700 {
-  color: #ff6b5f !important;
-}
-
-.metaos-app.metaos-light .text-red-300,
-.metaos-app.metaos-light .text-red-400,
-.metaos-app.metaos-light .text-red-500,
-.metaos-app.metaos-light .text-red-600,
-.metaos-app.metaos-light .text-red-700 {
-  color: #b42318 !important;
-}
-
-.metaos-app .text-emerald-300,
-.metaos-app .text-emerald-400,
-.metaos-app .text-emerald-500,
-.metaos-app .text-emerald-600,
-.metaos-app .text-emerald-700,
-.metaos-app .text-green-300,
-.metaos-app .text-green-400,
-.metaos-app .text-green-500,
-.metaos-app .text-green-600,
-.metaos-app .text-green-700 {
-  color: #34d399 !important;
-}
-
-.metaos-app.metaos-light .text-emerald-300,
-.metaos-app.metaos-light .text-emerald-400,
-.metaos-app.metaos-light .text-emerald-500,
-.metaos-app.metaos-light .text-emerald-600,
-.metaos-app.metaos-light .text-emerald-700,
-.metaos-app.metaos-light .text-green-300,
-.metaos-app.metaos-light .text-green-400,
-.metaos-app.metaos-light .text-green-500,
-.metaos-app.metaos-light .text-green-600,
-.metaos-app.metaos-light .text-green-700 {
-  color: #047857 !important;
-}
-
-/* 7) Recharts tooltip always readable */
-.recharts-tooltip-wrapper,
-.recharts-tooltip-wrapper *,
-.recharts-default-tooltip,
-.recharts-default-tooltip *,
-.recharts-tooltip-item,
-.recharts-tooltip-label {
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-.recharts-default-tooltip {
-  background-color: #111318 !important;
-  border: 1px solid rgba(255,255,255,0.16) !important;
-  border-radius: 10px !important;
-}
-
-
-/* =========================================================
-   META OS ABSOLUTE FINAL CONTRAST FIX
-   This must stay at the very bottom of globals.css.
-   ========================================================= */
-
-/* DARK MODE: force every Meta OS normal text readable */
-html.dark .metaos-app,
-html.dark .metaos-app *,
-html.os-dark .metaos-app,
-html.os-dark .metaos-app *,
-.metaos-app.metaos-dark,
-.metaos-app.metaos-dark *,
-[data-os-root="true"][data-os-theme="dark"],
-[data-os-root="true"][data-os-theme="dark"] * {
-  color: #f4f4f5 !important;
-  border-color: rgba(255, 255, 255, 0.16) !important;
-}
-
-/* DARK MODE: force main surfaces dark */
-html.dark .metaos-app main,
-html.dark .metaos-app section,
-html.dark .metaos-app article,
-html.dark .metaos-app details,
-html.dark .metaos-app summary,
-html.dark .metaos-app table,
-html.dark .metaos-app tbody,
-html.dark .metaos-app tr,
-html.dark .metaos-app td,
-html.dark .metaos-app .rounded-lg,
-html.dark .metaos-app .rounded-xl,
-html.dark .metaos-app .rounded-2xl,
-html.dark .metaos-app .rounded-3xl,
-html.os-dark .metaos-app main,
-html.os-dark .metaos-app section,
-html.os-dark .metaos-app article,
-html.os-dark .metaos-app details,
-html.os-dark .metaos-app summary,
-html.os-dark .metaos-app table,
-html.os-dark .metaos-app tbody,
-html.os-dark .metaos-app tr,
-html.os-dark .metaos-app td,
-html.os-dark .metaos-app .rounded-lg,
-html.os-dark .metaos-app .rounded-xl,
-html.os-dark .metaos-app .rounded-2xl,
-html.os-dark .metaos-app .rounded-3xl {
-  background-color: #101318 !important;
-  color: #f4f4f5 !important;
-}
-
-/* DARK MODE: keep body/page black */
-html.dark body,
-html.os-dark body,
-html.dark .metaos-app,
-html.os-dark .metaos-app {
-  background-color: #050607 !important;
-}
-
-/* DARK MODE: muted text readable */
-html.dark .metaos-app .opacity-10,
-html.dark .metaos-app .opacity-20,
-html.dark .metaos-app .opacity-25,
-html.dark .metaos-app .opacity-30,
-html.dark .metaos-app .opacity-35,
-html.dark .metaos-app .opacity-40,
-html.dark .metaos-app .opacity-45,
-html.dark .metaos-app .opacity-50,
-html.dark .metaos-app .opacity-55,
-html.dark .metaos-app .opacity-60,
-html.dark .metaos-app .opacity-65,
-html.dark .metaos-app .opacity-70,
-html.dark .metaos-app .opacity-75,
-html.os-dark .metaos-app .opacity-10,
-html.os-dark .metaos-app .opacity-20,
-html.os-dark .metaos-app .opacity-25,
-html.os-dark .metaos-app .opacity-30,
-html.os-dark .metaos-app .opacity-35,
-html.os-dark .metaos-app .opacity-40,
-html.os-dark .metaos-app .opacity-45,
-html.os-dark .metaos-app .opacity-50,
-html.os-dark .metaos-app .opacity-55,
-html.os-dark .metaos-app .opacity-60,
-html.os-dark .metaos-app .opacity-65,
-html.os-dark .metaos-app .opacity-70,
-html.os-dark .metaos-app .opacity-75 {
-  opacity: 1 !important;
-  color: rgba(244, 244, 245, 0.72) !important;
-}
-
-/* LIGHT MODE: force every Meta OS normal text readable */
-html:not(.dark):not(.os-dark) .metaos-app,
-html:not(.dark):not(.os-dark) .metaos-app *,
-.metaos-app.metaos-light,
-.metaos-app.metaos-light *,
-[data-os-root="true"][data-os-theme="light"],
-[data-os-root="true"][data-os-theme="light"] * {
-  color: #111111 !important;
-  border-color: rgba(17, 17, 17, 0.12) !important;
-}
-
-/* LIGHT MODE: force main surfaces white */
-html:not(.dark):not(.os-dark) .metaos-app main,
-html:not(.dark):not(.os-dark) .metaos-app section,
-html:not(.dark):not(.os-dark) .metaos-app article,
-html:not(.dark):not(.os-dark) .metaos-app details,
-html:not(.dark):not(.os-dark) .metaos-app summary,
-html:not(.dark):not(.os-dark) .metaos-app table,
-html:not(.dark):not(.os-dark) .metaos-app tbody,
-html:not(.dark):not(.os-dark) .metaos-app tr,
-html:not(.dark):not(.os-dark) .metaos-app td,
-html:not(.dark):not(.os-dark) .metaos-app .rounded-lg,
-html:not(.dark):not(.os-dark) .metaos-app .rounded-xl,
-html:not(.dark):not(.os-dark) .metaos-app .rounded-2xl,
-html:not(.dark):not(.os-dark) .metaos-app .rounded-3xl {
-  background-color: #ffffff !important;
-  color: #111111 !important;
-}
-
-/* LIGHT MODE: keep body/page soft */
-html:not(.dark):not(.os-dark) body,
-html:not(.dark):not(.os-dark) .metaos-app {
-  background-color: #f6f7f4 !important;
-}
-
-/* ACTIVE BLUE BUTTONS: always readable */
-.metaos-app .bg-\[\#0A84FF\],
-.metaos-app .bg-\[\#0A84FF\] *,
-.metaos-app button.bg-\[\#0A84FF\],
-.metaos-app button.bg-\[\#0A84FF\] *,
-.metaos-app [class*="bg-blue"],
-.metaos-app [class*="bg-blue"] * {
-  background-color: #0a84ff !important;
-  color: #ffffff !important;
-  border-color: #0a84ff !important;
-}
-
-/* NAV / HEADER STICKY */
-.metaos-app > header,
-.metaos-app header:first-of-type,
-[data-os-root="true"] > header,
-[data-os-root="true"] header:first-of-type {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 9999 !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-}
-
-/* DARK HEADER */
+/* Header background */
 html.dark .metaos-app > header,
-html.dark .metaos-app header:first-of-type,
 html.os-dark .metaos-app > header,
-html.os-dark .metaos-app header:first-of-type {
-  background-color: rgba(5, 6, 7, 0.96) !important;
+.metaos-app.metaos-dark > header,
+[data-os-root="true"][data-os-theme="dark"] > header {
+  background: rgba(5, 6, 7, 0.97) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
   color: #f4f4f5 !important;
 }
 
-/* LIGHT HEADER */
 html:not(.dark):not(.os-dark) .metaos-app > header,
-html:not(.dark):not(.os-dark) .metaos-app header:first-of-type {
-  background-color: rgba(246, 247, 244, 0.96) !important;
+.metaos-app.metaos-light > header,
+[data-os-root="true"][data-os-theme="light"] > header {
+  background: rgba(246, 247, 244, 0.97) !important;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.12) !important;
   color: #111111 !important;
 }
 
-/* TABLE HEADERS: always navy with white text */
-.metaos-app table thead,
-.metaos-app table thead tr,
-.metaos-app table thead th,
-.metaos-app .monthly-table-head,
-.metaos-app .monthly-table-head tr,
-.metaos-app .monthly-table-head th,
-.metaos-app .monthly-table-th {
-  background-color: #13223a !important;
-  color: #ffffff !important;
+/* Apple-style Meta/Google and tab buttons */
+.metaos-apple-pill,
+.metaos-apple-tab {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  font-weight: 900 !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
 }
 
-.metaos-app table thead *,
-.metaos-app .monthly-table-head *,
-.metaos-app .monthly-table-th * {
-  color: #ffffff !important;
-  background: transparent !important;
+.metaos-apple-pill {
+  border-radius: 14px !important;
+  padding: 10px 18px !important;
+  letter-spacing: 0.04em !important;
 }
 
-/* RED / GREEN SHOULD SURVIVE THE GLOBAL TEXT OVERRIDE */
+.metaos-apple-tab {
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+}
+
+/* Active selected state */
+.metaos-apple-pill-active,
+.metaos-apple-pill-active *,
+button[data-os-mode-active="true"],
+button[data-os-mode-active="true"] *,
+button[data-meta-tab-active="true"],
+button[data-meta-tab-active="true"] *,
+button[data-google-tab-active="true"],
+button[data-google-tab-active="true"] * {
+  background: #0a84ff !important;
+  background-color: #0a84ff !important;
+  border: 1px solid #0a84ff !important;
+  border-color: #0a84ff !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Dark inactive state */
+html.dark .metaos-apple-pill-inactive,
+html.dark .metaos-apple-tab.metaos-apple-pill-inactive,
+html.os-dark .metaos-apple-pill-inactive,
+html.os-dark .metaos-apple-tab.metaos-apple-pill-inactive,
+.metaos-app.metaos-dark .metaos-apple-pill-inactive,
+.metaos-app.metaos-dark .metaos-apple-tab.metaos-apple-pill-inactive {
+  background: #101318 !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #f4f4f5 !important;
+}
+
+html.dark .metaos-apple-pill-inactive *,
+html.dark .metaos-apple-tab.metaos-apple-pill-inactive *,
+html.os-dark .metaos-apple-pill-inactive *,
+html.os-dark .metaos-apple-tab.metaos-apple-pill-inactive *,
+.metaos-app.metaos-dark .metaos-apple-pill-inactive *,
+.metaos-app.metaos-dark .metaos-apple-tab.metaos-apple-pill-inactive * {
+  color: #f4f4f5 !important;
+  opacity: 1 !important;
+}
+
+/* Light inactive state */
+html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive,
+html:not(.dark):not(.os-dark) .metaos-apple-tab.metaos-apple-pill-inactive,
+.metaos-app.metaos-light .metaos-apple-pill-inactive,
+.metaos-app.metaos-light .metaos-apple-tab.metaos-apple-pill-inactive {
+  background: #ffffff !important;
+  border: 1px solid rgba(17, 17, 17, 0.14) !important;
+  color: #111111 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive *,
+html:not(.dark):not(.os-dark) .metaos-apple-tab.metaos-apple-pill-inactive *,
+.metaos-app.metaos-light .metaos-apple-pill-inactive *,
+.metaos-app.metaos-light .metaos-apple-tab.metaos-apple-pill-inactive * {
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
+/* Dropdown row readability */
+html.dark .metaos-app details summary,
+html.os-dark .metaos-app details summary,
+.metaos-app.metaos-dark details summary {
+  background: #14181e !important;
+  color: #f4f4f5 !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+html.dark .metaos-app details summary *,
+html.os-dark .metaos-app details summary *,
+.metaos-app.metaos-dark details summary * {
+  color: #f4f4f5 !important;
+  opacity: 1 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app details summary,
+.metaos-app.metaos-light details summary {
+  background: #ffffff !important;
+  color: #111111 !important;
+  border-color: rgba(17, 17, 17, 0.12) !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app details summary *,
+.metaos-app.metaos-light details summary * {
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
+/* Preserve red/green metrics */
 html.dark .metaos-app .text-red-300,
 html.dark .metaos-app .text-red-400,
 html.dark .metaos-app .text-red-500,
@@ -2739,21 +2081,11 @@ html.dark .metaos-app .text-emerald-400,
 html.dark .metaos-app .text-emerald-500,
 html.dark .metaos-app .text-emerald-600,
 html.dark .metaos-app .text-emerald-700,
-html.dark .metaos-app .text-green-300,
-html.dark .metaos-app .text-green-400,
-html.dark .metaos-app .text-green-500,
-html.dark .metaos-app .text-green-600,
-html.dark .metaos-app .text-green-700,
 html.os-dark .metaos-app .text-emerald-300,
 html.os-dark .metaos-app .text-emerald-400,
 html.os-dark .metaos-app .text-emerald-500,
 html.os-dark .metaos-app .text-emerald-600,
-html.os-dark .metaos-app .text-emerald-700,
-html.os-dark .metaos-app .text-green-300,
-html.os-dark .metaos-app .text-green-400,
-html.os-dark .metaos-app .text-green-500,
-html.os-dark .metaos-app .text-green-600,
-html.os-dark .metaos-app .text-green-700 {
+html.os-dark .metaos-app .text-emerald-700 {
   color: #34d399 !important;
 }
 
@@ -2761,16 +2093,30 @@ html:not(.dark):not(.os-dark) .metaos-app .text-emerald-300,
 html:not(.dark):not(.os-dark) .metaos-app .text-emerald-400,
 html:not(.dark):not(.os-dark) .metaos-app .text-emerald-500,
 html:not(.dark):not(.os-dark) .metaos-app .text-emerald-600,
-html:not(.dark):not(.os-dark) .metaos-app .text-emerald-700,
-html:not(.dark):not(.os-dark) .metaos-app .text-green-300,
-html:not(.dark):not(.os-dark) .metaos-app .text-green-400,
-html:not(.dark):not(.os-dark) .metaos-app .text-green-500,
-html:not(.dark):not(.os-dark) .metaos-app .text-green-600,
-html:not(.dark):not(.os-dark) .metaos-app .text-green-700 {
+html:not(.dark):not(.os-dark) .metaos-app .text-emerald-700 {
   color: #047857 !important;
 }
 
-/* RECHARTS TOOLTIP: always readable */
+/* Table headers */
+.metaos-app table thead,
+.metaos-app table thead tr,
+.metaos-app table thead th,
+.metaos-app .monthly-table-head,
+.metaos-app .monthly-table-head tr,
+.metaos-app .monthly-table-head th,
+.metaos-app .monthly-table-th {
+  background: #13223a !important;
+  color: #ffffff !important;
+}
+
+.metaos-app table thead *,
+.metaos-app .monthly-table-head *,
+.metaos-app .monthly-table-th * {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+/* Recharts tooltip */
 .recharts-tooltip-wrapper,
 .recharts-tooltip-wrapper *,
 .recharts-default-tooltip,
@@ -2783,808 +2129,250 @@ html:not(.dark):not(.os-dark) .metaos-app .text-green-700 {
 
 .recharts-default-tooltip {
   background-color: #111318 !important;
-  border: 1px solid rgba(255,255,255,0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
   border-radius: 10px !important;
 }
 
 
 /* =========================================================
-   META OS STICKY HEADER + ACTIVE TAB HIGHLIGHT
+   META OS CLEAN FINAL THEME
+   Single clean block. Do not append duplicate MetaOS theme CSS below.
    ========================================================= */
 
-.metaos-sticky-header {
-  position: sticky !important;
+/* Fixed header */
+.metaos-app > header,
+[data-os-root="true"] > header,
+.metaos-app header:first-of-type,
+[data-os-root="true"] header:first-of-type {
+  position: fixed !important;
   top: 0 !important;
-  z-index: 99999 !important;
-  width: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 999999 !important;
+  width: 100vw !important;
   backdrop-filter: blur(18px) !important;
   -webkit-backdrop-filter: blur(18px) !important;
 }
 
-html.dark .metaos-sticky-header,
-html.os-dark .metaos-sticky-header,
-.metaos-app.metaos-dark .metaos-sticky-header,
-[data-os-root="true"][data-os-theme="dark"] .metaos-sticky-header {
-  background: rgba(5, 6, 7, 0.96) !important;
+.metaos-app main,
+[data-os-root="true"] main {
+  padding-top: 110px !important;
+}
+
+/* Header background */
+html.dark .metaos-app > header,
+html.os-dark .metaos-app > header,
+.metaos-app.metaos-dark > header,
+[data-os-root="true"][data-os-theme="dark"] > header {
+  background: rgba(5, 6, 7, 0.97) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #f4f4f5 !important;
 }
 
-html:not(.dark):not(.os-dark) .metaos-sticky-header,
-.metaos-app.metaos-light .metaos-sticky-header,
-[data-os-root="true"][data-os-theme="light"] .metaos-sticky-header {
-  background: rgba(246, 247, 244, 0.96) !important;
+html:not(.dark):not(.os-dark) .metaos-app > header,
+.metaos-app.metaos-light > header,
+[data-os-root="true"][data-os-theme="light"] > header {
+  background: rgba(246, 247, 244, 0.97) !important;
   border-bottom: 1px solid rgba(17, 17, 17, 0.12) !important;
+  color: #111111 !important;
 }
 
-/* Active Meta OS tab */
-.metaos-app button[data-meta-tab-active="true"],
-[data-os-root="true"] button[data-meta-tab-active="true"] {
-  background: #0a84ff !important;
-  border-color: #0a84ff !important;
-  color: #ffffff !important;
+/* Apple-style Meta/Google and tab buttons */
+.metaos-apple-pill,
+.metaos-apple-tab {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  font-weight: 900 !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
   box-shadow: none !important;
+  text-decoration: none !important;
 }
 
-.metaos-app button[data-meta-tab-active="true"] *,
-[data-os-root="true"] button[data-meta-tab-active="true"] * {
-  color: #ffffff !important;
-  opacity: 1 !important;
+.metaos-apple-pill {
+  border-radius: 14px !important;
+  padding: 10px 18px !important;
+  letter-spacing: 0.04em !important;
 }
 
-/* Inactive tabs should remain readable */
-.metaos-app button[data-meta-tab-active="false"],
-[data-os-root="true"] button[data-meta-tab-active="false"] {
-  background: transparent !important;
+.metaos-apple-tab {
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
 }
 
-html.dark .metaos-app button[data-meta-tab-active="false"],
-html.os-dark .metaos-app button[data-meta-tab-active="false"],
-.metaos-app.metaos-dark button[data-meta-tab-active="false"] {
-  color: #f4f4f5 !important;
-  border-color: rgba(255, 255, 255, 0.18) !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"],
-.metaos-app.metaos-light button[data-meta-tab-active="false"] {
-  color: #111111 !important;
-  border-color: rgba(17, 17, 17, 0.14) !important;
-}
-
-
-/* =========================================================
-   META OS BUTTON CONTRAST FINAL FIX
-   Selected = blue bg + white text.
-   Dark inactive = readable white text.
-   Light inactive = readable black text.
-   ========================================================= */
-
-/* Selected blue buttons/pills */
-.metaos-app button[class*="bg-[#0A84FF]"],
-.metaos-app button[class*="bg-blue"],
-.metaos-app button[data-meta-tab-active="true"],
-.metaos-app .bg-\[\#0A84FF\],
-.metaos-app .bg-\[\#0A84FF\] *,
-.metaos-app button[class*="bg-[#0A84FF]"] *,
-.metaos-app button[class*="bg-blue"] *,
-.metaos-app button[data-meta-tab-active="true"] *,
-[data-os-root="true"] button[class*="bg-[#0A84FF]"],
-[data-os-root="true"] button[class*="bg-blue"],
-[data-os-root="true"] button[data-meta-tab-active="true"],
-[data-os-root="true"] .bg-\[\#0A84FF\],
-[data-os-root="true"] .bg-\[\#0A84FF\] *,
-[data-os-root="true"] button[class*="bg-[#0A84FF]"] *,
-[data-os-root="true"] button[class*="bg-blue"] *,
-[data-os-root="true"] button[data-meta-tab-active="true"] * {
+/* Active selected state */
+.metaos-apple-pill-active,
+.metaos-apple-pill-active *,
+button[data-os-mode-active="true"],
+button[data-os-mode-active="true"] *,
+button[data-meta-tab-active="true"],
+button[data-meta-tab-active="true"] *,
+button[data-google-tab-active="true"],
+button[data-google-tab-active="true"] * {
+  background: #0a84ff !important;
   background-color: #0a84ff !important;
+  border: 1px solid #0a84ff !important;
   border-color: #0a84ff !important;
   color: #ffffff !important;
   opacity: 1 !important;
 }
 
-/* Dark mode inactive buttons */
-html.dark .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]),
-html.os-dark .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]),
-.metaos-app.metaos-dark button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]),
-[data-os-root="true"][data-os-theme="dark"] button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) {
-  background-color: #101318 !important;
-  border-color: rgba(255, 255, 255, 0.20) !important;
+/* Dark inactive state */
+html.dark .metaos-apple-pill-inactive,
+html.dark .metaos-apple-tab.metaos-apple-pill-inactive,
+html.os-dark .metaos-apple-pill-inactive,
+html.os-dark .metaos-apple-tab.metaos-apple-pill-inactive,
+.metaos-app.metaos-dark .metaos-apple-pill-inactive,
+.metaos-app.metaos-dark .metaos-apple-tab.metaos-apple-pill-inactive {
+  background: #101318 !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #f4f4f5 !important;
+}
+
+html.dark .metaos-apple-pill-inactive *,
+html.dark .metaos-apple-tab.metaos-apple-pill-inactive *,
+html.os-dark .metaos-apple-pill-inactive *,
+html.os-dark .metaos-apple-tab.metaos-apple-pill-inactive *,
+.metaos-app.metaos-dark .metaos-apple-pill-inactive *,
+.metaos-app.metaos-dark .metaos-apple-tab.metaos-apple-pill-inactive * {
   color: #f4f4f5 !important;
   opacity: 1 !important;
 }
 
-html.dark .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) *,
-html.os-dark .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) *,
-.metaos-app.metaos-dark button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) *,
-[data-os-root="true"][data-os-theme="dark"] button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) * {
-  color: #f4f4f5 !important;
-  opacity: 1 !important;
+/* Light inactive state */
+html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive,
+html:not(.dark):not(.os-dark) .metaos-apple-tab.metaos-apple-pill-inactive,
+.metaos-app.metaos-light .metaos-apple-pill-inactive,
+.metaos-app.metaos-light .metaos-apple-tab.metaos-apple-pill-inactive {
+  background: #ffffff !important;
+  border: 1px solid rgba(17, 17, 17, 0.14) !important;
+  color: #111111 !important;
 }
 
-/* Light mode inactive buttons */
-html:not(.dark):not(.os-dark) .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]),
-.metaos-app.metaos-light button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]),
-[data-os-root="true"][data-os-theme="light"] button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) {
-  background-color: #ffffff !important;
-  border-color: rgba(17, 17, 17, 0.14) !important;
+html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive *,
+html:not(.dark):not(.os-dark) .metaos-apple-tab.metaos-apple-pill-inactive *,
+.metaos-app.metaos-light .metaos-apple-pill-inactive *,
+.metaos-app.metaos-light .metaos-apple-tab.metaos-apple-pill-inactive * {
   color: #111111 !important;
   opacity: 1 !important;
 }
 
-html:not(.dark):not(.os-dark) .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) *,
-.metaos-app.metaos-light button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) *,
-[data-os-root="true"][data-os-theme="light"] button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) * {
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-/* Inputs/select threshold field */
-html.dark .metaos-app input,
-html.dark .metaos-app select,
-html.os-dark .metaos-app input,
-html.os-dark .metaos-app select,
-.metaos-app.metaos-dark input,
-.metaos-app.metaos-dark select,
-[data-os-root="true"][data-os-theme="dark"] input,
-[data-os-root="true"][data-os-theme="dark"] select {
-  background-color: #101318 !important;
-  border-color: rgba(255, 255, 255, 0.20) !important;
-  color: #f4f4f5 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app input,
-html:not(.dark):not(.os-dark) .metaos-app select,
-.metaos-app.metaos-light input,
-.metaos-app.metaos-light select,
-[data-os-root="true"][data-os-theme="light"] input,
-[data-os-root="true"][data-os-theme="light"] select {
-  background-color: #ffffff !important;
-  border-color: rgba(17, 17, 17, 0.14) !important;
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-
-/* =========================================================
-   META OS TOP TAB BUTTON FINAL OVERRIDE
-   Component now sets explicit colors; this only protects it.
-   ========================================================= */
-
-.metaos-app button[data-meta-tab-active="true"],
-.metaos-app button[data-meta-tab-active="true"] *,
-[data-os-root="true"] button[data-meta-tab-active="true"],
-[data-os-root="true"] button[data-meta-tab-active="true"] * {
-  background-color: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-html.dark .metaos-app button[data-meta-tab-active="false"],
-html.os-dark .metaos-app button[data-meta-tab-active="false"],
-.metaos-app.metaos-dark button[data-meta-tab-active="false"],
-[data-os-root="true"][data-os-theme="dark"] button[data-meta-tab-active="false"] {
-  background-color: #101318 !important;
-  border-color: rgba(255,255,255,0.20) !important;
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html.dark .metaos-app button[data-meta-tab-active="false"] *,
-html.os-dark .metaos-app button[data-meta-tab-active="false"] *,
-.metaos-app.metaos-dark button[data-meta-tab-active="false"] *,
-[data-os-root="true"][data-os-theme="dark"] button[data-meta-tab-active="false"] * {
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"],
-.metaos-app.metaos-light button[data-meta-tab-active="false"],
-[data-os-root="true"][data-os-theme="light"] button[data-meta-tab-active="false"] {
-  background-color: #ffffff !important;
-  border-color: rgba(17,17,17,0.15) !important;
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"] *,
-.metaos-app.metaos-light button[data-meta-tab-active="false"] *,
-[data-os-root="true"][data-os-theme="light"] button[data-meta-tab-active="false"] * {
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-
-/* =========================================================
-   META OS TOP TAB BUTTON FINAL OVERRIDE
-   Component now sets explicit colors; this only protects it.
-   ========================================================= */
-
-.metaos-app button[data-meta-tab-active="true"],
-.metaos-app button[data-meta-tab-active="true"] *,
-[data-os-root="true"] button[data-meta-tab-active="true"],
-[data-os-root="true"] button[data-meta-tab-active="true"] * {
-  background-color: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-html.dark .metaos-app button[data-meta-tab-active="false"],
-html.os-dark .metaos-app button[data-meta-tab-active="false"],
-.metaos-app.metaos-dark button[data-meta-tab-active="false"],
-[data-os-root="true"][data-os-theme="dark"] button[data-meta-tab-active="false"] {
-  background-color: #101318 !important;
-  border-color: rgba(255,255,255,0.20) !important;
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html.dark .metaos-app button[data-meta-tab-active="false"] *,
-html.os-dark .metaos-app button[data-meta-tab-active="false"] *,
-.metaos-app.metaos-dark button[data-meta-tab-active="false"] *,
-[data-os-root="true"][data-os-theme="dark"] button[data-meta-tab-active="false"] * {
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"],
-.metaos-app.metaos-light button[data-meta-tab-active="false"],
-[data-os-root="true"][data-os-theme="light"] button[data-meta-tab-active="false"] {
-  background-color: #ffffff !important;
-  border-color: rgba(17,17,17,0.15) !important;
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"] *,
-.metaos-app.metaos-light button[data-meta-tab-active="false"] *,
-[data-os-root="true"][data-os-theme="light"] button[data-meta-tab-active="false"] * {
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-
-/* =========================================================
-   META OS FINAL COMPONENT-LEVEL READABILITY LOCK
-   Keep at very bottom.
-   ========================================================= */
-
-/* Meta/Google mode selected */
-.metaos-app button[data-os-mode-active="true"],
-.metaos-app button[data-os-mode-active="true"] *,
-[data-os-root="true"] button[data-os-mode-active="true"],
-[data-os-root="true"] button[data-os-mode-active="true"] * {
-  background-color: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* Meta/Google mode inactive */
-html.dark .metaos-app button[data-os-mode-active="false"],
-html.os-dark .metaos-app button[data-os-mode-active="false"],
-.metaos-app.metaos-dark button[data-os-mode-active="false"] {
-  background-color: #101318 !important;
-  border-color: rgba(255,255,255,0.22) !important;
-  color: #F4F4F5 !important;
-}
-
-html.dark .metaos-app button[data-os-mode-active="false"] *,
-html.os-dark .metaos-app button[data-os-mode-active="false"] *,
-.metaos-app.metaos-dark button[data-os-mode-active="false"] * {
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app button[data-os-mode-active="false"],
-.metaos-app.metaos-light button[data-os-mode-active="false"] {
-  background-color: #ffffff !important;
-  border-color: rgba(17,17,17,0.16) !important;
-  color: #111111 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app button[data-os-mode-active="false"] *,
-.metaos-app.metaos-light button[data-os-mode-active="false"] * {
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-/* Meta OS top tab selected */
-.metaos-app button[data-meta-tab-active="true"],
-.metaos-app button[data-meta-tab-active="true"] *,
-[data-os-root="true"] button[data-meta-tab-active="true"],
-[data-os-root="true"] button[data-meta-tab-active="true"] * {
-  background-color: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* Meta OS top tab inactive */
-html.dark .metaos-app button[data-meta-tab-active="false"],
-html.os-dark .metaos-app button[data-meta-tab-active="false"],
-.metaos-app.metaos-dark button[data-meta-tab-active="false"] {
-  background-color: #101318 !important;
-  border-color: rgba(255,255,255,0.22) !important;
-  color: #F4F4F5 !important;
-}
-
-html.dark .metaos-app button[data-meta-tab-active="false"] *,
-html.os-dark .metaos-app button[data-meta-tab-active="false"] *,
-.metaos-app.metaos-dark button[data-meta-tab-active="false"] * {
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"],
-.metaos-app.metaos-light button[data-meta-tab-active="false"] {
-  background-color: #ffffff !important;
-  border-color: rgba(17,17,17,0.16) !important;
-  color: #111111 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"] *,
-.metaos-app.metaos-light button[data-meta-tab-active="false"] * {
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-/* Dropdown creative rows and right-side metric cells */
-html.dark .metaos-app details,
-html.dark .metaos-app details *,
-html.dark .metaos-app summary,
-html.dark .metaos-app summary *,
-html.os-dark .metaos-app details,
-html.os-dark .metaos-app details *,
-html.os-dark .metaos-app summary,
-html.os-dark .metaos-app summary *,
-.metaos-app.metaos-dark details,
-.metaos-app.metaos-dark details *,
-.metaos-app.metaos-dark summary,
-.metaos-app.metaos-dark summary * {
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
+/* Dropdown row readability */
 html.dark .metaos-app details summary,
 html.os-dark .metaos-app details summary,
 .metaos-app.metaos-dark details summary {
-  background-color: #15191F !important;
-  border-color: rgba(255,255,255,0.14) !important;
-}
-
-html.dark .metaos-app details summary [class*="bg-current"],
-html.os-dark .metaos-app details summary [class*="bg-current"],
-.metaos-app.metaos-dark details summary [class*="bg-current"] {
-  background-color: #101318 !important;
-  color: #F4F4F5 !important;
-}
-
-/* Pills / badges like META ADS, HIGH CPA, Y SPEND */
-html.dark .metaos-app .rounded-full,
-html.dark .metaos-app .rounded-full *,
-html.os-dark .metaos-app .rounded-full,
-html.os-dark .metaos-app .rounded-full *,
-.metaos-app.metaos-dark .rounded-full,
-.metaos-app.metaos-dark .rounded-full * {
-  opacity: 1 !important;
-}
-
-html.dark .metaos-app .rounded-full:not(.bg-\[\#0A84FF\]),
-html.os-dark .metaos-app .rounded-full:not(.bg-\[\#0A84FF\]),
-.metaos-app.metaos-dark .rounded-full:not(.bg-\[\#0A84FF\]) {
-  background-color: #15191F !important;
-  border-color: rgba(255,255,255,0.20) !important;
-  color: #F4F4F5 !important;
-}
-
-html.dark .metaos-app .rounded-full:not(.bg-\[\#0A84FF\]) *,
-html.os-dark .metaos-app .rounded-full:not(.bg-\[\#0A84FF\]) *,
-.metaos-app.metaos-dark .rounded-full:not(.bg-\[\#0A84FF\]) * {
-  color: #F4F4F5 !important;
-}
-
-/* Preserve red/green inside dropdowns */
-html.dark .metaos-app details .text-red-300,
-html.dark .metaos-app details .text-red-400,
-html.dark .metaos-app details .text-red-500,
-html.dark .metaos-app details .text-red-600,
-html.dark .metaos-app details .text-red-700,
-html.os-dark .metaos-app details .text-red-300,
-html.os-dark .metaos-app details .text-red-400,
-html.os-dark .metaos-app details .text-red-500,
-html.os-dark .metaos-app details .text-red-600,
-html.os-dark .metaos-app details .text-red-700,
-.metaos-app.metaos-dark details .text-red-300,
-.metaos-app.metaos-dark details .text-red-400,
-.metaos-app.metaos-dark details .text-red-500,
-.metaos-app.metaos-dark details .text-red-600,
-.metaos-app.metaos-dark details .text-red-700 {
-  color: #ff6b5f !important;
-}
-
-/* Header must stay sticky */
-.metaos-sticky-header,
-.metaos-app > header,
-[data-os-root="true"] > header {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 99999 !important;
-}
-
-
-/* =========================================================
-   META OS FIXED HEADER — FINAL
-   This keeps the full top bar visible during scroll:
-   logo + Meta/Google toggle + all Meta OS tabs.
-   ========================================================= */
-
-.metaos-app > header,
-[data-os-root="true"] > header,
-.metaos-app header:first-of-type,
-[data-os-root="true"] header:first-of-type {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 999999 !important;
-  width: 100vw !important;
-  min-height: 92px !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-}
-
-/* Push page content down so fixed header does not cover it */
-.metaos-app main,
-[data-os-root="true"] main {
-  padding-top: 104px !important;
-}
-
-/* Dark header */
-html.dark .metaos-app > header,
-html.dark .metaos-app header:first-of-type,
-html.os-dark .metaos-app > header,
-html.os-dark .metaos-app header:first-of-type,
-.metaos-app.metaos-dark > header,
-.metaos-app.metaos-dark header:first-of-type,
-[data-os-root="true"][data-os-theme="dark"] > header,
-[data-os-root="true"][data-os-theme="dark"] header:first-of-type {
-  background: rgba(5, 6, 7, 0.97) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.14) !important;
-  color: #f4f4f5 !important;
-}
-
-/* Light header */
-html:not(.dark):not(.os-dark) .metaos-app > header,
-html:not(.dark):not(.os-dark) .metaos-app header:first-of-type,
-.metaos-app.metaos-light > header,
-.metaos-app.metaos-light header:first-of-type,
-[data-os-root="true"][data-os-theme="light"] > header,
-[data-os-root="true"][data-os-theme="light"] header:first-of-type {
-  background: rgba(246, 247, 244, 0.97) !important;
-  border-bottom: 1px solid rgba(17,17,17,0.12) !important;
-  color: #111111 !important;
-}
-
-/* Make Meta OS / Google OS toggle selected state obvious */
-.metaos-app button[data-os-mode-active="true"],
-.metaos-app button[data-os-mode-active="true"] *,
-[data-os-root="true"] button[data-os-mode-active="true"],
-[data-os-root="true"] button[data-os-mode-active="true"] * {
-  background: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* Make active tab selected state obvious */
-.metaos-app button[data-meta-tab-active="true"],
-.metaos-app button[data-meta-tab-active="true"] *,
-[data-os-root="true"] button[data-meta-tab-active="true"],
-[data-os-root="true"] button[data-meta-tab-active="true"] * {
-  background: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* Fallback: any blue button must always have white text */
-.metaos-app button[class*="bg-[#0A84FF]"],
-.metaos-app button[class*="bg-[#0A84FF]"] *,
-.metaos-app .bg-\[\#0A84FF\],
-.metaos-app .bg-\[\#0A84FF\] *,
-[data-os-root="true"] button[class*="bg-[#0A84FF]"],
-[data-os-root="true"] button[class*="bg-[#0A84FF]"] *,
-[data-os-root="true"] .bg-\[\#0A84FF\],
-[data-os-root="true"] .bg-\[\#0A84FF\] * {
-  background: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* Dark inactive buttons */
-html.dark .metaos-app header button:not([data-meta-tab-active="true"]):not([data-os-mode-active="true"]):not([class*="bg-[#0A84FF]"]),
-html.os-dark .metaos-app header button:not([data-meta-tab-active="true"]):not([data-os-mode-active="true"]):not([class*="bg-[#0A84FF]"]),
-.metaos-app.metaos-dark header button:not([data-meta-tab-active="true"]):not([data-os-mode-active="true"]):not([class*="bg-[#0A84FF]"]) {
-  background: #101318 !important;
-  border-color: rgba(255,255,255,0.22) !important;
-  color: #f4f4f5 !important;
-  opacity: 1 !important;
-}
-
-html.dark .metaos-app header button:not([data-meta-tab-active="true"]):not([data-os-mode-active="true"]):not([class*="bg-[#0A84FF]"]) *,
-html.os-dark .metaos-app header button:not([data-meta-tab-active="true"]):not([data-os-mode-active="true"]):not([class*="bg-[#0A84FF]"]) *,
-.metaos-app.metaos-dark header button:not([data-meta-tab-active="true"]):not([data-os-mode-active="true"]):not([class*="bg-[#0A84FF]"]) * {
-  color: #f4f4f5 !important;
-  opacity: 1 !important;
-}
-
-/* Light inactive buttons */
-html:not(.dark):not(.os-dark) .metaos-app header button:not([data-meta-tab-active="true"]):not([data-os-mode-active="true"]):not([class*="bg-[#0A84FF]"]),
-.metaos-app.metaos-light header button:not([data-meta-tab-active="true"]):not([data-os-mode-active="true"]):not([class*="bg-[#0A84FF]"]) {
-  background: #ffffff !important;
-  border-color: rgba(17,17,17,0.16) !important;
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app header button:not([data-meta-tab-active="true"]):not([data-os-mode-active="true"]):not([class*="bg-[#0A84FF]"]) *,
-.metaos-app.metaos-light header button:not([data-meta-tab-active="true"]):not([data-os-mode-active="true"]):not([class*="bg-[#0A84FF]"]) * {
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-
-/* =========================================================
-   META OS HEADER BUTTON STATE — FINAL
-   Active tab/mode = full blue pill + white text.
-   ========================================================= */
-
-.metaos-mode-active,
-.metaos-tab-active,
-.metaos-mode-active *,
-.metaos-tab-active *,
-button[data-os-mode-active="true"],
-button[data-os-mode-active="true"] *,
-button[data-meta-tab-active="true"],
-button[data-meta-tab-active="true"] * {
-  background-color: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-html.dark .metaos-mode-inactive,
-html.dark .metaos-tab-inactive,
-html.os-dark .metaos-mode-inactive,
-html.os-dark .metaos-tab-inactive,
-.metaos-app.metaos-dark .metaos-mode-inactive,
-.metaos-app.metaos-dark .metaos-tab-inactive {
-  background-color: #101318 !important;
-  border-color: rgba(255,255,255,0.22) !important;
-  color: #F4F4F5 !important;
-}
-
-html.dark .metaos-mode-inactive *,
-html.dark .metaos-tab-inactive *,
-html.os-dark .metaos-mode-inactive *,
-html.os-dark .metaos-tab-inactive *,
-.metaos-app.metaos-dark .metaos-mode-inactive *,
-.metaos-app.metaos-dark .metaos-tab-inactive * {
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-mode-inactive,
-html:not(.dark):not(.os-dark) .metaos-tab-inactive,
-.metaos-app.metaos-light .metaos-mode-inactive,
-.metaos-app.metaos-light .metaos-tab-inactive {
-  background-color: #ffffff !important;
-  border-color: rgba(17,17,17,0.16) !important;
-  color: #111111 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-mode-inactive *,
-html:not(.dark):not(.os-dark) .metaos-tab-inactive *,
-.metaos-app.metaos-light .metaos-mode-inactive *,
-.metaos-app.metaos-light .metaos-tab-inactive * {
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-/* Header always fixed on screen */
-.metaos-app > header,
-[data-os-root="true"] > header,
-.metaos-app header:first-of-type,
-[data-os-root="true"] header:first-of-type {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 999999 !important;
-  width: 100vw !important;
-}
-
-.metaos-app main,
-[data-os-root="true"] main {
-  padding-top: 104px !important;
-}
-
-
-/* =========================================================
-   META OS DROPDOWN ROW SMOOTH BACKGROUND FIX
-   Removes patchy black boxes behind Spend / CPM / CTR / CPA etc.
-   ========================================================= */
-
-/* Smooth creative summary rows */
-html.dark .metaos-app details summary,
-html.os-dark .metaos-app details summary,
-.metaos-app.metaos-dark details summary,
-[data-os-root="true"][data-os-theme="dark"] details summary {
   background: #14181e !important;
   color: #f4f4f5 !important;
-  border-color: rgba(255,255,255,0.14) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
 }
 
-/* Remove metric-cell patch backgrounds inside dropdown rows */
-html.dark .metaos-app details summary div,
-html.dark .metaos-app details summary span,
-html.os-dark .metaos-app details summary div,
-html.os-dark .metaos-app details summary span,
-.metaos-app.metaos-dark details summary div,
-.metaos-app.metaos-dark details summary span,
-[data-os-root="true"][data-os-theme="dark"] details summary div,
-[data-os-root="true"][data-os-theme="dark"] details summary span {
-  background: transparent !important;
+html.dark .metaos-app details summary *,
+html.os-dark .metaos-app details summary *,
+.metaos-app.metaos-dark details summary * {
   color: #f4f4f5 !important;
   opacity: 1 !important;
 }
 
-/* Keep badges visible, but smooth */
-html.dark .metaos-app details summary .rounded-full,
-html.os-dark .metaos-app details summary .rounded-full,
-.metaos-app.metaos-dark details summary .rounded-full,
-[data-os-root="true"][data-os-theme="dark"] details summary .rounded-full {
-  background: #1b2028 !important;
-  border-color: rgba(255,255,255,0.18) !important;
-  color: #f4f4f5 !important;
+html:not(.dark):not(.os-dark) .metaos-app details summary,
+.metaos-app.metaos-light details summary {
+  background: #ffffff !important;
+  color: #111111 !important;
+  border-color: rgba(17, 17, 17, 0.12) !important;
 }
 
-/* Keep active/critical badge readable */
-html.dark .metaos-app details summary .text-red-300,
-html.dark .metaos-app details summary .text-red-400,
-html.dark .metaos-app details summary .text-red-500,
-html.dark .metaos-app details summary .text-red-600,
-html.dark .metaos-app details summary .text-red-700,
-html.os-dark .metaos-app details summary .text-red-300,
-html.os-dark .metaos-app details summary .text-red-400,
-html.os-dark .metaos-app details summary .text-red-500,
-html.os-dark .metaos-app details summary .text-red-600,
-html.os-dark .metaos-app details summary .text-red-700,
-.metaos-app.metaos-dark details summary .text-red-300,
-.metaos-app.metaos-dark details summary .text-red-400,
-.metaos-app.metaos-dark details summary .text-red-500,
-.metaos-app.metaos-dark details summary .text-red-600,
-.metaos-app.metaos-dark details summary .text-red-700 {
+html:not(.dark):not(.os-dark) .metaos-app details summary *,
+.metaos-app.metaos-light details summary * {
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
+/* Preserve red/green metrics */
+html.dark .metaos-app .text-red-300,
+html.dark .metaos-app .text-red-400,
+html.dark .metaos-app .text-red-500,
+html.dark .metaos-app .text-red-600,
+html.dark .metaos-app .text-red-700,
+html.os-dark .metaos-app .text-red-300,
+html.os-dark .metaos-app .text-red-400,
+html.os-dark .metaos-app .text-red-500,
+html.os-dark .metaos-app .text-red-600,
+html.os-dark .metaos-app .text-red-700 {
   color: #ff6b5f !important;
 }
 
-/* Light mode smooth creative rows */
-html:not(.dark):not(.os-dark) .metaos-app details summary,
-.metaos-app.metaos-light details summary,
-[data-os-root="true"][data-os-theme="light"] details summary {
-  background: #ffffff !important;
-  color: #111111 !important;
-  border-color: rgba(17,17,17,0.12) !important;
+html:not(.dark):not(.os-dark) .metaos-app .text-red-300,
+html:not(.dark):not(.os-dark) .metaos-app .text-red-400,
+html:not(.dark):not(.os-dark) .metaos-app .text-red-500,
+html:not(.dark):not(.os-dark) .metaos-app .text-red-600,
+html:not(.dark):not(.os-dark) .metaos-app .text-red-700 {
+  color: #b42318 !important;
 }
 
-/* Light mode remove metric-cell patches */
-html:not(.dark):not(.os-dark) .metaos-app details summary div,
-html:not(.dark):not(.os-dark) .metaos-app details summary span,
-.metaos-app.metaos-light details summary div,
-.metaos-app.metaos-light details summary span,
-[data-os-root="true"][data-os-theme="light"] details summary div,
-[data-os-root="true"][data-os-theme="light"] details summary span {
+html.dark .metaos-app .text-emerald-300,
+html.dark .metaos-app .text-emerald-400,
+html.dark .metaos-app .text-emerald-500,
+html.dark .metaos-app .text-emerald-600,
+html.dark .metaos-app .text-emerald-700,
+html.os-dark .metaos-app .text-emerald-300,
+html.os-dark .metaos-app .text-emerald-400,
+html.os-dark .metaos-app .text-emerald-500,
+html.os-dark .metaos-app .text-emerald-600,
+html.os-dark .metaos-app .text-emerald-700 {
+  color: #34d399 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app .text-emerald-300,
+html:not(.dark):not(.os-dark) .metaos-app .text-emerald-400,
+html:not(.dark):not(.os-dark) .metaos-app .text-emerald-500,
+html:not(.dark):not(.os-dark) .metaos-app .text-emerald-600,
+html:not(.dark):not(.os-dark) .metaos-app .text-emerald-700 {
+  color: #047857 !important;
+}
+
+/* Table headers */
+.metaos-app table thead,
+.metaos-app table thead tr,
+.metaos-app table thead th,
+.metaos-app .monthly-table-head,
+.metaos-app .monthly-table-head tr,
+.metaos-app .monthly-table-head th,
+.metaos-app .monthly-table-th {
+  background: #13223a !important;
+  color: #ffffff !important;
+}
+
+.metaos-app table thead *,
+.metaos-app .monthly-table-head *,
+.metaos-app .monthly-table-th * {
+  color: #ffffff !important;
   background: transparent !important;
-  color: #111111 !important;
-  opacity: 1 !important;
 }
 
-/* Light badges */
-html:not(.dark):not(.os-dark) .metaos-app details summary .rounded-full,
-.metaos-app.metaos-light details summary .rounded-full,
-[data-os-root="true"][data-os-theme="light"] details summary .rounded-full {
-  background: #f7f7f7 !important;
-  border-color: rgba(17,17,17,0.14) !important;
-  color: #111111 !important;
-}
-
-/* Header active states: full blue button, not only text */
-.metaos-mode-active,
-.metaos-tab-active,
-button[data-os-mode-active="true"],
-button[data-meta-tab-active="true"] {
-  background: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-}
-
-.metaos-mode-active *,
-.metaos-tab-active *,
-button[data-os-mode-active="true"] *,
-button[data-meta-tab-active="true"] * {
+/* Recharts tooltip */
+.recharts-tooltip-wrapper,
+.recharts-tooltip-wrapper *,
+.recharts-default-tooltip,
+.recharts-default-tooltip *,
+.recharts-tooltip-item,
+.recharts-tooltip-label {
   color: #ffffff !important;
   opacity: 1 !important;
 }
 
-/* Keep fixed header always visible */
-.metaos-app > header,
-[data-os-root="true"] > header,
-.metaos-app header:first-of-type,
-[data-os-root="true"] header:first-of-type {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 999999 !important;
-  width: 100vw !important;
-}
-
-.metaos-app main,
-[data-os-root="true"] main {
-  padding-top: 104px !important;
+.recharts-default-tooltip {
+  background-color: #111318 !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 10px !important;
 }
 
 
 /* =========================================================
-   META OS APPLE-STYLE HEADER PILLS — FINAL OVERRIDE
+   META OS CLEAN FINAL CSS
    ========================================================= */
 
-.metaos-pill-active,
-.metaos-pill-active *,
-button[data-os-mode-active="true"],
-button[data-os-mode-active="true"] *,
-button[data-meta-tab-active="true"],
-button[data-meta-tab-active="true"] * {
-  background-color: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-html.dark .metaos-pill-inactive,
-html.os-dark .metaos-pill-inactive,
-.metaos-app.metaos-dark .metaos-pill-inactive {
-  background-color: #101318 !important;
-  border-color: rgba(255,255,255,0.22) !important;
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html.dark .metaos-pill-inactive *,
-html.os-dark .metaos-pill-inactive *,
-.metaos-app.metaos-dark .metaos-pill-inactive * {
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-pill-inactive,
-.metaos-app.metaos-light .metaos-pill-inactive {
-  background-color: #ffffff !important;
-  border-color: rgba(17,17,17,0.16) !important;
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-pill-inactive *,
-.metaos-app.metaos-light .metaos-pill-inactive * {
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-/* Keep full header fixed and visible */
 .metaos-app > header,
 [data-os-root="true"] > header,
 .metaos-app header:first-of-type,
@@ -3597,135 +2385,17 @@ html:not(.dark):not(.os-dark) .metaos-pill-inactive *,
   width: 100vw !important;
   backdrop-filter: blur(18px) !important;
   -webkit-backdrop-filter: blur(18px) !important;
+}
+
+.metaos-app main,
+[data-os-root="true"] main {
+  padding-top: 110px !important;
 }
 
 html.dark .metaos-app > header,
 html.os-dark .metaos-app > header,
 .metaos-app.metaos-dark > header {
   background: rgba(5, 6, 7, 0.97) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.14) !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-app > header,
-.metaos-app.metaos-light > header {
-  background: rgba(246, 247, 244, 0.97) !important;
-  border-bottom: 1px solid rgba(17,17,17,0.12) !important;
-}
-
-.metaos-app main,
-[data-os-root="true"] main {
-  padding-top: 104px !important;
-}
-
-
-/* =========================================================
-   META OS HEADER ACTIVE BUTTON FIX — TRUE FINAL
-   This catches component active markers AND old blue-text active classes.
-   ========================================================= */
-
-/* fixed top bar */
-.metaos-app > header,
-[data-os-root="true"] > header,
-.metaos-app header:first-of-type,
-[data-os-root="true"] header:first-of-type {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 999999 !important;
-  width: 100vw !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-}
-
-.metaos-app main,
-[data-os-root="true"] main {
-  padding-top: 104px !important;
-}
-
-/* selected Meta/Google + selected tab */
-.metaos-pill-active,
-.metaos-pill-active *,
-button[data-os-mode-active="true"],
-button[data-os-mode-active="true"] *,
-button[data-meta-tab-active="true"],
-button[data-meta-tab-active="true"] * {
-  background: #0A84FF !important;
-  background-color: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* fallback: old code may still mark active only with blue text/icon */
-.metaos-app header button[class*="text-[#0A84FF]"],
-.metaos-app header button[class*="text-blue"],
-.metaos-app header button:has([class*="text-[#0A84FF]"]),
-.metaos-app header button:has([class*="text-blue"]) {
-  background: #0A84FF !important;
-  background-color: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-.metaos-app header button[class*="text-[#0A84FF]"] *,
-.metaos-app header button[class*="text-blue"] *,
-.metaos-app header button:has([class*="text-[#0A84FF]"]) *,
-.metaos-app header button:has([class*="text-blue"]) * {
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* dark inactive header pills */
-html.dark .metaos-pill-inactive,
-html.os-dark .metaos-pill-inactive,
-.metaos-app.metaos-dark .metaos-pill-inactive,
-html.dark .metaos-app header button[data-os-mode-active="false"],
-html.dark .metaos-app header button[data-meta-tab-active="false"],
-html.os-dark .metaos-app header button[data-os-mode-active="false"],
-html.os-dark .metaos-app header button[data-meta-tab-active="false"] {
-  background: #101318 !important;
-  border-color: rgba(255,255,255,0.22) !important;
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html.dark .metaos-pill-inactive *,
-html.os-dark .metaos-pill-inactive *,
-.metaos-app.metaos-dark .metaos-pill-inactive *,
-html.dark .metaos-app header button[data-os-mode-active="false"] *,
-html.dark .metaos-app header button[data-meta-tab-active="false"] *,
-html.os-dark .metaos-app header button[data-os-mode-active="false"] *,
-html.os-dark .metaos-app header button[data-meta-tab-active="false"] * {
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-/* light inactive header pills */
-html:not(.dark):not(.os-dark) .metaos-pill-inactive,
-.metaos-app.metaos-light .metaos-pill-inactive,
-html:not(.dark):not(.os-dark) .metaos-app header button[data-os-mode-active="false"],
-html:not(.dark):not(.os-dark) .metaos-app header button[data-meta-tab-active="false"] {
-  background: #ffffff !important;
-  border-color: rgba(17,17,17,0.16) !important;
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-pill-inactive *,
-.metaos-app.metaos-light .metaos-pill-inactive *,
-html:not(.dark):not(.os-dark) .metaos-app header button[data-os-mode-active="false"] *,
-html:not(.dark):not(.os-dark) .metaos-app header button[data-meta-tab-active="false"] * {
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-/* header background */
-html.dark .metaos-app > header,
-html.os-dark .metaos-app > header,
-.metaos-app.metaos-dark > header {
-  background: rgba(5,6,7,0.97) !important;
   border-bottom: 1px solid rgba(255,255,255,0.14) !important;
 }
 
@@ -3735,126 +2405,6 @@ html:not(.dark):not(.os-dark) .metaos-app > header,
   border-bottom: 1px solid rgba(17,17,17,0.12) !important;
 }
 
-
-/* =========================================================
-   META OS APPLE HEADER PILLS — REAL BUTTON FIX
-   This targets the actual patched classes, not guessed Tailwind classes.
-   ========================================================= */
-
-.metaos-apple-pill,
-.metaos-apple-tab {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  border: 1px solid rgba(17,17,17,0.14) !important;
-  background: #ffffff !important;
-  color: #111111 !important;
-  font-weight: 900 !important;
-  font-size: 12px !important;
-  line-height: 1 !important;
-  text-decoration: none !important;
-  opacity: 1 !important;
-  box-shadow: none !important;
-  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease !important;
-}
-
-.metaos-apple-pill {
-  border-radius: 14px !important;
-  padding: 12px 18px !important;
-  letter-spacing: 0.04em !important;
-}
-
-.metaos-apple-tab {
-  border-radius: 10px !important;
-  padding: 10px 14px !important;
-}
-
-.metaos-apple-pill *,
-.metaos-apple-tab * {
-  color: inherit !important;
-  opacity: 1 !important;
-  background: transparent !important;
-}
-
-.metaos-apple-pill-active,
-.metaos-apple-pill-active *,
-button[data-os-mode-active="true"],
-button[data-os-mode-active="true"] *,
-button[data-meta-tab-active="true"],
-button[data-meta-tab-active="true"] *,
-button[data-google-tab-active="true"],
-button[data-google-tab-active="true"] * {
-  background: #0A84FF !important;
-  background-color: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* Dark inactive */
-html.dark .metaos-apple-pill-inactive,
-html.dark .metaos-apple-tab.metaos-apple-pill-inactive,
-html.os-dark .metaos-apple-pill-inactive,
-html.os-dark .metaos-apple-tab.metaos-apple-pill-inactive,
-.metaos-app.metaos-dark .metaos-apple-pill-inactive,
-.metaos-app.metaos-dark .metaos-apple-tab.metaos-apple-pill-inactive {
-  background: #101318 !important;
-  border-color: rgba(255,255,255,0.22) !important;
-  color: #F4F4F5 !important;
-}
-
-html.dark .metaos-apple-pill-inactive *,
-html.dark .metaos-apple-tab.metaos-apple-pill-inactive *,
-html.os-dark .metaos-apple-pill-inactive *,
-html.os-dark .metaos-apple-tab.metaos-apple-pill-inactive *,
-.metaos-app.metaos-dark .metaos-apple-pill-inactive *,
-.metaos-app.metaos-dark .metaos-apple-tab.metaos-apple-pill-inactive * {
-  color: #F4F4F5 !important;
-}
-
-/* Light inactive */
-html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive,
-html:not(.dark):not(.os-dark) .metaos-apple-tab.metaos-apple-pill-inactive,
-.metaos-app.metaos-light .metaos-apple-pill-inactive,
-.metaos-app.metaos-light .metaos-apple-tab.metaos-apple-pill-inactive {
-  background: #ffffff !important;
-  border-color: rgba(17,17,17,0.14) !important;
-  color: #111111 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive *,
-html:not(.dark):not(.os-dark) .metaos-apple-tab.metaos-apple-pill-inactive *,
-.metaos-app.metaos-light .metaos-apple-pill-inactive *,
-.metaos-app.metaos-light .metaos-apple-tab.metaos-apple-pill-inactive * {
-  color: #111111 !important;
-}
-
-/* Fixed header */
-.metaos-app > header,
-[data-os-root="true"] > header,
-.metaos-app header:first-of-type,
-[data-os-root="true"] header:first-of-type {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 999999 !important;
-  width: 100vw !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-}
-
-.metaos-app main,
-[data-os-root="true"] main {
-  padding-top: 110px !important;
-}
-
-
-/* =========================================================
-   META OS APPLE ACTIVE PILLS — CLEAN FINAL
-   ========================================================= */
-
 .metaos-apple-pill,
 .metaos-apple-tab {
   display: inline-flex !important;
@@ -3864,15 +2414,14 @@ html:not(.dark):not(.os-dark) .metaos-apple-tab.metaos-apple-pill-inactive *,
   font-weight: 900 !important;
   font-size: 12px !important;
   line-height: 1 !important;
-  text-decoration: none !important;
   opacity: 1 !important;
   box-shadow: none !important;
-  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease !important;
+  text-decoration: none !important;
 }
 
 .metaos-apple-pill {
   border-radius: 14px !important;
-  padding: 12px 18px !important;
+  padding: 10px 18px !important;
   letter-spacing: 0.04em !important;
 }
 
@@ -3897,7 +2446,6 @@ button[data-google-tab-active="true"] * {
   opacity: 1 !important;
 }
 
-/* Dark inactive */
 html.dark .metaos-apple-pill-inactive,
 html.dark .metaos-apple-tab.metaos-apple-pill-inactive,
 html.os-dark .metaos-apple-pill-inactive,
@@ -3919,7 +2467,6 @@ html.os-dark .metaos-apple-tab.metaos-apple-pill-inactive *,
   opacity: 1 !important;
 }
 
-/* Light inactive */
 html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive,
 html:not(.dark):not(.os-dark) .metaos-apple-tab.metaos-apple-pill-inactive,
 .metaos-app.metaos-light .metaos-apple-pill-inactive,
@@ -3937,257 +2484,37 @@ html:not(.dark):not(.os-dark) .metaos-apple-tab.metaos-apple-pill-inactive *,
   opacity: 1 !important;
 }
 
-/* Fixed header */
-.metaos-app > header,
-[data-os-root="true"] > header,
-.metaos-app header:first-of-type,
-[data-os-root="true"] header:first-of-type {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 999999 !important;
-  width: 100vw !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
+html.dark .metaos-app details summary,
+html.os-dark .metaos-app details summary,
+.metaos-app.metaos-dark details summary {
+  background: #14181e !important;
+  color: #f4f4f5 !important;
+  border-color: rgba(255,255,255,0.14) !important;
 }
 
-.metaos-app main,
-[data-os-root="true"] main {
-  padding-top: 110px !important;
-}
-
-
-/* =========================================================
-   META OS APPLE HEADER BUTTONS — ACTIVE STATE
-   ========================================================= */
-
-.metaos-apple-pill,
-.metaos-apple-tab {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  font-weight: 900 !important;
-  font-size: 12px !important;
-  line-height: 1 !important;
-  box-shadow: none !important;
+html.dark .metaos-app details summary *,
+html.os-dark .metaos-app details summary *,
+.metaos-app.metaos-dark details summary * {
+  color: #f4f4f5 !important;
   opacity: 1 !important;
 }
 
-.metaos-apple-pill {
-  border-radius: 14px !important;
-  padding: 12px 18px !important;
-  letter-spacing: 0.04em !important;
-}
-
-.metaos-apple-tab {
-  border-radius: 10px !important;
-  padding: 10px 14px !important;
-}
-
-.metaos-apple-pill-active,
-..........................................................................................................................................................................................................................................................rue"] * {
-  background: #0A84FF !important;
-  background-color: #0A84FF !important;
-  border: 1px solid #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* Dark inactive */
-html.dark .metaos-apple-pill-inactive,
-html.dark .metaos-apple-tab.metaos-apple-pill-inactive,
-html.os-dark .metaos-apple-pill-inactive,
-html.os-dark .metaos-apple-tab.metaos-apple-pill-inactive,
-.metaos-app.metaos-dark .metaos-apple-pill-inactive,
-.metaos-app.metaos-dark .metaos-apple-tab.metaos-apple-pill-inactive {
-  background: #101318 !important;
-  border: 1px solid rgba(255,255,255,0.22) !important;
-  color: #F4F4F5 !important;
-}
-
-html.dark .metaos-apple-pill-inactive *,
-html.dark .metaos-apple-tab.metaos-apple-pill-inactive *,
-html.os-dark .metaos-apple-pill-inactive *,
-html.os-dark .metaos-apple-tab.metaos-apple-pill-inactive *,
-.metaos-app.metaos-dark .metaos-apple-pill-inactive *,
-.metaos-app.metaos-dark .metaos-apple-tab.metaos-apple-pill-inactive * {
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-/* Light inactive */
-html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive,
-html:not(.dark):not(.os-dark) .metaos-apple-tab.metaos-apple-pill-inactive,
-.metaos-app.metaos-light .metaos-apple-pill-inactive,
-.metaos-app.metaos-light .metaos-apple-tab.metaos-apple-pill-inactive {
+html:not(.dark):not(.os-dark) .metaos-app details summary,
+.metaos-app.metaos-light details summary {
   background: #ffffff !important;
-  border: 1px solid rgba(17,17,17,0.14) !important;
   color: #111111 !important;
+  border-color: rgba(17,17,17,0.12) !important;
 }
 
-html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive *,
-html:not(.dark):not(.os-dark) .metaos-apple-tab.metaos-apple-pill-inactive *,
-.metaos-app.metaos-light .metaos-apple-pill-inactive *,
-.metaos-app.metaos-light .metaos-apple-tab.metaos-apple-pill-inactive * {
+html:not(.dark):not(.os-dark) .metaos-app details summary *,
+.metaos-app.metaos-light details summary * {
   color: #111111 !important;
   opacity: 1 !important;
 }
 
-/* Keep header fixed */
-.metaos-app > header,
-[data-os-root="true"] > header,
-.metaos-app header:first-of-type,
-[data-os-root="true"] header:first-of-type {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 999999 !important;
-  width: 100vw !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-}
-
-.metaos-app main,
-[data-os-root="true"] main {
-  padding-top: 110px !important;
-}
-
-
-/* FINAL Meta/Google Apple Toggle */
-.metaos-apple-pill {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 12px !important;
-  padding: 10px 18px !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  letter-spacing: 0.04em !important;
-  opacity: 1 !important;
-  border: 1px solid transparent !important;
-}
-
-.metaos-apple-pill-active,
-.metaos-apple-pill-active *,
-button[data-os-mode-active="true"],
-button[data-os-mode-active="true"] * {
-  background: #0A84FF !important;
-  background-color: #0A84FF !important;
-  border-color: #0A84FF !important;
+.recharts-default-tooltip,
+.recharts-tooltip-wrapper,
+.recharts-tooltip-wrapper * {
+  background-color: #111318 !important;
   color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-html.dark .metaos-apple-pill-inactive,
-html.os-dark .metaos-apple-pill-inactive,
-.metaos-app.metaos-dark .metaos-apple-pill-inactive {
-  background: #101318 !important;
-  border-color: rgba(255,255,255,0.22) !important;
-  color: #F4F4F5 !important;
-}
-
-html.dark .metaos-apple-pill-inactive *,
-html.os-dark .metaos-apple-pill-inactive *,
-.metaos-app.metaos-dark .metaos-apple-pill-inactive * {
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive,
-.metaos-app.metaos-light .metaos-apple-pill-inactive {
-  background: #ffffff !important;
-  border-color: rgba(17,17,17,0.14) !important;
-  color: #111111 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive *,
-.metaos-app.metaos-light .metaos-apple-pill-inactive * {
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-/* =========================================================
-   META / GOOGLE APPLE TOGGLE — SAFE FINAL
-   Active = full blue pill + white text.
-   Inactive dark = dark pill + white text.
-   Inactive light = white pill + black text.
-   ========================================================= */
-
-.metaos-apple-pill {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 12px !important;
-  padding: 10px 18px !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  letter-spacing: 0.04em !important;
-  opacity: 1 !important;
-  border: 1px solid transparent !important;
-  box-shadow: none !important;
-}
-
-.metaos-apple-pill-active,
-.metaos-apple-pill-active *,
-button[data-os-mode-active="true"],
-button[data-os-mode-active="true"] * {
-  background: #0A84FF !important;
-  background-color: #0A84FF !important;
-  border-color: #0A84FF !important;
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-html.dark .metaos-apple-pill-inactive,
-html.os-dark .metaos-apple-pill-inactive,
-.metaos-app.metaos-dark .metaos-apple-pill-inactive {
-  background: #101318 !important;
-  border-color: rgba(255,255,255,0.22) !important;
-  color: #F4F4F5 !important;
-}
-
-html.dark .metaos-apple-pill-inactive *,
-html.os-dark .metaos-apple-pill-inactive *,
-.metaos-app.metaos-dark .metaos-apple-pill-inactive * {
-  color: #F4F4F5 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive,
-.metaos-app.metaos-light .metaos-apple-pill-inactive {
-  background: #ffffff !important;
-  border-color: rgba(17,17,17,0.14) !important;
-  color: #111111 !important;
-}
-
-html:not(.dark):not(.os-dark) .metaos-apple-pill-inactive *,
-.metaos-app.metaos-light .metaos-apple-pill-inactive * {
-  color: #111111 !important;
-  opacity: 1 !important;
-}
-
-/* Header fixed */
-.metaos-app > header,
-[data-os-root="true"] > header,
-.metaos-app header:first-of-type,
-[data-os-root="true"] header:first-of-type {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 999999 !important;
-  width: 100vw !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-}
-
-.metaos-app main,
-[data-os-root="true"] main {
-  padding-top: 110px !important;
 }
