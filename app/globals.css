@@ -2850,3 +2850,97 @@ html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"],
   border-color: rgba(17, 17, 17, 0.14) !important;
 }
 
+
+/* =========================================================
+   META OS BUTTON CONTRAST FINAL FIX
+   Selected = blue bg + white text.
+   Dark inactive = readable white text.
+   Light inactive = readable black text.
+   ========================================================= */
+
+/* Selected blue buttons/pills */
+.metaos-app button[class*="bg-[#0A84FF]"],
+.metaos-app button[class*="bg-blue"],
+.metaos-app button[data-meta-tab-active="true"],
+.metaos-app .bg-\[\#0A84FF\],
+.metaos-app .bg-\[\#0A84FF\] *,
+.metaos-app button[class*="bg-[#0A84FF]"] *,
+.metaos-app button[class*="bg-blue"] *,
+.metaos-app button[data-meta-tab-active="true"] *,
+[data-os-root="true"] button[class*="bg-[#0A84FF]"],
+[data-os-root="true"] button[class*="bg-blue"],
+[data-os-root="true"] button[data-meta-tab-active="true"],
+[data-os-root="true"] .bg-\[\#0A84FF\],
+[data-os-root="true"] .bg-\[\#0A84FF\] *,
+[data-os-root="true"] button[class*="bg-[#0A84FF]"] *,
+[data-os-root="true"] button[class*="bg-blue"] *,
+[data-os-root="true"] button[data-meta-tab-active="true"] * {
+  background-color: #0a84ff !important;
+  border-color: #0a84ff !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Dark mode inactive buttons */
+html.dark .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]),
+html.os-dark .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]),
+.metaos-app.metaos-dark button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]),
+[data-os-root="true"][data-os-theme="dark"] button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) {
+  background-color: #101318 !important;
+  border-color: rgba(255, 255, 255, 0.20) !important;
+  color: #f4f4f5 !important;
+  opacity: 1 !important;
+}
+
+html.dark .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) *,
+html.os-dark .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) *,
+.metaos-app.metaos-dark button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) *,
+[data-os-root="true"][data-os-theme="dark"] button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) * {
+  color: #f4f4f5 !important;
+  opacity: 1 !important;
+}
+
+/* Light mode inactive buttons */
+html:not(.dark):not(.os-dark) .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]),
+.metaos-app.metaos-light button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]),
+[data-os-root="true"][data-os-theme="light"] button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) {
+  background-color: #ffffff !important;
+  border-color: rgba(17, 17, 17, 0.14) !important;
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) *,
+.metaos-app.metaos-light button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) *,
+[data-os-root="true"][data-os-theme="light"] button:not([data-meta-tab-active="true"]):not([class*="bg-[#0A84FF]"]):not([class*="bg-blue"]) * {
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
+/* Inputs/select threshold field */
+html.dark .metaos-app input,
+html.dark .metaos-app select,
+html.os-dark .metaos-app input,
+html.os-dark .metaos-app select,
+.metaos-app.metaos-dark input,
+.metaos-app.metaos-dark select,
+[data-os-root="true"][data-os-theme="dark"] input,
+[data-os-root="true"][data-os-theme="dark"] select {
+  background-color: #101318 !important;
+  border-color: rgba(255, 255, 255, 0.20) !important;
+  color: #f4f4f5 !important;
+  opacity: 1 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app input,
+html:not(.dark):not(.os-dark) .metaos-app select,
+.metaos-app.metaos-light input,
+.metaos-app.metaos-light select,
+[data-os-root="true"][data-os-theme="light"] input,
+[data-os-root="true"][data-os-theme="light"] select {
+  background-color: #ffffff !important;
+  border-color: rgba(17, 17, 17, 0.14) !important;
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
