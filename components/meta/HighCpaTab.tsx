@@ -460,6 +460,127 @@ function InfoBox({ title, lines }: { title: string; lines: string[] }) {
 }
 
 function TrendBox({ data }: { data: any[] }) {
+  const [visibleMetrics, setVisibleMetrics] = useState<Record<string, boolean>>({
+    cpm: false,
+    ctr: false,
+    cpa: true,
+    aov: false,
+    roas: true,
+  });
+
+  const metricOptions = [
+    { key: "cpm", label: "CPM", axis: "money", color: "#0A84FF" },
+    { key: "ctr", label: "CTR", axis: "rate", color: "#087f5b" },
+    { key: "cpa", label: "CPA", axis: "money", color: "#b42318" },
+    { key: "aov", label: "AOV", axis: "money", color: "#9333ea" },
+    { key: "roas", label: "ROAS", axis: "rate", color: "#f97316" },
+  ];
+
+  function toggleMetric(key: string) {
+    setVisibleMetrics((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  }
+
+  return (
+    <div className="rounded-lg border border-current/10 bg-current/[0.025] p-3">
+      <div className="mb-2 flex flex-col gap-2">
+        <p className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.14em] opacity-55">
+          <LineChartIcon className="h-4 w-4" />
+          Select Metrics Trend
+        </p>
+
+        <div className="flex flex-wrap gap-2">
+          {metricOptions.map((metric) => (
+            <label
+              key={metric.key}
+              className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.08em]"
+            >
+              <input
+                type="checkbox"
+                checked={Boolean(visibleMetrics[metric.key])}
+                onChange={() => toggleMetric(metric.key)}
+                className="h-3 w-3 accent-[#0A84FF]"
+              />
+              <span>{metric.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="h-[170px] w-full">
+        <ResponsiveContainer width="100%" height={170}>
+          <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.16)" />
+
+            <XAxis
+              dataKey="label"
+              tick={{ fontSize: 9, fill: "currentColor" }}
+              axisLine={false}
+              tickLine={false}
+              minTickGap={16}
+            />
+
+            <YAxis
+              yAxisId="money"
+              tick={{ fontSize: 9, fill: "currentColor" }}
+              axisLine={false}
+              tickLine={false}
+              width={48}
+              tickFormatter={(v) => `₹${Math.round(Number(v || 0))}`}
+            />
+
+            <YAxis
+              yAxisId="rate"
+              orientation="right"
+              tick={{ fontSize: 9, fill: "currentColor" }}
+              axisLine={false}
+              tickLine={false}
+              width={44}
+              tickFormatter={(v) => `${Math.round(Number(v || 0) * 100)}%`}
+            />
+
+            <Tooltip
+              contentStyle={{
+                background: "#111318",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 10,
+                color: "white",
+                fontSize: 11,
+              }}
+              formatter={(value: any, name: any) => {
+                if (name === "CPM") return [money(Number(value || 0)), "CPM"];
+                if (name === "CPA") return [money(Number(value || 0)), "CPA"];
+                if (name === "AOV") return [money(Number(value || 0)), "AOV"];
+                if (name === "CTR") return [pct(Number(value || 0)), "CTR"];
+                if (name === "ROAS") return [`${num(Number(value || 0))}x`, "ROAS"];
+                return [value, name];
+              }}
+            />
+
+            {metricOptions.map((metric) =>
+              visibleMetrics[metric.key] ? (
+                <Line
+                  key={metric.key}
+                  yAxisId={metric.axis}
+                  type="monotone"
+                  dataKey={metric.key}
+                  name={metric.label}
+                  stroke={metric.color}
+                  strokeWidth={2}
+                  dot={false}
+                  connectNulls
+                />
+              ) : null
+            )}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+: { data: any[] }) {
   return (
     <div className="rounded-lg border border-current/10 bg-current/[0.025] p-3">
       <div className="mb-2 flex items-center justify-between">
