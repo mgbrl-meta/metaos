@@ -548,12 +548,25 @@ function TrendBox({ data }: { data: any[] }) {
               />
 
               <Tooltip
+                wrapperStyle={{
+                  outline: "none",
+                  zIndex: 9999,
+                }}
                 contentStyle={{
                   background: "#111318",
-                  border: "1px solid rgba(255,255,255,0.12)",
+                  border: "1px solid rgba(255,255,255,0.18)",
                   borderRadius: 10,
-                  color: "white",
+                  color: "#ffffff",
                   fontSize: 11,
+                  boxShadow: "0 12px 30px rgba(0,0,0,0.28)",
+                }}
+                labelStyle={{
+                  color: "#ffffff",
+                  fontWeight: 800,
+                }}
+                itemStyle={{
+                  color: "#ffffff",
+                  fontWeight: 700,
                 }}
                 formatter={(value: any, name: any) => {
                   if (name === "Spend") return [money(Number(value || 0)), "Spend"];
