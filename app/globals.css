@@ -1897,3 +1897,346 @@ html:not(.dark) main [style*="background"] [class*="text-white"] {
     padding: 6px 8px !important;
   }
 }
+
+/* =========================================================
+   META OS HARD THEME OVERRIDE — FINAL READABILITY FIX
+   Purpose:
+   - Dark mode: dark cards + readable light text
+   - Light mode: light cards + readable dark text
+   - Active blue buttons remain white text
+   - Tables keep navy header
+   - Chart tooltips stay dark
+   ========================================================= */
+
+/* ---------- DARK MODE HARD FIX ---------- */
+
+.metaos-app.metaos-dark,
+[data-os-root="true"][data-os-theme="dark"] {
+  background: #050607 !important;
+  color: #f4f4f5 !important;
+}
+
+.metaos-app.metaos-dark main,
+.metaos-app.metaos-dark header,
+.metaos-app.metaos-dark section,
+.metaos-app.metaos-dark article,
+.metaos-app.metaos-dark details,
+.metaos-app.metaos-dark summary,
+.metaos-app.metaos-dark div:not(.recharts-tooltip-wrapper):not(.recharts-wrapper):not(.recharts-surface),
+[data-os-root="true"][data-os-theme="dark"] main,
+[data-os-root="true"][data-os-theme="dark"] header,
+[data-os-root="true"][data-os-theme="dark"] section,
+[data-os-root="true"][data-os-theme="dark"] article,
+[data-os-root="true"][data-os-theme="dark"] details,
+[data-os-root="true"][data-os-theme="dark"] summary,
+[data-os-root="true"][data-os-theme="dark"] div:not(.recharts-tooltip-wrapper):not(.recharts-wrapper):not(.recharts-surface) {
+  background-color: #101318 !important;
+  color: #f4f4f5 !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+.metaos-app.metaos-dark h1,
+.metaos-app.metaos-dark h2,
+.metaos-app.metaos-dark h3,
+.metaos-app.metaos-dark h4,
+.metaos-app.metaos-dark p,
+.metaos-app.metaos-dark span,
+.metaos-app.metaos-dark label,
+.metaos-app.metaos-dark button,
+.metaos-app.metaos-dark summary,
+.metaos-app.metaos-dark td,
+.metaos-app.metaos-dark th,
+.metaos-app.metaos-dark li,
+.metaos-app.metaos-dark input,
+.metaos-app.metaos-dark select,
+.metaos-app.metaos-dark textarea,
+[data-os-root="true"][data-os-theme="dark"] h1,
+[data-os-root="true"][data-os-theme="dark"] h2,
+[data-os-root="true"][data-os-theme="dark"] h3,
+[data-os-root="true"][data-os-theme="dark"] h4,
+[data-os-root="true"][data-os-theme="dark"] p,
+[data-os-root="true"][data-os-theme="dark"] span,
+[data-os-root="true"][data-os-theme="dark"] label,
+[data-os-root="true"][data-os-theme="dark"] button,
+[data-os-root="true"][data-os-theme="dark"] summary,
+[data-os-root="true"][data-os-theme="dark"] td,
+[data-os-root="true"][data-os-theme="dark"] th,
+[data-os-root="true"][data-os-theme="dark"] li,
+[data-os-root="true"][data-os-theme="dark"] input,
+[data-os-root="true"][data-os-theme="dark"] select,
+[data-os-root="true"][data-os-theme="dark"] textarea {
+  color: #f4f4f5 !important;
+}
+
+/* Kill accidental black/dark text in dark mode */
+.metaos-app.metaos-dark [class*="text-black"],
+.metaos-app.metaos-dark [class*="text-neutral"],
+.metaos-app.metaos-dark [class*="text-zinc"],
+.metaos-app.metaos-dark [class*="text-slate"],
+.metaos-app.metaos-dark [class*="text-gray"],
+[data-os-root="true"][data-os-theme="dark"] [class*="text-black"],
+[data-os-root="true"][data-os-theme="dark"] [class*="text-neutral"],
+[data-os-root="true"][data-os-theme="dark"] [class*="text-zinc"],
+[data-os-root="true"][data-os-theme="dark"] [class*="text-slate"],
+[data-os-root="true"][data-os-theme="dark"] [class*="text-gray"] {
+  color: #f4f4f5 !important;
+}
+
+/* Muted text in dark mode */
+.metaos-app.metaos-dark .opacity-30,
+.metaos-app.metaos-dark .opacity-35,
+.metaos-app.metaos-dark .opacity-40,
+.metaos-app.metaos-dark .opacity-45,
+.metaos-app.metaos-dark .opacity-50,
+.metaos-app.metaos-dark .opacity-55,
+.metaos-app.metaos-dark .opacity-60,
+.metaos-app.metaos-dark .opacity-65,
+.metaos-app.metaos-dark .opacity-70,
+.metaos-app.metaos-dark .opacity-75,
+[data-os-root="true"][data-os-theme="dark"] .opacity-30,
+[data-os-root="true"][data-os-theme="dark"] .opacity-35,
+[data-os-root="true"][data-os-theme="dark"] .opacity-40,
+[data-os-root="true"][data-os-theme="dark"] .opacity-45,
+[data-os-root="true"][data-os-theme="dark"] .opacity-50,
+[data-os-root="true"][data-os-theme="dark"] .opacity-55,
+[data-os-root="true"][data-os-theme="dark"] .opacity-60,
+[data-os-root="true"][data-os-theme="dark"] .opacity-65,
+[data-os-root="true"][data-os-theme="dark"] .opacity-70,
+[data-os-root="true"][data-os-theme="dark"] .opacity-75 {
+  opacity: 1 !important;
+  color: rgba(244, 244, 245, 0.7) !important;
+}
+
+/* ---------- LIGHT MODE HARD FIX ---------- */
+
+.metaos-app.metaos-light,
+[data-os-root="true"][data-os-theme="light"] {
+  background: #f6f7f4 !important;
+  color: #111111 !important;
+}
+
+.metaos-app.metaos-light main,
+.metaos-app.metaos-light header,
+.metaos-app.metaos-light section,
+.metaos-app.metaos-light article,
+.metaos-app.metaos-light details,
+.metaos-app.metaos-light summary,
+.metaos-app.metaos-light div:not(.recharts-tooltip-wrapper):not(.recharts-wrapper):not(.recharts-surface),
+[data-os-root="true"][data-os-theme="light"] main,
+[data-os-root="true"][data-os-theme="light"] header,
+[data-os-root="true"][data-os-theme="light"] section,
+[data-os-root="true"][data-os-theme="light"] article,
+[data-os-root="true"][data-os-theme="light"] details,
+[data-os-root="true"][data-os-theme="light"] summary,
+[data-os-root="true"][data-os-theme="light"] div:not(.recharts-tooltip-wrapper):not(.recharts-wrapper):not(.recharts-surface) {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border-color: rgba(17, 17, 17, 0.12) !important;
+}
+
+.metaos-app.metaos-light h1,
+.metaos-app.metaos-light h2,
+.metaos-app.metaos-light h3,
+.metaos-app.metaos-light h4,
+.metaos-app.metaos-light p,
+.metaos-app.metaos-light span,
+.metaos-app.metaos-light label,
+.metaos-app.metaos-light button,
+.metaos-app.metaos-light summary,
+.metaos-app.metaos-light td,
+.metaos-app.metaos-light th,
+.metaos-app.metaos-light li,
+.metaos-app.metaos-light input,
+.metaos-app.metaos-light select,
+.metaos-app.metaos-light textarea,
+[data-os-root="true"][data-os-theme="light"] h1,
+[data-os-root="true"][data-os-theme="light"] h2,
+[data-os-root="true"][data-os-theme="light"] h3,
+[data-os-root="true"][data-os-theme="light"] h4,
+[data-os-root="true"][data-os-theme="light"] p,
+[data-os-root="true"][data-os-theme="light"] span,
+[data-os-root="true"][data-os-theme="light"] label,
+[data-os-root="true"][data-os-theme="light"] button,
+[data-os-root="true"][data-os-theme="light"] summary,
+[data-os-root="true"][data-os-theme="light"] td,
+[data-os-root="true"][data-os-theme="light"] th,
+[data-os-root="true"][data-os-theme="light"] li,
+[data-os-root="true"][data-os-theme="light"] input,
+[data-os-root="true"][data-os-theme="light"] select,
+[data-os-root="true"][data-os-theme="light"] textarea {
+  color: #111111 !important;
+}
+
+/* Kill accidental white text in light mode */
+.metaos-app.metaos-light [class*="text-white"],
+.metaos-app.metaos-light [class*="text-slate"],
+.metaos-app.metaos-light [class*="text-gray"],
+.metaos-app.metaos-light [class*="text-zinc"],
+.metaos-app.metaos-light [class*="text-neutral"],
+[data-os-root="true"][data-os-theme="light"] [class*="text-white"],
+[data-os-root="true"][data-os-theme="light"] [class*="text-slate"],
+[data-os-root="true"][data-os-theme="light"] [class*="text-gray"],
+[data-os-root="true"][data-os-theme="light"] [class*="text-zinc"],
+[data-os-root="true"][data-os-theme="light"] [class*="text-neutral"] {
+  color: #111111 !important;
+}
+
+/* Muted text in light mode */
+.metaos-app.metaos-light .opacity-30,
+.metaos-app.metaos-light .opacity-35,
+.metaos-app.metaos-light .opacity-40,
+.metaos-app.metaos-light .opacity-45,
+.metaos-app.metaos-light .opacity-50,
+.metaos-app.metaos-light .opacity-55,
+.metaos-app.metaos-light .opacity-60,
+.metaos-app.metaos-light .opacity-65,
+.metaos-app.metaos-light .opacity-70,
+.metaos-app.metaos-light .opacity-75,
+[data-os-root="true"][data-os-theme="light"] .opacity-30,
+[data-os-root="true"][data-os-theme="light"] .opacity-35,
+[data-os-root="true"][data-os-theme="light"] .opacity-40,
+[data-os-root="true"][data-os-theme="light"] .opacity-45,
+[data-os-root="true"][data-os-theme="light"] .opacity-50,
+[data-os-root="true"][data-os-theme="light"] .opacity-55,
+[data-os-root="true"][data-os-theme="light"] .opacity-60,
+[data-os-root="true"][data-os-theme="light"] .opacity-65,
+[data-os-root="true"][data-os-theme="light"] .opacity-70,
+[data-os-root="true"][data-os-theme="light"] .opacity-75 {
+  opacity: 1 !important;
+  color: rgba(17, 17, 17, 0.62) !important;
+}
+
+/* ---------- ACTIVE BUTTONS ---------- */
+
+.metaos-app .bg-\[\#0A84FF\],
+.metaos-app .bg-\[\#0A84FF\] *,
+.metaos-app button.bg-\[\#0A84FF\],
+.metaos-app button.bg-\[\#0A84FF\] *,
+[data-os-root="true"] .bg-\[\#0A84FF\],
+[data-os-root="true"] .bg-\[\#0A84FF\] *,
+[data-os-root="true"] button.bg-\[\#0A84FF\],
+[data-os-root="true"] button.bg-\[\#0A84FF\] * {
+  background: #0a84ff !important;
+  color: #ffffff !important;
+}
+
+/* ---------- STATUS COLORS ---------- */
+
+.metaos-app.metaos-dark .text-red-300,
+.metaos-app.metaos-dark .text-red-400,
+.metaos-app.metaos-dark .text-red-500,
+.metaos-app.metaos-dark .text-red-600,
+.metaos-app.metaos-dark .text-red-700,
+[data-os-root="true"][data-os-theme="dark"] .text-red-300,
+[data-os-root="true"][data-os-theme="dark"] .text-red-400,
+[data-os-root="true"][data-os-theme="dark"] .text-red-500,
+[data-os-root="true"][data-os-theme="dark"] .text-red-600,
+[data-os-root="true"][data-os-theme="dark"] .text-red-700 {
+  color: #ff6b5f !important;
+}
+
+.metaos-app.metaos-light .text-red-300,
+.metaos-app.metaos-light .text-red-400,
+.metaos-app.metaos-light .text-red-500,
+.metaos-app.metaos-light .text-red-600,
+.metaos-app.metaos-light .text-red-700,
+[data-os-root="true"][data-os-theme="light"] .text-red-300,
+[data-os-root="true"][data-os-theme="light"] .text-red-400,
+[data-os-root="true"][data-os-theme="light"] .text-red-500,
+[data-os-root="true"][data-os-theme="light"] .text-red-600,
+[data-os-root="true"][data-os-theme="light"] .text-red-700 {
+  color: #b42318 !important;
+}
+
+.metaos-app.metaos-dark .text-emerald-300,
+.metaos-app.metaos-dark .text-emerald-400,
+.metaos-app.metaos-dark .text-emerald-500,
+.metaos-app.metaos-dark .text-emerald-600,
+.metaos-app.metaos-dark .text-emerald-700,
+[data-os-root="true"][data-os-theme="dark"] .text-emerald-300,
+[data-os-root="true"][data-os-theme="dark"] .text-emerald-400,
+[data-os-root="true"][data-os-theme="dark"] .text-emerald-500,
+[data-os-root="true"][data-os-theme="dark"] .text-emerald-600,
+[data-os-root="true"][data-os-theme="dark"] .text-emerald-700 {
+  color: #34d399 !important;
+}
+
+.metaos-app.metaos-light .text-emerald-300,
+.metaos-app.metaos-light .text-emerald-400,
+.metaos-app.metaos-light .text-emerald-500,
+.metaos-app.metaos-light .text-emerald-600,
+.metaos-app.metaos-light .text-emerald-700,
+[data-os-root="true"][data-os-theme="light"] .text-emerald-300,
+[data-os-root="true"][data-os-theme="light"] .text-emerald-400,
+[data-os-root="true"][data-os-theme="light"] .text-emerald-500,
+[data-os-root="true"][data-os-theme="light"] .text-emerald-600,
+[data-os-root="true"][data-os-theme="light"] .text-emerald-700 {
+  color: #047857 !important;
+}
+
+/* ---------- TABLES ---------- */
+
+.metaos-app table thead,
+.metaos-app table thead tr,
+.metaos-app table thead th,
+.metaos-app .monthly-table-head,
+.metaos-app .monthly-table-head tr,
+.metaos-app .monthly-table-head th,
+.metaos-app .monthly-table-th,
+[data-os-root="true"] table thead,
+[data-os-root="true"] table thead tr,
+[data-os-root="true"] table thead th,
+[data-os-root="true"] .monthly-table-head,
+[data-os-root="true"] .monthly-table-head tr,
+[data-os-root="true"] .monthly-table-head th,
+[data-os-root="true"] .monthly-table-th {
+  background: #13223a !important;
+  color: #ffffff !important;
+}
+
+.metaos-app table thead *,
+.metaos-app .monthly-table-head *,
+.metaos-app .monthly-table-th *,
+[data-os-root="true"] table thead *,
+[data-os-root="true"] .monthly-table-head *,
+[data-os-root="true"] .monthly-table-th * {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+/* ---------- CHARTS ---------- */
+
+.recharts-tooltip-wrapper,
+.recharts-tooltip-wrapper *,
+.recharts-default-tooltip,
+.recharts-default-tooltip *,
+.recharts-tooltip-item,
+.recharts-tooltip-label,
+.scatter-tooltip-card,
+.scatter-tooltip-card * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.recharts-default-tooltip,
+.scatter-tooltip-card {
+  background: #111318 !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 10px !important;
+}
+
+.metaos-app .recharts-text,
+.metaos-app .recharts-cartesian-axis-tick-value,
+[data-os-root="true"] .recharts-text,
+[data-os-root="true"] .recharts-cartesian-axis-tick-value {
+  fill: currentColor !important;
+  opacity: 1 !important;
+}
+
+/* ---------- CLEAN ---------- */
+
+.metaos-app [class*="shadow"],
+[data-os-root="true"] [class*="shadow"] {
+  box-shadow: none !important;
+}
+
