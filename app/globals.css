@@ -3336,3 +3336,79 @@ html:not(.dark):not(.os-dark) .metaos-app header button:not([data-meta-tab-activ
   opacity: 1 !important;
 }
 
+
+/* =========================================================
+   META OS HEADER BUTTON STATE — FINAL
+   Active tab/mode = full blue pill + white text.
+   ========================================================= */
+
+.metaos-mode-active,
+.metaos-tab-active,
+.metaos-mode-active *,
+.metaos-tab-active *,
+button[data-os-mode-active="true"],
+button[data-os-mode-active="true"] *,
+button[data-meta-tab-active="true"],
+button[data-meta-tab-active="true"] * {
+  background-color: #0A84FF !important;
+  border-color: #0A84FF !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+html.dark .metaos-mode-inactive,
+html.dark .metaos-tab-inactive,
+html.os-dark .metaos-mode-inactive,
+html.os-dark .metaos-tab-inactive,
+.metaos-app.metaos-dark .metaos-mode-inactive,
+.metaos-app.metaos-dark .metaos-tab-inactive {
+  background-color: #101318 !important;
+  border-color: rgba(255,255,255,0.22) !important;
+  color: #F4F4F5 !important;
+}
+
+html.dark .metaos-mode-inactive *,
+html.dark .metaos-tab-inactive *,
+html.os-dark .metaos-mode-inactive *,
+html.os-dark .metaos-tab-inactive *,
+.metaos-app.metaos-dark .metaos-mode-inactive *,
+.metaos-app.metaos-dark .metaos-tab-inactive * {
+  color: #F4F4F5 !important;
+  opacity: 1 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-mode-inactive,
+html:not(.dark):not(.os-dark) .metaos-tab-inactive,
+.metaos-app.metaos-light .metaos-mode-inactive,
+.metaos-app.metaos-light .metaos-tab-inactive {
+  background-color: #ffffff !important;
+  border-color: rgba(17,17,17,0.16) !important;
+  color: #111111 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-mode-inactive *,
+html:not(.dark):not(.os-dark) .metaos-tab-inactive *,
+.metaos-app.metaos-light .metaos-mode-inactive *,
+.metaos-app.metaos-light .metaos-tab-inactive * {
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
+/* Header always fixed on screen */
+.metaos-app > header,
+[data-os-root="true"] > header,
+.metaos-app header:first-of-type,
+[data-os-root="true"] header:first-of-type {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 999999 !important;
+  width: 100vw !important;
+}
+
+.metaos-app main,
+[data-os-root="true"] main {
+  padding-top: 104px !important;
+}
+
