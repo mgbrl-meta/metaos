@@ -14,7 +14,6 @@ import { HighRoasTab } from "@/components/meta/HighRoasTab";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
 import { WinnerCreativeTab } from "@/components/meta/WinnerCreativeTab";
 import { HookHoldCreativeTab } from "@/components/meta/HookHoldCreativeTab";
-import { StructureReport } from "@/components/dashboard/StructureReport";
 import { DailySummaryExport } from "@/components/dashboard/DailySummaryExport";
 import { MetaExecutiveSummary } from "@/components/meta/MetaExecutiveSummary";
 import { EnhancedMonthlyReport } from "@/components/meta/EnhancedMonthlyReport";
@@ -65,7 +64,6 @@ export default function Home() {
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
           {activeMetaTab === "winner" && <WinnerCreativeTab />}
           {activeMetaTab === "hook_hold" && <HookHoldCreativeTab />}
-          {activeMetaTab === "structure_report" && <StructureReport />}
           {activeMetaTab === "summary" && <MetaExecutiveSummary />}
           {activeMetaTab === "monthly" && <EnhancedMonthlyReport />}
         </>

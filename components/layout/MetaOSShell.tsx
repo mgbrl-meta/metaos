@@ -32,7 +32,6 @@ export type MetaTab =
   | "spend_visuals"
   | "winner"
   | "hook_hold"
-  | "structure_report"
   | "summary"
   | "monthly";
 
@@ -96,13 +95,6 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "Hook / Hold",
     description: "Top hook rate and hold rate creatives",
     icon: MousePointerClick,
-  },
-  {
-    id: "structure_report",
-    label: "Structure Report",
-    shortLabel: "Structure",
-    description: "Campaign → ad set → ad clarity",
-    icon: Layers,
   },
   {
     id: "summary",
