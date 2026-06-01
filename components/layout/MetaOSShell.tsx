@@ -294,24 +294,20 @@ export function MetaOSShell({
                 </div>
               </div>
 
-              <div className="ml-1 hidden rounded-xl border border-current/10 bg-current/[0.04] p-1 md:flex">
+              <div className="ml-1 hidden rounded-2xl border border-current/10 bg-current/[0.04] p-1 md:flex">
                 <button
-                  onClick={() = data-os-mode-active={osMode === "meta" ? "true" : "false"} className={osModePillClass(osMode === "meta")}> switchOS("meta")}
-                  className={
-                    osMode === "meta"
-                      ? "rounded-lg bg-[#0A84FF] px-4 py-2 text-xs font-black text-white"
-                      : "rounded-lg px-4 py-2 text-xs font-black opacity-55 hover:text-white"
-                  }
+                  type="button"
+                  onClick={() => switchOS("meta")}
+                  data-os-mode-active={osMode === "meta" ? "true" : "false"}
+                  className={osMode === "meta" ? "metaos-apple-pill metaos-apple-pill-active" : "metaos-apple-pill metaos-apple-pill-inactive"}
                 >
                   META OS
                 </button>
                 <button
-                  onClick={() = data-os-mode-active={osMode === "google" ? "true" : "false"} className={osModePillClass(osMode === "google")}> switchOS("google")}
-                  className={
-                    osMode === "google"
-                      ? "rounded-lg bg-emerald-400 px-4 py-2 text-xs font-black text-black"
-                      : "rounded-lg px-4 py-2 text-xs font-black opacity-55 hover:text-white"
-                  }
+                  type="button"
+                  onClick={() => switchOS("google")}
+                  data-os-mode-active={osMode === "google" ? "true" : "false"}
+                  className={osMode === "google" ? "metaos-apple-pill metaos-apple-pill-active" : "metaos-apple-pill metaos-apple-pill-inactive"}
                 >
                   GOOGLE OS
                 </button>
