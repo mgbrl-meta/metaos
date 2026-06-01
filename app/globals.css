@@ -2766,3 +2766,171 @@ html.os-dark .metaos-app table tbody .text-green-600,
   opacity: 1 !important;
 }
 
+
+/* =========================================================
+   META OS DARK TABLE + CHART TEXT READABILITY
+   Fixes Spend, Summary and Monthly dark-mode table text.
+   Does not affect header buttons.
+   ========================================================= */
+
+/* Dark mode: section headings, descriptions and normal text inside content */
+html.dark .metaos-app main section h1,
+html.dark .metaos-app main section h2,
+html.dark .metaos-app main section h3,
+html.dark .metaos-app main section p,
+html.dark .metaos-app main section span,
+html.os-dark .metaos-app main section h1,
+html.os-dark .metaos-app main section h2,
+html.os-dark .metaos-app main section h3,
+html.os-dark .metaos-app main section p,
+html.os-dark .metaos-app main section span,
+.metaos-app.metaos-dark main section h1,
+.metaos-app.metaos-dark main section h2,
+.metaos-app.metaos-dark main section h3,
+.metaos-app.metaos-dark main section p,
+.metaos-app.metaos-dark main section span {
+  color: #f4f4f5 !important;
+  opacity: 1 !important;
+}
+
+/* Dark mode: muted helper copy should be visible, not black */
+html.dark .metaos-app main section .opacity-20,
+html.dark .metaos-app main section .opacity-25,
+html.dark .metaos-app main section .opacity-30,
+html.dark .metaos-app main section .opacity-35,
+html.dark .metaos-app main section .opacity-40,
+html.dark .metaos-app main section .opacity-45,
+html.dark .metaos-app main section .opacity-50,
+html.dark .metaos-app main section .opacity-55,
+html.dark .metaos-app main section .opacity-60,
+html.dark .metaos-app main section .opacity-65,
+html.dark .metaos-app main section .opacity-70,
+html.os-dark .metaos-app main section .opacity-20,
+html.os-dark .metaos-app main section .opacity-25,
+html.os-dark .metaos-app main section .opacity-30,
+html.os-dark .metaos-app main section .opacity-35,
+html.os-dark .metaos-app main section .opacity-40,
+html.os-dark .metaos-app main section .opacity-45,
+html.os-dark .metaos-app main section .opacity-50,
+html.os-dark .metaos-app main section .opacity-55,
+html.os-dark .metaos-app main section .opacity-60,
+html.os-dark .metaos-app main section .opacity-65,
+html.os-dark .metaos-app main section .opacity-70,
+.metaos-app.metaos-dark main section .opacity-20,
+.metaos-app.metaos-dark main section .opacity-25,
+.metaos-app.metaos-dark main section .opacity-30,
+.metaos-app.metaos-dark main section .opacity-35,
+.metaos-app.metaos-dark main section .opacity-40,
+.metaos-app.metaos-dark main section .opacity-45,
+.metaos-app.metaos-dark main section .opacity-50,
+.metaos-app.metaos-dark main section .opacity-55,
+.metaos-app.metaos-dark main section .opacity-60,
+.metaos-app.metaos-dark main section .opacity-65,
+.metaos-app.metaos-dark main section .opacity-70 {
+  color: rgba(244,244,245,0.72) !important;
+  opacity: 1 !important;
+}
+
+/* Dark mode: table rows and cells */
+html.dark .metaos-app table tbody tr,
+html.dark .metaos-app table tbody td,
+html.dark .metaos-app table tbody td *,
+html.os-dark .metaos-app table tbody tr,
+html.os-dark .metaos-app table tbody td,
+html.os-dark .metaos-app table tbody td *,
+.metaos-app.metaos-dark table tbody tr,
+.metaos-app.metaos-dark table tbody td,
+.metaos-app.metaos-dark table tbody td * {
+  background-color: #101318 !important;
+  color: #f4f4f5 !important;
+  opacity: 1 !important;
+  border-color: rgba(255,255,255,0.14) !important;
+}
+
+/* Table headers remain navy with white text */
+.metaos-app table thead,
+.metaos-app table thead tr,
+.metaos-app table thead th,
+.metaos-app table thead th *,
+.metaos-app .monthly-table-head,
+.metaos-app .monthly-table-head *,
+.metaos-app .monthly-table-th,
+.metaos-app .monthly-table-th * {
+  background-color: #13223a !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Dark mode: chart axis labels and SVG text */
+html.dark .metaos-app .recharts-text,
+html.dark .metaos-app .recharts-cartesian-axis-tick-value,
+html.dark .metaos-app .recharts-label,
+html.os-dark .metaos-app .recharts-text,
+html.os-dark .metaos-app .recharts-cartesian-axis-tick-value,
+html.os-dark .metaos-app .recharts-label,
+.metaos-app.metaos-dark .recharts-text,
+.metaos-app.metaos-dark .recharts-cartesian-axis-tick-value,
+.metaos-app.metaos-dark .recharts-label {
+  fill: rgba(244,244,245,0.72) !important;
+  color: rgba(244,244,245,0.72) !important;
+  opacity: 1 !important;
+}
+
+/* Preserve red/green metric colors inside tables */
+html.dark .metaos-app table .text-red-300,
+html.dark .metaos-app table .text-red-400,
+html.dark .metaos-app table .text-red-500,
+html.dark .metaos-app table .text-red-600,
+html.dark .metaos-app table .text-red-700,
+html.os-dark .metaos-app table .text-red-300,
+html.os-dark .metaos-app table .text-red-400,
+html.os-dark .metaos-app table .text-red-500,
+html.os-dark .metaos-app table .text-red-600,
+html.os-dark .metaos-app table .text-red-700,
+.metaos-app.metaos-dark table .text-red-300,
+.metaos-app.metaos-dark table .text-red-400,
+.metaos-app.metaos-dark table .text-red-500,
+.metaos-app.metaos-dark table .text-red-600,
+.metaos-app.metaos-dark table .text-red-700 {
+  color: #ff6b5f !important;
+}
+
+html.dark .metaos-app table .text-emerald-300,
+html.dark .metaos-app table .text-emerald-400,
+html.dark .metaos-app table .text-emerald-500,
+html.dark .metaos-app table .text-emerald-600,
+html.dark .metaos-app table .text-green-300,
+html.dark .metaos-app table .text-green-400,
+html.dark .metaos-app table .text-green-500,
+html.dark .metaos-app table .text-green-600,
+html.os-dark .metaos-app table .text-emerald-300,
+html.os-dark .metaos-app table .text-emerald-400,
+html.os-dark .metaos-app table .text-emerald-500,
+html.os-dark .metaos-app table .text-emerald-600,
+html.os-dark .metaos-app table .text-green-300,
+html.os-dark .metaos-app table .text-green-400,
+html.os-dark .metaos-app table .text-green-500,
+html.os-dark .metaos-app table .text-green-600,
+.metaos-app.metaos-dark table .text-emerald-300,
+.metaos-app.metaos-dark table .text-emerald-400,
+.metaos-app.metaos-dark table .text-emerald-500,
+.metaos-app.metaos-dark table .text-emerald-600,
+.metaos-app.metaos-dark table .text-green-300,
+.metaos-app.metaos-dark table .text-green-400,
+.metaos-app.metaos-dark table .text-green-500,
+.metaos-app.metaos-dark table .text-green-600 {
+  color: #34d399 !important;
+}
+
+/* Light mode remains normal */
+html:not(.dark):not(.os-dark) .metaos-app table tbody tr,
+html:not(.dark):not(.os-dark) .metaos-app table tbody td,
+html:not(.dark):not(.os-dark) .metaos-app table tbody td *,
+.metaos-app.metaos-light table tbody tr,
+.metaos-app.metaos-light table tbody td,
+.metaos-app.metaos-light table tbody td * {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
