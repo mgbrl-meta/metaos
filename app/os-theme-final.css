@@ -1,20 +1,19 @@
 /* =========================================================
-   META OS FINAL LIGHT / DARK THEME CONTRACT
-   One source of truth for readable UI.
+   META OS FINAL THEME SYSTEM
+   Single source of truth:
+   .metaos-dark  = dark UI
+   .metaos-light = light UI
    ========================================================= */
 
-:root {
+.metaos-app {
   --os-blue: #0a84ff;
   --os-table-head: #13223a;
   --os-table-head-text: #ffffff;
+  min-height: 100vh;
 }
 
-/* LIGHT MODE */
-html:not(.dark),
-html.os-light,
-body:not(.dark),
-.metaos-light,
-[data-os-theme="light"],
+/* LIGHT */
+.metaos-app.metaos-light,
 [data-os-root="true"][data-os-theme="light"] {
   --os-page: #f6f7f4;
   --os-card: #ffffff;
@@ -22,18 +21,13 @@ body:not(.dark),
   --os-border: rgba(17, 17, 17, 0.12);
   --os-text: #111111;
   --os-muted: rgba(17, 17, 17, 0.62);
-  --os-faint: rgba(17, 17, 17, 0.42);
   --os-good: #047857;
   --os-bad: #b42318;
   --os-amber: #b45309;
 }
 
-/* DARK MODE */
-html.dark,
-html.os-dark,
-body.dark,
-.metaos-dark,
-[data-os-theme="dark"],
+/* DARK */
+.metaos-app.metaos-dark,
 [data-os-root="true"][data-os-theme="dark"] {
   --os-page: #050607;
   --os-card: #101318;
@@ -41,7 +35,6 @@ body.dark,
   --os-border: rgba(255, 255, 255, 0.14);
   --os-text: #f4f4f5;
   --os-muted: rgba(244, 244, 245, 0.68);
-  --os-faint: rgba(244, 244, 245, 0.44);
   --os-good: #34d399;
   --os-bad: #ff6b5f;
   --os-amber: #fbbf24;
@@ -56,14 +49,7 @@ body,
   color: var(--os-text) !important;
 }
 
-/* TEXT */
-.metaos-app,
-.metaos-app *,
-[data-os-root="true"],
-[data-os-root="true"] * {
-  border-color: var(--os-border);
-}
-
+/* ALL NORMAL TEXT */
 .metaos-app h1,
 .metaos-app h2,
 .metaos-app h3,
@@ -91,7 +77,7 @@ body,
   color: var(--os-text) !important;
 }
 
-/* MUTED TEXT SHOULD STAY READABLE */
+/* MUTED TEXT */
 .metaos-app .opacity-30,
 .metaos-app .opacity-35,
 .metaos-app .opacity-40,
@@ -116,7 +102,7 @@ body,
   color: var(--os-muted) !important;
 }
 
-/* CARDS / BLOCKS */
+/* CARDS / PANELS */
 .metaos-app main section,
 .metaos-app main article,
 .metaos-app main details,
@@ -131,49 +117,22 @@ body,
 [data-os-root="true"] .rounded-xl,
 [data-os-root="true"] .rounded-2xl,
 [data-os-root="true"] .rounded-3xl {
-  background-color: var(--os-card) !important;
+  background: var(--os-card) !important;
   color: var(--os-text) !important;
   border-color: var(--os-border) !important;
 }
 
-/* Soft inner metric blocks */
+/* INNER METRIC BLOCKS */
 .metaos-app [class*="bg-current"],
 [data-os-root="true"] [class*="bg-current"] {
-  background-color: var(--os-card-soft) !important;
+  background: var(--os-card-soft) !important;
   color: var(--os-text) !important;
-}
-
-/* LIGHT MODE: remove accidental black blocks except chart tooltip */
-html:not(.dark) .metaos-app main section:not(.recharts-tooltip-wrapper),
-html:not(.dark) .metaos-app main article:not(.recharts-tooltip-wrapper),
-html:not(.dark) [data-os-root="true"] main section:not(.recharts-tooltip-wrapper),
-html:not(.dark) [data-os-root="true"] main article:not(.recharts-tooltip-wrapper) {
-  background-color: #ffffff !important;
-  color: #111111 !important;
-}
-
-/* DARK MODE: remove accidental white cards */
-html.dark .metaos-app main section,
-html.dark .metaos-app main article,
-html.dark .metaos-app main details,
-html.dark .metaos-app main summary,
-html.dark [data-os-root="true"] main section,
-html.dark [data-os-root="true"] main article,
-html.dark [data-os-root="true"] main details,
-html.dark [data-os-root="true"] main summary,
-html.os-dark .metaos-app main section,
-html.os-dark .metaos-app main article,
-html.os-dark .metaos-app main details,
-html.os-dark .metaos-app main summary {
-  background-color: #101318 !important;
-  color: #f4f4f5 !important;
-  border-color: rgba(255, 255, 255, 0.14) !important;
 }
 
 /* HEADER */
 .metaos-app header,
 [data-os-root="true"] header {
-  background-color: var(--os-card) !important;
+  background: var(--os-card) !important;
   color: var(--os-text) !important;
   border-color: var(--os-border) !important;
 }
@@ -192,7 +151,7 @@ html.os-dark .metaos-app main summary {
 [data-os-root="true"] .bg-\[\#0A84FF\] *,
 [data-os-root="true"] button.bg-\[\#0A84FF\],
 [data-os-root="true"] button.bg-\[\#0A84FF\] * {
-  background-color: #0a84ff !important;
+  background: #0a84ff !important;
   color: #ffffff !important;
 }
 
@@ -206,17 +165,7 @@ html.os-dark .metaos-app main summary {
 .metaos-app .text-rose-400,
 .metaos-app .text-rose-500,
 .metaos-app .text-rose-600,
-.metaos-app .text-rose-700,
-[data-os-root="true"] .text-red-300,
-[data-os-root="true"] .text-red-400,
-[data-os-root="true"] .text-red-500,
-[data-os-root="true"] .text-red-600,
-[data-os-root="true"] .text-red-700,
-[data-os-root="true"] .text-rose-300,
-[data-os-root="true"] .text-rose-400,
-[data-os-root="true"] .text-rose-500,
-[data-os-root="true"] .text-rose-600,
-[data-os-root="true"] .text-rose-700 {
+.metaos-app .text-rose-700 {
   color: var(--os-bad) !important;
 }
 
@@ -229,24 +178,14 @@ html.os-dark .metaos-app main summary {
 .metaos-app .text-green-400,
 .metaos-app .text-green-500,
 .metaos-app .text-green-600,
-.metaos-app .text-green-700,
-[data-os-root="true"] .text-emerald-300,
-[data-os-root="true"] .text-emerald-400,
-[data-os-root="true"] .text-emerald-500,
-[data-os-root="true"] .text-emerald-600,
-[data-os-root="true"] .text-emerald-700,
-[data-os-root="true"] .text-green-300,
-[data-os-root="true"] .text-green-400,
-[data-os-root="true"] .text-green-500,
-[data-os-root="true"] .text-green-600,
-[data-os-root="true"] .text-green-700 {
+.metaos-app .text-green-700 {
   color: var(--os-good) !important;
 }
 
 /* TABLES */
 .metaos-app table,
 [data-os-root="true"] table {
-  background-color: var(--os-card) !important;
+  background: var(--os-card) !important;
   color: var(--os-text) !important;
   border-collapse: collapse !important;
 }
@@ -265,7 +204,7 @@ html.os-dark .metaos-app main summary {
 [data-os-root="true"] .monthly-table-head tr,
 [data-os-root="true"] .monthly-table-head th,
 [data-os-root="true"] .monthly-table-th {
-  background-color: var(--os-table-head) !important;
+  background: var(--os-table-head) !important;
   color: var(--os-table-head-text) !important;
   opacity: 1 !important;
   font-weight: 900 !important;
@@ -277,8 +216,8 @@ html.os-dark .metaos-app main summary {
 [data-os-root="true"] table thead *,
 [data-os-root="true"] .monthly-table-head *,
 [data-os-root="true"] .monthly-table-th * {
-  color: #ffffff !important;
   background: transparent !important;
+  color: #ffffff !important;
   opacity: 1 !important;
 }
 
@@ -288,12 +227,12 @@ html.os-dark .metaos-app main summary {
 [data-os-root="true"] table tbody,
 [data-os-root="true"] table tbody tr,
 [data-os-root="true"] table tbody td {
-  background-color: var(--os-card) !important;
+  background: var(--os-card) !important;
   color: var(--os-text) !important;
   border-color: var(--os-border) !important;
 }
 
-/* CHART AXES */
+/* CHART AXIS TEXT */
 .metaos-app .recharts-text,
 .metaos-app .recharts-cartesian-axis-tick-value,
 [data-os-root="true"] .recharts-text,
@@ -303,7 +242,12 @@ html.os-dark .metaos-app main summary {
   opacity: 1 !important;
 }
 
-/* TOOLTIPS: always dark with white text */
+.metaos-app .recharts-cartesian-grid line,
+[data-os-root="true"] .recharts-cartesian-grid line {
+  stroke-opacity: 0.18 !important;
+}
+
+/* TOOLTIP ALWAYS DARK */
 .recharts-tooltip-wrapper,
 .recharts-tooltip-wrapper *,
 .recharts-default-tooltip,
@@ -311,28 +255,19 @@ html.os-dark .metaos-app main summary {
 .recharts-tooltip-item,
 .recharts-tooltip-label,
 .scatter-tooltip-card,
-.scatter-tooltip-card *,
-[class*="tooltip"],
-[class*="tooltip"] * {
+.scatter-tooltip-card * {
   color: #ffffff !important;
   opacity: 1 !important;
 }
 
 .recharts-default-tooltip,
-.scatter-tooltip-card,
-.recharts-tooltip-wrapper [class*="tooltip"] {
-  background-color: #111318 !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+.scatter-tooltip-card {
+  background: #111318 !important;
+  border: 1px solid rgba(255,255,255,0.16) !important;
   border-radius: 10px !important;
 }
 
-/* CHART GRID */
-.metaos-app .recharts-cartesian-grid line,
-[data-os-root="true"] .recharts-cartesian-grid line {
-  stroke-opacity: 0.18 !important;
-}
-
-/* DENSITY */
+/* COMPACT */
 .metaos-app main,
 [data-os-root="true"] main {
   font-size: 12px !important;
@@ -368,7 +303,7 @@ html.os-dark .metaos-app main summary {
   padding: 7px 9px !important;
 }
 
-/* CLEAN SHADOWS */
+/* CLEAN */
 .metaos-app [class*="shadow"],
 [data-os-root="true"] [class*="shadow"] {
   box-shadow: none !important;

@@ -237,7 +237,7 @@ export function MetaOSShell({
 
   return (
     <ThemeFrame>
-      <div data-os-root="true" data-os-theme={isDark ? "dark" : "light"} className="metaos-app min-h-screen overflow-x-hidden">
+      <div data-os-root="true" data-os-theme={isDark ? "dark" : "light"} className={isDark ? "metaos-app metaos-dark min-h-screen overflow-x-hidden" : "metaos-app metaos-light min-h-screen overflow-x-hidden"}>
         <header className={isDark ? "sticky top-0 z-40 border-b border-white/10 bg-[#080a0d]/92 backdrop-blur-2xl" : "sticky top-0 z-40 border-b border-black/10 bg-white/92 backdrop-blur-2xl"}>
           <div className="mx-auto max-w-[1920px] px-3 py-2 lg:px-4">
             <div className="flex items-center gap-2">
