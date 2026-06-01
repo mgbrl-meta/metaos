@@ -586,48 +586,4 @@ function TrendBox({ data }: { data: any[] }) {
     </div>
   );
 }
-: { data: any[] }) {
-  return (
-    <div className="rounded-lg border border-current/10 bg-current/[0.025] p-3">
-      <div className="mb-2 flex items-center justify-between">
-        <p className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.14em] opacity-55">
-          <LineChartIcon className="h-4 w-4" />
-          CPM / CTR / CPA / AOV / ROAS Trend
-        </p>
-      </div>
 
-      <div className="h-[160px] w-full">
-        <ResponsiveContainer width="100%" height={160}>
-          <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.16)" />
-            <XAxis dataKey="label" tick={{ fontSize: 9, fill: "currentColor" }} axisLine={false} tickLine={false} minTickGap={16} />
-            <YAxis yAxisId="money" tick={{ fontSize: 9, fill: "currentColor" }} axisLine={false} tickLine={false} width={48} tickFormatter={(v) => `₹${Math.round(Number(v || 0))}`} />
-            <YAxis yAxisId="rate" orientation="right" tick={{ fontSize: 9, fill: "currentColor" }} axisLine={false} tickLine={false} width={44} tickFormatter={(v) => `${Math.round(Number(v || 0) * 100)}%`} />
-            <Tooltip
-              contentStyle={{
-                background: "#111318",
-                border: "1px solid rgba(255,255,255,0.12)",
-                borderRadius: 10,
-                color: "white",
-                fontSize: 11,
-              }}
-              formatter={(value: any, name: any) => {
-                if (name === "CPM") return [money(Number(value || 0)), "CPM"];
-                if (name === "CPA") return [money(Number(value || 0)), "CPA"];
-                if (name === "AOV") return [money(Number(value || 0)), "AOV"];
-                if (name === "CTR") return [pct(Number(value || 0)), "CTR"];
-                if (name === "ROAS") return [`${num(Number(value || 0))}x`, "ROAS"];
-                return [value, name];
-              }}
-            />
-            <Line yAxisId="money" type="monotone" dataKey="cpm" name="CPM" stroke="#0A84FF" strokeWidth={2} dot={false} connectNulls />
-            <Line yAxisId="money" type="monotone" dataKey="cpa" name="CPA" stroke="#b42318" strokeWidth={2} dot={false} connectNulls />
-            <Line yAxisId="money" type="monotone" dataKey="aov" name="AOV" stroke="#9333ea" strokeWidth={2} dot={false} connectNulls />
-            <Line yAxisId="rate" type="monotone" dataKey="ctr" name="CTR" stroke="#087f5b" strokeWidth={2} dot={false} connectNulls />
-            <Line yAxisId="rate" type="monotone" dataKey="roas" name="ROAS" stroke="#f97316" strokeWidth={2} dot={false} connectNulls />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-}
