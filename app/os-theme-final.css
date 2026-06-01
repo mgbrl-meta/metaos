@@ -1,59 +1,54 @@
 /* =========================================================
-   META OS FINAL THEME CONTRACT
-   Fixes light/dark readability across cards, tables, charts,
-   tooltips, headers, tabs and duplicated old dark text issues.
+   META OS FINAL LIGHT / DARK THEME CONTRACT
+   One source of truth for readable UI.
    ========================================================= */
 
 :root {
   --os-blue: #0a84ff;
   --os-table-head: #13223a;
   --os-table-head-text: #ffffff;
-
-  --os-good-light: #047857;
-  --os-good-dark: #34d399;
-
-  --os-bad-light: #b42318;
-  --os-bad-dark: #ff6b5f;
-
-  --os-amber-light: #b45309;
-  --os-amber-dark: #fbbf24;
 }
 
+/* LIGHT MODE */
 html:not(.dark),
 html.os-light,
-[data-os-theme="light"],
+body:not(.dark),
 .metaos-light,
+[data-os-theme="light"],
 [data-os-root="true"][data-os-theme="light"] {
   --os-page: #f6f7f4;
-  --os-surface: #ffffff;
-  --os-surface-soft: #f1f2ef;
+  --os-card: #ffffff;
+  --os-card-soft: #f1f2ef;
   --os-border: rgba(17, 17, 17, 0.12);
   --os-text: #111111;
   --os-muted: rgba(17, 17, 17, 0.62);
   --os-faint: rgba(17, 17, 17, 0.42);
-  --os-good: var(--os-good-light);
-  --os-bad: var(--os-bad-light);
-  --os-amber: var(--os-amber-light);
+  --os-good: #047857;
+  --os-bad: #b42318;
+  --os-amber: #b45309;
 }
 
+/* DARK MODE */
 html.dark,
 html.os-dark,
-[data-os-theme="dark"],
+body.dark,
 .metaos-dark,
+[data-os-theme="dark"],
 [data-os-root="true"][data-os-theme="dark"] {
   --os-page: #050607;
-  --os-surface: #0f1217;
-  --os-surface-soft: #171a20;
-  --os-border: rgba(255, 255, 255, 0.13);
+  --os-card: #101318;
+  --os-card-soft: #171b22;
+  --os-border: rgba(255, 255, 255, 0.14);
   --os-text: #f4f4f5;
-  --os-muted: rgba(244, 244, 245, 0.66);
-  --os-faint: rgba(244, 244, 245, 0.46);
-  --os-good: var(--os-good-dark);
-  --os-bad: var(--os-bad-dark);
-  --os-amber: var(--os-amber-dark);
+  --os-muted: rgba(244, 244, 245, 0.68);
+  --os-faint: rgba(244, 244, 245, 0.44);
+  --os-good: #34d399;
+  --os-bad: #ff6b5f;
+  --os-amber: #fbbf24;
 }
 
-/* App base */
+/* BASE */
+html,
 body,
 .metaos-app,
 [data-os-root="true"] {
@@ -61,36 +56,43 @@ body,
   color: var(--os-text) !important;
 }
 
-/* Force readable text everywhere inside Meta OS */
+/* TEXT */
 .metaos-app,
 .metaos-app *,
 [data-os-root="true"],
 [data-os-root="true"] * {
-  color: inherit;
+  border-color: var(--os-border);
 }
 
-.metaos-app main,
-.metaos-app header,
-.metaos-app section,
-.metaos-app article,
-.metaos-app div,
+.metaos-app h1,
+.metaos-app h2,
+.metaos-app h3,
+.metaos-app h4,
 .metaos-app p,
 .metaos-app span,
-.metaos-app button,
+.metaos-app div,
 .metaos-app label,
-[data-os-root="true"] main,
-[data-os-root="true"] header,
-[data-os-root="true"] section,
-[data-os-root="true"] article,
-[data-os-root="true"] div,
+.metaos-app button,
+.metaos-app summary,
+.metaos-app td,
+.metaos-app th,
+[data-os-root="true"] h1,
+[data-os-root="true"] h2,
+[data-os-root="true"] h3,
+[data-os-root="true"] h4,
 [data-os-root="true"] p,
 [data-os-root="true"] span,
+[data-os-root="true"] div,
+[data-os-root="true"] label,
 [data-os-root="true"] button,
-[data-os-root="true"] label {
+[data-os-root="true"] summary,
+[data-os-root="true"] td,
+[data-os-root="true"] th {
   color: var(--os-text) !important;
 }
 
-/* Muted text should not disappear */
+/* MUTED TEXT SHOULD STAY READABLE */
+.metaos-app .opacity-30,
 .metaos-app .opacity-35,
 .metaos-app .opacity-40,
 .metaos-app .opacity-45,
@@ -100,6 +102,7 @@ body,
 .metaos-app .opacity-65,
 .metaos-app .opacity-70,
 .metaos-app .opacity-75,
+[data-os-root="true"] .opacity-30,
 [data-os-root="true"] .opacity-35,
 [data-os-root="true"] .opacity-40,
 [data-os-root="true"] .opacity-45,
@@ -113,32 +116,64 @@ body,
   color: var(--os-muted) !important;
 }
 
-/* Surfaces */
+/* CARDS / BLOCKS */
 .metaos-app main section,
 .metaos-app main article,
 .metaos-app main details,
 .metaos-app main summary,
+.metaos-app .rounded-xl,
+.metaos-app .rounded-2xl,
+.metaos-app .rounded-3xl,
 [data-os-root="true"] main section,
 [data-os-root="true"] main article,
 [data-os-root="true"] main details,
-[data-os-root="true"] main summary {
-  background: var(--os-surface) !important;
+[data-os-root="true"] main summary,
+[data-os-root="true"] .rounded-xl,
+[data-os-root="true"] .rounded-2xl,
+[data-os-root="true"] .rounded-3xl {
+  background-color: var(--os-card) !important;
   color: var(--os-text) !important;
   border-color: var(--os-border) !important;
 }
 
+/* Soft inner metric blocks */
 .metaos-app [class*="bg-current"],
-.metaos-app [class*="bg-white"],
-[data-os-root="true"] [class*="bg-current"],
-[data-os-root="true"] [class*="bg-white"] {
-  background: var(--os-surface) !important;
+[data-os-root="true"] [class*="bg-current"] {
+  background-color: var(--os-card-soft) !important;
   color: var(--os-text) !important;
 }
 
-/* Header/nav */
+/* LIGHT MODE: remove accidental black blocks except chart tooltip */
+html:not(.dark) .metaos-app main section:not(.recharts-tooltip-wrapper),
+html:not(.dark) .metaos-app main article:not(.recharts-tooltip-wrapper),
+html:not(.dark) [data-os-root="true"] main section:not(.recharts-tooltip-wrapper),
+html:not(.dark) [data-os-root="true"] main article:not(.recharts-tooltip-wrapper) {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+}
+
+/* DARK MODE: remove accidental white cards */
+html.dark .metaos-app main section,
+html.dark .metaos-app main article,
+html.dark .metaos-app main details,
+html.dark .metaos-app main summary,
+html.dark [data-os-root="true"] main section,
+html.dark [data-os-root="true"] main article,
+html.dark [data-os-root="true"] main details,
+html.dark [data-os-root="true"] main summary,
+html.os-dark .metaos-app main section,
+html.os-dark .metaos-app main article,
+html.os-dark .metaos-app main details,
+html.os-dark .metaos-app main summary {
+  background-color: #101318 !important;
+  color: #f4f4f5 !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* HEADER */
 .metaos-app header,
 [data-os-root="true"] header {
-  background: var(--os-surface) !important;
+  background-color: var(--os-card) !important;
   color: var(--os-text) !important;
   border-color: var(--os-border) !important;
 }
@@ -148,7 +183,7 @@ body,
   color: var(--os-text) !important;
 }
 
-/* Active blue buttons must stay white text */
+/* ACTIVE BLUE BUTTONS */
 .metaos-app .bg-\[\#0A84FF\],
 .metaos-app .bg-\[\#0A84FF\] *,
 .metaos-app button.bg-\[\#0A84FF\],
@@ -157,11 +192,11 @@ body,
 [data-os-root="true"] .bg-\[\#0A84FF\] *,
 [data-os-root="true"] button.bg-\[\#0A84FF\],
 [data-os-root="true"] button.bg-\[\#0A84FF\] * {
-  background: var(--os-blue) !important;
+  background-color: #0a84ff !important;
   color: #ffffff !important;
 }
 
-/* Status colors */
+/* STATUS COLORS */
 .metaos-app .text-red-300,
 .metaos-app .text-red-400,
 .metaos-app .text-red-500,
@@ -208,29 +243,10 @@ body,
   color: var(--os-good) !important;
 }
 
-.metaos-app .text-orange-300,
-.metaos-app .text-orange-400,
-.metaos-app .text-orange-500,
-.metaos-app .text-orange-600,
-.metaos-app .text-yellow-300,
-.metaos-app .text-yellow-400,
-.metaos-app .text-yellow-500,
-.metaos-app .text-yellow-600,
-[data-os-root="true"] .text-orange-300,
-[data-os-root="true"] .text-orange-400,
-[data-os-root="true"] .text-orange-500,
-[data-os-root="true"] .text-orange-600,
-[data-os-root="true"] .text-yellow-300,
-[data-os-root="true"] .text-yellow-400,
-[data-os-root="true"] .text-yellow-500,
-[data-os-root="true"] .text-yellow-600 {
-  color: var(--os-amber) !important;
-}
-
-/* Tables */
+/* TABLES */
 .metaos-app table,
 [data-os-root="true"] table {
-  background: var(--os-surface) !important;
+  background-color: var(--os-card) !important;
   color: var(--os-text) !important;
   border-collapse: collapse !important;
 }
@@ -249,7 +265,6 @@ body,
 [data-os-root="true"] .monthly-table-head tr,
 [data-os-root="true"] .monthly-table-head th,
 [data-os-root="true"] .monthly-table-th {
-  background: var(--os-table-head) !important;
   background-color: var(--os-table-head) !important;
   color: var(--os-table-head-text) !important;
   opacity: 1 !important;
@@ -263,8 +278,8 @@ body,
 [data-os-root="true"] .monthly-table-head *,
 [data-os-root="true"] .monthly-table-th * {
   color: #ffffff !important;
-  opacity: 1 !important;
   background: transparent !important;
+  opacity: 1 !important;
 }
 
 .metaos-app table tbody,
@@ -273,12 +288,12 @@ body,
 [data-os-root="true"] table tbody,
 [data-os-root="true"] table tbody tr,
 [data-os-root="true"] table tbody td {
-  background: var(--os-surface) !important;
+  background-color: var(--os-card) !important;
   color: var(--os-text) !important;
   border-color: var(--os-border) !important;
 }
 
-/* Charts */
+/* CHART AXES */
 .metaos-app .recharts-text,
 .metaos-app .recharts-cartesian-axis-tick-value,
 [data-os-root="true"] .recharts-text,
@@ -288,12 +303,7 @@ body,
   opacity: 1 !important;
 }
 
-.metaos-app .recharts-cartesian-grid line,
-[data-os-root="true"] .recharts-cartesian-grid line {
-  stroke-opacity: 0.18 !important;
-}
-
-/* Recharts tooltip is outside some component scopes */
+/* TOOLTIPS: always dark with white text */
 .recharts-tooltip-wrapper,
 .recharts-tooltip-wrapper *,
 .recharts-default-tooltip,
@@ -301,19 +311,28 @@ body,
 .recharts-tooltip-item,
 .recharts-tooltip-label,
 .scatter-tooltip-card,
-.scatter-tooltip-card * {
+.scatter-tooltip-card *,
+[class*="tooltip"],
+[class*="tooltip"] * {
   color: #ffffff !important;
   opacity: 1 !important;
 }
 
 .recharts-default-tooltip,
-.scatter-tooltip-card {
-  background: #111318 !important;
-  border: 1px solid rgba(255,255,255,0.16) !important;
+.scatter-tooltip-card,
+.recharts-tooltip-wrapper [class*="tooltip"] {
+  background-color: #111318 !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
   border-radius: 10px !important;
 }
 
-/* Compact layout */
+/* CHART GRID */
+.metaos-app .recharts-cartesian-grid line,
+[data-os-root="true"] .recharts-cartesian-grid line {
+  stroke-opacity: 0.18 !important;
+}
+
+/* DENSITY */
 .metaos-app main,
 [data-os-root="true"] main {
   font-size: 12px !important;
@@ -321,44 +340,35 @@ body,
 
 .metaos-app .text-5xl,
 [data-os-root="true"] .text-5xl { font-size: 28px !important; line-height: 1.05 !important; }
+
 .metaos-app .text-4xl,
 [data-os-root="true"] .text-4xl { font-size: 24px !important; line-height: 1.08 !important; }
+
 .metaos-app .text-3xl,
 [data-os-root="true"] .text-3xl { font-size: 21px !important; line-height: 1.1 !important; }
+
 .metaos-app .text-2xl,
 [data-os-root="true"] .text-2xl { font-size: 18px !important; line-height: 1.15 !important; }
+
 .metaos-app .text-xl,
 [data-os-root="true"] .text-xl { font-size: 15px !important; line-height: 1.2 !important; }
+
 .metaos-app .text-lg,
 [data-os-root="true"] .text-lg { font-size: 14px !important; line-height: 1.25 !important; }
-
-.metaos-app .p-8,
-.metaos-app .p-7,
-.metaos-app .p-6,
-[data-os-root="true"] .p-8,
-[data-os-root="true"] .p-7,
-[data-os-root="true"] .p-6 { padding: 12px !important; }
-
-.metaos-app .p-5,
-.metaos-app .p-4,
-[data-os-root="true"] .p-5,
-[data-os-root="true"] .p-4 { padding: 10px !important; }
 
 .metaos-app table th,
 [data-os-root="true"] table th {
   font-size: 9.5px !important;
   padding: 7px 9px !important;
-  line-height: 1.15 !important;
 }
 
 .metaos-app table td,
 [data-os-root="true"] table td {
   font-size: 11px !important;
   padding: 7px 9px !important;
-  line-height: 1.22 !important;
 }
 
-/* Remove heavy shadows that make dark/light look dirty */
+/* CLEAN SHADOWS */
 .metaos-app [class*="shadow"],
 [data-os-root="true"] [class*="shadow"] {
   box-shadow: none !important;
