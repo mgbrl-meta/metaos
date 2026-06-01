@@ -2944,3 +2944,53 @@ html:not(.dark):not(.os-dark) .metaos-app select,
   opacity: 1 !important;
 }
 
+
+/* =========================================================
+   META OS TOP TAB BUTTON FINAL OVERRIDE
+   Component now sets explicit colors; this only protects it.
+   ========================================================= */
+
+.metaos-app button[data-meta-tab-active="true"],
+.metaos-app button[data-meta-tab-active="true"] *,
+[data-os-root="true"] button[data-meta-tab-active="true"],
+[data-os-root="true"] button[data-meta-tab-active="true"] * {
+  background-color: #0A84FF !important;
+  border-color: #0A84FF !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+html.dark .metaos-app button[data-meta-tab-active="false"],
+html.os-dark .metaos-app button[data-meta-tab-active="false"],
+.metaos-app.metaos-dark button[data-meta-tab-active="false"],
+[data-os-root="true"][data-os-theme="dark"] button[data-meta-tab-active="false"] {
+  background-color: #101318 !important;
+  border-color: rgba(255,255,255,0.20) !important;
+  color: #F4F4F5 !important;
+  opacity: 1 !important;
+}
+
+html.dark .metaos-app button[data-meta-tab-active="false"] *,
+html.os-dark .metaos-app button[data-meta-tab-active="false"] *,
+.metaos-app.metaos-dark button[data-meta-tab-active="false"] *,
+[data-os-root="true"][data-os-theme="dark"] button[data-meta-tab-active="false"] * {
+  color: #F4F4F5 !important;
+  opacity: 1 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"],
+.metaos-app.metaos-light button[data-meta-tab-active="false"],
+[data-os-root="true"][data-os-theme="light"] button[data-meta-tab-active="false"] {
+  background-color: #ffffff !important;
+  border-color: rgba(17,17,17,0.15) !important;
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"] *,
+.metaos-app.metaos-light button[data-meta-tab-active="false"] *,
+[data-os-root="true"][data-os-theme="light"] button[data-meta-tab-active="false"] * {
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
