@@ -2240,3 +2240,292 @@ html:not(.dark) main [style*="background"] [class*="text-white"] {
   box-shadow: none !important;
 }
 
+
+/* =========================================================
+   META OS FINAL STICKY HEADER + CONTRAST OVERRIDE
+   Applied after all previous CSS so it wins.
+   ========================================================= */
+
+/* 1) Sticky top navigation/header including MetaOS tab row */
+.metaos-app > header,
+[data-os-root="true"] > header,
+.metaos-app header:first-of-type,
+[data-os-root="true"] header:first-of-type {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 9999 !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+/* Keep the nav clean while sticky */
+.metaos-app.metaos-dark > header,
+.metaos-app.metaos-dark header:first-of-type,
+[data-os-root="true"][data-os-theme="dark"] > header,
+[data-os-root="true"][data-os-theme="dark"] header:first-of-type {
+  background: rgba(5, 6, 7, 0.94) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.metaos-app.metaos-light > header,
+.metaos-app.metaos-light header:first-of-type,
+[data-os-root="true"][data-os-theme="light"] > header,
+[data-os-root="true"][data-os-theme="light"] header:first-of-type {
+  background: rgba(246, 247, 244, 0.94) !important;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.10) !important;
+}
+
+/* 2) DARK MODE: force readable text globally inside MetaOS */
+.metaos-app.metaos-dark,
+.metaos-app.metaos-dark *,
+[data-os-root="true"][data-os-theme="dark"],
+[data-os-root="true"][data-os-theme="dark"] * {
+  color: #f4f4f5 !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Dark surfaces */
+.metaos-app.metaos-dark main,
+.metaos-app.metaos-dark section,
+.metaos-app.metaos-dark article,
+.metaos-app.metaos-dark details,
+.metaos-app.metaos-dark summary,
+.metaos-app.metaos-dark table,
+.metaos-app.metaos-dark tbody,
+.metaos-app.metaos-dark tr,
+.metaos-app.metaos-dark td,
+.metaos-app.metaos-dark .rounded-lg,
+.metaos-app.metaos-dark .rounded-xl,
+.metaos-app.metaos-dark .rounded-2xl,
+.metaos-app.metaos-dark .rounded-3xl,
+[data-os-root="true"][data-os-theme="dark"] main,
+[data-os-root="true"][data-os-theme="dark"] section,
+[data-os-root="true"][data-os-theme="dark"] article,
+[data-os-root="true"][data-os-theme="dark"] details,
+[data-os-root="true"][data-os-theme="dark"] summary,
+[data-os-root="true"][data-os-theme="dark"] table,
+[data-os-root="true"][data-os-theme="dark"] tbody,
+[data-os-root="true"][data-os-theme="dark"] tr,
+[data-os-root="true"][data-os-theme="dark"] td,
+[data-os-root="true"][data-os-theme="dark"] .rounded-lg,
+[data-os-root="true"][data-os-theme="dark"] .rounded-xl,
+[data-os-root="true"][data-os-theme="dark"] .rounded-2xl,
+[data-os-root="true"][data-os-theme="dark"] .rounded-3xl {
+  background-color: #101318 !important;
+  color: #f4f4f5 !important;
+}
+
+/* Dark page background */
+.metaos-app.metaos-dark,
+[data-os-root="true"][data-os-theme="dark"] {
+  background-color: #050607 !important;
+}
+
+/* Dark muted text must be visible */
+.metaos-app.metaos-dark .opacity-20,
+.metaos-app.metaos-dark .opacity-25,
+.metaos-app.metaos-dark .opacity-30,
+.metaos-app.metaos-dark .opacity-35,
+.metaos-app.metaos-dark .opacity-40,
+.metaos-app.metaos-dark .opacity-45,
+.metaos-app.metaos-dark .opacity-50,
+.metaos-app.metaos-dark .opacity-55,
+.metaos-app.metaos-dark .opacity-60,
+.metaos-app.metaos-dark .opacity-65,
+.metaos-app.metaos-dark .opacity-70,
+.metaos-app.metaos-dark .opacity-75,
+[data-os-root="true"][data-os-theme="dark"] .opacity-20,
+[data-os-root="true"][data-os-theme="dark"] .opacity-25,
+[data-os-root="true"][data-os-theme="dark"] .opacity-30,
+[data-os-root="true"][data-os-theme="dark"] .opacity-35,
+[data-os-root="true"][data-os-theme="dark"] .opacity-40,
+[data-os-root="true"][data-os-theme="dark"] .opacity-45,
+[data-os-root="true"][data-os-theme="dark"] .opacity-50,
+[data-os-root="true"][data-os-theme="dark"] .opacity-55,
+[data-os-root="true"][data-os-theme="dark"] .opacity-60,
+[data-os-root="true"][data-os-theme="dark"] .opacity-65,
+[data-os-root="true"][data-os-theme="dark"] .opacity-70,
+[data-os-root="true"][data-os-theme="dark"] .opacity-75 {
+  opacity: 1 !important;
+  color: rgba(244, 244, 245, 0.72) !important;
+}
+
+/* 3) LIGHT MODE: force readable text globally inside MetaOS */
+.metaos-app.metaos-light,
+.metaos-app.metaos-light *,
+[data-os-root="true"][data-os-theme="light"],
+[data-os-root="true"][data-os-theme="light"] * {
+  color: #111111 !important;
+  border-color: rgba(17, 17, 17, 0.12) !important;
+}
+
+/* Light surfaces */
+.metaos-app.metaos-light main,
+.metaos-app.metaos-light section,
+.metaos-app.metaos-light article,
+.metaos-app.metaos-light details,
+.metaos-app.metaos-light summary,
+.metaos-app.metaos-light table,
+.metaos-app.metaos-light tbody,
+.metaos-app.metaos-light tr,
+.metaos-app.metaos-light td,
+.metaos-app.metaos-light .rounded-lg,
+.metaos-app.metaos-light .rounded-xl,
+.metaos-app.metaos-light .rounded-2xl,
+.metaos-app.metaos-light .rounded-3xl,
+[data-os-root="true"][data-os-theme="light"] main,
+[data-os-root="true"][data-os-theme="light"] section,
+[data-os-root="true"][data-os-theme="light"] article,
+[data-os-root="true"][data-os-theme="light"] details,
+[data-os-root="true"][data-os-theme="light"] summary,
+[data-os-root="true"][data-os-theme="light"] table,
+[data-os-root="true"][data-os-theme="light"] tbody,
+[data-os-root="true"][data-os-theme="light"] tr,
+[data-os-root="true"][data-os-theme="light"] td,
+[data-os-root="true"][data-os-theme="light"] .rounded-lg,
+[data-os-root="true"][data-os-theme="light"] .rounded-xl,
+[data-os-root="true"][data-os-theme="light"] .rounded-2xl,
+[data-os-root="true"][data-os-theme="light"] .rounded-3xl {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+}
+
+/* Light page background */
+.metaos-app.metaos-light,
+[data-os-root="true"][data-os-theme="light"] {
+  background-color: #f6f7f4 !important;
+}
+
+/* Light muted text */
+.metaos-app.metaos-light .opacity-20,
+.metaos-app.metaos-light .opacity-25,
+.metaos-app.metaos-light .opacity-30,
+.metaos-app.metaos-light .opacity-35,
+.metaos-app.metaos-light .opacity-40,
+.metaos-app.metaos-light .opacity-45,
+.metaos-app.metaos-light .opacity-50,
+.metaos-app.metaos-light .opacity-55,
+.metaos-app.metaos-light .opacity-60,
+.metaos-app.metaos-light .opacity-65,
+.metaos-app.metaos-light .opacity-70,
+.metaos-app.metaos-light .opacity-75,
+[data-os-root="true"][data-os-theme="light"] .opacity-20,
+[data-os-root="true"][data-os-theme="light"] .opacity-25,
+[data-os-root="true"][data-os-theme="light"] .opacity-30,
+[data-os-root="true"][data-os-theme="light"] .opacity-35,
+[data-os-root="true"][data-os-theme="light"] .opacity-40,
+[data-os-root="true"][data-os-theme="light"] .opacity-45,
+[data-os-root="true"][data-os-theme="light"] .opacity-50,
+[data-os-root="true"][data-os-theme="light"] .opacity-55,
+[data-os-root="true"][data-os-theme="light"] .opacity-60,
+[data-os-root="true"][data-os-theme="light"] .opacity-65,
+[data-os-root="true"][data-os-theme="light"] .opacity-70,
+[data-os-root="true"][data-os-theme="light"] .opacity-75 {
+  opacity: 1 !important;
+  color: rgba(17, 17, 17, 0.64) !important;
+}
+
+/* 4) Preserve active blue tabs/buttons */
+.metaos-app .bg-\[\#0A84FF\],
+.metaos-app .bg-\[\#0A84FF\] *,
+.metaos-app button.bg-\[\#0A84FF\],
+.metaos-app button.bg-\[\#0A84FF\] *,
+[data-os-root="true"] .bg-\[\#0A84FF\],
+[data-os-root="true"] .bg-\[\#0A84FF\] *,
+[data-os-root="true"] button.bg-\[\#0A84FF\],
+[data-os-root="true"] button.bg-\[\#0A84FF\] * {
+  background-color: #0a84ff !important;
+  color: #ffffff !important;
+  border-color: #0a84ff !important;
+}
+
+/* 5) Preserve table headers */
+.metaos-app table thead,
+.metaos-app table thead tr,
+.metaos-app table thead th,
+.metaos-app .monthly-table-head,
+.metaos-app .monthly-table-head tr,
+.metaos-app .monthly-table-head th,
+.metaos-app .monthly-table-th,
+[data-os-root="true"] table thead,
+[data-os-root="true"] table thead tr,
+[data-os-root="true"] table thead th,
+[data-os-root="true"] .monthly-table-head,
+[data-os-root="true"] .monthly-table-head tr,
+[data-os-root="true"] .monthly-table-head th,
+[data-os-root="true"] .monthly-table-th {
+  background-color: #13223a !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.metaos-app table thead *,
+.metaos-app .monthly-table-head *,
+.metaos-app .monthly-table-th *,
+[data-os-root="true"] table thead *,
+[data-os-root="true"] .monthly-table-head *,
+[data-os-root="true"] .monthly-table-th * {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+/* 6) Preserve red/green status after global text override */
+.metaos-app .text-red-300,
+.metaos-app .text-red-400,
+.metaos-app .text-red-500,
+.metaos-app .text-red-600,
+.metaos-app .text-red-700 {
+  color: #ff6b5f !important;
+}
+
+.metaos-app.metaos-light .text-red-300,
+.metaos-app.metaos-light .text-red-400,
+.metaos-app.metaos-light .text-red-500,
+.metaos-app.metaos-light .text-red-600,
+.metaos-app.metaos-light .text-red-700 {
+  color: #b42318 !important;
+}
+
+.metaos-app .text-emerald-300,
+.metaos-app .text-emerald-400,
+.metaos-app .text-emerald-500,
+.metaos-app .text-emerald-600,
+.metaos-app .text-emerald-700,
+.metaos-app .text-green-300,
+.metaos-app .text-green-400,
+.metaos-app .text-green-500,
+.metaos-app .text-green-600,
+.metaos-app .text-green-700 {
+  color: #34d399 !important;
+}
+
+.metaos-app.metaos-light .text-emerald-300,
+.metaos-app.metaos-light .text-emerald-400,
+.metaos-app.metaos-light .text-emerald-500,
+.metaos-app.metaos-light .text-emerald-600,
+.metaos-app.metaos-light .text-emerald-700,
+.metaos-app.metaos-light .text-green-300,
+.metaos-app.metaos-light .text-green-400,
+.metaos-app.metaos-light .text-green-500,
+.metaos-app.metaos-light .text-green-600,
+.metaos-app.metaos-light .text-green-700 {
+  color: #047857 !important;
+}
+
+/* 7) Recharts tooltip always readable */
+.recharts-tooltip-wrapper,
+.recharts-tooltip-wrapper *,
+.recharts-default-tooltip,
+.recharts-default-tooltip *,
+.recharts-tooltip-item,
+.recharts-tooltip-label {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.recharts-default-tooltip {
+  background-color: #111318 !important;
+  border: 1px solid rgba(255,255,255,0.16) !important;
+  border-radius: 10px !important;
+}
+
