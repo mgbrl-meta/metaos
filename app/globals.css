@@ -3044,3 +3044,172 @@ html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"] *
   opacity: 1 !important;
 }
 
+
+/* =========================================================
+   META OS FINAL COMPONENT-LEVEL READABILITY LOCK
+   Keep at very bottom.
+   ========================================================= */
+
+/* Meta/Google mode selected */
+.metaos-app button[data-os-mode-active="true"],
+.metaos-app button[data-os-mode-active="true"] *,
+[data-os-root="true"] button[data-os-mode-active="true"],
+[data-os-root="true"] button[data-os-mode-active="true"] * {
+  background-color: #0A84FF !important;
+  border-color: #0A84FF !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Meta/Google mode inactive */
+html.dark .metaos-app button[data-os-mode-active="false"],
+html.os-dark .metaos-app button[data-os-mode-active="false"],
+.metaos-app.metaos-dark button[data-os-mode-active="false"] {
+  background-color: #101318 !important;
+  border-color: rgba(255,255,255,0.22) !important;
+  color: #F4F4F5 !important;
+}
+
+html.dark .metaos-app button[data-os-mode-active="false"] *,
+html.os-dark .metaos-app button[data-os-mode-active="false"] *,
+.metaos-app.metaos-dark button[data-os-mode-active="false"] * {
+  color: #F4F4F5 !important;
+  opacity: 1 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app button[data-os-mode-active="false"],
+.metaos-app.metaos-light button[data-os-mode-active="false"] {
+  background-color: #ffffff !important;
+  border-color: rgba(17,17,17,0.16) !important;
+  color: #111111 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app button[data-os-mode-active="false"] *,
+.metaos-app.metaos-light button[data-os-mode-active="false"] * {
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
+/* Meta OS top tab selected */
+.metaos-app button[data-meta-tab-active="true"],
+.metaos-app button[data-meta-tab-active="true"] *,
+[data-os-root="true"] button[data-meta-tab-active="true"],
+[data-os-root="true"] button[data-meta-tab-active="true"] * {
+  background-color: #0A84FF !important;
+  border-color: #0A84FF !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Meta OS top tab inactive */
+html.dark .metaos-app button[data-meta-tab-active="false"],
+html.os-dark .metaos-app button[data-meta-tab-active="false"],
+.metaos-app.metaos-dark button[data-meta-tab-active="false"] {
+  background-color: #101318 !important;
+  border-color: rgba(255,255,255,0.22) !important;
+  color: #F4F4F5 !important;
+}
+
+html.dark .metaos-app button[data-meta-tab-active="false"] *,
+html.os-dark .metaos-app button[data-meta-tab-active="false"] *,
+.metaos-app.metaos-dark button[data-meta-tab-active="false"] * {
+  color: #F4F4F5 !important;
+  opacity: 1 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"],
+.metaos-app.metaos-light button[data-meta-tab-active="false"] {
+  background-color: #ffffff !important;
+  border-color: rgba(17,17,17,0.16) !important;
+  color: #111111 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"] *,
+.metaos-app.metaos-light button[data-meta-tab-active="false"] * {
+  color: #111111 !important;
+  opacity: 1 !important;
+}
+
+/* Dropdown creative rows and right-side metric cells */
+html.dark .metaos-app details,
+html.dark .metaos-app details *,
+html.dark .metaos-app summary,
+html.dark .metaos-app summary *,
+html.os-dark .metaos-app details,
+html.os-dark .metaos-app details *,
+html.os-dark .metaos-app summary,
+html.os-dark .metaos-app summary *,
+.metaos-app.metaos-dark details,
+.metaos-app.metaos-dark details *,
+.metaos-app.metaos-dark summary,
+.metaos-app.metaos-dark summary * {
+  color: #F4F4F5 !important;
+  opacity: 1 !important;
+}
+
+html.dark .metaos-app details summary,
+html.os-dark .metaos-app details summary,
+.metaos-app.metaos-dark details summary {
+  background-color: #15191F !important;
+  border-color: rgba(255,255,255,0.14) !important;
+}
+
+html.dark .metaos-app details summary [class*="bg-current"],
+html.os-dark .metaos-app details summary [class*="bg-current"],
+.metaos-app.metaos-dark details summary [class*="bg-current"] {
+  background-color: #101318 !important;
+  color: #F4F4F5 !important;
+}
+
+/* Pills / badges like META ADS, HIGH CPA, Y SPEND */
+html.dark .metaos-app .rounded-full,
+html.dark .metaos-app .rounded-full *,
+html.os-dark .metaos-app .rounded-full,
+html.os-dark .metaos-app .rounded-full *,
+.metaos-app.metaos-dark .rounded-full,
+.metaos-app.metaos-dark .rounded-full * {
+  opacity: 1 !important;
+}
+
+html.dark .metaos-app .rounded-full:not(.bg-\[\#0A84FF\]),
+html.os-dark .metaos-app .rounded-full:not(.bg-\[\#0A84FF\]),
+.metaos-app.metaos-dark .rounded-full:not(.bg-\[\#0A84FF\]) {
+  background-color: #15191F !important;
+  border-color: rgba(255,255,255,0.20) !important;
+  color: #F4F4F5 !important;
+}
+
+html.dark .metaos-app .rounded-full:not(.bg-\[\#0A84FF\]) *,
+html.os-dark .metaos-app .rounded-full:not(.bg-\[\#0A84FF\]) *,
+.metaos-app.metaos-dark .rounded-full:not(.bg-\[\#0A84FF\]) * {
+  color: #F4F4F5 !important;
+}
+
+/* Preserve red/green inside dropdowns */
+html.dark .metaos-app details .text-red-300,
+html.dark .metaos-app details .text-red-400,
+html.dark .metaos-app details .text-red-500,
+html.dark .metaos-app details .text-red-600,
+html.dark .metaos-app details .text-red-700,
+html.os-dark .metaos-app details .text-red-300,
+html.os-dark .metaos-app details .text-red-400,
+html.os-dark .metaos-app details .text-red-500,
+html.os-dark .metaos-app details .text-red-600,
+html.os-dark .metaos-app details .text-red-700,
+.metaos-app.metaos-dark details .text-red-300,
+.metaos-app.metaos-dark details .text-red-400,
+.metaos-app.metaos-dark details .text-red-500,
+.metaos-app.metaos-dark details .text-red-600,
+.metaos-app.metaos-dark details .text-red-700 {
+  color: #ff6b5f !important;
+}
+
+/* Header must stay sticky */
+.metaos-sticky-header,
+.metaos-app > header,
+[data-os-root="true"] > header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 99999 !important;
+}
+

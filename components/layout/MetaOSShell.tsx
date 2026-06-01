@@ -191,6 +191,24 @@ export function MetaOSShell({
   const isDark = theme === "dark";
 
   const isGoogle = osMode === "google";
+  
+  function getOSModeButtonClass(isActive: boolean) {
+    return isActive
+      ? "inline-flex items-center justify-center rounded-xl border border-[#0A84FF] bg-[#0A84FF] px-4 py-2 text-xs font-black tracking-[0.04em] text-white"
+      : isDark
+        ? "inline-flex items-center justify-center rounded-xl border border-white/20 bg-[#101318] px-4 py-2 text-xs font-black tracking-[0.04em] text-[#F4F4F5]"
+        : "inline-flex items-center justify-center rounded-xl border border-black/15 bg-white px-4 py-2 text-xs font-black tracking-[0.04em] text-[#111111]";
+  }
+
+  
+  function getMetaTabButtonClass(isActive: boolean) {
+    return isActive
+      ? "inline-flex items-center gap-2 rounded-lg border border-[#0A84FF] bg-[#0A84FF] px-3 py-2 text-xs font-black text-white transition"
+      : isDark
+        ? "inline-flex items-center gap-2 rounded-lg border border-white/20 bg-[#101318] px-3 py-2 text-xs font-black text-[#F4F4F5] transition hover:border-white/35 hover:bg-[#171B22]"
+        : "inline-flex items-center gap-2 rounded-lg border border-black/15 bg-white px-3 py-2 text-xs font-black text-[#111111] transition hover:border-black/25 hover:bg-[#F1F2EF]";
+  }
+
   const activeNav = isGoogle ? googleNav : metaNav;
 
   useEffect(() => {
