@@ -2529,3 +2529,261 @@ html:not(.dark) main [style*="background"] [class*="text-white"] {
   border-radius: 10px !important;
 }
 
+
+/* =========================================================
+   META OS ABSOLUTE FINAL CONTRAST FIX
+   This must stay at the very bottom of globals.css.
+   ========================================================= */
+
+/* DARK MODE: force every Meta OS normal text readable */
+html.dark .metaos-app,
+html.dark .metaos-app *,
+html.os-dark .metaos-app,
+html.os-dark .metaos-app *,
+.metaos-app.metaos-dark,
+.metaos-app.metaos-dark *,
+[data-os-root="true"][data-os-theme="dark"],
+[data-os-root="true"][data-os-theme="dark"] * {
+  color: #f4f4f5 !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* DARK MODE: force main surfaces dark */
+html.dark .metaos-app main,
+html.dark .metaos-app section,
+html.dark .metaos-app article,
+html.dark .metaos-app details,
+html.dark .metaos-app summary,
+html.dark .metaos-app table,
+html.dark .metaos-app tbody,
+html.dark .metaos-app tr,
+html.dark .metaos-app td,
+html.dark .metaos-app .rounded-lg,
+html.dark .metaos-app .rounded-xl,
+html.dark .metaos-app .rounded-2xl,
+html.dark .metaos-app .rounded-3xl,
+html.os-dark .metaos-app main,
+html.os-dark .metaos-app section,
+html.os-dark .metaos-app article,
+html.os-dark .metaos-app details,
+html.os-dark .metaos-app summary,
+html.os-dark .metaos-app table,
+html.os-dark .metaos-app tbody,
+html.os-dark .metaos-app tr,
+html.os-dark .metaos-app td,
+html.os-dark .metaos-app .rounded-lg,
+html.os-dark .metaos-app .rounded-xl,
+html.os-dark .metaos-app .rounded-2xl,
+html.os-dark .metaos-app .rounded-3xl {
+  background-color: #101318 !important;
+  color: #f4f4f5 !important;
+}
+
+/* DARK MODE: keep body/page black */
+html.dark body,
+html.os-dark body,
+html.dark .metaos-app,
+html.os-dark .metaos-app {
+  background-color: #050607 !important;
+}
+
+/* DARK MODE: muted text readable */
+html.dark .metaos-app .opacity-10,
+html.dark .metaos-app .opacity-20,
+html.dark .metaos-app .opacity-25,
+html.dark .metaos-app .opacity-30,
+html.dark .metaos-app .opacity-35,
+html.dark .metaos-app .opacity-40,
+html.dark .metaos-app .opacity-45,
+html.dark .metaos-app .opacity-50,
+html.dark .metaos-app .opacity-55,
+html.dark .metaos-app .opacity-60,
+html.dark .metaos-app .opacity-65,
+html.dark .metaos-app .opacity-70,
+html.dark .metaos-app .opacity-75,
+html.os-dark .metaos-app .opacity-10,
+html.os-dark .metaos-app .opacity-20,
+html.os-dark .metaos-app .opacity-25,
+html.os-dark .metaos-app .opacity-30,
+html.os-dark .metaos-app .opacity-35,
+html.os-dark .metaos-app .opacity-40,
+html.os-dark .metaos-app .opacity-45,
+html.os-dark .metaos-app .opacity-50,
+html.os-dark .metaos-app .opacity-55,
+html.os-dark .metaos-app .opacity-60,
+html.os-dark .metaos-app .opacity-65,
+html.os-dark .metaos-app .opacity-70,
+html.os-dark .metaos-app .opacity-75 {
+  opacity: 1 !important;
+  color: rgba(244, 244, 245, 0.72) !important;
+}
+
+/* LIGHT MODE: force every Meta OS normal text readable */
+html:not(.dark):not(.os-dark) .metaos-app,
+html:not(.dark):not(.os-dark) .metaos-app *,
+.metaos-app.metaos-light,
+.metaos-app.metaos-light *,
+[data-os-root="true"][data-os-theme="light"],
+[data-os-root="true"][data-os-theme="light"] * {
+  color: #111111 !important;
+  border-color: rgba(17, 17, 17, 0.12) !important;
+}
+
+/* LIGHT MODE: force main surfaces white */
+html:not(.dark):not(.os-dark) .metaos-app main,
+html:not(.dark):not(.os-dark) .metaos-app section,
+html:not(.dark):not(.os-dark) .metaos-app article,
+html:not(.dark):not(.os-dark) .metaos-app details,
+html:not(.dark):not(.os-dark) .metaos-app summary,
+html:not(.dark):not(.os-dark) .metaos-app table,
+html:not(.dark):not(.os-dark) .metaos-app tbody,
+html:not(.dark):not(.os-dark) .metaos-app tr,
+html:not(.dark):not(.os-dark) .metaos-app td,
+html:not(.dark):not(.os-dark) .metaos-app .rounded-lg,
+html:not(.dark):not(.os-dark) .metaos-app .rounded-xl,
+html:not(.dark):not(.os-dark) .metaos-app .rounded-2xl,
+html:not(.dark):not(.os-dark) .metaos-app .rounded-3xl {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+}
+
+/* LIGHT MODE: keep body/page soft */
+html:not(.dark):not(.os-dark) body,
+html:not(.dark):not(.os-dark) .metaos-app {
+  background-color: #f6f7f4 !important;
+}
+
+/* ACTIVE BLUE BUTTONS: always readable */
+.metaos-app .bg-\[\#0A84FF\],
+.metaos-app .bg-\[\#0A84FF\] *,
+.metaos-app button.bg-\[\#0A84FF\],
+.metaos-app button.bg-\[\#0A84FF\] *,
+.metaos-app [class*="bg-blue"],
+.metaos-app [class*="bg-blue"] * {
+  background-color: #0a84ff !important;
+  color: #ffffff !important;
+  border-color: #0a84ff !important;
+}
+
+/* NAV / HEADER STICKY */
+.metaos-app > header,
+.metaos-app header:first-of-type,
+[data-os-root="true"] > header,
+[data-os-root="true"] header:first-of-type {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 9999 !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+/* DARK HEADER */
+html.dark .metaos-app > header,
+html.dark .metaos-app header:first-of-type,
+html.os-dark .metaos-app > header,
+html.os-dark .metaos-app header:first-of-type {
+  background-color: rgba(5, 6, 7, 0.96) !important;
+  color: #f4f4f5 !important;
+}
+
+/* LIGHT HEADER */
+html:not(.dark):not(.os-dark) .metaos-app > header,
+html:not(.dark):not(.os-dark) .metaos-app header:first-of-type {
+  background-color: rgba(246, 247, 244, 0.96) !important;
+  color: #111111 !important;
+}
+
+/* TABLE HEADERS: always navy with white text */
+.metaos-app table thead,
+.metaos-app table thead tr,
+.metaos-app table thead th,
+.metaos-app .monthly-table-head,
+.metaos-app .monthly-table-head tr,
+.metaos-app .monthly-table-head th,
+.metaos-app .monthly-table-th {
+  background-color: #13223a !important;
+  color: #ffffff !important;
+}
+
+.metaos-app table thead *,
+.metaos-app .monthly-table-head *,
+.metaos-app .monthly-table-th * {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+/* RED / GREEN SHOULD SURVIVE THE GLOBAL TEXT OVERRIDE */
+html.dark .metaos-app .text-red-300,
+html.dark .metaos-app .text-red-400,
+html.dark .metaos-app .text-red-500,
+html.dark .metaos-app .text-red-600,
+html.dark .metaos-app .text-red-700,
+html.os-dark .metaos-app .text-red-300,
+html.os-dark .metaos-app .text-red-400,
+html.os-dark .metaos-app .text-red-500,
+html.os-dark .metaos-app .text-red-600,
+html.os-dark .metaos-app .text-red-700 {
+  color: #ff6b5f !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app .text-red-300,
+html:not(.dark):not(.os-dark) .metaos-app .text-red-400,
+html:not(.dark):not(.os-dark) .metaos-app .text-red-500,
+html:not(.dark):not(.os-dark) .metaos-app .text-red-600,
+html:not(.dark):not(.os-dark) .metaos-app .text-red-700 {
+  color: #b42318 !important;
+}
+
+html.dark .metaos-app .text-emerald-300,
+html.dark .metaos-app .text-emerald-400,
+html.dark .metaos-app .text-emerald-500,
+html.dark .metaos-app .text-emerald-600,
+html.dark .metaos-app .text-emerald-700,
+html.dark .metaos-app .text-green-300,
+html.dark .metaos-app .text-green-400,
+html.dark .metaos-app .text-green-500,
+html.dark .metaos-app .text-green-600,
+html.dark .metaos-app .text-green-700,
+html.os-dark .metaos-app .text-emerald-300,
+html.os-dark .metaos-app .text-emerald-400,
+html.os-dark .metaos-app .text-emerald-500,
+html.os-dark .metaos-app .text-emerald-600,
+html.os-dark .metaos-app .text-emerald-700,
+html.os-dark .metaos-app .text-green-300,
+html.os-dark .metaos-app .text-green-400,
+html.os-dark .metaos-app .text-green-500,
+html.os-dark .metaos-app .text-green-600,
+html.os-dark .metaos-app .text-green-700 {
+  color: #34d399 !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app .text-emerald-300,
+html:not(.dark):not(.os-dark) .metaos-app .text-emerald-400,
+html:not(.dark):not(.os-dark) .metaos-app .text-emerald-500,
+html:not(.dark):not(.os-dark) .metaos-app .text-emerald-600,
+html:not(.dark):not(.os-dark) .metaos-app .text-emerald-700,
+html:not(.dark):not(.os-dark) .metaos-app .text-green-300,
+html:not(.dark):not(.os-dark) .metaos-app .text-green-400,
+html:not(.dark):not(.os-dark) .metaos-app .text-green-500,
+html:not(.dark):not(.os-dark) .metaos-app .text-green-600,
+html:not(.dark):not(.os-dark) .metaos-app .text-green-700 {
+  color: #047857 !important;
+}
+
+/* RECHARTS TOOLTIP: always readable */
+.recharts-tooltip-wrapper,
+.recharts-tooltip-wrapper *,
+.recharts-default-tooltip,
+.recharts-default-tooltip *,
+.recharts-tooltip-item,
+.recharts-tooltip-label {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.recharts-default-tooltip {
+  background-color: #111318 !important;
+  border: 1px solid rgba(255,255,255,0.16) !important;
+  border-radius: 10px !important;
+}
+
