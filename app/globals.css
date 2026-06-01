@@ -2518,3 +2518,38 @@ html:not(.dark):not(.os-dark) .metaos-app details summary *,
   background-color: #111318 !important;
   color: #ffffff !important;
 }
+
+/* =========================================================
+   RECHARTS TOOLTIP TEXT FIX
+   Keeps chart hover tooltip readable in both light and dark mode.
+   Does not change dashboard layout or buttons.
+   ========================================================= */
+
+.recharts-tooltip-wrapper,
+.recharts-tooltip-wrapper *,
+.recharts-default-tooltip,
+.recharts-default-tooltip *,
+.recharts-tooltip-item,
+.recharts-tooltip-item-name,
+.recharts-tooltip-item-value,
+.recharts-tooltip-label {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.recharts-tooltip-wrapper .recharts-default-tooltip,
+.recharts-default-tooltip {
+  background: #111318 !important;
+  background-color: #111318 !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 10px !important;
+}
+
+.recharts-tooltip-wrapper span,
+.recharts-tooltip-wrapper p,
+.recharts-tooltip-wrapper li,
+.recharts-tooltip-wrapper div {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
