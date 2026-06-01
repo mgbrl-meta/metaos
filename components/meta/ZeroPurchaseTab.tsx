@@ -1,5 +1,7 @@
 "use client";
 
+import { CreativeTrendTooltip } from "@/components/meta/shared/CreativeTrendTooltip";
+
 import { useMemo, useState } from "react";
 import {
   AlertTriangle,
@@ -527,37 +529,7 @@ function TrendBox({ data }: { data: any[] }) {
                 tickFormatter={(v) => `${Math.round(Number(v || 0) * 100)}%`}
               />
 
-              <Tooltip
-                wrapperStyle={{
-                  outline: "none",
-                  zIndex: 9999,
-                }}
-                contentStyle={{
-                  background: "#111318",
-                  border: "1px solid rgba(255,255,255,0.18)",
-                  borderRadius: 10,
-                  color: "#ffffff",
-                  fontSize: 11,
-                  boxShadow: "0 12px 30px rgba(0,0,0,0.28)",
-                }}
-                labelStyle={{
-                  color: "#ffffff",
-                  fontWeight: 800,
-                }}
-                itemStyle={{
-                  color: "#ffffff",
-                  fontWeight: 700,
-                }}
-                formatter={(value: any, name: any) => {
-                  if (name === "Spend") return [money(Number(value || 0)), "Spend"];
-                  if (name === "CPM") return [money(Number(value || 0)), "CPM"];
-                  if (name === "CPA") return [value === null ? "No sale" : money(Number(value || 0)), "CPA"];
-                  if (name === "AOV") return [value === null ? "No sale" : money(Number(value || 0)), "AOV"];
-                  if (name === "CTR") return [pct(Number(value || 0)), "CTR"];
-                  if (name === "ROAS") return [`${num(Number(value || 0))}x`, "ROAS"];
-                  return [value, name];
-                }}
-              />
+              <Tooltip content={<CreativeTrendTooltip />} />
 
               {metricOptions.map((metric) =>
                 visibleMetrics[metric.key] ? (

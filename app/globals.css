@@ -2934,3 +2934,25 @@ html:not(.dark):not(.os-dark) .metaos-app table tbody td *,
   opacity: 1 !important;
 }
 
+
+/* =========================================================
+   CREATIVE TREND TOOLTIP CONTRACT
+   Used by Zero Purchase, High CPA and High ROAS trend charts.
+   Keep tooltip independent from MetaOS light/dark theme.
+   ========================================================= */
+
+.creative-trend-tooltip,
+.creative-trend-tooltip *,
+.recharts-tooltip-wrapper .creative-trend-tooltip,
+.recharts-tooltip-wrapper .creative-trend-tooltip * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  background-color: transparent;
+}
+
+.recharts-tooltip-wrapper {
+  z-index: 99999 !important;
+  outline: none !important;
+  pointer-events: none !important;
+}
+
