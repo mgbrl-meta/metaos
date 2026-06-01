@@ -209,6 +209,23 @@ export function MetaOSShell({
         : "inline-flex items-center gap-2 rounded-lg border border-black/15 bg-white px-3 py-2 text-xs font-black text-[#111111] transition hover:border-black/25 hover:bg-[#F1F2EF]";
   }
 
+  
+  function metaHeaderPillClass(isActive: boolean) {
+    return isActive
+      ? "metaos-pill metaos-pill-active inline-flex items-center justify-center gap-2 rounded-xl border border-[#0A84FF] bg-[#0A84FF] px-4 py-2 text-xs font-black tracking-[0.04em] text-white transition"
+      : isDark
+        ? "metaos-pill metaos-pill-inactive inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-[#101318] px-4 py-2 text-xs font-black tracking-[0.04em] text-[#F4F4F5] transition hover:bg-[#171B22]"
+        : "metaos-pill metaos-pill-inactive inline-flex items-center justify-center gap-2 rounded-xl border border-black/15 bg-white px-4 py-2 text-xs font-black tracking-[0.04em] text-[#111111] transition hover:bg-[#F1F2EF]";
+  }
+
+  function metaTabPillClass(isActive: boolean) {
+    return isActive
+      ? "metaos-tab-pill metaos-pill-active inline-flex items-center gap-2 rounded-lg border border-[#0A84FF] bg-[#0A84FF] px-3 py-2 text-xs font-black text-white transition"
+      : isDark
+        ? "metaos-tab-pill metaos-pill-inactive inline-flex items-center gap-2 rounded-lg border border-white/20 bg-[#101318] px-3 py-2 text-xs font-black text-[#F4F4F5] transition hover:bg-[#171B22]"
+        : "metaos-tab-pill metaos-pill-inactive inline-flex items-center gap-2 rounded-lg border border-black/15 bg-white px-3 py-2 text-xs font-black text-[#111111] transition hover:bg-[#F1F2EF]";
+  }
+
   const activeNav = isGoogle ? googleNav : metaNav;
 
   useEffect(() => {
