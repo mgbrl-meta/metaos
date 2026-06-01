@@ -2787,3 +2787,66 @@ html:not(.dark):not(.os-dark) .metaos-app .text-green-700 {
   border-radius: 10px !important;
 }
 
+
+/* =========================================================
+   META OS STICKY HEADER + ACTIVE TAB HIGHLIGHT
+   ========================================================= */
+
+.metaos-sticky-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 99999 !important;
+  width: 100% !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
+
+html.dark .metaos-sticky-header,
+html.os-dark .metaos-sticky-header,
+.metaos-app.metaos-dark .metaos-sticky-header,
+[data-os-root="true"][data-os-theme="dark"] .metaos-sticky-header {
+  background: rgba(5, 6, 7, 0.96) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-sticky-header,
+.metaos-app.metaos-light .metaos-sticky-header,
+[data-os-root="true"][data-os-theme="light"] .metaos-sticky-header {
+  background: rgba(246, 247, 244, 0.96) !important;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.12) !important;
+}
+
+/* Active Meta OS tab */
+.metaos-app button[data-meta-tab-active="true"],
+[data-os-root="true"] button[data-meta-tab-active="true"] {
+  background: #0a84ff !important;
+  border-color: #0a84ff !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.metaos-app button[data-meta-tab-active="true"] *,
+[data-os-root="true"] button[data-meta-tab-active="true"] * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Inactive tabs should remain readable */
+.metaos-app button[data-meta-tab-active="false"],
+[data-os-root="true"] button[data-meta-tab-active="false"] {
+  background: transparent !important;
+}
+
+html.dark .metaos-app button[data-meta-tab-active="false"],
+html.os-dark .metaos-app button[data-meta-tab-active="false"],
+.metaos-app.metaos-dark button[data-meta-tab-active="false"] {
+  color: #f4f4f5 !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+html:not(.dark):not(.os-dark) .metaos-app button[data-meta-tab-active="false"],
+.metaos-app.metaos-light button[data-meta-tab-active="false"] {
+  color: #111111 !important;
+  border-color: rgba(17, 17, 17, 0.14) !important;
+}
+
