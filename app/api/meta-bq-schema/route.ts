@@ -19,6 +19,11 @@ function getBigQueryClient() {
       client_email: clientEmail,
       private_key: privateKey,
     },
+    scopes: [
+      "https://www.googleapis.com/auth/bigquery",
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/drive.readonly",
+    ],
   });
 }
 
