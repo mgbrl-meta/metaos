@@ -579,6 +579,7 @@ function WeeklyTrendTooltip({ active, payload }: any) {
 
   return (
     <div
+      className="monthly-chart-tooltip"
       style={{
         minWidth: 220,
         background: "#111318",
@@ -640,6 +641,7 @@ function ScatterPointTooltip({ active, payload }: any) {
 
   return (
     <div
+      className="monthly-chart-tooltip"
       style={{
         background: "#111318",
         border: "1px solid rgba(255,255,255,0.14)",

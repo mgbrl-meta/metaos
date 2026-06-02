@@ -2956,3 +2956,47 @@ html:not(.dark):not(.os-dark) .metaos-app table tbody td *,
   pointer-events: none !important;
 }
 
+
+/* =========================================================
+   MONTHLY CHART TOOLTIP READABILITY CONTRACT
+   Protects Lifetime Weekly Trend + Weekly Scale Scatter tooltip.
+   Scoped only to EnhancedMonthlyReport tooltips.
+   ========================================================= */
+
+.monthly-chart-tooltip,
+.monthly-chart-tooltip *,
+.recharts-tooltip-wrapper .monthly-chart-tooltip,
+.recharts-tooltip-wrapper .monthly-chart-tooltip *,
+.metaos-app .monthly-chart-tooltip,
+.metaos-app .monthly-chart-tooltip *,
+html.dark .metaos-app .monthly-chart-tooltip,
+html.dark .metaos-app .monthly-chart-tooltip *,
+html.os-dark .metaos-app .monthly-chart-tooltip,
+html.os-dark .metaos-app .monthly-chart-tooltip *,
+html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip,
+html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.monthly-chart-tooltip {
+  background: #111318 !important;
+  background-color: #111318 !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35) !important;
+}
+
+.monthly-chart-tooltip span {
+  color: rgba(255,255,255,0.72) !important;
+}
+
+.monthly-chart-tooltip strong {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.monthly-chart-tooltip div {
+  background: transparent !important;
+}
+
