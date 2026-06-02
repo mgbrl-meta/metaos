@@ -139,6 +139,53 @@ function summarize(rows: Row[]) {
   };
 }
 
+
+function metaOsLast7DateKey(row: Row) {
+  const raw = String(
+    row.date ??
+      row.day ??
+      row.Date ??
+      row.Day ??
+      row["Date"] ??
+      row["Day"] ??
+      row["Reporting starts"] ??
+      row["Reporting Starts"] ??
+      row["Start Date"] ??
+      ""
+  ).trim();
+
+  if (!raw) return "";
+
+  const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
+
+  const slash = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (slash) {
+    const d = slash[1].padStart(2, "0");
+    const m = slash[2].padStart(2, "0");
+    const y = slash[3];
+    return `${y}-${m}-${d}`;
+  }
+
+  const parsed = new Date(raw);
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed.toISOString().slice(0, 10);
+  }
+
+  return raw;
+}
+
+function summarizeLastNDays(rows: Row[], days = 7) {
+  const dates = Array.from(
+    new Set(rows.map((row) => metaOsLast7DateKey(row)).filter(Boolean))
+  ).sort();
+
+  const lastDates = new Set(dates.slice(-days));
+
+  return summarize(rows.filter((row) => lastDates.has(metaOsLast7DateKey(row))));
+}
+
+
 function dailyTrend(rows: Row[]) {
   const map = new Map<string, Row[]>();
 
@@ -192,6 +239,7 @@ function buildZeroPurchaseItems(rows: Row[], threshold: number) {
     .map(([key, adRows]) => {
       const sample = adRows[0];
       const lifetime = summarize(adRows);
+      const last7 = summarizeLastNDays(adRows, 7);
       const yesterday = summarize(adRows.filter((row) => dateKey(getDate(row)) === latest));
       const trend = dailyTrend(adRows);
 
@@ -201,6 +249,7 @@ function buildZeroPurchaseItems(rows: Row[], threshold: number) {
         campaign: getCampaign(sample),
         adSet: getAdSet(sample),
         lifetime,
+        last7,
         yesterday,
         trend,
       };
@@ -327,6 +376,13 @@ export function ZeroPurchaseTab() {
                 <Metric label="CPM" value={money(item.lifetime.cpm)} />
                 <Metric label="CTR" value={pct(item.lifetime.ctr)} />
                 <Metric label="CPA" value="No sale" tone="red" />
+                <Metric label="Last 7D Spend" value={money(item.last7.spend)} />
+                <Metric label="Last 7D CPA" value="No sale" tone="red" />
+                <Metric
+                  label="Last 7D ROAS"
+                  value={`${num(item.last7.roas)}x`}
+                  tone={item.last7.roas > 0 ? "green" : "red"}
+                />
                 <Metric label="ROAS" value="0.00x" tone="red" />
                 <ChevronDown className="h-4 w-4 opacity-45 transition group-open:rotate-180" />
               </summary>
