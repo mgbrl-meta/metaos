@@ -718,7 +718,7 @@ function MonthLegend({
           type="button"
           onClick={() => onSelectMonth?.(null)}
           className={
-            !selectedMonth
+            selectedMonths.length === 0
               ? "inline-flex items-center gap-2 rounded-full border border-[#0A84FF] bg-[#0A84FF] px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-white"
               : "inline-flex items-center gap-2 rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em]"
           }
