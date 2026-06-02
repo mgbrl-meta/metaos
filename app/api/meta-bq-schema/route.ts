@@ -48,7 +48,7 @@ export async function GET() {
     const [rows] = await bigquery.query({
       query,
       params: { tableId },
-      location: "US",
+      location: process.env.BQ_LOCATION || "asia-south1",
     });
 
     return NextResponse.json({
