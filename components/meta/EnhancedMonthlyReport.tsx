@@ -269,7 +269,7 @@ function formatAxisMoney(v: any) {
 
 export function EnhancedMonthlyReport() {
   const rows = useMetaStore((state) => state.performanceRows);
-  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+  const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
 
   const data = useMemo(() => {
     const monthlyRows = buildMonthlyRows(rows || []);
@@ -294,7 +294,7 @@ export function EnhancedMonthlyReport() {
 
   const scatterRows = data.weeklyRows.filter((row: any) => {
     const hasValidPoint = row.spend > 0 && row.cpa !== null && row.cpa > 0;
-    const matchesMonth = selectedMonth ? row.month === selectedMonth : true;
+    const matchesMonth = selectedMonths.length ? selectedMonths.includes(row.month) : true;
     return hasValidPoint && matchesMonth;
   });
 
@@ -398,24 +398,7 @@ export function EnhancedMonthlyReport() {
                 width={72}
                 tickFormatter={(v) => `₹${Math.round(Number(v || 0))}`}
               />
-              <Tooltip
-                contentStyle={{
-                  background: "#111318",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  borderRadius: 10,
-                  color: "white",
-                  fontSize: 11,
-                }}
-                formatter={(value: any, name: any) => {
-                  if (name === "Spend") return [money(Number(value || 0)), "Spend"];
-                  if (name === "CPA") return [money(Number(value || 0)), "CPA"];
-                  return [value, name];
-                }}
-                labelFormatter={(_, payload) => {
-                  const row = Array.isArray(payload) ? payload?.[0]?.payload : undefined;
-                  return row ? `${row.monthLabel} · Week starting ${row.week}` : "";
-                }}
-              />
+              <Tooltip content={<WeeklyTrendTooltip />} />
 
               <Bar yAxisId="spend" dataKey="spendLog" name="Spend" radius={[4, 4, 0, 0]}>
                 {data.weeklyRows.map((entry: any) => (
@@ -487,9 +470,18 @@ export function EnhancedMonthlyReport() {
 
         <MonthLegend
           rows={data.weeklyRows}
-          selectedMonth={selectedMonth}
+          selectedMonths={selectedMonths}
           onSelectMonth={(month) => {
-            setSelectedMonth((current) => (current === month ? null : month));
+            if (!month) {
+              setSelectedMonths([]);
+              return;
+            }
+
+            setSelectedMonths((current) =>
+              current.includes(month)
+                ? current.filter((item) => item !== month)
+                : [...current, month]
+            );
           }}
           showAllReset
         />
@@ -578,6 +570,66 @@ export function EnhancedMonthlyReport() {
   );
 }
 
+
+function WeeklyTrendTooltip({ active, payload }: any) {
+  if (!active || !payload?.length) return null;
+
+  const row = payload?.[0]?.payload;
+  if (!row) return null;
+
+  return (
+    <div
+      style={{
+        minWidth: 220,
+        background: "#111318",
+        border: "1px solid rgba(255,255,255,0.18)",
+        borderRadius: 12,
+        padding: "10px 12px",
+        boxShadow: "0 16px 40px rgba(0,0,0,0.35)",
+        color: "#ffffff",
+        pointerEvents: "none",
+      }}
+    >
+      <div
+        style={{
+          color: "#ffffff",
+          fontSize: 12,
+          fontWeight: 900,
+          marginBottom: 8,
+          lineHeight: 1.2,
+        }}
+      >
+        {row.monthLabel} · Week starting {row.week}
+      </div>
+
+      <div style={{ display: "grid", gap: 6 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 800 }}>Spend</span>
+          <strong style={{ color: "#ffffff", fontSize: 11, fontWeight: 900 }}>{money(row.spend)}</strong>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 800 }}>CPA</span>
+          <strong style={{ color: "#ffffff", fontSize: 11, fontWeight: 900 }}>
+            {row.cpa ? money(row.cpa) : "No sale"}
+          </strong>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 800 }}>Purchases</span>
+          <strong style={{ color: "#ffffff", fontSize: 11, fontWeight: 900 }}>{num(row.purchases, 0)}</strong>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 800 }}>ROAS</span>
+          <strong style={{ color: "#ffffff", fontSize: 11, fontWeight: 900 }}>{num(row.roas)}x</strong>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 function ScatterPointTooltip({ active, payload }: any) {
   if (!active || !payload?.length) return null;
 
@@ -648,12 +700,12 @@ function ScatterPointTooltip({ active, payload }: any) {
 
 function MonthLegend({
   rows,
-  selectedMonth,
+  selectedMonths = [],
   onSelectMonth,
   showAllReset = false,
 }: {
   rows: any[];
-  selectedMonth?: string | null;
+  selectedMonths?: string[];
   onSelectMonth?: (month: string | null) => void;
   showAllReset?: boolean;
 }) {
@@ -676,8 +728,8 @@ function MonthLegend({
       ) : null}
 
       {months.map((row: any) => {
-        const isActive = selectedMonth === row.month;
-        const isDimmed = selectedMonth && !isActive;
+        const isActive = selectedMonths.includes(row.month);
+        const isDimmed = selectedMonths.length > 0 && !isActive;
 
         const className = onSelectMonth
           ? isActive
