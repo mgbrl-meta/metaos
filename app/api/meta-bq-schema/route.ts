@@ -36,6 +36,24 @@ export async function GET() {
     const [projectId, datasetId, tableId] = parts;
     const bigquery = getBigQueryClient();
 
+    // 1. Detect dataset location automatically from metadata.
+    const dataset = bigquery.dataset(datasetId, { projectId });
+    const [datasetMetadata] = await dataset.getMetadata();
+
+    const location =
+      process.env.BQ_LOCATION ||
+      datasetMetadata.location ||
+      datasetMetadata.locationId;
+
+    if (!location) {
+      throw new Error("Could not detect BigQuery dataset location");
+    }
+
+    // 2. Get table metadata too, to confirm table exists.
+    const table = dataset.table(tableId);
+    const [tableMetadata] = await table.getMetadata();
+
+    // 3. Query schema using the detected location.
     const query = `
       SELECT
         column_name,
@@ -48,12 +66,14 @@ export async function GET() {
     const [rows] = await bigquery.query({
       query,
       params: { tableId },
-      location: process.env.BQ_LOCATION || "asia-south1",
+      location,
     });
 
     return NextResponse.json({
       ok: true,
       table: tableRef,
+      detectedLocation: location,
+      tableType: tableMetadata.type || tableMetadata.tableType || null,
       columns: rows,
     });
   } catch (error: any) {
@@ -61,6 +81,7 @@ export async function GET() {
       {
         ok: false,
         error: error?.message || String(error),
+        table: process.env.BQ_META_TABLE || null,
       },
       { status: 500 }
     );
