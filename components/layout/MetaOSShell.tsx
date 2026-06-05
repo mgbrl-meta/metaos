@@ -29,6 +29,7 @@ export type MetaTab =
   | "zero_purchase"
   | "high_cpa"
   | "high_roas"
+  | "efficiency_decay"
   | "spend_visuals"
   | "hook_hold"
   | "summary"
@@ -80,6 +81,13 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "High ROAS",
     description: "Live ads with strong lifetime ROAS",
     icon: LineChart,
+  },
+  {
+    id: "efficiency_decay",
+    label: "Efficiency Decay",
+    shortLabel: "Decay",
+    description: "Early warning for creative and scale fatigue",
+    icon: ShieldAlert,
   },
   {
     id: "spend_visuals",

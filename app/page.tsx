@@ -11,6 +11,7 @@ import {
 import { ZeroPurchaseTab } from "@/components/meta/ZeroPurchaseTab";
 import { HighCpaTab } from "@/components/meta/HighCpaTab";
 import { HighRoasTab } from "@/components/meta/HighRoasTab";
+import { EfficiencyDecayTab } from "@/components/meta/EfficiencyDecayTab";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
 import { HookHoldCreativeTab } from "@/components/meta/HookHoldCreativeTab";
 import { DailySummaryExport } from "@/components/dashboard/DailySummaryExport";
@@ -60,6 +61,7 @@ export default function Home() {
           {activeMetaTab === "zero_purchase" && <ZeroPurchaseTab />}
           {activeMetaTab === "high_cpa" && <HighCpaTab />}
           {activeMetaTab === "high_roas" && <HighRoasTab />}
+          {activeMetaTab === "efficiency_decay" && <EfficiencyDecayTab />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
           {activeMetaTab === "hook_hold" && <HookHoldCreativeTab />}
           {activeMetaTab === "summary" && <MetaExecutiveSummary />}
