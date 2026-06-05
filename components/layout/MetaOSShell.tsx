@@ -339,9 +339,7 @@ export function MetaOSShell({
 
               {activeNav.map((item) => {
                 const Icon = item.icon;
-                const active =
-                  !activeSystemTab &&
-                  (isGoogle ? activeGoogleTab === item.id : activeMetaTab === item.id);
+                const active = !activeSystemTab && activeMetaTab === item.id;
 
                 return (
                   <button
