@@ -3151,3 +3151,97 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   }
 }
 
+
+/* =========================================================
+   CREATIVE ROW METRIC ALIGNMENT — FINAL CONTRACT
+   Fixes Last 7D ROAS value drifting away from label.
+   Applies to Zero Purchase, High CPA, High ROAS.
+   ========================================================= */
+
+.metaos-app .creative-summary-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: nowrap !important;
+}
+
+.metaos-app .creative-summary-row > div:first-child {
+  flex: 1 1 auto !important;
+  min-width: 420px !important;
+  white-space: normal !important;
+}
+
+/* Metric cell */
+.metaos-app .creative-summary-row > div:not(:first-child) {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  min-width: 72px !important;
+  max-width: 112px !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+}
+
+/* Longer Last 7D metrics need slightly more width */
+.metaos-app .creative-summary-row > div:not(:first-child):has([class*="tracking"]) {
+  white-space: nowrap !important;
+}
+
+/* Metric label */
+.metaos-app .creative-summary-row > div:not(:first-child) > *:first-child {
+  display: block !important;
+  width: 100% !important;
+  font-size: 11px !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0.16em !important;
+  white-space: normal !important;
+  text-align: left !important;
+}
+
+/* Metric value — always directly below its own label */
+.metaos-app .creative-summary-row > div:not(:first-child) > *:last-child {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 4px !important;
+  white-space: nowrap !important;
+  text-align: left !important;
+}
+
+/* Last 7D labels should stay compact but readable */
+.metaos-app .creative-summary-row > div:not(:first-child):nth-last-child(-n+4) {
+  min-width: 96px !important;
+  max-width: 124px !important;
+}
+
+/* Chevron */
+.metaos-app .creative-summary-row > svg {
+  flex: 0 0 18px !important;
+  width: 18px !important;
+}
+
+/* Laptop width tuning */
+@media (max-width: 1500px) {
+  .metaos-app .creative-summary-row {
+    gap: 14px !important;
+  }
+
+  .metaos-app .creative-summary-row > div:first-child {
+    min-width: 340px !important;
+  }
+
+  .metaos-app .creative-summary-row > div:not(:first-child) {
+    min-width: 64px !important;
+    max-width: 104px !important;
+  }
+
+  .metaos-app .creative-summary-row > div:not(:first-child):nth-last-child(-n+4) {
+    min-width: 88px !important;
+    max-width: 116px !important;
+  }
+}
+
