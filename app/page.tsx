@@ -27,7 +27,7 @@ import { CreativeTimelineMetrics } from "@/components/meta/CreativeTimelineMetri
 
 export default function Home() {
   const [osMode, setOsMode] = useState<OSMode>("meta");
-  const [activeMetaTab, setActiveMetaTab] = useState<MetaTab>("zero_purchase");
+  const [activeMetaTab, setActiveMetaTab] = useState<MetaTab>("summary");
   const [activeGoogleTab, setActiveGoogleTab] = useState<GoogleTab>("google_search_terms");
   const [activeSystemTab, setActiveSystemTab] = useState<"settings" | null>(null);
 

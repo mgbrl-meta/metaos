@@ -8,6 +8,7 @@ import {
   CartesianGrid,
   Cell,
   Line,
+  LineChart,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -120,12 +121,31 @@ function getClicks(row: Row) {
   );
 }
 
+function getVisitors(row: Row) {
+  return Number(
+    row.landing_page_views ??
+      row.landingPageViews ??
+      row.Landing_page_views ??
+      row["Landing page views"] ??
+      row.outbound_clicks ??
+      row.outboundClicks ??
+      row.Outbound_clicks ??
+      row["Outbound clicks"] ??
+      row.linkClicks ??
+      row.link_clicks ??
+      row.Link_clicks ??
+      row["Link clicks"] ??
+      0
+  );
+}
+
 function summarize(rows: Row[]) {
   const spend = rows.reduce((s, r) => s + getSpend(r), 0);
   const revenue = rows.reduce((s, r) => s + getRevenue(r), 0);
   const purchases = rows.reduce((s, r) => s + getPurchases(r), 0);
   const impressions = rows.reduce((s, r) => s + getImpressions(r), 0);
   const clicks = rows.reduce((s, r) => s + getClicks(r), 0);
+  const visitors = rows.reduce((s, r) => s + getVisitors(r), 0);
 
   return {
     spend,
@@ -133,10 +153,13 @@ function summarize(rows: Row[]) {
     purchases,
     impressions,
     clicks,
+    visitors,
     roas: safeDiv(revenue, spend),
     cpa: safeDiv(spend, purchases),
     ctr: safeDiv(clicks, impressions),
     purchaseCvr: safeDiv(purchases, clicks),
+    costPerVisitor: safeDiv(spend, visitors),
+    revenuePerVisitor: safeDiv(revenue, visitors),
   };
 }
 
@@ -212,6 +235,9 @@ function buildWeeklyRows(rows: Row[]) {
         spendLog: Math.max(s.spend, 1),
         revenue: s.revenue,
         purchases: s.purchases,
+        visitors: s.visitors,
+        costPerVisitor: s.costPerVisitor,
+        revenuePerVisitor: s.revenuePerVisitor,
         cpa: s.cpa > 0 ? s.cpa : null,
         roas: s.roas,
         color: monthColor(month),
@@ -414,6 +440,79 @@ export function EnhancedMonthlyReport() {
         <MonthLegend rows={data.weeklyRows} />
       </section>
 
+
+      <section className="rounded-xl border border-current/10 bg-current/[0.025] p-4">
+        <div className="mb-3 flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#0A84FF]">Visitor Economics Trend</p>
+            <h2 className="text-lg font-black">Cost per Visitor vs Revenue per Visitor</h2>
+            <p className="mt-1 text-sm opacity-60">
+              Weekly visitor economics based on landing page views. If LPV is missing, outbound clicks or link clicks are used as fallback.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.1em] opacity-70">
+            <span>Blue: Cost / Visitor</span>
+            <span>Green: Revenue / Visitor</span>
+            <span>Week-on-week</span>
+          </div>
+        </div>
+
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={data.weeklyRows} margin={{ top: 10, right: 24, left: 16, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.18)" />
+
+              <XAxis
+                dataKey="monthTick"
+                tick={{ fontSize: 10, fill: "currentColor" }}
+                axisLine={false}
+                tickLine={false}
+                minTickGap={14}
+              />
+
+              <YAxis
+                yAxisId="money"
+                tick={{ fontSize: 10, fill: "currentColor" }}
+                axisLine={false}
+                tickLine={false}
+                width={72}
+                tickFormatter={(v) => `₹${Math.round(Number(v || 0))}`}
+              />
+
+              <Tooltip content={<VisitorEconomicsTooltip />} />
+
+              <Line
+                yAxisId="money"
+                type="monotone"
+                dataKey="costPerVisitor"
+                name="Cost / Visitor"
+                stroke="#0A84FF"
+                strokeWidth={2.4}
+                dot={{ r: 2 }}
+                activeDot={{ r: 5 }}
+                connectNulls
+              />
+
+              <Line
+                yAxisId="money"
+                type="monotone"
+                dataKey="revenuePerVisitor"
+                name="Revenue / Visitor"
+                stroke="#10b981"
+                strokeWidth={2.4}
+                dot={{ r: 2 }}
+                activeDot={{ r: 5 }}
+                connectNulls
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <MonthLegend rows={data.weeklyRows} />
+      </section>
+
+
       <section className="rounded-xl border border-current/10 bg-current/[0.025] p-4">
         <div className="mb-3 flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
           <div>
@@ -566,6 +665,62 @@ export function EnhancedMonthlyReport() {
           </table>
         </div>
       </section>
+    </div>
+  );
+}
+
+
+
+function VisitorEconomicsTooltip({ active, payload }: any) {
+  if (!active || !payload?.length) return null;
+
+  const row = payload?.[0]?.payload;
+  if (!row) return null;
+
+  return (
+    <div
+      className="monthly-chart-tooltip"
+      style={{
+        minWidth: 240,
+        background: "#111318",
+        border: "1px solid rgba(255,255,255,0.18)",
+        borderRadius: 12,
+        padding: "10px 12px",
+        boxShadow: "0 16px 40px rgba(0,0,0,0.35)",
+        color: "#ffffff",
+        pointerEvents: "none",
+      }}
+    >
+      <div style={{ color: "#ffffff", fontSize: 12, fontWeight: 900, marginBottom: 8 }}>
+        {row.monthLabel} · Week starting {row.week}
+      </div>
+
+      <div style={{ display: "grid", gap: 6 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 800 }}>Visitors</span>
+          <strong style={{ color: "#ffffff", fontSize: 11, fontWeight: 900 }}>{num(row.visitors, 0)}</strong>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 800 }}>Cost / Visitor</span>
+          <strong style={{ color: "#ffffff", fontSize: 11, fontWeight: 900 }}>{money(row.costPerVisitor)}</strong>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 800 }}>Revenue / Visitor</span>
+          <strong style={{ color: "#ffffff", fontSize: 11, fontWeight: 900 }}>{money(row.revenuePerVisitor)}</strong>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 800 }}>Spend</span>
+          <strong style={{ color: "#ffffff", fontSize: 11, fontWeight: 900 }}>{money(row.spend)}</strong>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 18 }}>
+          <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 11, fontWeight: 800 }}>Revenue</span>
+          <strong style={{ color: "#ffffff", fontSize: 11, fontWeight: 900 }}>{money(row.revenue)}</strong>
+        </div>
+      </div>
     </div>
   );
 }

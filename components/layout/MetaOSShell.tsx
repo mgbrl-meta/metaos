@@ -53,7 +53,14 @@ type NavItem<T extends string> = {
   icon: any;
 };
 
-const metaNav: NavItem<MetaTab>[] = [
+const metaNav: NavItem<MetaTab>[
+  {
+    id: "summary",
+    label: "Team Summary",
+    shortLabel: "Summary",
+    description: "Daily execution report",
+    icon: FileText,
+  },
   {
     id: "zero_purchase",
     label: "Zero Purchase",
@@ -97,19 +104,12 @@ const metaNav: NavItem<MetaTab>[] = [
     icon: MousePointerClick,
   },
   {
-    id: "summary",
-    label: "Team Summary",
-    shortLabel: "Summary",
-    description: "Daily execution report",
-    icon: FileText,
-  },
-  {
     id: "monthly",
     label: "Monthly Report",
     shortLabel: "Monthly",
     description: "Monthly performance review",
     icon: LineChart,
-  },
+  }
 ];
 
 const googleNav: NavItem<GoogleTab>[] = [
