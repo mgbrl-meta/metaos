@@ -30,6 +30,7 @@ export type MetaTab =
   | "high_cpa"
   | "high_roas"
   | "efficiency_decay"
+  | "scale_quality"
   | "spend_visuals"
   | "hook_hold"
   | "summary"
@@ -88,6 +89,13 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "Decay",
     description: "Early warning for creative and scale fatigue",
     icon: ShieldAlert,
+  },
+  {
+    id: "scale_quality",
+    label: "Scale Quality",
+    shortLabel: "Scale",
+    description: "Incremental spend quality and budget movement",
+    icon: TrendingUp,
   },
   {
     id: "spend_visuals",
