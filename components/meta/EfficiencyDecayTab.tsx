@@ -296,8 +296,7 @@ function InfoBox({ title, lines }: { title: string; lines: string[] }) {
 }
 
 export function EfficiencyDecayTab() {
-  const store = useMetaStore() as any;
-  const rows = getRowsFromStore(store);
+  const rows = useMetaStore((state) => state.performanceRows);
   const [filter, setFilter] = useState<DecayFilter>("all");
 
   const data = useMemo(() => {

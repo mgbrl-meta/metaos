@@ -275,8 +275,7 @@ function InfoBox({ title, lines }: { title: string; lines: string[] }) {
 }
 
 export function ScaleQualityTab() {
-  const store = useMetaStore() as any;
-  const rows = getRowsFromStore(store);
+  const rows = useMetaStore((state) => state.performanceRows);
   const [filter, setFilter] = useState<QualityFilter>("all");
 
   const data = useMemo(() => {
