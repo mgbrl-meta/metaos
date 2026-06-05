@@ -53,10 +53,10 @@ type NavItem<T extends string> = {
   icon: any;
 };
 
-const metaNav: NavItem<MetaTab>[
+const metaNav: NavItem<MetaTab>[] = [
   {
     id: "summary",
-    label: "Team Summary",
+    label: "Summary",
     shortLabel: "Summary",
     description: "Daily execution report",
     icon: FileText,
@@ -66,50 +66,50 @@ const metaNav: NavItem<MetaTab>[
     label: "Zero Purchase",
     shortLabel: "Zero Purchase",
     description: "Live ads with lifetime spend and no purchases",
-    icon: AlertTriangle,
+    icon: ShieldAlert,
   },
   {
     id: "high_cpa",
     label: "High CPA",
     shortLabel: "High CPA",
     description: "Live ads with high lifetime CPA",
-    icon: AlertTriangle,
+    icon: ShieldAlert,
   },
   {
     id: "high_roas",
     label: "High ROAS",
     shortLabel: "High ROAS",
     description: "Live ads with strong lifetime ROAS",
-    icon: TrendingUp,
+    icon: LineChart,
   },
   {
     id: "spend_visuals",
-    label: "Spend Visuals",
+    label: "Spend",
     shortLabel: "Spend",
-    description: "Spend, CPA, ROAS trends",
+    description: "Spend movement and efficiency visuals",
     icon: BarChart3,
   },
   {
     id: "winner",
-    label: "Winner Creatives",
+    label: "Winner",
     shortLabel: "Winner",
-    description: "Top performing creative learnings",
+    description: "Winning creatives and scale candidates",
     icon: Trophy,
   },
   {
     id: "hook_hold",
     label: "Hook / Hold",
     shortLabel: "Hook / Hold",
-    description: "Top hook rate and hold rate creatives",
-    icon: MousePointerClick,
+    description: "Creative hook and hold diagnostics",
+    icon: Sparkles,
   },
   {
     id: "monthly",
-    label: "Monthly Report",
+    label: "Monthly",
     shortLabel: "Monthly",
     description: "Monthly performance review",
     icon: LineChart,
-  }
+  },
 ];
 
 const googleNav: NavItem<GoogleTab>[] = [
