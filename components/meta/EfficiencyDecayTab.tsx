@@ -7,6 +7,20 @@ import { useMetaStore } from "@/store/metaStore";
 type Row = Record<string, any>;
 type DecayFilter = "all" | "cpa" | "roas" | "attention" | "scale";
 
+type DecaySettings = {
+  cpaDecayPct: number;
+  roasDecayPct: number;
+  ctrDecayPct: number;
+  cpmRisePct: number;
+  minLast7Spend: number;
+  minLast7Purchases: number;
+  minLifetimePurchases: number;
+  minLast7Impressions: number;
+  scaleSpendIncreasePct: number;
+  scaleCpaWorsePct: number;
+  scaleRoasDropPct: number;
+};
+
 const money = (n: number) => `₹${Math.round(Number(n || 0)).toLocaleString("en-IN")}`;
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
 const pct = (n: number, d = 1) => `${num(Number(n || 0) * 100, d)}%`;
@@ -135,7 +149,7 @@ function toneClass(tone: "red" | "green" | "amber" | "neutral") {
   return "";
 }
 
-function buildEfficiencyRows(rows: Row[]) {
+function buildEfficiencyRows(rows: Row[], settings: DecaySettings) {
   const allDates = Array.from(new Set(rows.map(getDate).filter(Boolean))).sort();
   const latestDate = allDates[allDates.length - 1] || "";
   const last7Dates = new Set(allDates.slice(-7));
@@ -174,29 +188,41 @@ function buildEfficiencyRows(rows: Row[]) {
       const cpaChange7d = changePct(last7.cpa, prev7.cpa);
       const roasChange7d = changePct(last7.roas, prev7.roas);
 
+      const cpaDecayMultiplier = 1 + settings.cpaDecayPct / 100;
+      const roasDecayMultiplier = 1 - settings.roasDecayPct / 100;
+      const ctrDecayMultiplier = 1 - settings.ctrDecayPct / 100;
+      const cpmRiseMultiplier = 1 + settings.cpmRisePct / 100;
+
+      const scaleSpendMultiplier = 1 + settings.scaleSpendIncreasePct / 100;
+      const scaleCpaMultiplier = 1 + settings.scaleCpaWorsePct / 100;
+      const scaleRoasMultiplier = 1 - settings.scaleRoasDropPct / 100;
+
       const isCpaDecay =
-        last7.purchases >= 2 &&
-        lifetime.purchases >= 3 &&
+        last7.spend >= settings.minLast7Spend &&
+        last7.purchases >= settings.minLast7Purchases &&
+        lifetime.purchases >= settings.minLifetimePurchases &&
         lifetime.cpa > 0 &&
-        last7.cpa >= lifetime.cpa * 1.3;
+        last7.cpa >= lifetime.cpa * cpaDecayMultiplier;
 
       const isRoasDecay =
-        last7.spend >= 1000 &&
+        last7.spend >= settings.minLast7Spend &&
         lifetime.roas > 0 &&
-        last7.roas <= lifetime.roas * 0.75;
+        last7.roas <= lifetime.roas * roasDecayMultiplier;
 
       const isAttentionDecay =
-        last7.impressions >= 2000 &&
+        last7.impressions >= settings.minLast7Impressions &&
         lifetime.ctr > 0 &&
         lifetime.cpm > 0 &&
-        last7.ctr <= lifetime.ctr * 0.8 &&
-        last7.cpm >= lifetime.cpm * 1.15;
+        last7.ctr <= lifetime.ctr * ctrDecayMultiplier &&
+        last7.cpm >= lifetime.cpm * cpmRiseMultiplier;
 
       const isScaleFatigue =
         prev7.spend > 0 &&
-        last7.spend > prev7.spend &&
-        last7.cpa > prev7.cpa &&
-        last7.roas < prev7.roas;
+        last7.spend >= prev7.spend * scaleSpendMultiplier &&
+        (
+          (prev7.cpa > 0 && last7.cpa >= prev7.cpa * scaleCpaMultiplier) ||
+          (prev7.roas > 0 && last7.roas <= prev7.roas * scaleRoasMultiplier)
+        );
 
       const tags = [
         isCpaDecay ? "CPA Decay" : null,
@@ -295,12 +321,68 @@ function InfoBox({ title, lines }: { title: string; lines: string[] }) {
   );
 }
 
+
+function SettingInput({
+  label,
+  value,
+  onChange,
+  suffix = "%",
+  step = 1,
+  min = 0,
+}: {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+  suffix?: string;
+  step?: number;
+  min?: number;
+}) {
+  return (
+    <label className="rounded-xl border border-current/10 bg-current/[0.025] p-3">
+      <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-55">{label}</p>
+      <div className="mt-2 flex items-center gap-2">
+        <input
+          type="number"
+          min={min}
+          step={step}
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value || 0))}
+          className="w-full rounded-lg border border-current/10 bg-transparent px-2 py-1.5 text-sm font-black outline-none"
+        />
+        <span className="text-xs font-black opacity-55">{suffix}</span>
+      </div>
+    </label>
+  );
+}
+
+
 export function EfficiencyDecayTab() {
   const rows = useMetaStore((state) => state.performanceRows);
   const [filter, setFilter] = useState<DecayFilter>("all");
 
+  const [settings, setSettings] = useState<DecaySettings>({
+    cpaDecayPct: 30,
+    roasDecayPct: 25,
+    ctrDecayPct: 20,
+    cpmRisePct: 15,
+    minLast7Spend: 1000,
+    minLast7Purchases: 1,
+    minLifetimePurchases: 3,
+    minLast7Impressions: 2000,
+    scaleSpendIncreasePct: 10,
+    scaleCpaWorsePct: 10,
+    scaleRoasDropPct: 10,
+  });
+
+  function updateSetting(key: keyof DecaySettings, value: number) {
+    setSettings((current) => ({
+      ...current,
+      [key]: Math.max(0, value),
+    }));
+  }
+
   const data = useMemo(() => {
-    const items = buildEfficiencyRows(rows);
+    const items = buildEfficiencyRows(rows, settings);
 
     return {
       items,
@@ -311,7 +393,7 @@ export function EfficiencyDecayTab() {
       scaleFatigue: items.filter((x) => x.isScaleFatigue).length,
       spendAtRisk: items.reduce((s, x) => s + x.last7.spend, 0),
     };
-  }, [rows]);
+  }, [rows, settings]);
 
   const visibleItems = useMemo(() => {
     if (filter === "cpa") return data.items.filter((x) => x.isCpaDecay);
@@ -355,6 +437,56 @@ export function EfficiencyDecayTab() {
           <Kpi label="ROAS Decay" value={String(data.roasDecay)} tone={data.roasDecay ? "red" : "green"} />
           <Kpi label="Attention Decay" value={String(data.attentionDecay)} tone={data.attentionDecay ? "amber" : "green"} />
           <Kpi label="7D Spend At Risk" value={money(data.spendAtRisk)} tone={data.spendAtRisk ? "red" : "green"} />
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-current/10 bg-current/[0.025] p-4">
+        <div className="mb-3 flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 className="text-lg font-black">Dynamic Decay Rules</h2>
+            <p className="mt-1 text-sm opacity-60">
+              Change thresholds and the action queue updates instantly. Use stricter values for high-confidence action, lower values for early warning.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() =>
+              setSettings({
+                cpaDecayPct: 30,
+                roasDecayPct: 25,
+                ctrDecayPct: 20,
+                cpmRisePct: 15,
+                minLast7Spend: 1000,
+                minLast7Purchases: 1,
+                minLifetimePurchases: 3,
+                minLast7Impressions: 2000,
+                scaleSpendIncreasePct: 10,
+                scaleCpaWorsePct: 10,
+                scaleRoasDropPct: 10,
+              })
+            }
+            className="rounded-full border border-current/10 px-3 py-1.5 text-xs font-black"
+          >
+            Reset Defaults
+          </button>
+        </div>
+
+        <div className="grid gap-2 md:grid-cols-3 xl:grid-cols-6">
+          <SettingInput label="CPA Decay" value={settings.cpaDecayPct} onChange={(v) => updateSetting("cpaDecayPct", v)} />
+          <SettingInput label="ROAS Decay" value={settings.roasDecayPct} onChange={(v) => updateSetting("roasDecayPct", v)} />
+          <SettingInput label="CTR Decay" value={settings.ctrDecayPct} onChange={(v) => updateSetting("ctrDecayPct", v)} />
+          <SettingInput label="CPM Rise" value={settings.cpmRisePct} onChange={(v) => updateSetting("cpmRisePct", v)} />
+          <SettingInput label="Min 7D Spend" value={settings.minLast7Spend} onChange={(v) => updateSetting("minLast7Spend", v)} suffix="₹" step={500} />
+          <SettingInput label="Min 7D Purch." value={settings.minLast7Purchases} onChange={(v) => updateSetting("minLast7Purchases", v)} suffix="orders" step={1} />
+        </div>
+
+        <div className="mt-2 grid gap-2 md:grid-cols-3 xl:grid-cols-4">
+          <SettingInput label="Min Lifetime Purch." value={settings.minLifetimePurchases} onChange={(v) => updateSetting("minLifetimePurchases", v)} suffix="orders" step={1} />
+          <SettingInput label="Min 7D Impr." value={settings.minLast7Impressions} onChange={(v) => updateSetting("minLast7Impressions", v)} suffix="impr." step={500} />
+          <SettingInput label="Scale Spend Up" value={settings.scaleSpendIncreasePct} onChange={(v) => updateSetting("scaleSpendIncreasePct", v)} />
+          <SettingInput label="Scale CPA Worse" value={settings.scaleCpaWorsePct} onChange={(v) => updateSetting("scaleCpaWorsePct", v)} />
+          <SettingInput label="Scale ROAS Drop" value={settings.scaleRoasDropPct} onChange={(v) => updateSetting("scaleRoasDropPct", v)} />
         </div>
       </section>
 
@@ -426,9 +558,9 @@ export function EfficiencyDecayTab() {
                 <InfoBox
                   title="Why It Is Flagged"
                   lines={[
-                    item.isCpaDecay ? `CPA decay: Last 7D CPA is ${pct(item.cpaChange)} vs lifetime.` : "",
-                    item.isRoasDecay ? `ROAS decay: Last 7D ROAS is ${pct(Math.abs(item.roasChange))} lower vs lifetime.` : "",
-                    item.isAttentionDecay ? `Attention decay: CTR is down ${pct(Math.abs(item.ctrChange))} while CPM is up ${pct(item.cpmChange)}.` : "",
+                    item.isCpaDecay ? `CPA decay: Last 7D CPA is ${pct(item.cpaChange)} vs lifetime. Rule: ${settings.cpaDecayPct}%+ worse.` : "",
+                    item.isRoasDecay ? `ROAS decay: Last 7D ROAS is ${pct(Math.abs(item.roasChange))} lower vs lifetime. Rule: ${settings.roasDecayPct}%+ drop.` : "",
+                    item.isAttentionDecay ? `Attention decay: CTR is down ${pct(Math.abs(item.ctrChange))} while CPM is up ${pct(item.cpmChange)}. Rules: CTR ${settings.ctrDecayPct}% down + CPM ${settings.cpmRisePct}% up.` : "",
                     item.isScaleFatigue ? `Scale fatigue: Spend increased vs previous 7D but CPA worsened and ROAS dropped.` : "",
                   ].filter(Boolean)}
                 />
