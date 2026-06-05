@@ -7,6 +7,25 @@ import { useMetaStore } from "@/store/metaStore";
 type Row = Record<string, any>;
 type QualityFilter = "all" | "efficient_scale" | "bad_scale" | "underfed_winner" | "spend_cut_risk" | "hold";
 
+type ScaleSettings = {
+  minIncrementalSpend: number;
+
+  efficientSpendIncreasePct: number;
+  efficientCpaImprovePct: number;
+  efficientRoasImprovePct: number;
+
+  badSpendIncreasePct: number;
+  badCpaWorsePct: number;
+  badRoasDropPct: number;
+
+  underfedMaxLast7Spend: number;
+  underfedMinPurchases: number;
+  underfedMinRoas: number;
+
+  spendCutDecreasePct: number;
+  spendCutRoasDropPct: number;
+};
+
 const money = (n: number) => `₹${Math.round(Number(n || 0)).toLocaleString("en-IN")}`;
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
 const pct = (n: number, d = 1) => `${num(Number(n || 0) * 100, d)}%`;
@@ -137,7 +156,7 @@ function verdictTone(verdict: QualityFilter): "red" | "green" | "amber" | "neutr
   return "neutral";
 }
 
-function buildScaleRows(rows: Row[]) {
+function buildScaleRows(rows: Row[], settings: ScaleSettings) {
   const dates = Array.from(new Set(rows.map(getDate).filter(Boolean))).sort();
   const latestDate = dates[dates.length - 1] || "";
   const last7Dates = new Set(dates.slice(-7));
@@ -179,17 +198,69 @@ function buildScaleRows(rows: Row[]) {
 
       let verdict: QualityFilter = "hold";
 
-      const spendUp = last7.spend > prev7.spend && incrementalSpend > 500;
-      const spendDown = last7.spend < prev7.spend && Math.abs(incrementalSpend) > 500;
-      const cpaImproved = prev7.cpa > 0 && last7.cpa > 0 && last7.cpa <= prev7.cpa * 0.9;
-      const cpaWorse = prev7.cpa > 0 && last7.cpa >= prev7.cpa * 1.15;
-      const roasImproved = prev7.roas > 0 && last7.roas >= prev7.roas * 1.1;
-      const roasWorse = prev7.roas > 0 && last7.roas <= prev7.roas * 0.85;
+      const efficientSpendMultiplier = 1 + settings.efficientSpendIncreasePct / 100;
+      const efficientCpaMultiplier = 1 - settings.efficientCpaImprovePct / 100;
+      const efficientRoasMultiplier = 1 + settings.efficientRoasImprovePct / 100;
+
+      const badSpendMultiplier = 1 + settings.badSpendIncreasePct / 100;
+      const badCpaMultiplier = 1 + settings.badCpaWorsePct / 100;
+      const badRoasMultiplier = 1 - settings.badRoasDropPct / 100;
+
+      const spendCutMultiplier = 1 - settings.spendCutDecreasePct / 100;
+      const spendCutRoasMultiplier = 1 - settings.spendCutRoasDropPct / 100;
+
+      const spendUp =
+        prev7.spend > 0 &&
+        last7.spend >= prev7.spend * efficientSpendMultiplier &&
+        Math.abs(incrementalSpend) >= settings.minIncrementalSpend;
+
+      const badSpendUp =
+        prev7.spend > 0 &&
+        last7.spend >= prev7.spend * badSpendMultiplier &&
+        Math.abs(incrementalSpend) >= settings.minIncrementalSpend;
+
+      const spendDown =
+        prev7.spend > 0 &&
+        last7.spend <= prev7.spend * spendCutMultiplier &&
+        Math.abs(incrementalSpend) >= settings.minIncrementalSpend;
+
+      const cpaImproved =
+        prev7.cpa > 0 &&
+        last7.cpa > 0 &&
+        last7.cpa <= prev7.cpa * efficientCpaMultiplier;
+
+      const cpaWorse =
+        prev7.cpa > 0 &&
+        last7.cpa >= prev7.cpa * badCpaMultiplier;
+
+      const roasImproved =
+        prev7.roas > 0 &&
+        last7.roas >= prev7.roas * efficientRoasMultiplier;
+
+      const roasWorse =
+        prev7.roas > 0 &&
+        last7.roas <= prev7.roas * badRoasMultiplier;
+
+      const spendCutRoasWorse =
+        prev7.roas > 0 &&
+        last7.roas <= prev7.roas * spendCutRoasMultiplier;
 
       if (spendUp && (cpaImproved || roasImproved)) verdict = "efficient_scale";
-      if (spendUp && cpaWorse && roasWorse) verdict = "bad_scale";
-      if (!spendUp && last7.spend < 3000 && last7.purchases >= 2 && last7.roas >= 1.2 && last7.cpa <= lifetime.cpa) verdict = "underfed_winner";
-      if (spendDown && roasWorse && last7.purchases > 0) verdict = "spend_cut_risk";
+
+      if (badSpendUp && cpaWorse && roasWorse) verdict = "bad_scale";
+
+      if (
+        !badSpendUp &&
+        last7.spend <= settings.underfedMaxLast7Spend &&
+        last7.purchases >= settings.underfedMinPurchases &&
+        last7.roas >= settings.underfedMinRoas &&
+        lifetime.cpa > 0 &&
+        last7.cpa <= lifetime.cpa
+      ) {
+        verdict = "underfed_winner";
+      }
+
+      if (spendDown && spendCutRoasWorse && last7.purchases > 0) verdict = "spend_cut_risk";
 
       const score =
         Math.abs(incrementalSpend) / 1000 +
@@ -274,12 +345,75 @@ function InfoBox({ title, lines }: { title: string; lines: string[] }) {
   );
 }
 
+
+function SettingInput({
+  label,
+  value,
+  onChange,
+  suffix = "%",
+  step = 1,
+  min = 0,
+}: {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+  suffix?: string;
+  step?: number;
+  min?: number;
+}) {
+  return (
+    <label className="rounded-xl border border-current/10 bg-current/[0.025] p-3">
+      <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-55">{label}</p>
+      <div className="mt-2 flex items-center gap-2">
+        <input
+          type="number"
+          min={min}
+          step={step}
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value || 0))}
+          className="w-full rounded-lg border border-current/10 bg-transparent px-2 py-1.5 text-sm font-black outline-none"
+        />
+        <span className="text-xs font-black opacity-55">{suffix}</span>
+      </div>
+    </label>
+  );
+}
+
+
 export function ScaleQualityTab() {
   const rows = useMetaStore((state) => state.performanceRows);
   const [filter, setFilter] = useState<QualityFilter>("all");
 
+  const defaultSettings: ScaleSettings = {
+    minIncrementalSpend: 500,
+
+    efficientSpendIncreasePct: 10,
+    efficientCpaImprovePct: 10,
+    efficientRoasImprovePct: 10,
+
+    badSpendIncreasePct: 10,
+    badCpaWorsePct: 15,
+    badRoasDropPct: 15,
+
+    underfedMaxLast7Spend: 3000,
+    underfedMinPurchases: 2,
+    underfedMinRoas: 1.2,
+
+    spendCutDecreasePct: 10,
+    spendCutRoasDropPct: 10,
+  };
+
+  const [settings, setSettings] = useState<ScaleSettings>(defaultSettings);
+
+  function updateSetting(key: keyof ScaleSettings, value: number) {
+    setSettings((current) => ({
+      ...current,
+      [key]: Math.max(0, value),
+    }));
+  }
+
   const data = useMemo(() => {
-    const items = buildScaleRows(rows);
+    const items = buildScaleRows(rows, settings);
 
     return {
       items,
@@ -291,7 +425,7 @@ export function ScaleQualityTab() {
       incrementalSpend: items.reduce((s, x) => s + x.incrementalSpend, 0),
       incrementalRevenue: items.reduce((s, x) => s + x.incrementalRevenue, 0),
     };
-  }, [rows]);
+  }, [rows, settings]);
 
   const visibleItems = useMemo(() => {
     if (filter === "all") return data.items;
@@ -333,6 +467,44 @@ export function ScaleQualityTab() {
           <Kpi label="Underfed Winners" value={String(data.underfedWinner)} tone={data.underfedWinner ? "green" : "neutral"} />
           <Kpi label="Incremental Spend" value={money(data.incrementalSpend)} tone={data.incrementalSpend > 0 ? "amber" : "neutral"} />
           <Kpi label="Incremental Revenue" value={money(data.incrementalRevenue)} tone={data.incrementalRevenue >= 0 ? "green" : "red"} />
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-current/10 bg-current/[0.025] p-4">
+        <div className="mb-3 flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 className="text-lg font-black">Dynamic Scale Rules</h2>
+            <p className="mt-1 text-sm opacity-60">
+              Modify the thresholds to decide what qualifies as efficient scale, bad scale, underfed winner, or spend cut risk.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setSettings(defaultSettings)}
+            className="rounded-full border border-current/10 px-3 py-1.5 text-xs font-black"
+          >
+            Reset Defaults
+          </button>
+        </div>
+
+        <div className="grid gap-2 md:grid-cols-3 xl:grid-cols-5">
+          <SettingInput label="Min Incr. Spend" value={settings.minIncrementalSpend} onChange={(v) => updateSetting("minIncrementalSpend", v)} suffix="₹" step={500} />
+
+          <SettingInput label="Eff. Spend Up" value={settings.efficientSpendIncreasePct} onChange={(v) => updateSetting("efficientSpendIncreasePct", v)} />
+          <SettingInput label="Eff. CPA Better" value={settings.efficientCpaImprovePct} onChange={(v) => updateSetting("efficientCpaImprovePct", v)} />
+          <SettingInput label="Eff. ROAS Better" value={settings.efficientRoasImprovePct} onChange={(v) => updateSetting("efficientRoasImprovePct", v)} />
+
+          <SettingInput label="Bad Spend Up" value={settings.badSpendIncreasePct} onChange={(v) => updateSetting("badSpendIncreasePct", v)} />
+          <SettingInput label="Bad CPA Worse" value={settings.badCpaWorsePct} onChange={(v) => updateSetting("badCpaWorsePct", v)} />
+          <SettingInput label="Bad ROAS Drop" value={settings.badRoasDropPct} onChange={(v) => updateSetting("badRoasDropPct", v)} />
+
+          <SettingInput label="Underfed Max 7D" value={settings.underfedMaxLast7Spend} onChange={(v) => updateSetting("underfedMaxLast7Spend", v)} suffix="₹" step={500} />
+          <SettingInput label="Underfed Purch." value={settings.underfedMinPurchases} onChange={(v) => updateSetting("underfedMinPurchases", v)} suffix="orders" step={1} />
+          <SettingInput label="Underfed ROAS" value={settings.underfedMinRoas} onChange={(v) => updateSetting("underfedMinRoas", v)} suffix="x" step={0.1} />
+
+          <SettingInput label="Spend Cut Down" value={settings.spendCutDecreasePct} onChange={(v) => updateSetting("spendCutDecreasePct", v)} />
+          <SettingInput label="Cut ROAS Drop" value={settings.spendCutRoasDropPct} onChange={(v) => updateSetting("spendCutRoasDropPct", v)} />
         </div>
       </section>
 
@@ -417,10 +589,10 @@ export function ScaleQualityTab() {
                 <InfoBox
                   title="Recommended Action"
                   lines={[
-                    item.verdict === "efficient_scale" ? "Eligible for cautious budget increase." : "",
-                    item.verdict === "bad_scale" ? "Stop increasing budget. Reduce or refresh." : "",
-                    item.verdict === "underfed_winner" ? "Consider giving more budget/testing extraction into control." : "",
-                    item.verdict === "spend_cut_risk" ? "Investigate why spend was cut while performance also weakened." : "",
+                    item.verdict === "efficient_scale" ? `Eligible for cautious budget increase. Rule: spend up ${settings.efficientSpendIncreasePct}%+ with CPA ${settings.efficientCpaImprovePct}% better or ROAS ${settings.efficientRoasImprovePct}% better.` : "",
+                    item.verdict === "bad_scale" ? `Stop increasing budget. Rule: spend up ${settings.badSpendIncreasePct}%+, CPA ${settings.badCpaWorsePct}% worse and ROAS ${settings.badRoasDropPct}% down.` : "",
+                    item.verdict === "underfed_winner" ? `Consider giving more budget/testing extraction into control. Rule: max 7D spend ${money(settings.underfedMaxLast7Spend)}, ROAS ${num(settings.underfedMinRoas, 1)}x+.` : "",
+                    item.verdict === "spend_cut_risk" ? `Investigate why spend was cut while performance also weakened. Rule: spend down ${settings.spendCutDecreasePct}%+ and ROAS down ${settings.spendCutRoasDropPct}%+.` : "",
                     item.verdict === "hold" ? "No strong scale signal. Keep monitoring." : "",
                   ].filter(Boolean)}
                 />
