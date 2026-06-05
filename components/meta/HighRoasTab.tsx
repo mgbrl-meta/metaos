@@ -414,7 +414,7 @@ export function HighRoasTab() {
         <div className="divide-y divide-current/10">
           {data.items.map((item) => (
             <details key={item.key} className="group">
-              <summary className="grid cursor-pointer list-none grid-cols-[1fr_90px_72px_72px_72px_72px_72px_72px_24px] items-center gap-3 px-4 py-3 text-xs hover:bg-current/[0.035]">
+              <summary className="creative-summary-row cursor-pointer list-none px-4 py-3 text-xs hover:bg-current/[0.035]">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full border border-emerald-300 bg-emerald-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">
