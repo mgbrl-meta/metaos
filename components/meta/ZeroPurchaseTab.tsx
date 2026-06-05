@@ -341,9 +341,10 @@ export function ZeroPurchaseTab() {
       <section className="rounded-xl border border-current/10 bg-current/[0.025]">
         <div className="flex items-center justify-between gap-3 border-b border-current/10 px-4 py-3">
           <div>
-            <h2 className="text-lg font-black">Zero Purchase Ads</h2>
-            <p className="mt-1 text-sm opacity-60">
-              Showing ads live yesterday with lifetime spend above {money(threshold)} and 0 lifetime purchases.
+            <h2 className="text-lg font-black">Live Ads With Zero Purchases</h2>
+            <p className="mt-1 max-w-3xl text-sm opacity-60">
+              Active ads that spent on the latest date, crossed {money(threshold)} lifetime spend, and still have 0 recorded purchases.
+              Review these first for pause, cap, or rebuild decisions.
             </p>
           </div>
 
@@ -376,6 +377,7 @@ export function ZeroPurchaseTab() {
                 <Metric label="CPM" value={money(item.lifetime.cpm)} />
                 <Metric label="CTR" value={pct(item.lifetime.ctr)} />
                 <Metric label="CPA" value="No sale" tone="red" />
+                <Metric label="ROAS" value="0.00x" tone="red" />
                 <Metric label="Last 7D Spend" value={money(item.last7.spend)} />
                 <Metric label="Last 7D CPA" value="No sale" tone="red" />
                 <Metric
@@ -383,7 +385,6 @@ export function ZeroPurchaseTab() {
                   value={`${num(item.last7.roas)}x`}
                   tone={item.last7.roas > 0 ? "green" : "red"}
                 />
-                <Metric label="ROAS" value="0.00x" tone="red" />
                 <ChevronDown className="h-4 w-4 opacity-45 transition group-open:rotate-180" />
               </summary>
 
