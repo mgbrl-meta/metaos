@@ -182,7 +182,7 @@ export function MetaOSShell({
   const { theme } = useThemeStore();
   const isDark = theme === "dark";
 
-  const isGoogle = osMode === "google";
+  const isGoogle = false;
 
   function osModePillClass(isActive: boolean) {
     return isActive
@@ -197,7 +197,7 @@ export function MetaOSShell({
   }
 
 
-  const activeNav = isGoogle ? googleNav : metaNav;
+  const activeNav = metaNav;
 
   useEffect(() => {
     document.documentElement.classList.toggle("os-dark", isDark);
@@ -220,8 +220,8 @@ export function MetaOSShell({
     setMobileOpen(false);
   }, [osMode, activeMetaTab, activeGoogleTab, activeSystemTab]);
 
-  function switchOS(mode: OSMode) {
-    setOsMode(mode);
+  function switchOS(_mode: OSMode) {
+    setOsMode("meta");
     setActiveSystemTab(null);
   }
 
@@ -278,7 +278,7 @@ export function MetaOSShell({
                         : "text-[12px] font-black uppercase tracking-[0.18em] text-[#0A84FF]"
                     }
                   >
-                    {isGoogle ? "Google OS" : "Meta OS"}
+                    "Meta OS"
                   </p>
                   <p className="text-[10px] font-bold uppercase tracking-[0.16em] opacity-45">
                     Daily Performance OS
@@ -295,22 +295,15 @@ export function MetaOSShell({
                 >
                   META OS
                 </button>
-                <button
-                  type="button"
-                  onClick={() => switchOS("google")}
-                  data-os-mode-active={osMode === "google" ? "true" : "false"}
-                  className={osMode === "google" ? "metaos-apple-pill metaos-apple-pill-active" : "metaos-apple-pill metaos-apple-pill-inactive"}
-                >
-                  GOOGLE OS
-                </button>
+                
               </div>
 
               <div className="min-w-0 flex-1" />
 
               <div className="hidden items-center gap-2 rounded-xl border border-current/10 bg-current/[0.04] px-3 py-2 lg:flex">
-                <span className={isGoogle ? "h-2 w-2 rounded-full bg-emerald-400" : "h-2 w-2 rounded-full bg-[#0A84FF]"} />
+                <span className="h-2 w-2 rounded-full bg-[#0A84FF]" />
                 <span className="text-[11px] font-black uppercase tracking-[0.14em] opacity-60">
-                  {isGoogle ? "BigQuery Live" : "Sheet Live"}
+                  "Sheet Live"
                 </span>
               </div>
 
@@ -341,16 +334,7 @@ export function MetaOSShell({
                 >
                   META
                 </button>
-                <button
-                  onClick={() => switchOS("google")}
-                  className={
-                    osMode === "google"
-                      ? "rounded-lg bg-emerald-400 px-3 py-1.5 text-[11px] font-black text-black"
-                      : "rounded-lg px-3 py-1.5 text-[11px] font-black opacity-45"
-                  }
-                >
-                  GOOGLE
-                </button>
+                
               </div>
 
               {activeNav.map((item) => {
@@ -396,15 +380,13 @@ export function MetaOSShell({
                 <div className="flex items-center gap-3">
                   <div
                     className={
-                      isGoogle
-                        ? "flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4285F4] via-[#34A853] to-[#FBBC05]"
-                        : "flex h-10 w-10 items-center justify-center rounded-xl bg-[#0A84FF]"
+                      "flex h-10 w-10 items-center justify-center rounded-xl bg-[#0A84FF]"
                     }
                   >
-                    {isGoogle ? <Search className="h-5 w-5" /> : <Zap className="h-5 w-5 fill-white" />}
+                    <Zap className="h-5 w-5 fill-white" />
                   </div>
                   <div>
-                    <p className="text-sm font-black">{isGoogle ? "Google OS" : "Meta OS"}</p>
+                    <p className="text-sm font-black">"Meta OS"</p>
                     <p className="text-xs opacity-45">Daily Performance OS</p>
                   </div>
                 </div>
@@ -428,16 +410,7 @@ export function MetaOSShell({
                 >
                   META OS
                 </button>
-                <button
-                  onClick={() => switchOS("google")}
-                  className={
-                    osMode === "google"
-                      ? "rounded-lg bg-emerald-400 px-3 py-2 text-xs font-black text-black"
-                      : "rounded-lg px-3 py-2 text-xs font-black opacity-55"
-                  }
-                >
-                  GOOGLE OS
-                </button>
+                
               </div>
 
               <div className="mt-5 grid gap-2">
@@ -506,7 +479,7 @@ export function MetaOSShell({
                       {isGoogle ? "Google Ads" : "Meta Ads"}
                     </span>
                     <span className="rounded-full border border-current/10 bg-current/[0.035] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] opacity-45">
-                      {isGoogle ? "BigQuery Live" : "Sheet Live"}
+                      "Sheet Live"
                     </span>
                   </div>
 
