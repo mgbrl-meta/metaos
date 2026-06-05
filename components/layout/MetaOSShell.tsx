@@ -414,9 +414,7 @@ export function MetaOSShell({
               <div className="mt-5 grid gap-2">
                 {activeNav.map((item) => {
                   const Icon = item.icon;
-                  const active =
-                    !activeSystemTab &&
-                    (isGoogle ? activeGoogleTab === item.id : activeMetaTab === item.id);
+                  const active = !activeSystemTab && activeMetaTab === item.id;
 
                   return (
                     <button
