@@ -461,20 +461,6 @@ const liveRows = useMemo(() => onlyLiveRows(performanceRows), [performanceRows])
   }, [liveRows, preset, customMode, customStartDate, customEndDate, defaultRange]);
 
   if (!liveRows.length) {
-  const spendPeriodRows =
-    data.periodComparisons ||
-    data.periodRows ||
-    data.comparisons ||
-    [];
-
-  const spendLast30DailyRows = [...(data.daily || [])]
-    .sort((a: any, b: any) => new Date(String(b.date || "")).getTime() - new Date(String(a.date || "")).getTime())
-    .slice(0, 30);
-
-  const spendSortedPeriodRows = spendSortRows(spendPeriodRows, spendPeriodSort);
-  const spendSortedDailyRows = spendSortRows(spendLast30DailyRows, spendDailySort);
-
-
   return (
       <GlassCard className="p-8">
         <h2 className="text-2xl font-black">Spend Visuals</h2>
