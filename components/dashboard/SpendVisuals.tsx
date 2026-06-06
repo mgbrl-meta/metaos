@@ -480,15 +480,19 @@ const liveRows = useMemo(() => onlyLiveRows(performanceRows), [performanceRows])
   }, [liveRows, preset, customMode, customStartDate, customEndDate, defaultRange]);
 
   if (!liveRows.length) {
-  
   const spendPeriodRows =
     data.periodComparisons ||
     data.periodRows ||
     data.comparisons ||
     [];
 
+  const spendLast30DailyRows = [...(data.daily || [])]
+    .sort((a: any, b: any) => new Date(String(b.date || "")).getTime() - new Date(String(a.date || "")).getTime())
+    .slice(0, 30);
+
   const spendSortedPeriodRows = spendSortRows(spendPeriodRows, spendPeriodSort);
-  const spendSortedDailyRows = spendSortRows(data.daily || [], spendDailySort);
+  const spendSortedDailyRows = spendSortRows(spendLast30DailyRows, spendDailySort);
+
 
   return (
       <GlassCard className="p-8">
@@ -892,7 +896,7 @@ return (
         <div className="border-b border-current/10 p-5">
           <h2 className="text-xl font-black">Daily Performance Detail</h2>
           <MutedText className="mt-1 text-sm">
-            Raw daily view for validation after reading the period comparison.
+            Last 30 available days only. Click any column header to sort.
           </MutedText>
         </div>
 
