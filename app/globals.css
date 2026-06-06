@@ -3453,3 +3453,177 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   }
 }
 
+
+/* =========================================================
+   METAOS THEME TOOLKIT — TEXT + CHART READABILITY
+   This is the global contract for light/dark readability.
+   Use these tokens instead of ad-hoc opacity/currentColor fixes.
+   ========================================================= */
+
+.os-light {
+  --meta-page-bg: #f6f7f8;
+  --meta-surface: #ffffff;
+  --meta-surface-soft: #f8fafc;
+  --meta-border: rgba(15, 23, 42, 0.10);
+
+  --meta-text: #0f172a;
+  --meta-text-soft: #334155;
+  --meta-text-muted: #64748b;
+  --meta-text-faint: #94a3b8;
+
+  --meta-chart-axis: #475569;
+  --meta-chart-axis-strong: #0f172a;
+  --meta-chart-grid: rgba(15, 23, 42, 0.10);
+
+  --meta-card-bg: rgba(255,255,255,0.92);
+  --meta-card-bg-soft: rgba(248,250,252,0.86);
+}
+
+.os-dark {
+  --meta-page-bg: #050608;
+  --meta-surface: #101419;
+  --meta-surface-soft: #141922;
+  --meta-border: rgba(226, 232, 240, 0.14);
+
+  --meta-text: #f8fafc;
+  --meta-text-soft: #dbe4ef;
+  --meta-text-muted: #aab6c5;
+  --meta-text-faint: #7f8a99;
+
+  --meta-chart-axis: #cbd5e1;
+  --meta-chart-axis-strong: #f8fafc;
+  --meta-chart-grid: rgba(226, 232, 240, 0.13);
+
+  --meta-card-bg: rgba(16,20,25,0.94);
+  --meta-card-bg-soft: rgba(20,25,34,0.86);
+}
+
+/* App-wide readable text contract */
+.metaos-app {
+  color: var(--meta-text) !important;
+  background: var(--meta-page-bg) !important;
+}
+
+/* Fix low contrast caused by nested opacity/currentColor blocks */
+.metaos-app section,
+.metaos-app article,
+.metaos-app .rounded-xl,
+.metaos-app .rounded-2xl {
+  color: var(--meta-text) !important;
+}
+
+/* Headings should never inherit faint opacity */
+.metaos-app h1,
+.metaos-app h2,
+.metaos-app h3,
+.metaos-app h4,
+.metaos-app .font-black {
+  color: var(--meta-text) !important;
+}
+
+/* Paragraph/support text */
+.metaos-app p.opacity-60,
+.metaos-app .opacity-60 {
+  color: var(--meta-text-muted) !important;
+  opacity: 1 !important;
+}
+
+.metaos-app .opacity-45,
+.metaos-app .opacity-50,
+.metaos-app .opacity-55 {
+  color: var(--meta-text-faint) !important;
+  opacity: 1 !important;
+}
+
+.metaos-app .opacity-70,
+.metaos-app .opacity-80 {
+  color: var(--meta-text-soft) !important;
+  opacity: 1 !important;
+}
+
+/* Card surfaces */
+.metaos-app .bg-current\/\[0\.025\],
+.metaos-app .bg-current\/\[0\.035\],
+.metaos-app .bg-current\/\[0\.04\] {
+  background-color: var(--meta-card-bg-soft) !important;
+}
+
+.metaos-app .border-current\/10 {
+  border-color: var(--meta-border) !important;
+}
+
+/* Recharts global text + axis toolkit */
+.metaos-app .recharts-wrapper,
+.metaos-app .recharts-surface {
+  color: var(--meta-text) !important;
+}
+
+.metaos-app .recharts-text,
+.metaos-app .recharts-cartesian-axis-tick-value,
+.metaos-app .recharts-label,
+.metaos-app .recharts-legend-item-text {
+  fill: var(--meta-chart-axis) !important;
+  color: var(--meta-chart-axis) !important;
+  opacity: 1 !important;
+  font-weight: 700 !important;
+}
+
+.metaos-app .recharts-cartesian-axis-line,
+.metaos-app .recharts-cartesian-axis-tick-line {
+  stroke: var(--meta-chart-grid) !important;
+}
+
+.metaos-app .recharts-cartesian-grid line {
+  stroke: var(--meta-chart-grid) !important;
+}
+
+/* Tooltip should always be readable in both modes */
+.meta-chart-tooltip,
+.metaos-app .recharts-default-tooltip {
+  background: #0b0f14 !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  border-radius: 12px !important;
+  color: #ffffff !important;
+  box-shadow: 0 18px 44px rgba(0,0,0,0.38) !important;
+  padding: 10px 12px !important;
+}
+
+.meta-chart-tooltip-title {
+  color: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  margin-bottom: 8px !important;
+}
+
+.meta-chart-tooltip-body {
+  display: grid !important;
+  gap: 6px !important;
+}
+
+.meta-chart-tooltip-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  font-size: 11px !important;
+}
+
+.meta-chart-tooltip-row span {
+  color: rgba(255,255,255,0.72) !important;
+  font-weight: 800 !important;
+}
+
+.meta-chart-tooltip-row strong {
+  color: #ffffff !important;
+  font-weight: 900 !important;
+}
+
+/* SVG text override for stubborn chart labels */
+.metaos-app svg text {
+  fill: var(--meta-chart-axis) !important;
+  opacity: 1 !important;
+}
+
+.metaos-app svg text.recharts-text {
+  fill: var(--meta-chart-axis) !important;
+}
+

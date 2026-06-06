@@ -426,13 +426,13 @@ export function EnhancedMonthlyReport() {
         <div className="h-[320px] w-full">
           <ResponsiveContainer width="100%" height={320}>
             <BarChart data={selectedWeeklyRows} margin={{ top: 10, right: 24, left: 16, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.18)" />
-              <XAxis dataKey="monthTick" tick={{ fontSize: 10, fill: "currentColor" }} axisLine={false} tickLine={false} minTickGap={14} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--meta-chart-grid)" />
+              <XAxis dataKey="monthTick" tick={{ fontSize: 10, fill: "var(--meta-chart-axis)" }} axisLine={false} tickLine={false} minTickGap={14} />
               <YAxis
                 yAxisId="spend"
                 scale="log"
                 domain={[1, "auto"]}
-                tick={{ fontSize: 10, fill: "currentColor" }}
+                tick={{ fontSize: 10, fill: "var(--meta-chart-axis)" }}
                 axisLine={false}
                 tickLine={false}
                 width={72}
@@ -441,7 +441,7 @@ export function EnhancedMonthlyReport() {
               <YAxis
                 yAxisId="cpa"
                 orientation="right"
-                tick={{ fontSize: 10, fill: "currentColor" }}
+                tick={{ fontSize: 10, fill: "var(--meta-chart-axis)" }}
                 axisLine={false}
                 tickLine={false}
                 width={72}
@@ -489,11 +489,11 @@ export function EnhancedMonthlyReport() {
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={selectedWeeklyRows} margin={{ top: 10, right: 24, left: 16, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.18)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--meta-chart-grid)" />
 
               <XAxis
                 dataKey="monthTick"
-                tick={{ fontSize: 10, fill: "currentColor" }}
+                tick={{ fontSize: 10, fill: "var(--meta-chart-axis)" }}
                 axisLine={false}
                 tickLine={false}
                 minTickGap={14}
@@ -501,7 +501,7 @@ export function EnhancedMonthlyReport() {
 
               <YAxis
                 yAxisId="money"
-                tick={{ fontSize: 10, fill: "currentColor" }}
+                tick={{ fontSize: 10, fill: "var(--meta-chart-axis)" }}
                 axisLine={false}
                 tickLine={false}
                 width={72}
@@ -566,12 +566,12 @@ export function EnhancedMonthlyReport() {
         <div className="h-[320px] w-full">
           <ResponsiveContainer width="100%" height={320}>
             <ScatterChart margin={{ top: 10, right: 24, left: 16, bottom: 12 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.18)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--meta-chart-grid)" />
               <XAxis
                 type="number"
                 dataKey="spend"
                 name="Weekly Spend"
-                tick={{ fontSize: 10, fill: "currentColor" }}
+                tick={{ fontSize: 10, fill: "var(--meta-chart-axis)" }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={formatAxisMoney}
@@ -580,7 +580,7 @@ export function EnhancedMonthlyReport() {
                 type="number"
                 dataKey="cpa"
                 name="Weekly CPA"
-                tick={{ fontSize: 10, fill: "currentColor" }}
+                tick={{ fontSize: 10, fill: "var(--meta-chart-axis)" }}
                 axisLine={false}
                 tickLine={false}
                 width={72}
