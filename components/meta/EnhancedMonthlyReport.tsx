@@ -324,6 +324,29 @@ export function EnhancedMonthlyReport() {
     return hasValidPoint && matchesMonth;
   });
 
+  const selectedWeeklyRows = selectedMonths.length
+    ? data.weeklyRows.filter((row: any) => selectedMonths.includes(row.month))
+    : data.weeklyRows;
+
+  const selectedScatterRows = selectedWeeklyRows.filter(
+    (row: any) => row.spend > 0 && row.cpa !== null && Number.isFinite(Number(row.cpa))
+  );
+
+  function toggleMonth(month: string | null) {
+    if (!month) {
+      setSelectedMonths([]);
+      return;
+    }
+
+    setSelectedMonths((current) => {
+      if (current.includes(month)) {
+        return current.filter((m) => m !== month);
+      }
+
+      return [...current, month];
+    });
+  }
+
   return (
     <div className="grid gap-3">
       <section className="rounded-xl border border-current/10 bg-current/[0.03] p-4">
