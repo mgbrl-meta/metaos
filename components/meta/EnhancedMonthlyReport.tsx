@@ -402,7 +402,7 @@ export function EnhancedMonthlyReport() {
 
         <div className="h-[320px] w-full">
           <ResponsiveContainer width="100%" height={320}>
-            <BarChart data={data.weeklyRows} margin={{ top: 10, right: 24, left: 16, bottom: 8 }}>
+            <BarChart data={selectedWeeklyRows} margin={{ top: 10, right: 24, left: 16, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.18)" />
               <XAxis dataKey="monthTick" tick={{ fontSize: 10, fill: "currentColor" }} axisLine={false} tickLine={false} minTickGap={14} />
               <YAxis
@@ -427,7 +427,7 @@ export function EnhancedMonthlyReport() {
               <Tooltip content={<WeeklyTrendTooltip />} />
 
               <Bar yAxisId="spend" dataKey="spendLog" name="Spend" radius={[4, 4, 0, 0]}>
-                {data.weeklyRows.map((entry: any) => (
+                {selectedWeeklyRows.map((entry: any) => (
                   <Cell key={entry.week} fill={entry.color} />
                 ))}
               </Bar>
@@ -437,7 +437,12 @@ export function EnhancedMonthlyReport() {
           </ResponsiveContainer>
         </div>
 
-        <MonthLegend rows={data.weeklyRows} />
+        <MonthLegend
+          rows={data.weeklyRows}
+          selectedMonths={selectedMonths}
+          onSelectMonth={toggleMonth}
+          showAllReset
+        />
       </section>
 
 
@@ -460,7 +465,7 @@ export function EnhancedMonthlyReport() {
 
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={data.weeklyRows} margin={{ top: 10, right: 24, left: 16, bottom: 8 }}>
+            <LineChart data={selectedWeeklyRows} margin={{ top: 10, right: 24, left: 16, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.18)" />
 
               <XAxis
@@ -509,7 +514,12 @@ export function EnhancedMonthlyReport() {
           </ResponsiveContainer>
         </div>
 
-        <MonthLegend rows={data.weeklyRows} />
+        <MonthLegend
+          rows={data.weeklyRows}
+          selectedMonths={selectedMonths}
+          onSelectMonth={toggleMonth}
+          showAllReset
+        />
       </section>
 
 
@@ -558,8 +568,8 @@ export function EnhancedMonthlyReport() {
                 content={<ScatterPointTooltip />}
               />
 
-              <Scatter name="Weekly Spend vs CPA" data={scatterRows} fill="#0A84FF">
-                {scatterRows.map((entry: any) => (
+              <Scatter name="Weekly Spend vs CPA" data={selectedScatterRows} fill="#0A84FF">
+                {selectedScatterRows.map((entry: any) => (
                   <Cell key={`scatter-${entry.week}`} fill={entry.color} />
                 ))}
               </Scatter>
