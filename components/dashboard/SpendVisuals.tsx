@@ -820,7 +820,6 @@ return (
         </div>
       </GlassCard>
 
-    </div>
     </MetaPage>
   );
 }
