@@ -4137,3 +4137,115 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   color: #ffffff !important;
 }
 
+
+/* =========================================================
+   SPEND TAB FINAL MODULE OVERRIDE
+   This comes last intentionally.
+   Fixes dark/light readability inside SpendVisuals only.
+   ========================================================= */
+
+.metaos-app .spend-visuals-root,
+.metaos-app .spend-visuals-root * {
+  color: var(--meta-text) !important;
+}
+
+.metaos-app .spend-visuals-root p,
+.metaos-app .spend-visuals-root span,
+.metaos-app .spend-visuals-root label,
+.metaos-app .spend-visuals-root td {
+  color: var(--meta-text-soft) !important;
+  opacity: 1 !important;
+}
+
+.metaos-app .spend-visuals-root h1,
+.metaos-app .spend-visuals-root h2,
+.metaos-app .spend-visuals-root h3,
+.metaos-app .spend-visuals-root h4,
+.metaos-app .spend-visuals-root strong,
+.metaos-app .spend-visuals-root .font-black,
+.metaos-app .spend-visuals-root .font-bold {
+  color: var(--meta-text) !important;
+  opacity: 1 !important;
+}
+
+.metaos-app .spend-visuals-root .opacity-35,
+.metaos-app .spend-visuals-root .opacity-40,
+.metaos-app .spend-visuals-root .opacity-45,
+.metaos-app .spend-visuals-root .opacity-50,
+.metaos-app .spend-visuals-root .opacity-55,
+.metaos-app .spend-visuals-root .opacity-60,
+.metaos-app .spend-visuals-root .opacity-65,
+.metaos-app .spend-visuals-root .opacity-70,
+.metaos-app .spend-visuals-root .opacity-75,
+.metaos-app .spend-visuals-root .opacity-80 {
+  color: var(--meta-text-muted) !important;
+  opacity: 1 !important;
+}
+
+.metaos-app .spend-visuals-root .spend-table-th {
+  background: #14233b !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(255,255,255,0.14) !important;
+}
+
+.metaos-app .spend-visuals-root .spend-sort-button {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.metaos-app .spend-visuals-root .spend-sort-button span {
+  color: inherit !important;
+}
+
+.metaos-app .spend-visuals-root .spend-sort-active {
+  color: #0A84FF !important;
+}
+
+.metaos-app .spend-visuals-root .spend-sort-idle {
+  color: rgba(255,255,255,0.55) !important;
+}
+
+.metaos-app .spend-visuals-root table,
+.metaos-app .spend-visuals-root tbody,
+.metaos-app .spend-visuals-root tr {
+  color: var(--meta-text-soft) !important;
+}
+
+.metaos-app .spend-visuals-root tbody tr:hover {
+  background: rgba(128,128,128,0.08) !important;
+}
+
+.metaos-app .spend-visuals-root .text-emerald-300,
+.metaos-app .spend-visuals-root .text-emerald-400,
+.metaos-app .spend-visuals-root .text-emerald-500,
+.metaos-app .spend-visuals-root .text-emerald-600 {
+  color: #34d399 !important;
+}
+
+.metaos-app .spend-visuals-root .text-red-300,
+.metaos-app .spend-visuals-root .text-red-400,
+.metaos-app .spend-visuals-root .text-red-500,
+.metaos-app .spend-visuals-root .text-red-600 {
+  color: #f87171 !important;
+}
+
+.metaos-app .spend-visuals-root .bg-\[\#0A84FF\],
+.metaos-app .spend-visuals-root .bg-\[\#0A84FF\] *,
+.metaos-app .spend-visuals-root button.bg-\[\#0A84FF\],
+.metaos-app .spend-visuals-root button.bg-\[\#0A84FF\] * {
+  color: #ffffff !important;
+}
+
+.metaos-app .spend-visuals-root svg text,
+.metaos-app .spend-visuals-root .recharts-wrapper text,
+.metaos-app .spend-visuals-root .recharts-surface text {
+  fill: var(--meta-chart-axis) !important;
+  color: var(--meta-chart-axis) !important;
+  opacity: 1 !important;
+  font-weight: 750 !important;
+}
+
+.metaos-app .spend-visuals-root .recharts-cartesian-grid line {
+  stroke: var(--meta-chart-grid) !important;
+}
+
