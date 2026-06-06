@@ -286,18 +286,6 @@ export function MetaOSShell({
                 </div>
               </div>
 
-              <div className="ml-1 hidden gap-1.5 rounded-2xl border border-current/10 bg-current/[0.04] p-1 md:flex">
-                <button
-                  type="button"
-                  onClick={() => switchOS("meta")}
-                  data-os-mode-active={osMode === "meta" ? "true" : "false"}
-                  className={osMode === "meta" ? "metaos-apple-pill metaos-apple-pill-active" : "metaos-apple-pill metaos-apple-pill-inactive"}
-                >
-                  META OS
-                </button>
-                
-              </div>
-
               <div className="min-w-0 flex-1" />
 
               <div className="hidden items-center gap-2 rounded-xl border border-current/10 bg-current/[0.04] px-3 py-2 lg:flex">
@@ -382,20 +370,6 @@ export function MetaOSShell({
                 >
                   <X className="h-4 w-4" />
                 </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 rounded-xl border border-current/10 bg-current/[0.04] p-1">
-                <button
-                  onClick={() => switchOS("meta")}
-                  className={
-                    osMode === "meta"
-                      ? "rounded-lg bg-[#0A84FF] px-3 py-2 text-xs font-black text-white"
-                      : "rounded-lg px-3 py-2 text-xs font-black opacity-55"
-                  }
-                >
-                  META OS
-                </button>
-                
               </div>
 
               <div className="mt-5 grid gap-2">

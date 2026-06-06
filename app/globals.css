@@ -4249,3 +4249,145 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   stroke: var(--meta-chart-grid) !important;
 }
 
+
+/* =========================================================
+   METAOS HEADER V2 — SINGLE BRAND, CLEAN NAV
+   Removes visual repetition after Google OS was removed.
+   ========================================================= */
+
+.metaos-app .metaos-header-v2 {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 80 !important;
+  border-bottom: 1px solid var(--meta-border) !important;
+  backdrop-filter: blur(18px) saturate(1.3) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.3) !important;
+}
+
+.os-light .metaos-app .metaos-header-v2,
+.metaos-light .metaos-header-v2 {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248,250,252,0.9)) !important;
+  box-shadow: 0 10px 28px rgba(15,23,42,0.05) !important;
+}
+
+.os-dark .metaos-app .metaos-header-v2,
+.metaos-dark .metaos-header-v2 {
+  background:
+    linear-gradient(180deg, rgba(8,10,14,0.96), rgba(8,10,14,0.9)) !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.3) !important;
+}
+
+/* Hide the old duplicate OS switch if it survived in JSX */
+.metaos-app .metaos-header-v2 button:has(+ button):has([class*="META"]),
+.metaos-app .metaos-header-v2 [data-os-switch],
+.metaos-app .metaos-header-v2 .os-switch,
+.metaos-app .metaos-header-v2 .system-switch {
+  display: none !important;
+}
+
+/* Brand */
+.metaos-app .metaos-header-v2 > div:first-child {
+  align-items: center !important;
+}
+
+.metaos-app .metaos-header-v2 h1,
+.metaos-app .metaos-header-v2 .metaos-brand-title {
+  font-size: 17px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.02em !important;
+  color: #0A84FF !important;
+  text-transform: none !important;
+}
+
+.metaos-app .metaos-header-v2 p,
+.metaos-app .metaos-header-v2 .metaos-brand-subtitle {
+  font-size: 10px !important;
+  line-height: 1 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  color: var(--meta-text-muted) !important;
+  opacity: 1 !important;
+}
+
+/* Remove accidental quote marks from header visually if text still contains quotes */
+.metaos-app .metaos-header-v2 * {
+  text-shadow: none !important;
+}
+
+/* Nav layout */
+.metaos-app .metaos-nav-v2 {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+/* Navigation pills */
+.metaos-app .metaos-nav-v2 button,
+.metaos-app .metaos-header-v2 [data-meta-tab-active] {
+  min-height: 36px !important;
+  border-radius: 999px !important;
+  padding: 0 13px !important;
+  border: 1px solid var(--meta-border) !important;
+  background: var(--meta-surface-soft) !important;
+  color: var(--meta-text) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease !important;
+}
+
+.metaos-app .metaos-nav-v2 button:hover,
+.metaos-app .metaos-header-v2 [data-meta-tab-active]:hover {
+  transform: translateY(-1px) !important;
+  border-color: rgba(10,132,255,0.45) !important;
+}
+
+/* Active pill */
+.metaos-app .metaos-nav-v2 button.bg-\[\#0A84FF\],
+.metaos-app .metaos-header-v2 [data-meta-tab-active="true"],
+.metaos-app .metaos-header-v2 .metaos-apple-pill-active {
+  background: #0A84FF !important;
+  border-color: #0A84FF !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(10,132,255,0.28) !important;
+}
+
+.metaos-app .metaos-nav-v2 button.bg-\[\#0A84FF\] *,
+.metaos-app .metaos-header-v2 [data-meta-tab-active="true"] *,
+.metaos-app .metaos-header-v2 .metaos-apple-pill-active * {
+  color: #ffffff !important;
+}
+
+/* Right utility buttons */
+.metaos-app .metaos-header-v2 > div:last-child button {
+  min-height: 36px !important;
+  border-radius: 999px !important;
+  padding: 0 13px !important;
+  border: 1px solid var(--meta-border) !important;
+  background: var(--meta-surface-soft) !important;
+  color: var(--meta-text) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+/* Remove Hook/Hold if old nav object survives */
+.metaos-app .metaos-header-v2 button:has(span):has(svg) {
+  white-space: nowrap !important;
+}
+
+@media (min-width: 900px) {
+  .metaos-app .metaos-header-v2 {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+}
+
