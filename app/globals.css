@@ -3777,3 +3777,363 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   color: #ffffff !important;
 }
 
+
+/* =========================================================
+   METAOS PERMANENT UI KIT
+   Use these components/tokens for every MetaOS tab.
+   This prevents dark/light readability bugs permanently.
+   ========================================================= */
+
+.os-light {
+  --meta-bg: #f6f7f8;
+  --meta-surface: #ffffff;
+  --meta-surface-soft: #f8fafc;
+  --meta-surface-raised: #ffffff;
+  --meta-border: rgba(15, 23, 42, 0.12);
+
+  --meta-text: #0f172a;
+  --meta-text-soft: #334155;
+  --meta-text-muted: #64748b;
+  --meta-text-faint: #94a3b8;
+
+  --meta-blue: #0A84FF;
+  --meta-green: #10b981;
+  --meta-red: #ef4444;
+  --meta-amber: #f59e0b;
+
+  --meta-chart-axis: #475569;
+  --meta-chart-grid: rgba(15, 23, 42, 0.10);
+}
+
+.os-dark {
+  --meta-bg: #050608;
+  --meta-surface: #101419;
+  --meta-surface-soft: #141922;
+  --meta-surface-raised: #171c24;
+  --meta-border: rgba(226, 232, 240, 0.14);
+
+  --meta-text: #f8fafc;
+  --meta-text-soft: #dbe4ef;
+  --meta-text-muted: #aab6c5;
+  --meta-text-faint: #7f8a99;
+
+  --meta-blue: #0A84FF;
+  --meta-green: #34d399;
+  --meta-red: #f87171;
+  --meta-amber: #fbbf24;
+
+  --meta-chart-axis: #cbd5e1;
+  --meta-chart-grid: rgba(226, 232, 240, 0.13);
+}
+
+.metaos-app {
+  background: var(--meta-bg) !important;
+  color: var(--meta-text) !important;
+}
+
+/* Page primitives */
+.metaos-kit-page {
+  display: grid;
+  gap: 16px;
+  color: var(--meta-text);
+}
+
+.metaos-kit-section {
+  border: 1px solid var(--meta-border);
+  background: var(--meta-surface);
+  border-radius: 18px;
+  padding: 18px;
+  color: var(--meta-text);
+}
+
+.metaos-kit-card {
+  border: 1px solid var(--meta-border);
+  background: var(--meta-surface-soft);
+  border-radius: 18px;
+  padding: 16px;
+  color: var(--meta-text);
+}
+
+.metaos-kit-eyebrow,
+.metaos-kit-card-eyebrow {
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--meta-blue);
+  opacity: 1;
+}
+
+.metaos-kit-title {
+  margin-top: 6px;
+  font-size: 26px;
+  line-height: 1.1;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  color: var(--meta-text);
+}
+
+.metaos-kit-subtitle {
+  margin-top: 6px;
+  max-width: 820px;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--meta-text-muted);
+  opacity: 1;
+}
+
+.metaos-kit-card-title {
+  margin-top: 4px;
+  font-size: 18px;
+  line-height: 1.15;
+  font-weight: 950;
+  letter-spacing: -0.03em;
+  color: var(--meta-text);
+}
+
+.metaos-kit-card-subtitle {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--meta-text-muted);
+  opacity: 1;
+}
+
+/* KPI */
+.metaos-kit-kpi {
+  border: 1px solid var(--meta-border);
+  background: var(--meta-surface-soft);
+  border-radius: 18px;
+  padding: 14px;
+  color: var(--meta-text);
+}
+
+.metaos-kit-kpi-label {
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--meta-text-muted);
+  opacity: 1;
+}
+
+.metaos-kit-kpi-value {
+  margin-top: 8px;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  color: var(--meta-text);
+}
+
+/* Tone system */
+.metaos-kit-tone-neutral { color: var(--meta-text) !important; }
+.metaos-kit-tone-green { color: var(--meta-green) !important; }
+.metaos-kit-tone-red { color: var(--meta-red) !important; }
+.metaos-kit-tone-amber { color: var(--meta-amber) !important; }
+.metaos-kit-tone-blue { color: var(--meta-blue) !important; }
+
+/* Pills */
+.metaos-kit-pill {
+  min-height: 34px;
+  border-radius: 999px;
+  border: 1px solid var(--meta-border);
+  background: var(--meta-surface-soft);
+  padding: 0 13px;
+  color: var(--meta-text);
+  font-size: 12px;
+  font-weight: 900;
+  transition: 160ms ease;
+}
+
+.metaos-kit-pill[data-active="true"] {
+  background: var(--meta-blue);
+  border-color: var(--meta-blue);
+  color: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(10, 132, 255, 0.28);
+}
+
+.metaos-kit-pill[data-active="true"] * {
+  color: #ffffff !important;
+}
+
+/* Tables */
+.metaos-kit-table-wrap {
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid var(--meta-border);
+}
+
+.metaos-kit-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+  color: var(--meta-text-soft);
+}
+
+.metaos-kit-table thead {
+  background: var(--meta-surface-soft);
+}
+
+.metaos-kit-table th {
+  padding: 12px 14px;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--meta-text-muted);
+  border-bottom: 1px solid var(--meta-border);
+  white-space: nowrap;
+}
+
+.metaos-kit-table td {
+  padding: 13px 14px;
+  color: var(--meta-text-soft);
+  border-bottom: 1px solid var(--meta-border);
+}
+
+.metaos-kit-table tbody tr:hover {
+  background: color-mix(in srgb, var(--meta-surface-raised) 70%, transparent);
+}
+
+/* Chart system */
+.metaos-app .recharts-wrapper,
+.metaos-app .recharts-surface {
+  color: var(--meta-text) !important;
+}
+
+.metaos-app .recharts-wrapper text,
+.metaos-app .recharts-surface text,
+.metaos-app svg text {
+  fill: var(--meta-chart-axis) !important;
+  color: var(--meta-chart-axis) !important;
+  opacity: 1 !important;
+  font-weight: 750 !important;
+}
+
+.metaos-app .recharts-cartesian-grid line {
+  stroke: var(--meta-chart-grid) !important;
+}
+
+.metaos-app .recharts-cartesian-axis-line,
+.metaos-app .recharts-cartesian-axis-tick-line {
+  stroke: var(--meta-chart-grid) !important;
+}
+
+/* Tooltip */
+.metaos-kit-tooltip,
+.metaos-app .recharts-default-tooltip {
+  background: #0b0f14 !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  border-radius: 14px !important;
+  padding: 11px 13px !important;
+  color: #ffffff !important;
+  box-shadow: 0 18px 44px rgba(0,0,0,0.38) !important;
+}
+
+.metaos-kit-tooltip *,
+.metaos-app .recharts-tooltip-wrapper * {
+  color: #ffffff !important;
+}
+
+.metaos-kit-tooltip-title {
+  color: #ffffff !important;
+  font-size: 12px;
+  font-weight: 950;
+  margin-bottom: 8px;
+}
+
+.metaos-kit-tooltip-body {
+  display: grid;
+  gap: 6px;
+}
+
+.metaos-kit-tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 11px;
+}
+
+.metaos-kit-tooltip-row span {
+  color: rgba(255,255,255,0.72) !important;
+  font-weight: 800;
+}
+
+.metaos-kit-tooltip-row strong {
+  color: #ffffff !important;
+  font-weight: 950;
+}
+
+/* Permanent safety net: hardcoded text colors inside MetaOS */
+.os-dark .metaos-app .text-black,
+.os-dark .metaos-app .text-slate-950,
+.os-dark .metaos-app .text-slate-900,
+.os-dark .metaos-app .text-zinc-950,
+.os-dark .metaos-app .text-zinc-900,
+.os-dark .metaos-app .text-neutral-950,
+.os-dark .metaos-app .text-neutral-900 {
+  color: var(--meta-text) !important;
+}
+
+.os-dark .metaos-app .text-slate-700,
+.os-dark .metaos-app .text-slate-600,
+.os-dark .metaos-app .text-zinc-700,
+.os-dark .metaos-app .text-zinc-600,
+.os-dark .metaos-app .text-gray-700,
+.os-dark .metaos-app .text-gray-600 {
+  color: var(--meta-text-muted) !important;
+}
+
+.metaos-app .opacity-35,
+.metaos-app .opacity-40,
+.metaos-app .opacity-45,
+.metaos-app .opacity-50,
+.metaos-app .opacity-55,
+.metaos-app .opacity-60,
+.metaos-app .opacity-65,
+.metaos-app .opacity-70,
+.metaos-app .opacity-75 {
+  opacity: 1 !important;
+  color: var(--meta-text-muted) !important;
+}
+
+.metaos-app h1,
+.metaos-app h2,
+.metaos-app h3,
+.metaos-app h4,
+.metaos-app strong,
+.metaos-app .font-black,
+.metaos-app .font-bold {
+  color: var(--meta-text);
+}
+
+.metaos-app p,
+.metaos-app span,
+.metaos-app label,
+.metaos-app td,
+.metaos-app th,
+.metaos-app button {
+  opacity: 1;
+}
+
+.metaos-app input,
+.metaos-app select,
+.metaos-app textarea {
+  color: var(--meta-text) !important;
+  background: transparent;
+  border-color: var(--meta-border) !important;
+}
+
+.metaos-app .bg-\[\#0A84FF\],
+.metaos-app .bg-\[\#0A84FF\] *,
+.metaos-app [data-meta-tab-active="true"],
+.metaos-app [data-meta-tab-active="true"] * {
+  color: #ffffff !important;
+}
+

@@ -25,8 +25,18 @@ import {
   Surface,
   TonePill,
 } from "@/components/cards/MetaCards";
-import { useThemeStore } from "@/components/theme/ThemeProvider";
-import { MetaChartTooltip } from "@/components/charts/MetaChartTooltip";
+import {
+  MetaPage,
+  MetaSection,
+  MetaCard,
+  MetaTitle,
+  MetaCardTitle,
+  MetaKpiCard,
+  MetaCartesianGrid,
+  MetaXAxis,
+  MetaYAxis,
+  MetaChartTooltip,
+} from "@/components/meta/ui/MetaOSKit";
 
 const money = (n: number) => `₹${Math.round(n || 0).toLocaleString()}`;
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
@@ -311,10 +321,7 @@ function buildRollingTrendRows(daily: any[], index: number, windowSize = 7) {
 
 export function SpendVisuals() {
   const { performanceRows } = useMetaStore();
-  const { theme } = useThemeStore();
-  const isDark = theme === "dark";
-
-  const liveRows = useMemo(() => onlyLiveRows(performanceRows), [performanceRows]);
+const liveRows = useMemo(() => onlyLiveRows(performanceRows), [performanceRows]);
   const defaultRange = useMemo(() => getDateRange(liveRows), [liveRows]);
 
   const [preset, setPreset] = useState<7 | 14 | 30 | 60 | 90 | "all">(30);
@@ -371,12 +378,10 @@ export function SpendVisuals() {
       </GlassCard>
     );
   }
-
-  const gridColor = isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.10)";
-  const axisColor = isDark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.50)";
-
-  return (
-    <div className="grid gap-6">
+  const gridColor = "var(--meta-chart-grid)";
+const axisColor = "var(--meta-chart-axis)";
+return (
+    <MetaPage className="spend-visuals-root">
       <PageHeader
         eyebrow="Spend Visuals"
         title="Spend, CPA, ROAS & Date-Wise Performance"
@@ -442,7 +447,7 @@ export function SpendVisuals() {
 
         {customMode && (
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <label className="grid gap-1 text-xs font-black uppercase tracking-[0.12em] opacity-70">
+            <label className="grid gap-1 text-xs font-black uppercase tracking-[0.12em] text-[var(--meta-text-muted)]">
               Start Date
               <input
                 type="date"
@@ -452,7 +457,7 @@ export function SpendVisuals() {
               />
             </label>
 
-            <label className="grid gap-1 text-xs font-black uppercase tracking-[0.12em] opacity-70">
+            <label className="grid gap-1 text-xs font-black uppercase tracking-[0.12em] text-[var(--meta-text-muted)]">
               End Date
               <input
                 type="date"
@@ -480,19 +485,15 @@ export function SpendVisuals() {
         <ChartCard title="Daily Spend & Revenue Trend">
           <ResponsiveContainer width="100%" height={380}>
             <AreaChart data={data.daily} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
-              <CartesianGrid stroke={gridColor} strokeDasharray="3 3" />
-              <XAxis
-                dataKey="label"
-                tick={{ fontSize: 11, fill: axisColor }}
-                axisLine={false}
-                tickLine={false}
+              <MetaCartesianGrid />
+              <MetaXAxis dataKey="label"
+                
+                
                 interval="preserveStartEnd"
                 minTickGap={28}
               />
-              <YAxis
-                tick={{ fontSize: 11, fill: axisColor }}
-                axisLine={false}
-                tickLine={false}
+              <MetaYAxis 
+                
                 tickFormatter={(v) => compactMoney(Number(v))}
               />
               <Tooltip
@@ -534,28 +535,22 @@ export function SpendVisuals() {
         <ChartCard title="Daily CPA & ROAS Trend">
           <ResponsiveContainer width="100%" height={380}>
             <ComposedChart data={data.daily} margin={{ top: 10, right: 12, left: 0, bottom: 0 }}>
-              <CartesianGrid stroke={gridColor} strokeDasharray="3 3" />
-              <XAxis
-                dataKey="label"
-                tick={{ fontSize: 11, fill: axisColor }}
-                axisLine={false}
-                tickLine={false}
+              <MetaCartesianGrid />
+              <MetaXAxis dataKey="label"
+                
+                
                 interval="preserveStartEnd"
                 minTickGap={28}
               />
-              <YAxis
-                yAxisId="left"
-                tick={{ fontSize: 11, fill: axisColor }}
-                axisLine={false}
-                tickLine={false}
+              <MetaYAxis yAxisId="left"
+                
+                
                 tickFormatter={(v) => compactMoney(Number(v))}
               />
-              <YAxis
-                yAxisId="right"
+              <MetaYAxis yAxisId="right"
                 orientation="right"
-                tick={{ fontSize: 11, fill: axisColor }}
-                axisLine={false}
-                tickLine={false}
+                
+                
               />
               <Tooltip
                 contentStyle={{
@@ -596,21 +591,17 @@ export function SpendVisuals() {
         <ChartCard title="Top Campaigns by Spend">
           <ResponsiveContainer width="100%" height={380}>
             <BarChart data={data.campaign} layout="vertical" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
-              <CartesianGrid stroke={gridColor} strokeDasharray="3 3" horizontal={false} />
-              <XAxis
-                type="number"
-                tick={{ fontSize: 11, fill: axisColor }}
-                axisLine={false}
-                tickLine={false}
+              <MetaCartesianGrid horizontal={false} />
+              <MetaXAxis type="number"
+                
+                
                 tickFormatter={(v) => compactMoney(Number(v))}
               />
-              <YAxis
-                dataKey="short"
+              <MetaYAxis dataKey="short"
                 type="category"
                 width={150}
-                tick={{ fontSize: 11, fill: axisColor }}
-                axisLine={false}
-                tickLine={false}
+                
+                
               />
               <Tooltip
                 contentStyle={{
@@ -650,21 +641,17 @@ export function SpendVisuals() {
         <ChartCard title="Top Ad Sets by Spend">
           <ResponsiveContainer width="100%" height={380}>
             <BarChart data={data.adset} layout="vertical" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
-              <CartesianGrid stroke={gridColor} strokeDasharray="3 3" horizontal={false} />
-              <XAxis
-                type="number"
-                tick={{ fontSize: 11, fill: axisColor }}
-                axisLine={false}
-                tickLine={false}
+              <MetaCartesianGrid horizontal={false} />
+              <MetaXAxis type="number"
+                
+                
                 tickFormatter={(v) => compactMoney(Number(v))}
               />
-              <YAxis
-                dataKey="short"
+              <MetaYAxis dataKey="short"
                 type="category"
                 width={150}
-                tick={{ fontSize: 11, fill: axisColor }}
-                axisLine={false}
-                tickLine={false}
+                
+                
               />
               <Tooltip
                 contentStyle={{
@@ -714,11 +701,7 @@ export function SpendVisuals() {
         <div className="metaos-scroll-table overflow-x-auto">
           <table className="w-full min-w-[1280px] text-left text-sm">
             <thead
-              className={
-                isDark
-                  ? "border-b border-white/10 bg-white/[0.04] text-[11px] uppercase tracking-[0.16em] text-white/45"
-                  : "border-b border-black/10 bg-black/[0.035] text-[11px] uppercase tracking-[0.16em] text-black/55"
-              }
+              className="border-b border-current/10 bg-current/[0.04] text-[11px] uppercase tracking-[0.16em] text-[var(--meta-text-muted)]"
             >
               <tr>
                 <th className="px-5 py-4">Period</th>
@@ -748,39 +731,35 @@ export function SpendVisuals() {
               {periodComparison(data.filteredRows, data.end).map((row) => (
                 <tr
                   key={row.period}
-                  className={
-                    isDark
-                      ? "border-b border-white/5 text-white hover:bg-white/[0.04]"
-                      : "border-b border-black/5 text-black hover:bg-black/[0.035]"
-                  }
+                  className="border-b border-current/10 text-[var(--meta-text)] hover:bg-current/[0.035]"
                 >
                   <td className="px-5 py-4 font-black">{row.period}</td>
 
-                  <td className="px-5 py-4 opacity-75">{money(row.current.spend)}</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.current.spend)}</td>
                   <DeltaTableCell value={row.delta.spend} lowerIsBetter={false} />
 
-                  <td className="px-5 py-4 opacity-75">{money(row.current.revenue)}</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.current.revenue)}</td>
                   <DeltaTableCell value={row.delta.revenue} lowerIsBetter={false} />
 
-                  <td className="px-5 py-4 opacity-75">{num(row.current.purchases, 0)}</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.current.purchases, 0)}</td>
                   <DeltaTableCell value={row.delta.purchases} lowerIsBetter={false} />
 
                   <td className="px-5 py-4 font-black text-emerald-400">{num(row.current.roas)}</td>
                   <DeltaTableCell value={row.delta.roas} lowerIsBetter={false} />
 
-                  <td className="px-5 py-4 opacity-75">{money(row.current.cpa)}</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.current.cpa)}</td>
                   <DeltaTableCell value={row.delta.cpa} lowerIsBetter />
 
-                  <td className="px-5 py-4 opacity-75">{money(row.current.aov)}</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.current.aov)}</td>
                   <DeltaTableCell value={row.delta.aov} lowerIsBetter={false} />
 
-                  <td className="px-5 py-4 opacity-75">{money(row.current.cpm)}</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.current.cpm)}</td>
                   <DeltaTableCell value={row.delta.cpm} lowerIsBetter />
 
-                  <td className="px-5 py-4 opacity-75">{num(row.current.ctr)}%</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.current.ctr)}%</td>
                   <DeltaTableCell value={row.delta.ctr} lowerIsBetter={false} />
 
-                  <td className="px-5 py-4 opacity-75">{num(row.current.atcRate)}%</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.current.atcRate)}%</td>
                   <DeltaTableCell value={row.delta.atcRate} lowerIsBetter={false} />
                 </tr>
               ))}
@@ -800,11 +779,7 @@ export function SpendVisuals() {
         <div className="metaos-scroll-table overflow-x-auto">
           <table className="w-full min-w-[980px] text-left text-sm">
             <thead
-              className={
-                isDark
-                  ? "border-b border-white/10 bg-white/[0.04] text-[11px] uppercase tracking-[0.16em] text-white/45"
-                  : "border-b border-black/10 bg-black/[0.035] text-[11px] uppercase tracking-[0.16em] text-black/55"
-              }
+              className="border-b border-current/10 bg-current/[0.04] text-[11px] uppercase tracking-[0.16em] text-[var(--meta-text-muted)]"
             >
               <tr>
                 <th className="px-5 py-4">Date</th>
@@ -824,21 +799,17 @@ export function SpendVisuals() {
               {data.daily.slice(-28).map((row, index) => (
                 <tr
                   key={row.date}
-                  className={
-                    isDark
-                      ? "border-b border-white/5 text-white hover:bg-white/[0.04]"
-                      : "border-b border-black/5 text-black hover:bg-black/[0.035]"
-                  }
+                  className="border-b border-current/10 text-[var(--meta-text)] hover:bg-current/[0.035]"
                 >
                   <td className="px-5 py-4 font-black whitespace-normal break-words">{row.date}</td>
-                  <td className="px-5 py-4 opacity-75">{money(row.spend)}</td>
-                  <td className="px-5 py-4 opacity-75">{money(row.revenue)}</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.spend)}</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.revenue)}</td>
                   <td className="px-5 py-4 font-black text-emerald-400">{num(row.roas)}</td>
-                  <td className="px-5 py-4 opacity-75">{money(row.cpa)}</td>
-                  <td className="px-5 py-4 opacity-75">{money(safeDiv(row.revenue, row.purchases))}</td>
-                  <td className="px-5 py-4 opacity-75">{num(row.purchases, 0)}</td>
-                  <td className="px-5 py-4 opacity-75">{num(row.ctr)}%</td>
-                  <td className="px-5 py-4 opacity-75">{num(row.atcRate)}%</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.cpa)}</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(safeDiv(row.revenue, row.purchases))}</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.purchases, 0)}</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.ctr)}%</td>
+                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.atcRate)}%</td>
                   <td className="min-w-[220px] px-5 py-4">
                     <DailyMiniTrend rows={buildRollingTrendRows(data.daily, data.daily.findIndex((d) => d.date === row.date))} />
                   </td>
@@ -850,6 +821,7 @@ export function SpendVisuals() {
       </GlassCard>
 
     </div>
+    </MetaPage>
   );
 }
 
@@ -872,7 +844,7 @@ function DeltaTableCell({
   const tone = deltaTone(value, lowerIsBetter);
 
   if (tone === "neutral") {
-    return <td className="px-5 py-4 font-black opacity-35">—</td>;
+    return <td className="px-5 py-4 font-black text-[var(--meta-text-faint)]">—</td>;
   }
 
   return (
@@ -894,7 +866,7 @@ function DailyMiniTrend({ rows }: { rows: any[] }) {
   );
 
   if (validRows.length < 2) {
-    return <span className="text-xs opacity-45">Not enough trend</span>;
+    return <span className="text-xs text-[var(--meta-text-faint)]">Not enough trend</span>;
   }
 
   return (
