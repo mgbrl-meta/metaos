@@ -9,10 +9,9 @@ import {
 } from "@/components/layout/MetaOSShell";
 
 import { ZeroPurchaseTab } from "@/components/meta/ZeroPurchaseTab";
+import { TopDescalingPrioritiesTab, TopScalingPrioritiesTab } from "@/components/meta/PrioritySplitTabs";
 import { HighCpaTab } from "@/components/meta/HighCpaTab";
 import { HighRoasTab } from "@/components/meta/HighRoasTab";
-import { EfficiencyDecayTab } from "@/components/meta/EfficiencyDecayTab";
-import { ScaleQualityTab } from "@/components/meta/ScaleQualityTab";
 import { SpendVisuals } from "@/components/dashboard/SpendVisuals";
 import { HookHoldCreativeTab } from "@/components/meta/HookHoldCreativeTab";
 import { DailySummaryExport } from "@/components/dashboard/DailySummaryExport";
@@ -59,11 +58,11 @@ export default function Home() {
       {!activeSystemTab && osMode === "meta" && (
         <>
           <AutoMetaSheetLoader />
+          {activeMetaTab === "top_descaling" && <TopDescalingPrioritiesTab />}
+          {activeMetaTab === "top_scaling" && <TopScalingPrioritiesTab />}
           {activeMetaTab === "zero_purchase" && <ZeroPurchaseTab />}
           {activeMetaTab === "high_cpa" && <HighCpaTab />}
           {activeMetaTab === "high_roas" && <HighRoasTab />}
-          {activeMetaTab === "efficiency_decay" && <EfficiencyDecayTab />}
-          {activeMetaTab === "scale_quality" && <ScaleQualityTab />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
           {activeMetaTab === "hook_hold" && <HookHoldCreativeTab />}
           {activeMetaTab === "summary" && <MetaExecutiveSummary />}

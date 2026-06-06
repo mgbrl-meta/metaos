@@ -26,11 +26,11 @@ import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/Theme
 export type OSMode = "meta" | "google";
 
 export type MetaTab =
+  | "top_descaling"
+  | "top_scaling"
   | "zero_purchase"
   | "high_cpa"
   | "high_roas"
-  | "efficiency_decay"
-  | "scale_quality"
   | "spend_visuals"
   | "hook_hold"
   | "summary"
@@ -63,6 +63,20 @@ const metaNav: NavItem<MetaTab>[] = [
     icon: FileText,
   },
   {
+    id: "top_descaling",
+    label: "Top De-scaling Priorities",
+    shortLabel: "De-scale",
+    description: "Ranked creatives to reduce, refresh, cap or pause",
+    icon: ShieldAlert,
+  },
+  {
+    id: "top_scaling",
+    label: "Top Scaling Priorities",
+    shortLabel: "Scale",
+    description: "Ranked creatives eligible for controlled scaling",
+    icon: TrendingUp,
+  },
+  {
     id: "zero_purchase",
     label: "Zero Purchase",
     shortLabel: "Zero Purchase",
@@ -82,20 +96,6 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "High ROAS",
     description: "Live ads with strong lifetime ROAS",
     icon: LineChart,
-  },
-  {
-    id: "efficiency_decay",
-    label: "Efficiency Decay",
-    shortLabel: "Decay",
-    description: "Early warning for creative and scale fatigue",
-    icon: ShieldAlert,
-  },
-  {
-    id: "scale_quality",
-    label: "Scale Quality",
-    shortLabel: "Scale",
-    description: "Incremental spend quality and budget movement",
-    icon: TrendingUp,
   },
   {
     id: "spend_visuals",
