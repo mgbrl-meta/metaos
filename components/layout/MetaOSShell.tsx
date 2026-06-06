@@ -280,7 +280,7 @@ export function MetaOSShell({
                   >
                     "Meta OS"
                   </p>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] opacity-45">
+                  <p className="metaos-brand-subtitle">
                     Daily Performance OS
                   </p>
                 </div>
@@ -323,19 +323,6 @@ export function MetaOSShell({
             </div>
 
             <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
-              <div className="flex rounded-xl border border-current/10 bg-current/[0.04] p-1 md:hidden">
-                <button
-                  onClick={() => switchOS("meta")}
-                  className={
-                    osMode === "meta"
-                      ? "rounded-lg bg-[#0A84FF] px-3 py-1.5 text-[11px] font-black text-white"
-                      : "rounded-lg px-3 py-1.5 text-[11px] font-black opacity-45"
-                  }
-                >
-                  META
-                </button>
-                
-              </div>
 
               {activeNav.map((item) => {
                 const Icon = item.icon;
@@ -384,7 +371,7 @@ export function MetaOSShell({
                     <Zap className="h-5 w-5 fill-white" />
                   </div>
                   <div>
-                    <p className="text-sm font-black">"Meta OS"</p>
+                    <p className="text-sm font-black">Meta OS</p>
                     <p className="text-xs opacity-45">Daily Performance OS</p>
                   </div>
                 </div>

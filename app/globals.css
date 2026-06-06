@@ -3245,3 +3245,107 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   }
 }
 
+
+/* =========================================================
+   METAOS HEADER — CLEAN APPLE STYLE
+   Single-brand header after removing Google OS.
+   ========================================================= */
+
+.metaos-app .metaos-top-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 60 !important;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.16) !important;
+  backdrop-filter: blur(18px) saturate(1.35) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.35) !important;
+}
+
+.os-light .metaos-app .metaos-top-header {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(248,249,250,0.88)) !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04) !important;
+}
+
+.os-dark .metaos-app .metaos-top-header {
+  background:
+    linear-gradient(180deg, rgba(12,15,20,0.94), rgba(9,11,15,0.9)) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* Brand block */
+.metaos-app .metaos-brand-title {
+  font-size: 16px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.02em !important;
+  color: #0A84FF !important;
+  text-transform: none !important;
+}
+
+.metaos-app .metaos-brand-subtitle {
+  margin-top: 3px !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  opacity: 0.5 !important;
+}
+
+/* Main tab pills */
+.metaos-app [data-meta-tab-active] {
+  min-height: 36px !important;
+  border-radius: 999px !important;
+  padding: 0 14px !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.01em !important;
+  border: 1px solid rgba(128,128,128,0.22) !important;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease !important;
+}
+
+.os-light .metaos-app [data-meta-tab-active="false"] {
+  background: rgba(255,255,255,0.82) !important;
+  color: #111827 !important;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.04) !important;
+}
+
+.os-dark .metaos-app [data-meta-tab-active="false"] {
+  background: rgba(255,255,255,0.035) !important;
+  color: rgba(255,255,255,0.88) !important;
+}
+
+.metaos-app [data-meta-tab-active="true"] {
+  background: #0A84FF !important;
+  border-color: #0A84FF !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(10,132,255,0.28) !important;
+}
+
+.metaos-app [data-meta-tab-active]:hover {
+  transform: translateY(-1px) !important;
+}
+
+/* Right utility buttons */
+.metaos-app .metaos-top-header button {
+  font-weight: 850 !important;
+}
+
+/* More comfortable spacing in nav row */
+.metaos-app .metaos-top-header nav,
+.metaos-app .metaos-top-header .mt-2 {
+  gap: 8px !important;
+}
+
+@media (min-width: 1024px) {
+  .metaos-app .metaos-top-header {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+}
+
