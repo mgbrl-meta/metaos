@@ -169,22 +169,29 @@ export function MetaYAxis(props: any) {
 }
 
 export function MetaChartTooltip({
+  title,
   moneyKeys = [],
   percentKeys = [],
   multipleKeys = [],
+  valueFormatter,
+  ...tooltipProps
 }: {
+  title?: ReactNode;
   moneyKeys?: string[];
   percentKeys?: string[];
   multipleKeys?: string[];
+  valueFormatter?: (value: any, name: any, item?: any) => ReactNode;
+  [key: string]: any;
 }) {
   return (
     <Tooltip
+      {...tooltipProps}
       content={({ active, payload, label }: any) => {
         if (!active || !payload?.length) return null;
 
         return (
           <div className="metaos-kit-tooltip">
-            <div className="metaos-kit-tooltip-title">{label}</div>
+            <div className="metaos-kit-tooltip-title">{title || label}</div>
 
             <div className="metaos-kit-tooltip-body">
               {payload.map((item: any) => {
@@ -192,18 +199,22 @@ export function MetaChartTooltip({
                 const name = String(item.name || item.dataKey || "");
                 const raw = Number(item.value || 0);
 
-                let value = raw.toLocaleString("en-IN");
+                let value: ReactNode = raw.toLocaleString("en-IN");
 
-                if (moneyKeys.some((x) => key.toLowerCase().includes(x.toLowerCase()) || name.toLowerCase().includes(x.toLowerCase()))) {
-                  value = `₹${Math.round(raw).toLocaleString("en-IN")}`;
-                }
+                if (valueFormatter) {
+                  value = valueFormatter(item.value, name, item);
+                } else {
+                  if (moneyKeys.some((x) => key.toLowerCase().includes(x.toLowerCase()) || name.toLowerCase().includes(x.toLowerCase()))) {
+                    value = `₹${Math.round(raw).toLocaleString("en-IN")}`;
+                  }
 
-                if (percentKeys.some((x) => key.toLowerCase().includes(x.toLowerCase()) || name.toLowerCase().includes(x.toLowerCase()))) {
-                  value = `${raw.toFixed(2)}%`;
-                }
+                  if (percentKeys.some((x) => key.toLowerCase().includes(x.toLowerCase()) || name.toLowerCase().includes(x.toLowerCase()))) {
+                    value = `${raw.toFixed(2)}%`;
+                  }
 
-                if (multipleKeys.some((x) => key.toLowerCase().includes(x.toLowerCase()) || name.toLowerCase().includes(x.toLowerCase()))) {
-                  value = `${raw.toFixed(2)}x`;
+                  if (multipleKeys.some((x) => key.toLowerCase().includes(x.toLowerCase()) || name.toLowerCase().includes(x.toLowerCase()))) {
+                    value = `${raw.toFixed(2)}x`;
+                  }
                 }
 
                 return (
