@@ -319,7 +319,96 @@ function buildRollingTrendRows(daily: any[], index: number, windowSize = 7) {
   }));
 }
 
+
+type SpendSortDirection = "asc" | "desc";
+
+type SpendSortConfig = {
+  key: string;
+  direction: SpendSortDirection;
+};
+
+function spendGetValue(row: any, key: string) {
+  return key.split(".").reduce((value, part) => value?.[part], row);
+}
+
+function spendToggleSort(current: SpendSortConfig, key: string): SpendSortConfig {
+  if (current.key === key) {
+    return {
+      key,
+      direction: current.direction === "asc" ? "desc" : "asc",
+    };
+  }
+
+  return {
+    key,
+    direction: "desc",
+  };
+}
+
+function spendSortRows<T extends Record<string, any>>(rows: T[], sort: SpendSortConfig) {
+  return [...rows].sort((a, b) => {
+    const av = spendGetValue(a, sort.key);
+    const bv = spendGetValue(b, sort.key);
+
+    const ad = new Date(String(av || ""));
+    const bd = new Date(String(bv || ""));
+
+    let result = 0;
+
+    if (!Number.isNaN(ad.getTime()) && !Number.isNaN(bd.getTime())) {
+      result = ad.getTime() - bd.getTime();
+    } else {
+      const an = Number(av);
+      const bn = Number(bv);
+
+      if (!Number.isNaN(an) && !Number.isNaN(bn)) {
+        result = an - bn;
+      } else {
+        result = String(av ?? "").localeCompare(String(bv ?? ""));
+      }
+    }
+
+    return sort.direction === "asc" ? result : -result;
+  });
+}
+
+function SpendSortHeader({
+  label,
+  sortKey,
+  sort,
+  onSort,
+}: {
+  label: string;
+  sortKey: string;
+  sort: SpendSortConfig;
+  onSort: (key: string) => void;
+}) {
+  const active = sort.key === sortKey;
+
+  return (
+    <th className="spend-table-th">
+      <button type="button" onClick={() => onSort(sortKey)} className="spend-sort-button">
+        <span>{label}</span>
+        <span className={active ? "spend-sort-active" : "spend-sort-idle"}>
+          {active ? (sort.direction === "asc" ? "↑" : "↓") : "↕"}
+        </span>
+      </button>
+    </th>
+  );
+}
+
+
 export function SpendVisuals() {
+  const [spendPeriodSort, setSpendPeriodSort] = useState<SpendSortConfig>({
+    key: "current.spend",
+    direction: "desc",
+  });
+
+  const [spendDailySort, setSpendDailySort] = useState<SpendSortConfig>({
+    key: "date",
+    direction: "desc",
+  });
+
   const { performanceRows } = useMetaStore();
 const liveRows = useMemo(() => onlyLiveRows(performanceRows), [performanceRows]);
   const defaultRange = useMemo(() => getDateRange(liveRows), [liveRows]);
@@ -699,31 +788,30 @@ return (
         </div>
 
         <div className="metaos-scroll-table overflow-x-auto">
-          <table className="w-full min-w-[1280px] text-left text-sm">
+          <table className="w-full min-w-[1180px] text-left text-sm">
             <thead
               className="border-b border-current/10 bg-current/[0.04] text-[11px] uppercase tracking-[0.16em] text-[var(--meta-text-muted)]"
             >
               <tr>
-                <th className="px-5 py-4">Period</th>
-                <th className="px-5 py-4">Spend</th>
-                <th className="px-5 py-4">Δ Spend</th>
-                <th className="px-5 py-4">Revenue</th>
-                <th className="px-5 py-4">Δ Revenue</th>
-                <th className="px-5 py-4">Purchases</th>
-                <th className="px-5 py-4">Δ Purchases</th>
-                <th className="px-5 py-4">ROAS</th>
-                <th className="px-5 py-4">Δ ROAS</th>
-                <th className="px-5 py-4">CPA</th>
-                <th className="px-5 py-4">Δ CPA</th>
-                <th className="px-5 py-4">AOV</th>
-                <th className="px-5 py-4">Δ AOV</th>
-                <th className="px-5 py-4">CPM</th>
-                <th className="px-5 py-4">Δ CPM</th>
-                <th className="px-5 py-4">CTR</th>
-                <th className="px-5 py-4">Δ CTR</th>
-                <th className="px-5 py-4">ATC Rate</th>
-                <th className="px-5 py-4">Trend</th>
-                <th className="px-5 py-4">Δ ATC</th>
+                <SpendSortHeader label="Period" sortKey="period" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Spend" sortKey="current.spend" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Δ Spend" sortKey="deltas.spend" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Revenue" sortKey="current.revenue" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Δ Revenue" sortKey="deltas.revenue" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Purchases" sortKey="current.purchases" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Δ Purchases" sortKey="deltas.purchases" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="ROAS" sortKey="current.roas" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Δ ROAS" sortKey="deltas.roas" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="CPA" sortKey="current.cpa" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Δ CPA" sortKey="deltas.cpa" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="AOV" sortKey="current.aov" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Δ AOV" sortKey="deltas.aov" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="CPM" sortKey="current.cpm" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Δ CPM" sortKey="deltas.cpm" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="CTR" sortKey="current.ctr" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Δ CTR" sortKey="deltas.ctr" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="ATC Rate" sortKey="current.atcRate" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Δ ATC" sortKey="deltas.atcRate" sort={spendPeriodSort} onSort={(key) => setSpendPeriodSort((current) => spendToggleSort(current, key))} />
               </tr>
             </thead>
 
@@ -733,33 +821,33 @@ return (
                   key={row.period}
                   className="border-b border-current/10 text-[var(--meta-text)] hover:bg-current/[0.035]"
                 >
-                  <td className="px-5 py-4 font-black">{row.period}</td>
+                  <td className="px-4 py-3 font-black">{row.period}</td>
 
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.current.spend)}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{money(row.current.spend)}</td>
                   <DeltaTableCell value={row.delta.spend} lowerIsBetter={false} />
 
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.current.revenue)}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{money(row.current.revenue)}</td>
                   <DeltaTableCell value={row.delta.revenue} lowerIsBetter={false} />
 
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.current.purchases, 0)}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{num(row.current.purchases, 0)}</td>
                   <DeltaTableCell value={row.delta.purchases} lowerIsBetter={false} />
 
-                  <td className="px-5 py-4 font-black text-emerald-400">{num(row.current.roas)}</td>
+                  <td className="px-4 py-3 font-black text-emerald-400">{num(row.current.roas)}</td>
                   <DeltaTableCell value={row.delta.roas} lowerIsBetter={false} />
 
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.current.cpa)}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{money(row.current.cpa)}</td>
                   <DeltaTableCell value={row.delta.cpa} lowerIsBetter />
 
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.current.aov)}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{money(row.current.aov)}</td>
                   <DeltaTableCell value={row.delta.aov} lowerIsBetter={false} />
 
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.current.cpm)}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{money(row.current.cpm)}</td>
                   <DeltaTableCell value={row.delta.cpm} lowerIsBetter />
 
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.current.ctr)}%</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{num(row.current.ctr)}%</td>
                   <DeltaTableCell value={row.delta.ctr} lowerIsBetter={false} />
 
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.current.atcRate)}%</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{num(row.current.atcRate)}%</td>
                   <DeltaTableCell value={row.delta.atcRate} lowerIsBetter={false} />
                 </tr>
               ))}
@@ -777,21 +865,20 @@ return (
         </div>
 
         <div className="metaos-scroll-table overflow-x-auto">
-          <table className="w-full min-w-[980px] text-left text-sm">
+          <table className="w-full min-w-[860px] text-left text-sm">
             <thead
               className="border-b border-current/10 bg-current/[0.04] text-[11px] uppercase tracking-[0.16em] text-[var(--meta-text-muted)]"
             >
               <tr>
-                <th className="px-5 py-4">Date</th>
-                <th className="px-5 py-4">Spend</th>
-                <th className="px-5 py-4">Revenue</th>
-                <th className="px-5 py-4">ROAS</th>
-                <th className="px-5 py-4">CPA</th>
-                <th className="px-5 py-4">AOV</th>
-                <th className="px-5 py-4">Purchases</th>
-                <th className="px-5 py-4">CTR</th>
-                <th className="px-5 py-4">ATC Rate</th>
-                <th className="px-5 py-4">Trend</th>
+                <SpendSortHeader label="Date" sortKey="date" sort={spendDailySort} onSort={(key) => setSpendDailySort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Spend" sortKey="spend" sort={spendDailySort} onSort={(key) => setSpendDailySort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Revenue" sortKey="revenue" sort={spendDailySort} onSort={(key) => setSpendDailySort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="ROAS" sortKey="roas" sort={spendDailySort} onSort={(key) => setSpendDailySort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="CPA" sortKey="cpa" sort={spendDailySort} onSort={(key) => setSpendDailySort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="AOV" sortKey="aov" sort={spendDailySort} onSort={(key) => setSpendDailySort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="Purchases" sortKey="purchases" sort={spendDailySort} onSort={(key) => setSpendDailySort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="CTR" sortKey="ctr" sort={spendDailySort} onSort={(key) => setSpendDailySort((current) => spendToggleSort(current, key))} />
+                <SpendSortHeader label="ATC Rate" sortKey="atcRate" sort={spendDailySort} onSort={(key) => setSpendDailySort((current) => spendToggleSort(current, key))} />
               </tr>
             </thead>
 
@@ -801,18 +888,15 @@ return (
                   key={row.date}
                   className="border-b border-current/10 text-[var(--meta-text)] hover:bg-current/[0.035]"
                 >
-                  <td className="px-5 py-4 font-black whitespace-normal break-words">{row.date}</td>
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.spend)}</td>
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.revenue)}</td>
-                  <td className="px-5 py-4 font-black text-emerald-400">{num(row.roas)}</td>
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(row.cpa)}</td>
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{money(safeDiv(row.revenue, row.purchases))}</td>
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.purchases, 0)}</td>
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.ctr)}%</td>
-                  <td className="px-5 py-4 text-[var(--meta-text-soft)]">{num(row.atcRate)}%</td>
-                  <td className="min-w-[220px] px-5 py-4">
-                    <DailyMiniTrend rows={buildRollingTrendRows(data.daily, data.daily.findIndex((d) => d.date === row.date))} />
-                  </td>
+                  <td className="px-4 py-3 font-black whitespace-normal break-words">{row.date}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{money(row.spend)}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{money(row.revenue)}</td>
+                  <td className="px-4 py-3 font-black text-emerald-400">{num(row.roas)}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{money(row.cpa)}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{money(safeDiv(row.revenue, row.purchases))}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{num(row.purchases, 0)}</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{num(row.ctr)}%</td>
+                  <td className="px-4 py-3 text-[var(--meta-text-soft)]">{num(row.atcRate)}%</td>
                 </tr>
               ))}
             </tbody>
@@ -825,6 +909,16 @@ return (
 }
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
+  const spendPeriodRows =
+    data.periodComparisons ||
+    data.periodRows ||
+    data.comparisons ||
+    [];
+
+  const spendSortedPeriodRows = spendSortRows(spendPeriodRows, spendPeriodSort);
+  const spendSortedDailyRows = spendSortRows(data.daily || [], spendDailySort);
+
+
   return (
     <GlassCard className="p-5">
       <h2 className="text-xl font-black">{title}</h2>
@@ -843,15 +937,15 @@ function DeltaTableCell({
   const tone = deltaTone(value, lowerIsBetter);
 
   if (tone === "neutral") {
-    return <td className="px-5 py-4 font-black text-[var(--meta-text-faint)]">—</td>;
+    return <td className="px-4 py-3 font-black text-[var(--meta-text-faint)]">—</td>;
   }
 
   return (
     <td
       className={
         tone === "green"
-          ? "px-5 py-4 font-black text-emerald-400"
-          : "px-5 py-4 font-black text-red-400"
+          ? "px-4 py-3 font-black text-emerald-400"
+          : "px-4 py-3 font-black text-red-400"
       }
     >
       {deltaText(value)}
