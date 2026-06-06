@@ -2,6 +2,15 @@
 
 import { ReactNode, useMemo } from "react";
 import { ChevronDown, ShieldAlert, TrendingUp } from "lucide-react";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { useMetaStore } from "@/store/metaStore";
 
 type Row = Record<string, any>;
@@ -86,6 +95,33 @@ function summarize(rows: Row[]) {
     ctr: safeDiv(clicks, impressions),
     cpm: safeDiv(spend * 1000, impressions),
   };
+}
+
+function buildDailyTrend(rows: Row[]) {
+  const map = new Map<string, Row[]>();
+
+  rows.forEach((row) => {
+    const date = getDate(row);
+    if (!date) return;
+    if (!map.has(date)) map.set(date, []);
+    map.get(date)!.push(row);
+  });
+
+  return Array.from(map.entries())
+    .map(([date, dateRows]) => {
+      const s = summarize(dateRows);
+
+      return {
+        date,
+        spend: s.spend,
+        cpa: s.purchases > 0 ? s.cpa : null,
+        roas: s.roas,
+        purchases: s.purchases,
+        ctr: s.ctr,
+        cpm: s.cpm,
+      };
+    })
+    .sort((a, b) => a.date.localeCompare(b.date));
 }
 
 function changePct(current: number, base: number) {
@@ -231,6 +267,7 @@ function buildPriorityMatrix(rows: Row[]) {
       campaign: getCampaign(adRows[0]),
       adSet: getAdSet(adRows[0]),
       latestDate,
+      trend: buildDailyTrend(adRows),
       lifetime,
       last7,
       prev7,
@@ -303,6 +340,133 @@ function InfoBox({ title, lines }: { title: string; lines: string[] }) {
   );
 }
 
+function TrendTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+
+  return (
+    <div className="meta-chart-tooltip">
+      <div className="meta-chart-tooltip-title">{label}</div>
+      <div className="meta-chart-tooltip-body">
+        {payload.map((item: any) => {
+          const name = String(item.name || item.dataKey || "");
+          const raw = Number(item.value || 0);
+
+          let value = raw.toLocaleString("en-IN");
+          if (name.toLowerCase().includes("spend") || name.toLowerCase().includes("cpa")) {
+            value = money(raw);
+          }
+          if (name.toLowerCase().includes("roas")) {
+            value = `${num(raw)}x`;
+          }
+
+          return (
+            <div key={name} className="meta-chart-tooltip-row">
+              <span>{name}</span>
+              <strong>{value}</strong>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function TrendBox({ data, mode }: { data: any[]; mode: "descale" | "scale" }) {
+  const last30 = data.slice(-30);
+
+  return (
+    <div className="rounded-xl border border-current/10 bg-current/[0.025] p-3">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.14em] opacity-60">
+            Recent Trend
+          </p>
+          <p className="mt-1 text-xs opacity-60">
+            Spend, CPA and ROAS over latest active days
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.1em] opacity-60">
+          <span>Blue: Spend</span>
+          <span>{mode === "descale" ? "Red: CPA" : "Green: ROAS"}</span>
+        </div>
+      </div>
+
+      <div className="h-[180px] w-full">
+        <ResponsiveContainer width="100%" height={180}>
+          <LineChart data={last30} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--meta-chart-grid)" />
+
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: 10, fill: "var(--meta-chart-axis)", fontWeight: 700 }}
+              axisLine={false}
+              tickLine={false}
+              minTickGap={18}
+            />
+
+            <YAxis
+              yAxisId="money"
+              tick={{ fontSize: 10, fill: "var(--meta-chart-axis)", fontWeight: 700 }}
+              axisLine={false}
+              tickLine={false}
+              width={52}
+              tickFormatter={(v) => `₹${Math.round(Number(v || 0))}`}
+            />
+
+            <YAxis
+              yAxisId="roas"
+              orientation="right"
+              tick={{ fontSize: 10, fill: "var(--meta-chart-axis)", fontWeight: 700 }}
+              axisLine={false}
+              tickLine={false}
+              width={42}
+              tickFormatter={(v) => `${Number(v || 0).toFixed(1)}x`}
+            />
+
+            <Tooltip content={<TrendTooltip />} />
+
+            <Line
+              yAxisId="money"
+              type="monotone"
+              dataKey="spend"
+              name="Spend"
+              stroke="#0A84FF"
+              strokeWidth={2}
+              dot={false}
+              connectNulls
+            />
+
+            {mode === "descale" ? (
+              <Line
+                yAxisId="money"
+                type="monotone"
+                dataKey="cpa"
+                name="CPA"
+                stroke="#ef4444"
+                strokeWidth={2}
+                dot={false}
+                connectNulls
+              />
+            ) : (
+              <Line
+                yAxisId="roas"
+                type="monotone"
+                dataKey="roas"
+                name="ROAS"
+                stroke="#10b981"
+                strokeWidth={2}
+                dot={false}
+                connectNulls
+              />
+            )}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
 function CreativeRow({ item, rank, mode }: { item: any; rank: number; mode: "descale" | "scale" }) {
   const isDescale = mode === "descale";
 
@@ -331,19 +495,21 @@ function CreativeRow({ item, rank, mode }: { item: any; rank: number; mode: "des
         <ChevronDown className="h-4 w-4 opacity-45 transition group-open:rotate-180" />
       </summary>
 
-      <div className="grid gap-3 px-4 pb-4 lg:grid-cols-3">
+      <div className="grid gap-3 px-4 pb-4 lg:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr_440px]">
         <InfoBox
           title={isDescale ? "Why Not Scale" : "Why Scale"}
           lines={
             isDescale
               ? [
+                  `Ranked here because risk score is ${item.descalingScore}.`,
                   `Primary issue: ${item.primaryIssue}.`,
-                  `Signals: ${item.descalingSignals.join(", ") || "No severe signal"}.`,
-                  `Last 7D spend at risk: ${money(item.last7.spend)}.`,
+                  `Triggered signals: ${item.descalingSignals.join(", ") || "No severe signal"}.`,
+                  `Last 7D spend exposed to risk: ${money(item.last7.spend)}.`,
                 ]
               : [
-                  `Scale reason: ${item.scalingReason}.`,
-                  `Signals: ${item.scalingSignals.join(", ") || "No scale signal"}.`,
+                  `Ranked here because scale score is ${item.scalingScore}.`,
+                  `Primary scale reason: ${item.scalingReason}.`,
+                  `Triggered signals: ${item.scalingSignals.join(", ") || "No scale signal"}.`,
                   `Last 7D ROAS: ${num(item.last7.roas)}x with ${num(item.last7.purchases, 0)} purchases.`,
                 ]
           }
@@ -354,8 +520,9 @@ function CreativeRow({ item, rank, mode }: { item: any; rank: number; mode: "des
           lines={[
             `Lifetime CPA: ${money(item.lifetime.cpa)} | Last 7D CPA: ${item.last7.purchases > 0 ? money(item.last7.cpa) : "No sale"}`,
             `Lifetime ROAS: ${num(item.lifetime.roas)}x | Last 7D ROAS: ${num(item.last7.roas)}x`,
-            `Previous 7D spend: ${money(item.prev7.spend)} | Last 7D spend: ${money(item.last7.spend)}`,
-            `Incremental revenue: ${money(item.incrementalRevenue)}`,
+            `Previous 7D spend: ${money(item.prev7.spend)} | Last 7D spend: ${money(item.last7.spend)} (${pct(item.spendChange7d)})`,
+            `Incremental revenue: ${money(item.incrementalRevenue)}.`,
+            `CPA change vs lifetime: ${pct(item.cpaChangeVsLife)} | ROAS change vs lifetime: ${pct(item.roasChangeVsLife)}.`,
           ]}
         />
 
@@ -365,16 +532,18 @@ function CreativeRow({ item, rank, mode }: { item: any; rank: number; mode: "des
             isDescale
               ? [
                   item.descalingAction,
-                  "Do not increase budget until the recent trend improves.",
-                  "If attention decay is present, refresh hook/visual before re-scaling.",
+                  item.descalingScore >= 70 ? "High urgency: reduce or pause before more delivery is consumed." : "Medium urgency: do not scale until the recent trend improves.",
+                  item.descalingSignals.includes("Attention Decay") ? "Creative action: refresh hook, first frame, headline or visual angle." : "Media action: cap budget and monitor next 48 hours.",
                 ]
               : [
                   item.scalingAction,
-                  "Scale gradually, not aggressively.",
-                  "Monitor CPA and ROAS for 2–3 days after budget movement.",
+                  item.scalingScore >= 75 ? "Suggested next move: controlled budget increase or extract into control." : "Suggested next move: small test increase only.",
+                  "Guardrail: monitor CPA and ROAS for 2–3 days after budget movement.",
                 ]
           }
         />
+
+        <TrendBox data={item.trend || []} mode={mode} />
       </div>
     </details>
   );
