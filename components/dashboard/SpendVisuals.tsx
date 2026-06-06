@@ -384,6 +384,28 @@ function SpendSortHeader({
   onSort: (key: string) => void;
 }) {
   const active = sort.key === sortKey;
+  const icon = active ? (sort.direction === "asc" ? "↑" : "↓") : "↕";
+
+  return (
+    <th className="spend-table-th">
+      <button
+        type="button"
+        onClick={() => onSort(sortKey)}
+        title={`Sort by ${label}`}
+        className={active ? "spend-sort-button spend-sort-button-active" : "spend-sort-button"}
+      >
+        <span className="spend-sort-label">{label}</span>
+        <span className="spend-sort-icon">{icon}</span>
+      </button>
+    </th>
+  );
+}: {
+  label: string;
+  sortKey: string;
+  sort: SpendSortConfig;
+  onSort: (key: string) => void;
+}) {
+  const active = sort.key === sortKey;
 
   return (
     <th className="spend-table-th">
@@ -458,7 +480,17 @@ const liveRows = useMemo(() => onlyLiveRows(performanceRows), [performanceRows])
   }, [liveRows, preset, customMode, customStartDate, customEndDate, defaultRange]);
 
   if (!liveRows.length) {
-    return (
+  
+  const spendPeriodRows =
+    data.periodComparisons ||
+    data.periodRows ||
+    data.comparisons ||
+    [];
+
+  const spendSortedPeriodRows = spendSortRows(spendPeriodRows, spendPeriodSort);
+  const spendSortedDailyRows = spendSortRows(data.daily || [], spendDailySort);
+
+  return (
       <GlassCard className="p-8">
         <h2 className="text-2xl font-black">Spend Visuals</h2>
         <MutedText className="mt-2">
