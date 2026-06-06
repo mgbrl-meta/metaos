@@ -32,7 +32,6 @@ export type MetaTab =
   | "high_cpa"
   | "high_roas"
   | "spend_visuals"
-  | "hook_hold"
   | "summary"
   | "monthly";
 
@@ -103,13 +102,6 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "Spend",
     description: "Spend movement and efficiency visuals",
     icon: BarChart3,
-  },
-  {
-    id: "hook_hold",
-    label: "Hook / Hold",
-    shortLabel: "Hook / Hold",
-    description: "Creative hook and hold diagnostics",
-    icon: Sparkles,
   },
   {
     id: "monthly",
