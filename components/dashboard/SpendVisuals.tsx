@@ -909,14 +909,6 @@ return (
 }
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
-  const spendPeriodRows =
-    data.periodComparisons ||
-    data.periodRows ||
-    data.comparisons ||
-    [];
-
-  const spendSortedPeriodRows = spendSortRows(spendPeriodRows, spendPeriodSort);
-  const spendSortedDailyRows = spendSortRows(data.daily || [], spendDailySort);
 
 
   return (
