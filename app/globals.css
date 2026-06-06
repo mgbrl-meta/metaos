@@ -3627,3 +3627,153 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   fill: var(--meta-chart-axis) !important;
 }
 
+
+/* =========================================================
+   METAOS READABILITY GUARDRAILS — FINAL DARK/LIGHT SAFETY
+   Prevents hardcoded Tailwind text colors from becoming unreadable
+   inside MetaOS dashboards, especially Spend tab.
+   ========================================================= */
+
+/* Dark mode: neutral black/slate/zinc text classes must become readable */
+.os-dark .metaos-app .text-black,
+.os-dark .metaos-app .text-slate-950,
+.os-dark .metaos-app .text-slate-900,
+.os-dark .metaos-app .text-slate-800,
+.os-dark .metaos-app .text-zinc-950,
+.os-dark .metaos-app .text-zinc-900,
+.os-dark .metaos-app .text-zinc-800,
+.os-dark .metaos-app .text-neutral-950,
+.os-dark .metaos-app .text-neutral-900,
+.os-dark .metaos-app .text-neutral-800,
+.os-dark .metaos-app .text-stone-950,
+.os-dark .metaos-app .text-stone-900,
+.os-dark .metaos-app .text-stone-800 {
+  color: var(--meta-text) !important;
+}
+
+/* Dark mode: muted neutral classes */
+.os-dark .metaos-app .text-slate-700,
+.os-dark .metaos-app .text-slate-600,
+.os-dark .metaos-app .text-zinc-700,
+.os-dark .metaos-app .text-zinc-600,
+.os-dark .metaos-app .text-neutral-700,
+.os-dark .metaos-app .text-neutral-600,
+.os-dark .metaos-app .text-gray-700,
+.os-dark .metaos-app .text-gray-600 {
+  color: var(--meta-text-muted) !important;
+}
+
+/* Light mode: white text used on light cards should become dark */
+.os-light .metaos-app .text-white:not([data-keep-white="true"]) {
+  color: var(--meta-text) !important;
+}
+
+/* Keep selected blue pills readable */
+.metaos-app [data-meta-tab-active="true"],
+.metaos-app [data-meta-tab-active="true"] *,
+.metaos-app .bg-\[\#0A84FF\],
+.metaos-app .bg-\[\#0A84FF\] * {
+  color: #ffffff !important;
+}
+
+/* Keep positive/danger semantic colors visible */
+.metaos-app .text-emerald-300,
+.metaos-app .text-emerald-400,
+.metaos-app .text-emerald-500,
+.metaos-app .text-emerald-600 {
+  color: #34d399 !important;
+}
+
+.metaos-app .text-red-300,
+.metaos-app .text-red-400,
+.metaos-app .text-red-500,
+.metaos-app .text-red-600 {
+  color: #f87171 !important;
+}
+
+.metaos-app .text-orange-300,
+.metaos-app .text-orange-400,
+.metaos-app .text-orange-500,
+.metaos-app .text-orange-600 {
+  color: #fb923c !important;
+}
+
+/* Spend tab / dashboard title readability */
+.metaos-app [class*="SpendVisuals"] h1,
+.metaos-app [class*="SpendVisuals"] h2,
+.metaos-app [class*="SpendVisuals"] h3,
+.metaos-app [class*="SpendVisuals"] p,
+.metaos-app [class*="SpendVisuals"] span,
+.metaos-app [class*="SpendVisuals"] div {
+  color: inherit;
+}
+
+/* All dashboard sections should inherit readable app text */
+.metaos-app main,
+.metaos-app main > div,
+.metaos-app section {
+  color: var(--meta-text) !important;
+}
+
+/* Form controls and buttons should not fade into dark cards */
+.os-dark .metaos-app button:not([data-meta-tab-active="true"]),
+.os-dark .metaos-app input,
+.os-dark .metaos-app select {
+  color: var(--meta-text) !important;
+}
+
+/* Pills/badges using quoted sheet live text */
+.os-dark .metaos-app .rounded-full,
+.os-dark .metaos-app .rounded-xl {
+  color: var(--meta-text) !important;
+}
+
+/* But active blue tabs/pills must remain white */
+.metaos-app .rounded-full.bg-\[\#0A84FF\],
+.metaos-app .rounded-full.bg-\[\#0A84FF\] *,
+.metaos-app .rounded-xl.bg-\[\#0A84FF\],
+.metaos-app .rounded-xl.bg-\[\#0A84FF\] * {
+  color: #ffffff !important;
+}
+
+/* Recharts axis/title/readability universal layer */
+.os-dark .metaos-app .recharts-wrapper text,
+.os-dark .metaos-app .recharts-surface text,
+.os-dark .metaos-app svg text {
+  fill: var(--meta-chart-axis) !important;
+  color: var(--meta-chart-axis) !important;
+  opacity: 1 !important;
+}
+
+.os-light .metaos-app .recharts-wrapper text,
+.os-light .metaos-app .recharts-surface text,
+.os-light .metaos-app svg text {
+  fill: var(--meta-chart-axis) !important;
+  color: var(--meta-chart-axis) !important;
+  opacity: 1 !important;
+}
+
+/* Chart title/legend helper text */
+.metaos-app .recharts-legend-item-text,
+.metaos-app .recharts-cartesian-axis-tick-value {
+  fill: var(--meta-chart-axis) !important;
+  color: var(--meta-chart-axis) !important;
+  font-weight: 700 !important;
+}
+
+/* Tooltip content must never inherit dark-on-dark */
+.metaos-app .meta-chart-tooltip,
+.metaos-app .meta-chart-tooltip *,
+.metaos-app .recharts-tooltip-wrapper,
+.metaos-app .recharts-tooltip-wrapper * {
+  color: #ffffff !important;
+}
+
+.metaos-app .meta-chart-tooltip-row span {
+  color: rgba(255,255,255,0.72) !important;
+}
+
+.metaos-app .meta-chart-tooltip-row strong {
+  color: #ffffff !important;
+}
+
