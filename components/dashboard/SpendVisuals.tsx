@@ -399,26 +399,7 @@ function SpendSortHeader({
       </button>
     </th>
   );
-}: {
-  label: string;
-  sortKey: string;
-  sort: SpendSortConfig;
-  onSort: (key: string) => void;
-}) {
-  const active = sort.key === sortKey;
-
-  return (
-    <th className="spend-table-th">
-      <button type="button" onClick={() => onSort(sortKey)} className="spend-sort-button">
-        <span>{label}</span>
-        <span className={active ? "spend-sort-active" : "spend-sort-idle"}>
-          {active ? (sort.direction === "asc" ? "↑" : "↓") : "↕"}
-        </span>
-      </button>
-    </th>
-  );
 }
-
 
 export function SpendVisuals() {
   const [spendPeriodSort, setSpendPeriodSort] = useState<SpendSortConfig>({
