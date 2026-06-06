@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 import { ChevronDown, ShieldAlert, TrendingUp } from "lucide-react";
 import { useMetaStore } from "@/store/metaStore";
 
@@ -281,7 +281,7 @@ function Kpi({ label, value, tone = "neutral" }: { label: string; value: string;
   );
 }
 
-function Tag({ children, tone = "red" }: { children: string; tone?: "red" | "green" | "blue" }) {
+function Tag({ children, tone = "red" }: { children: ReactNode; tone?: "red" | "green" | "blue" }) {
   const cls =
     tone === "green"
       ? "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300"
