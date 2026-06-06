@@ -494,7 +494,7 @@ return (
               />
               <MetaYAxis 
                 
-                tickFormatter={(v) => compactMoney(Number(v))}
+                tickFormatter={(v: number | string) => compactMoney(Number(v))}
               />
               <Tooltip
                 contentStyle={{
@@ -545,7 +545,7 @@ return (
               <MetaYAxis yAxisId="left"
                 
                 
-                tickFormatter={(v) => compactMoney(Number(v))}
+                tickFormatter={(v: number | string) => compactMoney(Number(v))}
               />
               <MetaYAxis yAxisId="right"
                 orientation="right"
@@ -595,7 +595,7 @@ return (
               <MetaXAxis type="number"
                 
                 
-                tickFormatter={(v) => compactMoney(Number(v))}
+                tickFormatter={(v: number | string) => compactMoney(Number(v))}
               />
               <MetaYAxis dataKey="short"
                 type="category"
@@ -645,7 +645,7 @@ return (
               <MetaXAxis type="number"
                 
                 
-                tickFormatter={(v) => compactMoney(Number(v))}
+                tickFormatter={(v: number | string) => compactMoney(Number(v))}
               />
               <MetaYAxis dataKey="short"
                 type="category"
