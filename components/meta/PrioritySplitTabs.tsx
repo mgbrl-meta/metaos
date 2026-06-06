@@ -114,11 +114,12 @@ function buildDailyTrend(rows: Row[]) {
       return {
         date,
         spend: s.spend,
+        cpm: s.cpm,
+        ctr: s.ctr,
         cpa: s.purchases > 0 ? s.cpa : null,
+        aov: s.purchases > 0 ? s.aov : null,
         roas: s.roas,
         purchases: s.purchases,
-        ctr: s.ctr,
-        cpm: s.cpm,
       };
     })
     .sort((a, b) => a.date.localeCompare(b.date));
@@ -340,28 +341,58 @@ function InfoBox({ title, lines }: { title: string; lines: string[] }) {
   );
 }
 
+
+type TrendMetricKey = "spend" | "cpm" | "ctr" | "cpa" | "aov" | "roas";
+
+const TREND_METRICS: {
+  key: TrendMetricKey;
+  label: string;
+  axis: "money" | "rate";
+  color: string;
+}[] = [
+  { key: "spend", label: "Spend", axis: "money", color: "#0A84FF" },
+  { key: "cpm", label: "CPM", axis: "money", color: "#94a3b8" },
+  { key: "ctr", label: "CTR", axis: "rate", color: "#10b981" },
+  { key: "cpa", label: "CPA", axis: "money", color: "#ef4444" },
+  { key: "aov", label: "AOV", axis: "money", color: "#a855f7" },
+  { key: "roas", label: "ROAS", axis: "rate", color: "#f97316" },
+];
+
+function formatTrendValue(metric: TrendMetricKey, value: unknown) {
+  const n = Number(value || 0);
+
+  if (metric === "spend" || metric === "cpm" || metric === "cpa" || metric === "aov") {
+    return money(n);
+  }
+
+  if (metric === "ctr") {
+    return `${num(n * 100, 2)}%`;
+  }
+
+  if (metric === "roas") {
+    return `${num(n)}x`;
+  }
+
+  return num(n);
+}
+
 function TrendTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
 
   return (
     <div className="meta-chart-tooltip">
       <div className="meta-chart-tooltip-title">{label}</div>
+
       <div className="meta-chart-tooltip-body">
         {payload.map((item: any) => {
-          const name = String(item.name || item.dataKey || "");
-          const raw = Number(item.value || 0);
-
-          let value = raw.toLocaleString("en-IN");
-          if (name.toLowerCase().includes("spend") || name.toLowerCase().includes("cpa")) {
-            value = money(raw);
-          }
-          if (name.toLowerCase().includes("roas")) {
-            value = `${num(raw)}x`;
-          }
+          const key = String(item.dataKey || "") as TrendMetricKey;
+          const metric = TREND_METRICS.find((m) => m.key === key);
+          const displayName = metric?.label || String(item.name || key);
+          const value = formatTrendValue(key, item.value);
 
           return (
-            <div key={name} className="meta-chart-tooltip-row">
-              <span>{name}</span>
+            <div key={key} className="meta-chart-tooltip-row">
+              <span>{displayName}</span>
               <strong>{value}</strong>
             </div>
           );
@@ -372,29 +403,77 @@ function TrendTooltip({ active, payload, label }: any) {
 }
 
 function TrendBox({ data, mode }: { data: any[]; mode: "descale" | "scale" }) {
+  const [selected, setSelected] = useState<Record<TrendMetricKey, boolean>>({
+    spend: true,
+    cpm: false,
+    ctr: false,
+    cpa: mode === "descale",
+    aov: false,
+    roas: mode === "scale",
+  });
+
+  const activeMetrics = TREND_METRICS.filter((metric) => selected[metric.key]);
   const last30 = data.slice(-30);
+
+  function toggleMetric(key: TrendMetricKey) {
+    setSelected((current) => {
+      const activeCount = Object.values(current).filter(Boolean).length;
+
+      if (current[key] && activeCount === 1) {
+        return current;
+      }
+
+      return {
+        ...current,
+        [key]: !current[key],
+      };
+    });
+  }
 
   return (
     <div className="rounded-xl border border-current/10 bg-current/[0.025] p-3">
-      <div className="mb-2 flex items-center justify-between gap-2">
+      <div className="mb-2 flex flex-col gap-2">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.14em] opacity-60">
-            Recent Trend
+            Select Metrics Trend
           </p>
           <p className="mt-1 text-xs opacity-60">
-            Spend, CPA and ROAS over latest active days
+            Choose metrics to read the creative movement before taking action.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.1em] opacity-60">
-          <span>Blue: Spend</span>
-          <span>{mode === "descale" ? "Red: CPA" : "Green: ROAS"}</span>
+        <div className="flex flex-wrap gap-2">
+          {TREND_METRICS.map((metric) => {
+            const isActive = selected[metric.key];
+
+            return (
+              <button
+                key={metric.key}
+                type="button"
+                onClick={() => toggleMetric(metric.key)}
+                className={
+                  isActive
+                    ? "inline-flex items-center gap-1.5 rounded-full border border-[#0A84FF]/40 bg-[#0A84FF]/15 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em]"
+                    : "inline-flex items-center gap-1.5 rounded-full border border-current/10 bg-current/[0.025] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em] opacity-70"
+                }
+              >
+                <span
+                  className="h-2.5 w-2.5 rounded-full"
+                  style={{
+                    backgroundColor: isActive ? metric.color : "transparent",
+                    border: `1px solid ${metric.color}`,
+                  }}
+                />
+                {metric.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="h-[180px] w-full">
-        <ResponsiveContainer width="100%" height={180}>
-          <LineChart data={last30} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+      <div className="h-[190px] w-full">
+        <ResponsiveContainer width="100%" height={190}>
+          <LineChart data={last30} margin={{ top: 8, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--meta-chart-grid)" />
 
             <XAxis
@@ -415,54 +494,37 @@ function TrendBox({ data, mode }: { data: any[]; mode: "descale" | "scale" }) {
             />
 
             <YAxis
-              yAxisId="roas"
+              yAxisId="rate"
               orientation="right"
               tick={{ fontSize: 10, fill: "var(--meta-chart-axis)", fontWeight: 700 }}
               axisLine={false}
               tickLine={false}
-              width={42}
-              tickFormatter={(v) => `${Number(v || 0).toFixed(1)}x`}
+              width={44}
+              tickFormatter={(v) => `${Number(v || 0).toFixed(1)}${activeMetrics.some((m) => m.key === "ctr") ? "%" : "x"}`}
             />
 
             <Tooltip content={<TrendTooltip />} />
 
-            <Line
-              yAxisId="money"
-              type="monotone"
-              dataKey="spend"
-              name="Spend"
-              stroke="#0A84FF"
-              strokeWidth={2}
-              dot={false}
-              connectNulls
-            />
-
-            {mode === "descale" ? (
+            {activeMetrics.map((metric) => (
               <Line
-                yAxisId="money"
+                key={metric.key}
+                yAxisId={metric.axis}
                 type="monotone"
-                dataKey="cpa"
-                name="CPA"
-                stroke="#ef4444"
+                dataKey={metric.key}
+                name={metric.label}
+                stroke={metric.color}
                 strokeWidth={2}
                 dot={false}
                 connectNulls
               />
-            ) : (
-              <Line
-                yAxisId="roas"
-                type="monotone"
-                dataKey="roas"
-                name="ROAS"
-                stroke="#10b981"
-                strokeWidth={2}
-                dot={false}
-                connectNulls
-              />
-            )}
+            ))}
           </LineChart>
         </ResponsiveContainer>
       </div>
+
+      {!last30.length ? (
+        <p className="mt-2 text-xs opacity-60">No trend data available for this creative.</p>
+      ) : null}
     </div>
   );
 }
