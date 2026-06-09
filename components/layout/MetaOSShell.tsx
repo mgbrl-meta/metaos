@@ -79,6 +79,7 @@ const metaNav: NavItem<MetaTab>[] = [
   {
     id: "influencer_ads",
     label: "Influencer Ads",
+    shortLabel: "Influencer",
     description: "Creator approval queue",
     icon: ShieldCheck,
   },
