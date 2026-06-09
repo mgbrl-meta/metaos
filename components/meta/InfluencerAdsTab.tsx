@@ -283,7 +283,7 @@ export function InfluencerAdsTab() {
 
         const sample = videoRows[0];
 
-        const risk =
+        const risk: InfluencerVideoRow["risk"] =
           yesterday.spend >= 25000
             ? "Top Spender"
             : yesterday.spend >= 5000
