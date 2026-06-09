@@ -619,7 +619,6 @@ export function InfluencerAdsTab() {
           </div>
         </div>
       </section>
-      </section>
     </div>
   );
 }
