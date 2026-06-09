@@ -28,6 +28,7 @@ export type OSMode = "meta" | "google";
 export type MetaTab =
   | "top_descaling"
   | "top_scaling"
+  | "influencer_ads"
   | "zero_purchase"
   | "high_cpa"
   | "high_roas"
@@ -75,6 +76,13 @@ const metaNav: NavItem<MetaTab>[] = [
     description: "Ranked creatives eligible for controlled scaling",
     icon: TrendingUp,
   },
+  {
+    id: "influencer_ads",
+    label: "Influencer Ads",
+    description: "Creator approval queue",
+    icon: ShieldCheck,
+  },
+
   {
     id: "zero_purchase",
     label: "Zero Purchase",

@@ -9,6 +9,7 @@ import {
 } from "@/components/layout/MetaOSShell";
 
 import { ZeroPurchaseTab } from "@/components/meta/ZeroPurchaseTab";
+import { InfluencerAdsTab } from "@/components/meta/InfluencerAdsTab";
 import { TopDescalingPrioritiesTab, TopScalingPrioritiesTab } from "@/components/meta/PrioritySplitTabs";
 import { HighCpaTab } from "@/components/meta/HighCpaTab";
 import { HighRoasTab } from "@/components/meta/HighRoasTab";
@@ -59,7 +60,8 @@ export default function Home() {
           <AutoMetaSheetLoader />
           {activeMetaTab === "top_descaling" && <TopDescalingPrioritiesTab />}
           {activeMetaTab === "top_scaling" && <TopScalingPrioritiesTab />}
-          {activeMetaTab === "zero_purchase" && <ZeroPurchaseTab />}
+          {activeMetaTab === "influencer_ads" && <InfluencerAdsTab />}
+      {activeMetaTab === "zero_purchase" && <ZeroPurchaseTab />}
           {activeMetaTab === "high_cpa" && <HighCpaTab />}
           {activeMetaTab === "high_roas" && <HighRoasTab />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
