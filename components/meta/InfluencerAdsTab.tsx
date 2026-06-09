@@ -14,6 +14,8 @@ type WindowMetrics = {
   roas: number;
 };
 
+type InfluencerRisk = "Top Spender" | "Approval Check" | "Monitor";
+
 type InfluencerVideoRow = {
   key: string;
   creative: string;
@@ -24,25 +26,24 @@ type InfluencerVideoRow = {
   last7: WindowMetrics;
   last14: WindowMetrics;
   last30: WindowMetrics;
-  risk: "Top Spender" | "Approval Check" | "Monitor";
+  risk: InfluencerRisk;
+};
+
+type SortDirection = "asc" | "desc";
+type SortConfig = {
+  key: string;
+  direction: SortDirection;
 };
 
 const money = (n: number) => `₹${Math.round(Number(n || 0)).toLocaleString("en-IN")}`;
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
 const safeDiv = (a: number, b: number) => (b > 0 ? a / b : 0);
 
-type InfluencerSortDirection = "asc" | "desc";
-
-type InfluencerSortConfig = {
-  key: string;
-  direction: InfluencerSortDirection;
-};
-
 function getNestedValue(row: any, key: string) {
   return key.split(".").reduce((value, part) => value?.[part], row);
 }
 
-function toggleInfluencerSort(current: InfluencerSortConfig, key: string): InfluencerSortConfig {
+function toggleSort(current: SortConfig, key: string): SortConfig {
   if (current.key === key) {
     return {
       key,
@@ -56,7 +57,7 @@ function toggleInfluencerSort(current: InfluencerSortConfig, key: string): Influ
   };
 }
 
-function sortInfluencerRows(rows: InfluencerVideoRow[], sort: InfluencerSortConfig) {
+function sortRows(rows: InfluencerVideoRow[], sort: SortConfig) {
   return [...rows].sort((a, b) => {
     const av = getNestedValue(a, sort.key);
     const bv = getNestedValue(b, sort.key);
@@ -85,7 +86,7 @@ function SortHeader({
 }: {
   label: string;
   sortKey: string;
-  sort: InfluencerSortConfig;
+  sort: SortConfig;
   onSort: (key: string) => void;
   align?: "left" | "right";
 }) {
@@ -93,15 +94,15 @@ function SortHeader({
   const icon = active ? (sort.direction === "asc" ? "↑" : "↓") : "↕";
 
   return (
-    <th className={align === "right" ? "influencer-th text-right" : "influencer-th"}>
+    <th className={align === "right" ? "infv2-th text-right" : "infv2-th"}>
       <button
         type="button"
         onClick={() => onSort(sortKey)}
-        className={active ? "influencer-sort-btn active" : "influencer-sort-btn"}
+        className={active ? "infv2-sort active" : "infv2-sort"}
         title={`Sort by ${label}`}
       >
         <span>{label}</span>
-        <span className="influencer-sort-icon">{icon}</span>
+        <span className="infv2-sort-icon">{icon}</span>
       </button>
     </th>
   );
@@ -232,8 +233,8 @@ function exportExcel(rows: InfluencerVideoRow[]) {
   const headers = [
     "Creative / Video",
     "Ad Name",
-    "Ad Set",
     "Campaign",
+    "Ad Set",
     "Risk",
     "Yesterday Spend",
     "Yesterday CPA",
@@ -252,8 +253,8 @@ function exportExcel(rows: InfluencerVideoRow[]) {
   const body = rows.map((row) => [
     row.creative,
     row.adName,
-    row.adSet,
     row.campaign,
+    row.adSet,
     row.risk,
     Math.round(row.yesterday.spend),
     row.yesterday.purchases > 0 ? Math.round(row.yesterday.cpa) : "No sale",
@@ -271,18 +272,14 @@ function exportExcel(rows: InfluencerVideoRow[]) {
 
   const html = `
     <html>
-      <head>
-        <meta charset="UTF-8" />
-      </head>
+      <head><meta charset="UTF-8" /></head>
       <body>
         <table border="1">
           <thead>
             <tr>${headers.map((h) => `<th>${escapeHtml(h)}</th>`).join("")}</tr>
           </thead>
           <tbody>
-            ${body
-              .map((r) => `<tr>${r.map((c) => `<td>${escapeHtml(c)}</td>`).join("")}</tr>`)
-              .join("")}
+            ${body.map((r) => `<tr>${r.map((c) => `<td>${escapeHtml(c)}</td>`).join("")}</tr>`).join("")}
           </tbody>
         </table>
       </body>
@@ -303,39 +300,12 @@ function exportExcel(rows: InfluencerVideoRow[]) {
   URL.revokeObjectURL(url);
 }
 
-function Metric({
-  label,
-  value,
-  tone = "neutral",
-}: {
-  label: string;
-  value: string;
-  tone?: "neutral" | "green" | "red" | "amber";
-}) {
-  const toneClass =
-    tone === "green"
-      ? "text-emerald-600 dark:text-emerald-300"
-      : tone === "red"
-        ? "text-red-600 dark:text-red-300"
-        : tone === "amber"
-          ? "text-orange-600 dark:text-orange-300"
-          : "text-[var(--meta-text)]";
-
-  return (
-    <div className="min-w-[92px]">
-      <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--meta-text-muted)]">
-        {label}
-      </p>
-      <p className={`mt-1 text-xs font-black ${toneClass}`}>{value}</p>
-    </div>
-  );
-}
-
 export function InfluencerAdsTab() {
   const rows = useMetaStore((state) => state.performanceRows);
   const [threshold, setThreshold] = useState(5000);
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<InfluencerSortConfig>({
+  const [openKey, setOpenKey] = useState<string | null>(null);
+  const [sort, setSort] = useState<SortConfig>({
     key: "yesterday.spend",
     direction: "desc",
   });
@@ -360,10 +330,9 @@ export function InfluencerAdsTab() {
         const last7 = summarize(windowRows(videoRows, latest, 7));
         const last14 = summarize(windowRows(videoRows, latest, 14));
         const last30 = summarize(windowRows(videoRows, latest, 30));
-
         const sample = videoRows[0];
 
-        const risk: InfluencerVideoRow["risk"] =
+        const risk: InfluencerRisk =
           yesterday.spend >= 25000
             ? "Top Spender"
             : yesterday.spend >= 5000
@@ -387,7 +356,6 @@ export function InfluencerAdsTab() {
       .filter((item) => {
         if (!query.trim()) return true;
         const q = query.toLowerCase();
-
         return `${item.creative} ${item.adName} ${item.adSet} ${item.campaign}`.toLowerCase().includes(q);
       });
 
@@ -399,10 +367,10 @@ export function InfluencerAdsTab() {
     };
   }, [rows, threshold, query]);
 
-  const sortedItems = useMemo(() => sortInfluencerRows(data.items, sort), [data.items, sort]);
+  const sortedItems = useMemo(() => sortRows(data.items, sort), [data.items, sort]);
 
   return (
-    <div className="grid gap-4 influencer-ads-root">
+    <div className="infv2-root grid gap-4">
       <section className="rounded-2xl border border-current/10 bg-current/[0.025] p-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -415,9 +383,11 @@ export function InfluencerAdsTab() {
               </span>
             </div>
 
-            <h1 className="mt-3 text-2xl font-black tracking-[-0.04em]">Influencer Ads Approval Queue</h1>
-            <p className="mt-1 max-w-3xl text-sm text-[var(--meta-text-muted)]">
-              Active collab / creator videos that spent yesterday. Use this to catch coupon expiry, approval dependency, or creator-code issues before high-spend videos waste budget.
+            <h1 className="mt-3 text-2xl font-black tracking-[-0.04em]">
+              Influencer Ads Approval Queue
+            </h1>
+            <p className="mt-1 max-w-4xl text-sm text-[var(--meta-text-muted)]">
+              Active collab / creator videos spending yesterday. Main table shows current action metrics. Expand any row for full 14D/30D context.
             </p>
           </div>
 
@@ -466,7 +436,7 @@ export function InfluencerAdsTab() {
                   : "h-10 rounded-full border border-current/10 px-4 text-xs font-black"
               }
             >
-              ₹25K+ Top Spenders
+              ₹25K+ Top
             </button>
           </div>
 
@@ -505,118 +475,144 @@ export function InfluencerAdsTab() {
           <div>
             <h2 className="text-lg font-black">Active Influencer Videos</h2>
             <p className="mt-1 text-sm text-[var(--meta-text-muted)]">
-              Compact approval queue. Default sorted by yesterday spend. Open a row for 14D/30D context and full campaign/ad set details.
+              Compact approval queue. Expand a row for full campaign/ad set and 14D/30D details.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.12em] text-[var(--meta-text-muted)]">
-            <span>Primary: Yesterday + 7D</span>
-            <span>Expand: 14D + 30D</span>
+          <div className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--meta-text-muted)]">
+            Main: Yesterday + 7D · Expand: 14D + 30D
           </div>
         </div>
 
-        <div className="influencer-compact-table">
-          <div className="influencer-compact-head">
-            <SortHeader label="Video / Creator" sortKey="creative" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
-            <SortHeader label="Campaign / Ad Set" sortKey="campaign" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
-            <SortHeader label="Risk" sortKey="risk" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
-            <SortHeader label="Y Spend" sortKey="yesterday.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-            <SortHeader label="Y CPA" sortKey="yesterday.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-            <SortHeader label="Y ROAS" sortKey="yesterday.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-            <SortHeader label="7D Spend" sortKey="last7.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-            <SortHeader label="7D CPA" sortKey="last7.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-            <SortHeader label="7D ROAS" sortKey="last7.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-            <div className="influencer-head-cell text-center">More</div>
-          </div>
+        <div className="overflow-x-auto">
+          <table className="infv2-table">
+            <thead>
+              <tr>
+                <SortHeader label="Video / Creator" sortKey="creative" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} />
+                <SortHeader label="Campaign" sortKey="campaign" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} />
+                <SortHeader label="Ad Set" sortKey="adSet" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} />
+                <SortHeader label="Risk" sortKey="risk" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} />
+                <SortHeader label="Y Spend" sortKey="yesterday.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
+                <SortHeader label="Y CPA" sortKey="yesterday.cpa" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
+                <SortHeader label="Y ROAS" sortKey="yesterday.roas" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
+                <SortHeader label="7D Spend" sortKey="last7.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
+                <SortHeader label="7D CPA" sortKey="last7.cpa" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
+                <SortHeader label="7D ROAS" sortKey="last7.roas" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
+                <th className="infv2-th text-center">More</th>
+              </tr>
+            </thead>
 
-          <div className="divide-y divide-current/10">
-            {sortedItems.map((item) => (
-              <details key={item.key} className="group influencer-row">
-                <summary className="influencer-compact-row">
-                  <div className="min-w-0">
-                    <p className="truncate font-black">{item.creative}</p>
-                    <p className="mt-0.5 truncate text-[11px] text-[var(--meta-text-muted)]">{item.adName}</p>
-                  </div>
+            <tbody>
+              {sortedItems.map((item) => {
+                const isOpen = openKey === item.key;
 
-                  <div className="min-w-0">
-                    <p className="truncate font-bold">{item.campaign}</p>
-                    <p className="mt-0.5 truncate text-[11px] text-[var(--meta-text-muted)]">{item.adSet}</p>
-                  </div>
+                return (
+                  <>
+                    <tr key={item.key} className={isOpen ? "infv2-row open" : "infv2-row"}>
+                      <td className="infv2-video">
+                        <p className="truncate font-black">{item.creative}</p>
+                        <p className="mt-0.5 truncate text-[11px] text-[var(--meta-text-muted)]">{item.adName}</p>
+                      </td>
 
-                  <div>
-                    <span
-                      className={
-                        item.risk === "Top Spender"
-                          ? "influencer-risk-pill influencer-risk-top"
-                          : item.risk === "Approval Check"
-                            ? "influencer-risk-pill influencer-risk-approval"
-                            : "influencer-risk-pill"
-                      }
-                    >
-                      {item.risk}
-                    </span>
-                  </div>
+                      <td>
+                        <p className="truncate font-semibold">{item.campaign}</p>
+                      </td>
 
-                  <div className="text-right font-black">{money(item.yesterday.spend)}</div>
-                  <div className="text-right font-black text-red-600 dark:text-red-300">
-                    {item.yesterday.purchases > 0 ? money(item.yesterday.cpa) : "No sale"}
-                  </div>
-                  <div className="text-right font-black text-emerald-600 dark:text-emerald-300">{num(item.yesterday.roas)}x</div>
+                      <td>
+                        <p className="truncate text-[var(--meta-text-soft)]">{item.adSet}</p>
+                      </td>
 
-                  <div className="text-right">{money(item.last7.spend)}</div>
-                  <div className="text-right">{item.last7.purchases > 0 ? money(item.last7.cpa) : "No sale"}</div>
-                  <div className="text-right">{num(item.last7.roas)}x</div>
+                      <td>
+                        <span
+                          className={
+                            item.risk === "Top Spender"
+                              ? "infv2-risk top"
+                              : item.risk === "Approval Check"
+                                ? "infv2-risk approval"
+                                : "infv2-risk"
+                          }
+                        >
+                          {item.risk}
+                        </span>
+                      </td>
 
-                  <div className="flex justify-center">
-                    <ChevronDown className="h-4 w-4 opacity-60 transition group-open:rotate-180" />
-                  </div>
-                </summary>
+                      <td className="text-right font-black">{money(item.yesterday.spend)}</td>
+                      <td className="text-right font-black text-red-600 dark:text-red-300">
+                        {item.yesterday.purchases > 0 ? money(item.yesterday.cpa) : "No sale"}
+                      </td>
+                      <td className="text-right font-black text-emerald-600 dark:text-emerald-300">{num(item.yesterday.roas)}x</td>
 
-                <div className="influencer-expanded">
-                  <div className="influencer-detail-card">
-                    <p className="influencer-detail-title">Full context</p>
-                    <p><strong>Campaign:</strong> {item.campaign}</p>
-                    <p><strong>Ad Set:</strong> {item.adSet}</p>
-                    <p><strong>Ad:</strong> {item.adName}</p>
-                    <p><strong>Creative:</strong> {item.creative}</p>
-                  </div>
+                      <td className="text-right">{money(item.last7.spend)}</td>
+                      <td className="text-right">{item.last7.purchases > 0 ? money(item.last7.cpa) : "No sale"}</td>
+                      <td className="text-right">{num(item.last7.roas)}x</td>
 
-                  <div className="influencer-detail-card">
-                    <p className="influencer-detail-title">14D performance</p>
-                    <p><strong>Spend:</strong> {money(item.last14.spend)}</p>
-                    <p><strong>CPA:</strong> {item.last14.purchases > 0 ? money(item.last14.cpa) : "No sale"}</p>
-                    <p><strong>ROAS:</strong> {num(item.last14.roas)}x</p>
-                    <p><strong>Purchases:</strong> {num(item.last14.purchases, 0)}</p>
-                  </div>
+                      <td className="text-center">
+                        <button
+                          type="button"
+                          onClick={() => setOpenKey(isOpen ? null : item.key)}
+                          className="infv2-more"
+                          title="Open full details"
+                        >
+                          <ChevronDown className={isOpen ? "h-4 w-4 rotate-180 transition" : "h-4 w-4 transition"} />
+                        </button>
+                      </td>
+                    </tr>
 
-                  <div className="influencer-detail-card">
-                    <p className="influencer-detail-title">30D performance</p>
-                    <p><strong>Spend:</strong> {money(item.last30.spend)}</p>
-                    <p><strong>CPA:</strong> {item.last30.purchases > 0 ? money(item.last30.cpa) : "No sale"}</p>
-                    <p><strong>ROAS:</strong> {num(item.last30.roas)}x</p>
-                    <p><strong>Purchases:</strong> {num(item.last30.purchases, 0)}</p>
-                  </div>
+                    {isOpen ? (
+                      <tr key={`${item.key}-details`} className="infv2-detail-row">
+                        <td colSpan={11}>
+                          <div className="infv2-detail-grid">
+                            <div className="infv2-detail-card">
+                              <p className="infv2-detail-title">Full context</p>
+                              <p><strong>Campaign:</strong> {item.campaign}</p>
+                              <p><strong>Ad Set:</strong> {item.adSet}</p>
+                              <p><strong>Ad:</strong> {item.adName}</p>
+                              <p><strong>Creative:</strong> {item.creative}</p>
+                            </div>
 
-                  <div className="influencer-detail-card">
-                    <p className="influencer-detail-title">Operator action</p>
-                    <p>
-                      {item.risk === "Top Spender"
-                        ? "High daily spend. Confirm creator approval, coupon/code validity, and whitelisting status today."
-                        : item.risk === "Approval Check"
-                          ? "Check if the collaboration code/approval is still valid before scaling further."
-                          : "Monitor. No immediate approval risk unless spend increases."}
-                    </p>
-                  </div>
-                </div>
-              </details>
-            ))}
+                            <div className="infv2-detail-card">
+                              <p className="infv2-detail-title">14D performance</p>
+                              <p><strong>Spend:</strong> {money(item.last14.spend)}</p>
+                              <p><strong>CPA:</strong> {item.last14.purchases > 0 ? money(item.last14.cpa) : "No sale"}</p>
+                              <p><strong>ROAS:</strong> {num(item.last14.roas)}x</p>
+                              <p><strong>Purchases:</strong> {num(item.last14.purchases, 0)}</p>
+                            </div>
 
-            {!sortedItems.length ? (
-              <div className="px-4 py-8 text-center text-sm text-[var(--meta-text-muted)]">
-                No active influencer videos found above {money(threshold)} yesterday spend.
-              </div>
-            ) : null}
-          </div>
+                            <div className="infv2-detail-card">
+                              <p className="infv2-detail-title">30D performance</p>
+                              <p><strong>Spend:</strong> {money(item.last30.spend)}</p>
+                              <p><strong>CPA:</strong> {item.last30.purchases > 0 ? money(item.last30.cpa) : "No sale"}</p>
+                              <p><strong>ROAS:</strong> {num(item.last30.roas)}x</p>
+                              <p><strong>Purchases:</strong> {num(item.last30.purchases, 0)}</p>
+                            </div>
+
+                            <div className="infv2-detail-card">
+                              <p className="infv2-detail-title">Operator action</p>
+                              <p>
+                                {item.risk === "Top Spender"
+                                  ? "High daily spend. Confirm creator approval, coupon/code validity, and whitelisting status today."
+                                  : item.risk === "Approval Check"
+                                    ? "Check if the collaboration code/approval is still valid before scaling further."
+                                    : "Monitor. No immediate approval risk unless spend increases."}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : null}
+                  </>
+                );
+              })}
+
+              {!sortedItems.length ? (
+                <tr>
+                  <td colSpan={11} className="px-4 py-8 text-center text-sm text-[var(--meta-text-muted)]">
+                    No active influencer videos found above {money(threshold)} yesterday spend.
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
         </div>
       </section>
     </div>
