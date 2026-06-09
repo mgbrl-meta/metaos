@@ -475,22 +475,20 @@ export function InfluencerAdsTab() {
           <div>
             <h2 className="text-lg font-black">Active Influencer Videos</h2>
             <p className="mt-1 text-sm text-[var(--meta-text-muted)]">
-              Compact approval queue. Expand a row for full campaign/ad set and 14D/30D details.
+              Approval queue for active creator videos. Campaign and ad set are shown below the video name; export keeps the full details.
             </p>
           </div>
 
           <div className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--meta-text-muted)]">
-            Main: Yesterday + 7D · Expand: 14D + 30D
+            Main: yesterday + 7D · Expand: 14D + 30D
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="infv2-table">
+          <table className="infv3-table">
             <thead>
               <tr>
                 <SortHeader label="Video / Creator" sortKey="creative" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} />
-                <SortHeader label="Campaign" sortKey="campaign" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} />
-                <SortHeader label="Ad Set" sortKey="adSet" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} />
                 <SortHeader label="Risk" sortKey="risk" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} />
                 <SortHeader label="Y Spend" sortKey="yesterday.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
                 <SortHeader label="Y CPA" sortKey="yesterday.cpa" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
@@ -498,7 +496,7 @@ export function InfluencerAdsTab() {
                 <SortHeader label="7D Spend" sortKey="last7.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
                 <SortHeader label="7D CPA" sortKey="last7.cpa" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
                 <SortHeader label="7D ROAS" sortKey="last7.roas" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
-                <th className="infv2-th text-center">More</th>
+                <th className="infv3-th text-center">More</th>
               </tr>
             </thead>
 
@@ -508,28 +506,23 @@ export function InfluencerAdsTab() {
 
                 return (
                   <>
-                    <tr key={item.key} className={isOpen ? "infv2-row open" : "infv2-row"}>
-                      <td className="infv2-video">
-                        <p className="truncate font-black">{item.creative}</p>
+                    <tr key={item.key} className={isOpen ? "infv3-row open" : "infv3-row"}>
+                      <td className="infv3-video">
+                        <p className="truncate text-[13px] font-black">{item.creative}</p>
                         <p className="mt-0.5 truncate text-[11px] text-[var(--meta-text-muted)]">{item.adName}</p>
-                      </td>
-
-                      <td>
-                        <p className="truncate font-semibold">{item.campaign}</p>
-                      </td>
-
-                      <td>
-                        <p className="truncate text-[var(--meta-text-soft)]">{item.adSet}</p>
+                        <p className="mt-1 truncate text-[11px] text-[var(--meta-text-faint)]">
+                          {item.campaign} · {item.adSet}
+                        </p>
                       </td>
 
                       <td>
                         <span
                           className={
                             item.risk === "Top Spender"
-                              ? "infv2-risk top"
+                              ? "infv3-risk top"
                               : item.risk === "Approval Check"
-                                ? "infv2-risk approval"
-                                : "infv2-risk"
+                                ? "infv3-risk approval"
+                                : "infv3-risk"
                           }
                         >
                           {item.risk}
@@ -550,7 +543,7 @@ export function InfluencerAdsTab() {
                         <button
                           type="button"
                           onClick={() => setOpenKey(isOpen ? null : item.key)}
-                          className="infv2-more"
+                          className="infv3-more"
                           title="Open full details"
                         >
                           <ChevronDown className={isOpen ? "h-4 w-4 rotate-180 transition" : "h-4 w-4 transition"} />
@@ -559,40 +552,40 @@ export function InfluencerAdsTab() {
                     </tr>
 
                     {isOpen ? (
-                      <tr key={`${item.key}-details`} className="infv2-detail-row">
-                        <td colSpan={11}>
-                          <div className="infv2-detail-grid">
-                            <div className="infv2-detail-card">
-                              <p className="infv2-detail-title">Full context</p>
+                      <tr key={`${item.key}-details`} className="infv3-detail-row">
+                        <td colSpan={9}>
+                          <div className="infv3-detail-grid">
+                            <div className="infv3-detail-card infv3-detail-wide">
+                              <p className="infv3-detail-title">Full placement context</p>
                               <p><strong>Campaign:</strong> {item.campaign}</p>
                               <p><strong>Ad Set:</strong> {item.adSet}</p>
                               <p><strong>Ad:</strong> {item.adName}</p>
                               <p><strong>Creative:</strong> {item.creative}</p>
                             </div>
 
-                            <div className="infv2-detail-card">
-                              <p className="infv2-detail-title">14D performance</p>
+                            <div className="infv3-detail-card">
+                              <p className="infv3-detail-title">14D performance</p>
                               <p><strong>Spend:</strong> {money(item.last14.spend)}</p>
                               <p><strong>CPA:</strong> {item.last14.purchases > 0 ? money(item.last14.cpa) : "No sale"}</p>
                               <p><strong>ROAS:</strong> {num(item.last14.roas)}x</p>
                               <p><strong>Purchases:</strong> {num(item.last14.purchases, 0)}</p>
                             </div>
 
-                            <div className="infv2-detail-card">
-                              <p className="infv2-detail-title">30D performance</p>
+                            <div className="infv3-detail-card">
+                              <p className="infv3-detail-title">30D performance</p>
                               <p><strong>Spend:</strong> {money(item.last30.spend)}</p>
                               <p><strong>CPA:</strong> {item.last30.purchases > 0 ? money(item.last30.cpa) : "No sale"}</p>
                               <p><strong>ROAS:</strong> {num(item.last30.roas)}x</p>
                               <p><strong>Purchases:</strong> {num(item.last30.purchases, 0)}</p>
                             </div>
 
-                            <div className="infv2-detail-card">
-                              <p className="infv2-detail-title">Operator action</p>
+                            <div className="infv3-detail-card">
+                              <p className="infv3-detail-title">Operator action</p>
                               <p>
                                 {item.risk === "Top Spender"
                                   ? "High daily spend. Confirm creator approval, coupon/code validity, and whitelisting status today."
                                   : item.risk === "Approval Check"
-                                    ? "Check if the collaboration code/approval is still valid before scaling further."
+                                    ? "Check if collaboration approval/code is still valid before increasing spend."
                                     : "Monitor. No immediate approval risk unless spend increases."}
                               </p>
                             </div>
@@ -606,7 +599,7 @@ export function InfluencerAdsTab() {
 
               {!sortedItems.length ? (
                 <tr>
-                  <td colSpan={11} className="px-4 py-8 text-center text-sm text-[var(--meta-text-muted)]">
+                  <td colSpan={9} className="px-4 py-8 text-center text-sm text-[var(--meta-text-muted)]">
                     No active influencer videos found above {money(threshold)} yesterday spend.
                   </td>
                 </tr>
@@ -614,6 +607,7 @@ export function InfluencerAdsTab() {
             </tbody>
           </table>
         </div>
+      </section>
       </section>
     </div>
   );
