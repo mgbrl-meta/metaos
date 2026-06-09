@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Download, IndianRupee, Search, SlidersHorizontal } from "lucide-react";
+import { ChevronDown, Download, IndianRupee, Search, SlidersHorizontal } from "lucide-react";
 import { useMetaStore } from "@/store/metaStore";
 
 type Row = Record<string, any>;
@@ -501,96 +501,124 @@ export function InfluencerAdsTab() {
       </section>
 
       <section className="overflow-hidden rounded-2xl border border-current/10 bg-current/[0.025]">
-        <div className="border-b border-current/10 px-4 py-3">
-          <h2 className="text-lg font-black">Active Influencer Videos</h2>
-          <p className="mt-1 text-sm text-[var(--meta-text-muted)]">
-            Sorted by yesterday spend. One line per active creator video.
-          </p>
+        <div className="flex flex-col gap-2 border-b border-current/10 px-4 py-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <h2 className="text-lg font-black">Active Influencer Videos</h2>
+            <p className="mt-1 text-sm text-[var(--meta-text-muted)]">
+              Compact approval queue. Default sorted by yesterday spend. Open a row for 14D/30D context and full campaign/ad set details.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.12em] text-[var(--meta-text-muted)]">
+            <span>Primary: Yesterday + 7D</span>
+            <span>Expand: 14D + 30D</span>
+          </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1720px] border-collapse text-left text-xs">
-            <thead className="bg-[#14233b] text-white">
-              <tr>
-                <SortHeader label="Video / Creative" sortKey="creative" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
-                <SortHeader label="Campaign" sortKey="campaign" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
-                <SortHeader label="Ad Set" sortKey="adSet" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
-                <SortHeader label="Risk" sortKey="risk" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
-                <SortHeader label="Y Spend" sortKey="yesterday.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-                <SortHeader label="Y CPA" sortKey="yesterday.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-                <SortHeader label="Y ROAS" sortKey="yesterday.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-                <SortHeader label="7D Spend" sortKey="last7.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-                <SortHeader label="7D CPA" sortKey="last7.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-                <SortHeader label="7D ROAS" sortKey="last7.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-                <SortHeader label="14D Spend" sortKey="last14.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-                <SortHeader label="14D CPA" sortKey="last14.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-                <SortHeader label="14D ROAS" sortKey="last14.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-                <SortHeader label="30D Spend" sortKey="last30.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-                <SortHeader label="30D CPA" sortKey="last30.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-                <SortHeader label="30D ROAS" sortKey="last30.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
-              </tr>
-            </thead>
+        <div className="influencer-compact-table">
+          <div className="influencer-compact-head">
+            <SortHeader label="Video / Creator" sortKey="creative" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
+            <SortHeader label="Campaign / Ad Set" sortKey="campaign" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
+            <SortHeader label="Risk" sortKey="risk" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
+            <SortHeader label="Y Spend" sortKey="yesterday.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+            <SortHeader label="Y CPA" sortKey="yesterday.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+            <SortHeader label="Y ROAS" sortKey="yesterday.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+            <SortHeader label="7D Spend" sortKey="last7.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+            <SortHeader label="7D CPA" sortKey="last7.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+            <SortHeader label="7D ROAS" sortKey="last7.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+            <div className="influencer-head-cell text-center">More</div>
+          </div>
 
-            <tbody>
-              {sortedItems.map((item) => (
-                <tr key={item.key} className="border-b border-current/10 hover:bg-current/[0.035]">
-                  <td className="sticky left-0 z-10 max-w-[320px] bg-[var(--meta-surface)] px-3 py-2.5">
+          <div className="divide-y divide-current/10">
+            {sortedItems.map((item) => (
+              <details key={item.key} className="group influencer-row">
+                <summary className="influencer-compact-row">
+                  <div className="min-w-0">
                     <p className="truncate font-black">{item.creative}</p>
                     <p className="mt-0.5 truncate text-[11px] text-[var(--meta-text-muted)]">{item.adName}</p>
-                  </td>
+                  </div>
 
-                  <td className="max-w-[240px] px-3 py-2.5">
-                    <p className="truncate">{item.campaign}</p>
-                  </td>
+                  <div className="min-w-0">
+                    <p className="truncate font-bold">{item.campaign}</p>
+                    <p className="mt-0.5 truncate text-[11px] text-[var(--meta-text-muted)]">{item.adSet}</p>
+                  </div>
 
-                  <td className="max-w-[260px] px-3 py-2.5">
-                    <p className="truncate">{item.adSet}</p>
-                  </td>
-
-                  <td className="px-3 py-2.5">
+                  <div>
                     <span
                       className={
                         item.risk === "Top Spender"
-                          ? "rounded-full border border-orange-300 bg-orange-50 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-orange-700 dark:border-orange-800 dark:bg-orange-950/30 dark:text-orange-300"
+                          ? "influencer-risk-pill influencer-risk-top"
                           : item.risk === "Approval Check"
-                            ? "rounded-full border border-red-300 bg-red-50 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300"
-                            : "rounded-full border border-current/10 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em]"
+                            ? "influencer-risk-pill influencer-risk-approval"
+                            : "influencer-risk-pill"
                       }
                     >
                       {item.risk}
                     </span>
-                  </td>
+                  </div>
 
-                  <td className="px-3 py-2.5 text-right font-black">{money(item.yesterday.spend)}</td>
-                  <td className="px-3 py-2.5 text-right font-black text-red-600 dark:text-red-300">
+                  <div className="text-right font-black">{money(item.yesterday.spend)}</div>
+                  <div className="text-right font-black text-red-600 dark:text-red-300">
                     {item.yesterday.purchases > 0 ? money(item.yesterday.cpa) : "No sale"}
-                  </td>
-                  <td className="px-3 py-2.5 text-right font-black text-emerald-600 dark:text-emerald-300">{num(item.yesterday.roas)}x</td>
+                  </div>
+                  <div className="text-right font-black text-emerald-600 dark:text-emerald-300">{num(item.yesterday.roas)}x</div>
 
-                  <td className="px-3 py-2.5 text-right">{money(item.last7.spend)}</td>
-                  <td className="px-3 py-2.5 text-right">{item.last7.purchases > 0 ? money(item.last7.cpa) : "No sale"}</td>
-                  <td className="px-3 py-2.5 text-right">{num(item.last7.roas)}x</td>
+                  <div className="text-right">{money(item.last7.spend)}</div>
+                  <div className="text-right">{item.last7.purchases > 0 ? money(item.last7.cpa) : "No sale"}</div>
+                  <div className="text-right">{num(item.last7.roas)}x</div>
 
-                  <td className="px-3 py-2.5 text-right">{money(item.last14.spend)}</td>
-                  <td className="px-3 py-2.5 text-right">{item.last14.purchases > 0 ? money(item.last14.cpa) : "No sale"}</td>
-                  <td className="px-3 py-2.5 text-right">{num(item.last14.roas)}x</td>
+                  <div className="flex justify-center">
+                    <ChevronDown className="h-4 w-4 opacity-60 transition group-open:rotate-180" />
+                  </div>
+                </summary>
 
-                  <td className="px-3 py-2.5 text-right">{money(item.last30.spend)}</td>
-                  <td className="px-3 py-2.5 text-right">{item.last30.purchases > 0 ? money(item.last30.cpa) : "No sale"}</td>
-                  <td className="px-3 py-2.5 text-right">{num(item.last30.roas)}x</td>
-                </tr>
-              ))}
+                <div className="influencer-expanded">
+                  <div className="influencer-detail-card">
+                    <p className="influencer-detail-title">Full context</p>
+                    <p><strong>Campaign:</strong> {item.campaign}</p>
+                    <p><strong>Ad Set:</strong> {item.adSet}</p>
+                    <p><strong>Ad:</strong> {item.adName}</p>
+                    <p><strong>Creative:</strong> {item.creative}</p>
+                  </div>
 
-              {!data.items.length ? (
-                <tr>
-                  <td colSpan={16} className="px-4 py-8 text-center text-sm text-[var(--meta-text-muted)]">
-                    No active influencer videos found above {money(threshold)} yesterday spend.
-                  </td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
+                  <div className="influencer-detail-card">
+                    <p className="influencer-detail-title">14D performance</p>
+                    <p><strong>Spend:</strong> {money(item.last14.spend)}</p>
+                    <p><strong>CPA:</strong> {item.last14.purchases > 0 ? money(item.last14.cpa) : "No sale"}</p>
+                    <p><strong>ROAS:</strong> {num(item.last14.roas)}x</p>
+                    <p><strong>Purchases:</strong> {num(item.last14.purchases, 0)}</p>
+                  </div>
+
+                  <div className="influencer-detail-card">
+                    <p className="influencer-detail-title">30D performance</p>
+                    <p><strong>Spend:</strong> {money(item.last30.spend)}</p>
+                    <p><strong>CPA:</strong> {item.last30.purchases > 0 ? money(item.last30.cpa) : "No sale"}</p>
+                    <p><strong>ROAS:</strong> {num(item.last30.roas)}x</p>
+                    <p><strong>Purchases:</strong> {num(item.last30.purchases, 0)}</p>
+                  </div>
+
+                  <div className="influencer-detail-card">
+                    <p className="influencer-detail-title">Operator action</p>
+                    <p>
+                      {item.risk === "Top Spender"
+                        ? "High daily spend. Confirm creator approval, coupon/code validity, and whitelisting status today."
+                        : item.risk === "Approval Check"
+                          ? "Check if the collaboration code/approval is still valid before scaling further."
+                          : "Monitor. No immediate approval risk unless spend increases."}
+                    </p>
+                  </div>
+                </div>
+              </details>
+            ))}
+
+            {!sortedItems.length ? (
+              <div className="px-4 py-8 text-center text-sm text-[var(--meta-text-muted)]">
+                No active influencer videos found above {money(threshold)} yesterday spend.
+              </div>
+            ) : null}
+          </div>
         </div>
+      </section>
       </section>
     </div>
   );
