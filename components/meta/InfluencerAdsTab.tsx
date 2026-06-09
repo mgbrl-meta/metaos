@@ -31,6 +31,82 @@ const money = (n: number) => `₹${Math.round(Number(n || 0)).toLocaleString("en
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
 const safeDiv = (a: number, b: number) => (b > 0 ? a / b : 0);
 
+type InfluencerSortDirection = "asc" | "desc";
+
+type InfluencerSortConfig = {
+  key: string;
+  direction: InfluencerSortDirection;
+};
+
+function getNestedValue(row: any, key: string) {
+  return key.split(".").reduce((value, part) => value?.[part], row);
+}
+
+function toggleInfluencerSort(current: InfluencerSortConfig, key: string): InfluencerSortConfig {
+  if (current.key === key) {
+    return {
+      key,
+      direction: current.direction === "asc" ? "desc" : "asc",
+    };
+  }
+
+  return {
+    key,
+    direction: "desc",
+  };
+}
+
+function sortInfluencerRows(rows: InfluencerVideoRow[], sort: InfluencerSortConfig) {
+  return [...rows].sort((a, b) => {
+    const av = getNestedValue(a, sort.key);
+    const bv = getNestedValue(b, sort.key);
+
+    const an = Number(av);
+    const bn = Number(bv);
+
+    let result = 0;
+
+    if (!Number.isNaN(an) && !Number.isNaN(bn)) {
+      result = an - bn;
+    } else {
+      result = String(av ?? "").localeCompare(String(bv ?? ""));
+    }
+
+    return sort.direction === "asc" ? result : -result;
+  });
+}
+
+function SortHeader({
+  label,
+  sortKey,
+  sort,
+  onSort,
+  align = "left",
+}: {
+  label: string;
+  sortKey: string;
+  sort: InfluencerSortConfig;
+  onSort: (key: string) => void;
+  align?: "left" | "right";
+}) {
+  const active = sort.key === sortKey;
+  const icon = active ? (sort.direction === "asc" ? "↑" : "↓") : "↕";
+
+  return (
+    <th className={align === "right" ? "influencer-th text-right" : "influencer-th"}>
+      <button
+        type="button"
+        onClick={() => onSort(sortKey)}
+        className={active ? "influencer-sort-btn active" : "influencer-sort-btn"}
+        title={`Sort by ${label}`}
+      >
+        <span>{label}</span>
+        <span className="influencer-sort-icon">{icon}</span>
+      </button>
+    </th>
+  );
+}
+
 function getDate(row: Row) {
   return String(row.date || row.day || row.Day || "");
 }
@@ -259,6 +335,10 @@ export function InfluencerAdsTab() {
   const rows = useMetaStore((state) => state.performanceRows);
   const [threshold, setThreshold] = useState(5000);
   const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<InfluencerSortConfig>({
+    key: "yesterday.spend",
+    direction: "desc",
+  });
 
   const data = useMemo(() => {
     const validRows = rows.filter((row) => getDate(row));
@@ -309,8 +389,7 @@ export function InfluencerAdsTab() {
         const q = query.toLowerCase();
 
         return `${item.creative} ${item.adName} ${item.adSet} ${item.campaign}`.toLowerCase().includes(q);
-      })
-      .sort((a, b) => b.yesterday.spend - a.yesterday.spend);
+      });
 
     return {
       latest,
@@ -319,6 +398,8 @@ export function InfluencerAdsTab() {
       topSpenders: items.filter((x) => x.yesterday.spend >= 25000).length,
     };
   }, [rows, threshold, query]);
+
+  const sortedItems = useMemo(() => sortInfluencerRows(data.items, sort), [data.items, sort]);
 
   return (
     <div className="grid gap-4 influencer-ads-root">
@@ -342,7 +423,7 @@ export function InfluencerAdsTab() {
 
           <button
             type="button"
-            onClick={() => exportExcel(data.items)}
+            onClick={() => exportExcel(sortedItems)}
             className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#0A84FF] px-4 text-xs font-black text-white shadow-lg shadow-blue-500/20"
           >
             <Download className="h-4 w-4" />
@@ -428,80 +509,75 @@ export function InfluencerAdsTab() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1780px] border-collapse text-left text-xs">
+          <table className="w-full min-w-[1720px] border-collapse text-left text-xs">
             <thead className="bg-[#14233b] text-white">
               <tr>
-                {[
-                  "Video / Creative",
-                  "Risk",
-                  "Y Spend",
-                  "Y CPA",
-                  "Y ROAS",
-                  "7D Spend",
-                  "7D CPA",
-                  "7D ROAS",
-                  "14D Spend",
-                  "14D CPA",
-                  "14D ROAS",
-                  "30D Spend",
-                  "30D CPA",
-                  "30D ROAS",
-                  "Campaign",
-                  "Ad Set",
-                ].map((h) => (
-                  <th key={h} className="whitespace-nowrap px-3 py-2 text-[10px] font-black uppercase tracking-[0.12em]">
-                    {h}
-                  </th>
-                ))}
+                <SortHeader label="Video / Creative" sortKey="creative" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
+                <SortHeader label="Campaign" sortKey="campaign" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
+                <SortHeader label="Ad Set" sortKey="adSet" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
+                <SortHeader label="Risk" sortKey="risk" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} />
+                <SortHeader label="Y Spend" sortKey="yesterday.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+                <SortHeader label="Y CPA" sortKey="yesterday.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+                <SortHeader label="Y ROAS" sortKey="yesterday.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+                <SortHeader label="7D Spend" sortKey="last7.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+                <SortHeader label="7D CPA" sortKey="last7.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+                <SortHeader label="7D ROAS" sortKey="last7.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+                <SortHeader label="14D Spend" sortKey="last14.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+                <SortHeader label="14D CPA" sortKey="last14.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+                <SortHeader label="14D ROAS" sortKey="last14.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+                <SortHeader label="30D Spend" sortKey="last30.spend" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+                <SortHeader label="30D CPA" sortKey="last30.cpa" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
+                <SortHeader label="30D ROAS" sortKey="last30.roas" sort={sort} onSort={(key) => setSort((current) => toggleInfluencerSort(current, key))} align="right" />
               </tr>
             </thead>
 
             <tbody>
-              {data.items.map((item) => (
+              {sortedItems.map((item) => (
                 <tr key={item.key} className="border-b border-current/10 hover:bg-current/[0.035]">
-                  <td className="max-w-[360px] px-3 py-3">
+                  <td className="sticky left-0 z-10 max-w-[320px] bg-[var(--meta-surface)] px-3 py-2.5">
                     <p className="truncate font-black">{item.creative}</p>
-                    <p className="mt-0.5 truncate text-[var(--meta-text-muted)]">{item.adName}</p>
+                    <p className="mt-0.5 truncate text-[11px] text-[var(--meta-text-muted)]">{item.adName}</p>
                   </td>
 
-                  <td className="px-3 py-3">
+                  <td className="max-w-[240px] px-3 py-2.5">
+                    <p className="truncate">{item.campaign}</p>
+                  </td>
+
+                  <td className="max-w-[260px] px-3 py-2.5">
+                    <p className="truncate">{item.adSet}</p>
+                  </td>
+
+                  <td className="px-3 py-2.5">
                     <span
                       className={
                         item.risk === "Top Spender"
-                          ? "rounded-full border border-orange-300 bg-orange-50 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-orange-700 dark:border-orange-800 dark:bg-orange-950/30 dark:text-orange-300"
+                          ? "rounded-full border border-orange-300 bg-orange-50 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-orange-700 dark:border-orange-800 dark:bg-orange-950/30 dark:text-orange-300"
                           : item.risk === "Approval Check"
-                            ? "rounded-full border border-red-300 bg-red-50 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300"
-                            : "rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em]"
+                            ? "rounded-full border border-red-300 bg-red-50 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300"
+                            : "rounded-full border border-current/10 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em]"
                       }
                     >
                       {item.risk}
                     </span>
                   </td>
 
-                  <td className="px-3 py-3 font-black">{money(item.yesterday.spend)}</td>
-                  <td className="px-3 py-3 font-black text-red-600 dark:text-red-300">
+                  <td className="px-3 py-2.5 text-right font-black">{money(item.yesterday.spend)}</td>
+                  <td className="px-3 py-2.5 text-right font-black text-red-600 dark:text-red-300">
                     {item.yesterday.purchases > 0 ? money(item.yesterday.cpa) : "No sale"}
                   </td>
-                  <td className="px-3 py-3 font-black text-emerald-600 dark:text-emerald-300">{num(item.yesterday.roas)}x</td>
+                  <td className="px-3 py-2.5 text-right font-black text-emerald-600 dark:text-emerald-300">{num(item.yesterday.roas)}x</td>
 
-                  <td className="px-3 py-3">{money(item.last7.spend)}</td>
-                  <td className="px-3 py-3">{item.last7.purchases > 0 ? money(item.last7.cpa) : "No sale"}</td>
-                  <td className="px-3 py-3">{num(item.last7.roas)}x</td>
+                  <td className="px-3 py-2.5 text-right">{money(item.last7.spend)}</td>
+                  <td className="px-3 py-2.5 text-right">{item.last7.purchases > 0 ? money(item.last7.cpa) : "No sale"}</td>
+                  <td className="px-3 py-2.5 text-right">{num(item.last7.roas)}x</td>
 
-                  <td className="px-3 py-3">{money(item.last14.spend)}</td>
-                  <td className="px-3 py-3">{item.last14.purchases > 0 ? money(item.last14.cpa) : "No sale"}</td>
-                  <td className="px-3 py-3">{num(item.last14.roas)}x</td>
+                  <td className="px-3 py-2.5 text-right">{money(item.last14.spend)}</td>
+                  <td className="px-3 py-2.5 text-right">{item.last14.purchases > 0 ? money(item.last14.cpa) : "No sale"}</td>
+                  <td className="px-3 py-2.5 text-right">{num(item.last14.roas)}x</td>
 
-                  <td className="px-3 py-3">{money(item.last30.spend)}</td>
-                  <td className="px-3 py-3">{item.last30.purchases > 0 ? money(item.last30.cpa) : "No sale"}</td>
-                  <td className="px-3 py-3">{num(item.last30.roas)}x</td>
-
-                  <td className="max-w-[280px] px-3 py-3">
-                    <p className="truncate">{item.campaign}</p>
-                  </td>
-                  <td className="max-w-[280px] px-3 py-3">
-                    <p className="truncate">{item.adSet}</p>
-                  </td>
+                  <td className="px-3 py-2.5 text-right">{money(item.last30.spend)}</td>
+                  <td className="px-3 py-2.5 text-right">{item.last30.purchases > 0 ? money(item.last30.cpa) : "No sale"}</td>
+                  <td className="px-3 py-2.5 text-right">{num(item.last30.roas)}x</td>
                 </tr>
               ))}
 
