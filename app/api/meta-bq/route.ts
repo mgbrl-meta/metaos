@@ -142,14 +142,6 @@ const baseCleanSql = (tableRef: string) => `
     GROUP BY ad_id
   ),
 
-  last7_dates AS (
-    SELECT DISTINCT date
-    FROM clean
-    WHERE ad_id IN (SELECT ad_id FROM active_ads)
-    ORDER BY date DESC
-    LIMIT 7
-  ),
-
   last7 AS (
     SELECT
       ad_id,
@@ -158,8 +150,8 @@ const baseCleanSql = (tableRef: string) => `
       SUM(purchases) AS last7_purchases,
       SAFE_DIVIDE(SUM(spend), SUM(purchases)) AS last7_cpa,
       SAFE_DIVIDE(SUM(revenue), SUM(spend)) AS last7_roas
-    FROM clean
-    WHERE date IN (SELECT date FROM last7_dates)
+    FROM clean, latest
+    WHERE date BETWEEN DATE_SUB(latest.latest_date, INTERVAL 6 DAY) AND latest.latest_date
       AND ad_id IN (SELECT ad_id FROM active_ads)
     GROUP BY ad_id
   ),

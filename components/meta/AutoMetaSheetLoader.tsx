@@ -34,14 +34,25 @@ export function AutoMetaSheetLoader() {
 
       const rows = enrichRows(json.rows || [], useMetaStore.getState().settings);
 
-      useMetaStore.setState({
-        performanceRows: rows,
-      } as any);
+      // Important: use the store action, not setState, so QC normalization + alert summary always runs.
+      useMetaStore.getState().setPerformanceRows(rows as any);
+
+      if (json.qcSummary) {
+        useMetaStore.getState().setMetaQcSummary(json.qcSummary);
+      }
 
       setRowCount(rows.length);
       setStatus("connected");
       setLastLoadedAt(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
-      setMessage(`Meta Sheet live · ${rows.length.toLocaleString()} rows loaded`);
+
+      const shifted = Number(json.qcSummary?.shiftedRowsFixed || 0);
+      const critical = Number(json.qcSummary?.rowsWithCritical || 0);
+
+      if (shifted > 0 || critical > 0) {
+        setMessage(`Meta Sheet live · ${rows.length.toLocaleString()} rows loaded · QC alert found`);
+      } else {
+        setMessage(`Meta Sheet live · ${rows.length.toLocaleString()} rows loaded`);
+      }
     } catch (error: any) {
       setStatus("error");
 
@@ -63,8 +74,8 @@ export function AutoMetaSheetLoader() {
     status === "connected"
       ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-300"
       : status === "error"
-      ? "border-red-400/20 bg-red-400/10 text-red-300"
-      : "border-[#0A84FF]/20 bg-[#0A84FF]/10 text-[#8cc8ff]";
+        ? "border-red-400/20 bg-red-400/10 text-red-300"
+        : "border-[#0A84FF]/20 bg-[#0A84FF]/10 text-[#8cc8ff]";
 
   return (
     <div className={`mb-5 rounded-[1.5rem] border px-4 py-3 ${base}`}>

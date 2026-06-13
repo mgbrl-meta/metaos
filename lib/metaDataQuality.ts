@@ -42,10 +42,14 @@ const NUMERIC_FIELDS = [
   "ctr",
   "landingPageViews",
   "addsToCart",
+  "addToCart",
   "checkoutsInitiated",
+  "checkoutInitiated",
   "addsPaymentInfo",
+  "paymentInfo",
   "purchases",
   "revenue",
+  "purchaseValue",
   "reportedRoas",
 ];
 
@@ -53,6 +57,7 @@ function firstValue(row: Record<string, any>, keys: string[]) {
   for (const key of keys) {
     if (row[key] !== undefined && row[key] !== null && row[key] !== "") return row[key];
   }
+
   return "";
 }
 
@@ -100,6 +105,7 @@ function dateValue(row: Record<string, any>) {
       "day",
       "Day",
       "Date",
+      "reporting starts",
       "Reporting_starts",
       "Reporting starts",
       "Reporting Starts",
@@ -111,46 +117,46 @@ function getRawFields(row: Record<string, any>) {
   return {
     date: dateValue(row),
 
-    campaignId: String(firstValue(row, ["campaignId", "campaign_id", "Campaign_ID", "Campaign ID"]) || ""),
-    campaignName: String(firstValue(row, ["campaignName", "campaign_name", "Campaign_name", "Campaign name"]) || "Unknown Campaign"),
+    campaignId: String(firstValue(row, ["campaignId", "campaign_id", "campaign id", "Campaign_ID", "Campaign ID"]) || ""),
+    campaignName: String(firstValue(row, ["campaignName", "campaign_name", "campaign name", "Campaign_name", "Campaign name"]) || "Unknown Campaign"),
 
-    adSetId: String(firstValue(row, ["adSetId", "adsetId", "adset_id", "Ad_set_ID", "Ad set ID"]) || ""),
-    adSetName: String(firstValue(row, ["adSetName", "adsetName", "adset_name", "Ad_set_name", "Ad set name"]) || "Unknown Ad Set"),
+    adSetId: String(firstValue(row, ["adSetId", "adsetId", "adset_id", "ad set id", "ad_set_id", "Ad_set_ID", "Ad set ID"]) || ""),
+    adSetName: String(firstValue(row, ["adSetName", "adsetName", "adset_name", "ad_set_name", "ad set name", "Ad_set_name", "Ad set name"]) || "Unknown Ad Set"),
 
-    adId: String(firstValue(row, ["adId", "ad_id", "Ad_ID", "Ad ID"]) || ""),
-    adName: String(firstValue(row, ["adName", "ad_name", "Ad_name", "Ad name"]) || "Unknown Ad"),
+    adId: String(firstValue(row, ["adId", "ad_id", "ad id", "Ad_ID", "Ad ID"]) || ""),
+    adName: String(firstValue(row, ["adName", "ad_name", "ad name", "Ad_name", "Ad name"]) || "Unknown Ad"),
 
-    creativeName: String(firstValue(row, ["creativeName", "creative_name", "Creative_Name_", "Creative name"]) || ""),
+    creativeName: String(firstValue(row, ["creativeName", "creative_name", "creative name", "Creative_Name_", "Creative name"]) || ""),
 
     objective: String(firstValue(row, ["objective", "Objective"]) || ""),
 
     impressionsRaw: firstValue(row, ["impressions", "Impressions"]),
     reachRaw: firstValue(row, ["reach", "Reach"]),
     frequencyRaw: firstValue(row, ["frequency", "Frequency"]),
-    spendRaw: firstValue(row, ["spend", "amountSpent", "amount_spent", "Amount_spent__INR_", "Amount spent (INR)"]),
-    cpmRaw: firstValue(row, ["cpm", "CPM__cost_per_1_000_impressions_", "CPM (cost per 1,000 impressions)"]),
-    cpcRaw: firstValue(row, ["cpc", "CPC__cost_per_link_click_", "CPC (cost per link click)"]),
-    costPerResultRaw: firstValue(row, ["costPerResult", "Cost_per_result", "Cost per result"]),
+    spendRaw: firstValue(row, ["spend", "amountSpent", "amount_spent", "amount spent inr", "Amount_spent__INR_", "Amount spent (INR)"]),
+    cpmRaw: firstValue(row, ["cpm", "cpm cost per 1 000 impressions", "CPM__cost_per_1_000_impressions_", "CPM (cost per 1,000 impressions)"]),
+    cpcRaw: firstValue(row, ["cpc", "cpc cost per link click", "CPC__cost_per_link_click_", "CPC (cost per link click)"]),
+    costPerResultRaw: firstValue(row, ["costPerResult", "cost per result", "Cost_per_result", "Cost per result"]),
 
-    clicksRaw: firstValue(row, ["clicks", "Clicks__all_", "Clicks (all)"]),
-    linkClicksRaw: firstValue(row, ["linkClicks", "link_clicks", "Link_clicks", "Link clicks"]),
-    outboundClicksRaw: firstValue(row, ["outboundClicks", "outbound_clicks", "Outbound_clicks", "Outbound clicks"]),
-    ctrAllRaw: firstValue(row, ["ctrAll", "CTR__all_", "CTR (all)"]),
-    ctrRaw: firstValue(row, ["ctr", "ctrLink", "CTR__link_click_through_rate_", "CTR (link click-through rate)"]),
+    clicksRaw: firstValue(row, ["clicks", "clicks all", "Clicks__all_", "Clicks (all)"]),
+    linkClicksRaw: firstValue(row, ["linkClicks", "link_clicks", "link clicks", "Link_clicks", "Link clicks"]),
+    outboundClicksRaw: firstValue(row, ["outboundClicks", "outbound_clicks", "outbound clicks", "Outbound_clicks", "Outbound clicks"]),
+    ctrAllRaw: firstValue(row, ["ctrAll", "ctr all", "CTR__all_", "CTR (all)"]),
+    ctrRaw: firstValue(row, ["ctr", "ctr link click through rate", "ctrLink", "CTR__link_click_through_rate_", "CTR (link click-through rate)"]),
 
-    landingPageViewsRaw: firstValue(row, ["landingPageViews", "Landing_page_views", "Landing page views"]),
-    addsToCartRaw: firstValue(row, ["addsToCart", "addToCart", "Adds_to_cart", "Adds to cart"]),
-    checkoutsInitiatedRaw: firstValue(row, ["checkoutsInitiated", "Checkouts_initiated", "Checkouts initiated"]),
-    addsPaymentInfoRaw: firstValue(row, ["addsPaymentInfo", "Adds_of_payment_info", "Adds of payment info"]),
+    landingPageViewsRaw: firstValue(row, ["landingPageViews", "landing_page_views", "landing page views", "Landing_page_views", "Landing page views"]),
+    addsToCartRaw: firstValue(row, ["addsToCart", "addToCart", "adds_to_cart", "adds to cart", "Adds_to_cart", "Adds to cart"]),
+    checkoutsInitiatedRaw: firstValue(row, ["checkoutsInitiated", "checkoutInitiated", "checkouts_initiated", "checkouts initiated", "Checkouts_initiated", "Checkouts initiated"]),
+    addsPaymentInfoRaw: firstValue(row, ["addsPaymentInfo", "paymentInfo", "adds_payment_info", "adds of payment info", "Adds_of_payment_info", "Adds of payment info"]),
 
     purchasesRaw: firstValue(row, ["purchases", "Purchases"]),
-    revenueRaw: firstValue(row, ["revenue", "purchaseValue", "purchase_value", "Purchases_conversion_value", "Purchases conversion value"]),
-    reportedRoasRaw: firstValue(row, ["reportedRoas", "Purchase_ROAS__return_on_ad_spend_", "Purchase ROAS (return on ad spend)"]),
+    revenueRaw: firstValue(row, ["revenue", "purchaseValue", "purchase_value", "purchase value", "purchases conversion value", "Purchases_conversion_value", "Purchases conversion value"]),
+    reportedRoasRaw: firstValue(row, ["reportedRoas", "purchaseRoas", "purchase roas return on ad spend", "Purchase_ROAS__return_on_ad_spend_", "Purchase ROAS (return on ad spend)"]),
 
-    videoPlaysRaw: firstValue(row, ["videoPlays", "Video_plays", "Video plays"]),
-    threeSecondVideoPlaysRaw: firstValue(row, ["threeSecondVideoPlays", "_3_second_video_plays", "3-second video plays"]),
-    videoAveragePlayTimeRaw: firstValue(row, ["videoAveragePlayTime", "Video_average_play_time__in_seconds_", "Video average play time"]),
-    thruPlaysRaw: firstValue(row, ["thruPlays", "ThruPlays"]),
+    videoPlaysRaw: firstValue(row, ["videoPlays", "video_plays", "video plays", "Video_plays", "Video plays"]),
+    threeSecondVideoPlaysRaw: firstValue(row, ["threeSecondVideoPlays", "3 second video plays", "_3_second_video_plays", "3-second video plays"]),
+    videoAveragePlayTimeRaw: firstValue(row, ["videoAveragePlayTime", "video average play time in seconds", "Video_average_play_time__in_seconds_", "Video average play time (in seconds)"]),
+    thruPlaysRaw: firstValue(row, ["thruPlays", "thruplays", "ThruPlays"]),
   };
 }
 
@@ -160,6 +166,8 @@ function isShiftedPurchaseRow(raw: ReturnType<typeof getRawFields>) {
 }
 
 export function normalizeMetaRow(row: Record<string, any>): MetaQcRow {
+  if (row?.__qc?.normalized) return row as MetaQcRow;
+
   const raw = getRawFields(row);
   const flags: MetaQcFlag[] = [];
   const shifted = isShiftedPurchaseRow(raw);
@@ -207,25 +215,37 @@ export function normalizeMetaRow(row: Record<string, any>): MetaQcRow {
       frequency: toNumber(raw.frequencyRaw),
       spend: toNumber(raw.spendRaw),
       amountSpent: toNumber(raw.spendRaw),
+      amount_spent: toNumber(raw.spendRaw),
       cpm: toNumber(raw.cpmRaw),
       cpc: toNumber(raw.cpcRaw),
 
+      // One-column right shift after Cost per result contained "Website purchases".
       costPerResult: toNumber(raw.clicksRaw),
       clicks: toNumber(raw.linkClicksRaw),
       linkClicks: toNumber(raw.outboundClicksRaw),
+      link_clicks: toNumber(raw.outboundClicksRaw),
       outboundClicks: toNumber(raw.ctrAllRaw),
+      outbound_clicks: toNumber(raw.ctrAllRaw),
       ctrAll: pctMaybe(raw.ctrRaw),
       ctr: pctMaybe(raw.landingPageViewsRaw),
       landingPageViews: toNumber(raw.addsToCartRaw),
+      landing_page_views: toNumber(raw.addsToCartRaw),
       addToCart: toNumber(raw.checkoutsInitiatedRaw),
       addsToCart: toNumber(raw.checkoutsInitiatedRaw),
+      adds_to_cart: toNumber(raw.checkoutsInitiatedRaw),
+      checkoutInitiated: toNumber(raw.addsPaymentInfoRaw),
       checkoutsInitiated: toNumber(raw.addsPaymentInfoRaw),
+      checkouts_initiated: toNumber(raw.addsPaymentInfoRaw),
+      paymentInfo: toNumber(raw.purchasesRaw),
       addsPaymentInfo: toNumber(raw.purchasesRaw),
+      adds_payment_info: toNumber(raw.purchasesRaw),
 
       purchases: toNumber(raw.revenueRaw),
       revenue: toNumber(raw.reportedRoasRaw),
       purchaseValue: toNumber(raw.reportedRoasRaw),
       purchase_value: toNumber(raw.reportedRoasRaw),
+      conversionValue: toNumber(raw.reportedRoasRaw),
+      conversion_value: toNumber(raw.reportedRoasRaw),
       reportedRoas: toNumber(raw.videoPlaysRaw),
 
       videoPlays: toNumber(raw.threeSecondVideoPlaysRaw),
@@ -265,26 +285,37 @@ export function normalizeMetaRow(row: Record<string, any>): MetaQcRow {
       frequency: toNumber(raw.frequencyRaw),
       spend: toNumber(raw.spendRaw),
       amountSpent: toNumber(raw.spendRaw),
+      amount_spent: toNumber(raw.spendRaw),
       cpm: toNumber(raw.cpmRaw),
       cpc: toNumber(raw.cpcRaw),
       costPerResult: toNumber(raw.costPerResultRaw),
 
       clicks: toNumber(raw.clicksRaw),
       linkClicks: toNumber(raw.linkClicksRaw),
+      link_clicks: toNumber(raw.linkClicksRaw),
       outboundClicks: toNumber(raw.outboundClicksRaw),
+      outbound_clicks: toNumber(raw.outboundClicksRaw),
       ctrAll: pctMaybe(raw.ctrAllRaw),
       ctr: pctMaybe(raw.ctrRaw),
 
       landingPageViews: toNumber(raw.landingPageViewsRaw),
+      landing_page_views: toNumber(raw.landingPageViewsRaw),
       addToCart: toNumber(raw.addsToCartRaw),
       addsToCart: toNumber(raw.addsToCartRaw),
+      adds_to_cart: toNumber(raw.addsToCartRaw),
+      checkoutInitiated: toNumber(raw.checkoutsInitiatedRaw),
       checkoutsInitiated: toNumber(raw.checkoutsInitiatedRaw),
+      checkouts_initiated: toNumber(raw.checkoutsInitiatedRaw),
+      paymentInfo: toNumber(raw.addsPaymentInfoRaw),
       addsPaymentInfo: toNumber(raw.addsPaymentInfoRaw),
+      adds_payment_info: toNumber(raw.addsPaymentInfoRaw),
 
       purchases: toNumber(raw.purchasesRaw),
       revenue: toNumber(raw.revenueRaw),
       purchaseValue: toNumber(raw.revenueRaw),
       purchase_value: toNumber(raw.revenueRaw),
+      conversionValue: toNumber(raw.revenueRaw),
+      conversion_value: toNumber(raw.revenueRaw),
       reportedRoas: toNumber(raw.reportedRoasRaw),
 
       videoPlays: toNumber(raw.videoPlaysRaw),
@@ -304,6 +335,7 @@ export function normalizeMetaRow(row: Record<string, any>): MetaQcRow {
 
   for (const field of NUMERIC_FIELDS) {
     const value = normalized[field];
+
     if (typeof value === "number" && !Number.isFinite(value)) {
       flags.push({
         code: "NON_FINITE_METRIC",

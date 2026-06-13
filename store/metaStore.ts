@@ -9,7 +9,11 @@ import {
   MetaSettings,
 } from "@/types/meta";
 import { defaultMetaSettings } from "@/lib/defaultSettings";
-import { buildMetaDataQualitySummary, normalizeMetaRows, MetaQcSummary } from "@/lib/metaDataQuality";
+import {
+  buildMetaDataQualitySummary,
+  normalizeMetaRows,
+  MetaQcSummary,
+} from "@/lib/metaDataQuality";
 
 interface MetaStore {
   settings: MetaSettings;
@@ -27,6 +31,14 @@ interface MetaStore {
   setMetaQcSummary: (summary: MetaQcSummary | null) => void;
 
   clearUpload: () => void;
+}
+
+function normalizeAndSummarize(rows: any[]) {
+  const normalizedRows = normalizeMetaRows(rows || []);
+  return {
+    normalizedRows,
+    summary: buildMetaDataQualitySummary(normalizedRows),
+  };
 }
 
 export const useMetaStore = create<MetaStore>()(
@@ -52,20 +64,20 @@ export const useMetaStore = create<MetaStore>()(
         }),
 
       setRawRows: (rows) => {
-        const normalizedRows = normalizeMetaRows(rows as any[]);
+        const { normalizedRows, summary } = normalizeAndSummarize(rows as any[]);
 
         set({
           rawRows: normalizedRows as any,
-          metaQcSummary: buildMetaDataQualitySummary(normalizedRows),
+          metaQcSummary: summary,
         });
       },
 
       setPerformanceRows: (rows) => {
-        const normalizedRows = normalizeMetaRows(rows as any[]);
+        const { normalizedRows, summary } = normalizeAndSummarize(rows as any[]);
 
         set({
           performanceRows: normalizedRows as any,
-          metaQcSummary: buildMetaDataQualitySummary(normalizedRows),
+          metaQcSummary: summary,
         });
       },
 

@@ -5116,3 +5116,64 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   color: #ffffff !important;
 }
 
+
+/* =========================================================
+   METAOS 360 QC — DATA ALERT + TABLE/CONTRAST GUARDRAILS
+   ========================================================= */
+
+.metaos-app .meta-qc-announcement {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 38px;
+  border: 0;
+  border-bottom: 1px solid rgba(248,113,113,0.38);
+  background: linear-gradient(90deg, rgba(127,29,29,0.98), rgba(185,28,28,0.96));
+  color: #ffffff !important;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+}
+
+.metaos-app .meta-qc-announcement span,
+.metaos-app .meta-qc-announcement strong,
+.metaos-app .meta-qc-announcement svg {
+  color: #ffffff !important;
+}
+
+.metaos-app .meta-qc-announcement strong {
+  border-radius: 999px;
+  background: rgba(255,255,255,0.16);
+  padding: 4px 9px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.metaos-app table thead th {
+  color: #ffffff !important;
+}
+
+.metaos-app table tbody td {
+  color: var(--meta-text-soft) !important;
+}
+
+.metaos-app table tbody td .font-black,
+.metaos-app table tbody td strong {
+  color: var(--meta-text) !important;
+}
+
+.metaos-app .recharts-wrapper text,
+.metaos-app .recharts-surface text {
+  fill: var(--meta-chart-axis) !important;
+  color: var(--meta-chart-axis) !important;
+}
+
+.metaos-app .meta-chart-tooltip,
+.metaos-app .recharts-tooltip-wrapper {
+  color: #ffffff !important;
+}
+

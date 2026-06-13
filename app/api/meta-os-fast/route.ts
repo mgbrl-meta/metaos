@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildHighCpaFast, buildZeroPurchaseFast } from "@/lib/meta/metaSheetFastEngine";
+import { buildMetaDataQualitySummary, normalizeMetaRows } from "@/lib/metaDataQuality";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -146,13 +147,15 @@ export async function GET(req: NextRequest) {
     }
 
     const { rows, rawCached } = await fetchMetaRowsFromGoogleSheet(force);
+    const normalizedRows = normalizeMetaRows(rows as any[]);
+    const qcSummary = buildMetaDataQualitySummary(normalizedRows);
 
     let data: any;
 
     if (view === "zero_purchase") {
-      data = buildZeroPurchaseFast(rows, threshold);
+      data = buildZeroPurchaseFast(normalizedRows, threshold);
     } else if (view === "high_cpa") {
-      data = buildHighCpaFast(rows, threshold);
+      data = buildHighCpaFast(normalizedRows, threshold);
     } else {
       return NextResponse.json(
         {
@@ -166,7 +169,8 @@ export async function GET(req: NextRequest) {
       view,
       generatedAt: new Date().toISOString(),
       source: "google_sheet_csv",
-      rowsLoaded: rows.length,
+      rowsLoaded: normalizedRows.length,
+      qcSummary,
       rawCached,
       viewCached: false,
       data,
