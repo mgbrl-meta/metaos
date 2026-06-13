@@ -5070,3 +5070,49 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   color: #f87171;
 }
 
+
+/* =========================================================
+   META DATA QC — GLOBAL ANNOUNCEMENT + QC READABILITY
+   ========================================================= */
+
+.metaos-app .meta-qc-announcement {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 38px;
+  border: 0;
+  border-bottom: 1px solid rgba(248,113,113,0.35);
+  background: linear-gradient(90deg, rgba(127,29,29,0.96), rgba(185,28,28,0.94));
+  color: #ffffff !important;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+}
+
+.metaos-app .meta-qc-announcement span,
+.metaos-app .meta-qc-announcement strong,
+.metaos-app .meta-qc-announcement svg {
+  color: #ffffff !important;
+}
+
+.metaos-app .meta-qc-announcement strong {
+  border-radius: 999px;
+  background: rgba(255,255,255,0.16);
+  padding: 4px 9px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.metaos-app .data-qc-root table td,
+.metaos-app .data-qc-root table th {
+  color: var(--meta-text-soft);
+}
+
+.metaos-app .data-qc-root table thead th {
+  color: #ffffff !important;
+}
+

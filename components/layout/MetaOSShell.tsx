@@ -22,10 +22,12 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
+import { useMetaStore } from "@/store/metaStore";
 
 export type OSMode = "meta" | "google";
 
 export type MetaTab =
+  | "data_qc"
   | "top_descaling"
   | "top_scaling"
   | "influencer_ads"
@@ -55,6 +57,14 @@ type NavItem<T extends string> = {
 };
 
 const metaNav: NavItem<MetaTab>[] = [
+  {
+    id: "data_qc",
+    label: "Data QC",
+    shortLabel: "QC",
+    description: "Data quality checks",
+    icon: ShieldCheck,
+  },
+
   {
     id: "summary",
     label: "Summary",
@@ -190,6 +200,10 @@ export function MetaOSShell({
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme } = useThemeStore();
   const isDark = theme === "dark";
+  const metaQcSummary = useMetaStore((state) => (state as any).metaQcSummary);
+  const qcCriticalCount = Number(metaQcSummary?.rowsWithCritical || 0);
+  const qcShiftedCount = Number(metaQcSummary?.shiftedRowsFixed || 0);
+  const qcWarningCount = Number(metaQcSummary?.rowsWithWarnings || 0);
 
   const isGoogle = false;
 
@@ -216,7 +230,7 @@ export function MetaOSShell({
   const activeTitle = useMemo(() => {
     if (activeSystemTab === "settings") return "Settings";
     if (isGoogle) return googleNav.find((x) => x.id === activeGoogleTab)?.label || "Google OS";
-    return metaNav.find((x) => x.id === activeMetaTab)?.label || "Meta OS";
+    return metaNav.find((x) => x.id === activeMetaTab)?.label || Meta OS;
   }, [activeSystemTab, isGoogle, activeGoogleTab, activeMetaTab]);
 
   const activeDescription = useMemo(() => {
@@ -287,7 +301,7 @@ export function MetaOSShell({
                         : "text-[12px] font-black uppercase tracking-[0.18em] text-[#0A84FF]"
                     }
                   >
-                    "Meta OS"
+                    Meta OS
                   </p>
                   <p className="metaos-brand-subtitle">
                     Daily Performance OS
@@ -300,7 +314,7 @@ export function MetaOSShell({
               <div className="hidden items-center gap-2 rounded-xl border border-current/10 bg-current/[0.04] px-3 py-2 lg:flex">
                 <span className="h-2 w-2 rounded-full bg-[#0A84FF]" />
                 <span className="text-[11px] font-black uppercase tracking-[0.14em] opacity-60">
-                  "Sheet Live"
+                  Sheet Live
                 </span>
               </div>
 
@@ -349,6 +363,23 @@ export function MetaOSShell({
             </div>
           </div>
         </header>
+
+        {(qcCriticalCount > 0 || qcShiftedCount > 0 || qcWarningCount > 0) && (
+          <button
+            type="button"
+            onClick={() => selectMeta("data_qc" as MetaTab)}
+            className="meta-qc-announcement"
+          >
+            <AlertTriangle className="h-4 w-4" />
+            <span>
+              Data QC Alert:
+              {qcShiftedCount > 0 ? ` ${qcShiftedCount} shifted row(s) fixed.` : ""}
+              {qcCriticalCount > 0 ? ` ${qcCriticalCount} critical row(s).` : ""}
+              {qcWarningCount > 0 ? ` ${qcWarningCount} warning row(s).` : ""}
+            </span>
+            <strong>View QC</strong>
+          </button>
+        )}
 
         {mobileOpen && (
           <div className="fixed inset-0 z-50 lg:hidden">
@@ -445,12 +476,12 @@ export function MetaOSShell({
                       {isGoogle ? "Google Ads" : "Meta Ads"}
                     </span>
                     <span className="rounded-full border border-current/10 bg-current/[0.035] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] opacity-45">
-                      "Sheet Live"
+                      Sheet Live
                     </span>
                   </div>
 
                   <h1 className="mt-2 text-2xl font-black tracking-tight lg:text-3xl">
-                    {activeSystemTab === "settings" ? "Settings" : isGoogle ? "Google OS" : "Meta OS"}
+                    {activeSystemTab === "settings" ? "Settings" : isGoogle ? "Google OS" : Meta OS}
                   </h1>
                   <p className="mt-1 text-sm leading-5 opacity-60">
                     {activeTitle} · {activeDescription}

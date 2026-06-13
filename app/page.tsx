@@ -24,6 +24,7 @@ import { GoogleSearchTermAudit } from "@/components/google/GoogleSearchTermAudit
 import { AutoMetaSheetLoader } from "@/components/meta/AutoMetaSheetLoader";
 import { CriticalCpaCreatives } from "@/components/meta/CriticalCpaCreatives";
 import { CreativeTimelineMetrics } from "@/components/meta/CreativeTimelineMetrics";
+import { DataQCTab } from "@/components/meta/DataQCTab";
 
 export default function Home() {
   const [osMode, setOsMode] = useState<OSMode>("meta");
@@ -65,7 +66,8 @@ export default function Home() {
           {activeMetaTab === "high_cpa" && <HighCpaTab />}
           {activeMetaTab === "high_roas" && <HighRoasTab />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
-          {activeMetaTab === "summary" && <MetaExecutiveSummary />}
+          {activeMetaTab === "data_qc" && <DataQCTab />}
+      {activeMetaTab === "summary" && <MetaExecutiveSummary />}
           {activeMetaTab === "monthly" && <EnhancedMonthlyReport />}
         </>
       )}

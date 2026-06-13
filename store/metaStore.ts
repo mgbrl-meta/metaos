@@ -9,12 +9,14 @@ import {
   MetaSettings,
 } from "@/types/meta";
 import { defaultMetaSettings } from "@/lib/defaultSettings";
+import { buildMetaDataQualitySummary, normalizeMetaRows, MetaQcSummary } from "@/lib/metaDataQuality";
 
 interface MetaStore {
   settings: MetaSettings;
   rawRows: MetaNormalizedRow[];
   performanceRows: MetaPerformanceRow[];
   dataHealth: DataHealth | null;
+  metaQcSummary: MetaQcSummary | null;
 
   updateSettings: (settings: Partial<MetaSettings>) => void;
   resetSettings: () => void;
@@ -22,6 +24,7 @@ interface MetaStore {
   setRawRows: (rows: MetaNormalizedRow[]) => void;
   setPerformanceRows: (rows: MetaPerformanceRow[]) => void;
   setDataHealth: (dataHealth: DataHealth) => void;
+  setMetaQcSummary: (summary: MetaQcSummary | null) => void;
 
   clearUpload: () => void;
 }
@@ -33,6 +36,7 @@ export const useMetaStore = create<MetaStore>()(
       rawRows: [],
       performanceRows: [],
       dataHealth: null,
+      metaQcSummary: null,
 
       updateSettings: (settings) =>
         set((state) => ({
@@ -47,19 +51,32 @@ export const useMetaStore = create<MetaStore>()(
           settings: defaultMetaSettings,
         }),
 
-      setRawRows: (rows) =>
-        set({
-          rawRows: rows,
-        }),
+      setRawRows: (rows) => {
+        const normalizedRows = normalizeMetaRows(rows as any[]);
 
-      setPerformanceRows: (rows) =>
         set({
-          performanceRows: rows,
-        }),
+          rawRows: normalizedRows as any,
+          metaQcSummary: buildMetaDataQualitySummary(normalizedRows),
+        });
+      },
+
+      setPerformanceRows: (rows) => {
+        const normalizedRows = normalizeMetaRows(rows as any[]);
+
+        set({
+          performanceRows: normalizedRows as any,
+          metaQcSummary: buildMetaDataQualitySummary(normalizedRows),
+        });
+      },
 
       setDataHealth: (dataHealth) =>
         set({
           dataHealth,
+        }),
+
+      setMetaQcSummary: (summary) =>
+        set({
+          metaQcSummary: summary,
         }),
 
       clearUpload: () =>
@@ -67,6 +84,7 @@ export const useMetaStore = create<MetaStore>()(
           rawRows: [],
           performanceRows: [],
           dataHealth: null,
+          metaQcSummary: null,
         }),
     }),
     {
