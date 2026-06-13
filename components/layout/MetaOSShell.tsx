@@ -230,7 +230,7 @@ export function MetaOSShell({
   const activeTitle = useMemo(() => {
     if (activeSystemTab === "settings") return "Settings";
     if (isGoogle) return googleNav.find((x) => x.id === activeGoogleTab)?.label || "Google OS";
-    return metaNav.find((x) => x.id === activeMetaTab)?.label || Meta OS;
+    return metaNav.find((x) => x.id === activeMetaTab)?.label || "Meta OS";
   }, [activeSystemTab, isGoogle, activeGoogleTab, activeMetaTab]);
 
   const activeDescription = useMemo(() => {
@@ -481,7 +481,7 @@ export function MetaOSShell({
                   </div>
 
                   <h1 className="mt-2 text-2xl font-black tracking-tight lg:text-3xl">
-                    {activeSystemTab === "settings" ? "Settings" : isGoogle ? "Google OS" : Meta OS}
+                    {activeSystemTab === "settings" ? "Settings" : isGoogle ? "Google OS" : "Meta OS"}
                   </h1>
                   <p className="mt-1 text-sm leading-5 opacity-60">
                     {activeTitle} · {activeDescription}
