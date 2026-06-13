@@ -303,7 +303,7 @@ export function HighRoasTab() {
   const blendedRoas = safeDiv(data.totalRevenue, data.totalSpend);
 
   return (
-    <div className="grid gap-3">
+    <div className="high-roas-tab-root grid gap-3">
       <section className="rounded-xl border border-current/10 bg-current/[0.03] p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -432,20 +432,20 @@ export function HighRoasTab() {
                 </div>
 
                 <Metric label="Spend" value={money(item.lifetime.spend)} />
-                <Metric label="Purch." value={num(item.lifetime.purchases, 0)} />
+                <Metric label="Purch" value={num(item.lifetime.purchases, 0)} />
                 <Metric label="CPM" value={money(item.lifetime.cpm)} />
                 <Metric label="CTR" value={pct(item.lifetime.ctr)} />
                 <Metric label="CPA" value={money(item.lifetime.cpa)} />
                 <Metric label="AOV" value={money(item.lifetime.aov)} />
                 <Metric label="ROAS" value={`${num(item.lifetime.roas)}x`} tone="green" />
-                <Metric label="Last 7D Spend" value={money(item.last7.spend)} />
+                <Metric label="L7D Spend" value={money(item.last7.spend)} />
                 <Metric
-                  label="Last 7D CPA"
+                  label="L7D CPA"
                   value={item.last7.purchases > 0 ? money(item.last7.cpa) : "No sale"}
                   tone={item.last7.purchases > 0 && item.last7.cpa <= item.lifetime.cpa ? "green" : "red"}
                 />
                 <Metric
-                  label="Last 7D ROAS"
+                  label="L7D ROAS"
                   value={`${num(item.last7.roas)}x`}
                   tone={item.last7.roas >= item.lifetime.roas ? "green" : "red"}
                 />

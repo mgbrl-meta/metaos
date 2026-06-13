@@ -369,7 +369,7 @@ export function InfluencerAdsTab() {
   const sortedItems = useMemo(() => sortRows(data.items, sort), [data.items, sort]);
 
   return (
-    <div className="infv2-root grid gap-4">
+    <div className="influencer-tab-root infv2-root grid gap-4">
       <section className="rounded-2xl border border-current/10 bg-current/[0.025] p-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -489,16 +489,16 @@ export function InfluencerAdsTab() {
               <tr>
                 <SortHeader label="Video / Creator" sortKey="creative" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} />
                 <SortHeader label="Risk" sortKey="risk" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} />
-                <SortHeader label="Y Spend" sortKey="yesterday.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
+                <SortHeader label="Y ₹" sortKey="yesterday.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
                 <SortHeader label="Y CPA" sortKey="yesterday.cpa" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
                 <SortHeader label="Y ROAS" sortKey="yesterday.roas" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
-                <SortHeader label="L7D Spend" sortKey="last7.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
+                <SortHeader label="L7D ₹" sortKey="last7.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
                 <SortHeader label="L7D CPA" sortKey="last7.cpa" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
                 <SortHeader label="L7D ROAS" sortKey="last7.roas" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
-                <SortHeader label="L14D Spend" sortKey="last14.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
+                <SortHeader label="L14D ₹" sortKey="last14.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
                 <SortHeader label="L14D CPA" sortKey="last14.cpa" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
                 <SortHeader label="L14D ROAS" sortKey="last14.roas" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
-                <SortHeader label="L30D Spend" sortKey="last30.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
+                <SortHeader label="L30D ₹" sortKey="last30.spend" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
                 <SortHeader label="L30D CPA" sortKey="last30.cpa" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
                 <SortHeader label="L30D ROAS" sortKey="last30.roas" sort={sort} onSort={(key) => setSort((current) => toggleSort(current, key))} align="right" />
               </tr>

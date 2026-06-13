@@ -298,7 +298,7 @@ export function HighCpaTab() {
   }, [rows, threshold]);
 
   return (
-    <div className="grid gap-3">
+    <div className="high-cpa-tab-root grid gap-3">
       <section className="rounded-xl border border-current/10 bg-current/[0.03] p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -428,18 +428,18 @@ export function HighCpaTab() {
                 <Metric label="Spend" value={money(item.lifetime.spend)} />
                 <Metric label="CPM" value={money(item.lifetime.cpm)} />
                 <Metric label="CTR" value={pct(item.lifetime.ctr)} />
-                <Metric label="Purch." value={num(item.lifetime.purchases, 0)} />
+                <Metric label="Purch" value={num(item.lifetime.purchases, 0)} />
                 <Metric label="CPA" value={money(item.lifetime.cpa)} tone="red" />
                 <Metric label="AOV" value={money(item.lifetime.aov)} />
                 <Metric label="ROAS" value={`${num(item.lifetime.roas)}x`} tone={item.lifetime.roas >= 1 ? "green" : "red"} />
-                <Metric label="Last 7D Spend" value={money(item.last7.spend)} />
+                <Metric label="L7D Spend" value={money(item.last7.spend)} />
                 <Metric
-                  label="Last 7D CPA"
+                  label="L7D CPA"
                   value={item.last7.purchases > 0 ? money(item.last7.cpa) : "No sale"}
                   tone={item.last7.purchases > 0 && item.last7.cpa <= item.lifetime.cpa ? "green" : "red"}
                 />
                 <Metric
-                  label="Last 7D ROAS"
+                  label="L7D ROAS"
                   value={`${num(item.last7.roas)}x`}
                   tone={item.last7.roas >= item.lifetime.roas ? "green" : "red"}
                 />
