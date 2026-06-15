@@ -215,7 +215,8 @@ function summarizeCalendarWindow(rows: Row[], endDateKey: string, days = 7) {
   const end = String(endDateKey || "").slice(0, 10);
   if (!end) return summarize([]);
 
-  const start = addDaysToDateKey(end, -(days - 1));
+  // Inclusive calendar window: L7D ending 2026-06-14 starts 2026-06-08, not 2026-06-07.
+  const start = addDaysToDateKey(end, 1 - days);
   if (!start) return summarize([]);
 
   return summarize(
