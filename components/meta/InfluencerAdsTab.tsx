@@ -4,6 +4,27 @@ import { useMemo, useState } from "react";
 import { ChevronDown, Download, IndianRupee, Search, SlidersHorizontal } from "lucide-react";
 import { useMetaStore } from "@/store/metaStore";
 
+
+function toUtcDateKeyFromParts(year: number, month: number, day: number) {
+  return new Date(Date.UTC(year, month - 1, day)).toISOString().slice(0, 10);
+}
+
+function addDaysToDateKeyUtc(dateKey: string, days: number) {
+  const raw = String(dateKey || "").slice(0, 10);
+  const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  if (!match) return "";
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+
+  const d = new Date(Date.UTC(year, month - 1, day));
+  d.setUTCDate(d.getUTCDate() + days);
+
+  return d.toISOString().slice(0, 10);
+}
+
 type Row = Record<string, any>;
 
 type WindowMetrics = {
@@ -214,7 +235,7 @@ function windowRows(rows: Row[], endDate: string, days: number) {
   if (!end) return [];
 
   // Inclusive calendar window: L7D ending 2026-06-14 starts 2026-06-08, not 2026-06-07.
-  const start = dateKey(addDays(end, 1 - days));
+  const start = addDaysToDateKeyUtc(end, 1 - days);
 
   return rows.filter((row) => {
     const d = getDate(row);

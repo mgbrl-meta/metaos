@@ -15,6 +15,27 @@ import {
 } from "recharts";
 import { useMetaStore } from "@/store/metaStore";
 
+
+function toUtcDateKeyFromParts(year: number, month: number, day: number) {
+  return new Date(Date.UTC(year, month - 1, day)).toISOString().slice(0, 10);
+}
+
+function addDaysToDateKeyUtc(dateKey: string, days: number) {
+  const raw = String(dateKey || "").slice(0, 10);
+  const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  if (!match) return "";
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+
+  const d = new Date(Date.UTC(year, month - 1, day));
+  d.setUTCDate(d.getUTCDate() + days);
+
+  return d.toISOString().slice(0, 10);
+}
+
 type Row = Record<string, any>;
 
 const money = (n: number) => `₹${Math.round(Number(n || 0)).toLocaleString()}`;
@@ -202,11 +223,7 @@ function metaOsLast7DateKey(row: Row) {
   return raw;
 }
 function addDaysToDateKey(dateKey: string, days: number) {
-  const d = new Date(`${dateKey}T00:00:00`);
-  if (Number.isNaN(d.getTime())) return "";
-
-  d.setDate(d.getDate() + days);
-  return d.toISOString().slice(0, 10);
+  return addDaysToDateKeyUtc(dateKey, days);
 }
 
 function summarizeCalendarWindow(rows: Row[], endDateKey: string, days = 7) {
@@ -214,7 +231,7 @@ function summarizeCalendarWindow(rows: Row[], endDateKey: string, days = 7) {
   if (!end) return summarize([]);
 
   // Inclusive calendar window: L7D ending 2026-06-14 starts 2026-06-08, not 2026-06-07.
-  const start = addDaysToDateKey(end, 1 - days);
+  const start = addDaysToDateKeyUtc(end, 1 - days);
   if (!start) return summarize([]);
 
   return summarize(
