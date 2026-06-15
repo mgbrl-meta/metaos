@@ -175,14 +175,27 @@ function metaOsLast7DateKey(row: Row) {
   return raw;
 }
 
-function summarizeLastNDays(rows: Row[], days = 7) {
-  const dates = Array.from(
-    new Set(rows.map((row) => metaOsLast7DateKey(row)).filter(Boolean))
-  ).sort();
+function addDaysToDateKey(dateKey: string, days: number) {
+  const d = new Date(`${dateKey}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return "";
 
-  const lastDates = new Set(dates.slice(-days));
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
 
-  return summarize(rows.filter((row) => lastDates.has(metaOsLast7DateKey(row))));
+function summarizeCalendarWindow(rows: Row[], endDateKey: string, days = 7) {
+  const end = String(endDateKey || "").slice(0, 10);
+  if (!end) return summarize([]);
+
+  const start = addDaysToDateKey(end, -(days - 1));
+  if (!start) return summarize([]);
+
+  return summarize(
+    rows.filter((row) => {
+      const key = metaOsLast7DateKey(row);
+      return key >= start && key <= end;
+    })
+  );
 }
 
 
@@ -239,7 +252,7 @@ function buildZeroPurchaseItems(rows: Row[], threshold: number) {
     .map(([key, adRows]) => {
       const sample = adRows[0];
       const lifetime = summarize(adRows);
-      const last7 = summarizeLastNDays(adRows, 7);
+      const last7 = summarizeCalendarWindow(adRows, latest, 7);
       const yesterday = summarize(adRows.filter((row) => dateKey(getDate(row)) === latest));
       const trend = dailyTrend(adRows);
 
