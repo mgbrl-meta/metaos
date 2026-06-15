@@ -235,7 +235,7 @@ function windowRows(rows: Row[], endDate: string, days: number) {
   if (!end) return [];
 
   // Inclusive calendar window: L7D ending 2026-06-14 starts 2026-06-08, not 2026-06-07.
-  const start = addDaysToDateKeyUtc(end, 1 - days);
+  const start = addDaysToDateKeyUtc(dateKey(end), 1 - days);
 
   return rows.filter((row) => {
     const d = getDate(row);
