@@ -43,14 +43,85 @@ function getRowsFromStore(store: any): Row[] {
   );
 }
 
-function getDate(row: Row) {
-  const raw = String(row.date ?? row.day ?? row.Day ?? row.Date ?? row["Reporting starts"] ?? "").trim();
+function toUtcDateKeyFromParts(year: number, month: number, day: number) {
+  return new Date(Date.UTC(year, month - 1, day)).toISOString().slice(0, 10);
+}
+
+function normalizeDateKey(value: unknown) {
+  if (value === null || value === undefined || value === "") return "";
+
+  const raw = String(value).trim();
   if (!raw) return "";
 
-  const parsed = new Date(raw);
-  if (!Number.isNaN(parsed.getTime())) return parsed.toISOString().slice(0, 10);
+  const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
 
-  return raw.slice(0, 10);
+  const slash = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (slash) {
+    const first = Number(slash[1]);
+    const second = Number(slash[2]);
+    const year = Number(slash[3]);
+
+    // Meta export India format is normally DD/MM/YYYY.
+    // If ambiguous, keep DD/MM/YYYY to match Ads Manager.
+    const day = first > 12 ? first : second > 12 ? second : first;
+    const month = first > 12 ? second : second > 12 ? first : second;
+
+    return toUtcDateKeyFromParts(year, month, day);
+  }
+
+  // Google Sheet serial date support.
+  const serial = Number(raw);
+  if (Number.isFinite(serial) && serial > 30000 && serial < 60000) {
+    const epoch = new Date(Date.UTC(1899, 11, 30));
+    epoch.setUTCDate(epoch.getUTCDate() + Math.floor(serial));
+    return epoch.toISOString().slice(0, 10);
+  }
+
+  const parsed = new Date(raw);
+  if (!Number.isNaN(parsed.getTime())) {
+    return new Date(Date.UTC(parsed.getFullYear(), parsed.getMonth(), parsed.getDate()))
+      .toISOString()
+      .slice(0, 10);
+  }
+
+  return "";
+}
+
+function addDaysToDateKeyUtc(dateKey: string, days: number) {
+  const key = normalizeDateKey(dateKey);
+  if (!key) return "";
+
+  const match = key.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return "";
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+
+  const d = new Date(Date.UTC(year, month - 1, day));
+  d.setUTCDate(d.getUTCDate() + days);
+
+  return d.toISOString().slice(0, 10);
+}
+
+function isDateInWindow(dateKey: string, startKey: string, endKey: string) {
+  const key = normalizeDateKey(dateKey);
+  return Boolean(key && startKey && endKey && key >= startKey && key <= endKey);
+}
+
+function getDate(row: Row) {
+  return normalizeDateKey(
+    row.date ??
+      row.day ??
+      row.Day ??
+      row.Date ??
+      row["Date"] ??
+      row["Day"] ??
+      row["Reporting starts"] ??
+      row["Reporting Starts"] ??
+      ""
+  );
 }
 
 function getAdId(row: Row) {
@@ -159,8 +230,13 @@ function verdictTone(verdict: QualityFilter): "red" | "green" | "amber" | "neutr
 function buildScaleRows(rows: Row[], settings: ScaleSettings) {
   const dates = Array.from(new Set(rows.map(getDate).filter(Boolean))).sort();
   const latestDate = dates[dates.length - 1] || "";
-  const last7Dates = new Set(dates.slice(-7));
-  const prev7Dates = new Set(dates.slice(-14, -7));
+
+  // Calendar windows must be inclusive and UTC-safe.
+  // L7D ending 2026-06-14 = 2026-06-08 to 2026-06-14.
+  const last7Start = addDaysToDateKeyUtc(latestDate, -6);
+  const last7End = latestDate;
+  const prev7Start = addDaysToDateKeyUtc(latestDate, -13);
+  const prev7End = addDaysToDateKeyUtc(latestDate, -7);
 
   const activeAdIds = new Set(
     rows
@@ -181,8 +257,8 @@ function buildScaleRows(rows: Row[], settings: ScaleSettings) {
 
   return Array.from(grouped.entries())
     .map(([adId, adRows]) => {
-      const last7 = summarize(adRows.filter((row) => last7Dates.has(getDate(row))));
-      const prev7 = summarize(adRows.filter((row) => prev7Dates.has(getDate(row))));
+      const last7 = summarize(adRows.filter((row) => isDateInWindow(getDate(row), last7Start, last7End)));
+      const prev7 = summarize(adRows.filter((row) => isDateInWindow(getDate(row), prev7Start, prev7End)));
       const lifetime = summarize(adRows);
 
       const incrementalSpend = last7.spend - prev7.spend;
