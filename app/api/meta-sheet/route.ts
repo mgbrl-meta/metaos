@@ -52,7 +52,9 @@ export async function GET() {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
       range,
-      valueRenderOption: "UNFORMATTED_VALUE",
+      // Important: FORMATTED_VALUE prevents Google Sheet date cells from coming as serial numbers like 46258.
+      // Numeric strings are cleaned by metaDataQuality.toNumber(), so this is safer for dashboard date windows.
+      valueRenderOption: "FORMATTED_VALUE",
       dateTimeRenderOption: "FORMATTED_STRING",
     });
 

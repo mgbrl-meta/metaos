@@ -28,11 +28,33 @@ const pct = (n: number, d = 2) => `${num(Number(n || 0) * 100, d)}%`;
 const safeDiv = (a: number, b: number) => (b > 0 ? a / b : 0);
 
 function parseDate(value?: string) {
-  if (!value) return null;
-  const d = new Date(value);
+  if (value === null || value === undefined || value === "") return null;
+
+  const raw = String(value).trim();
+  if (!raw) return null;
+
+  const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) return new Date(`${iso[1]}-${iso[2]}-${iso[3]}T00:00:00`);
+
+  const slash = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (slash) {
+    const d = slash[1].padStart(2, "0");
+    const m = slash[2].padStart(2, "0");
+    const y = slash[3];
+    return new Date(`${y}-${m}-${d}T00:00:00`);
+  }
+
+  // Google Sheets serial date fallback.
+  const serial = Number(raw);
+  if (Number.isFinite(serial) && serial > 30000 && serial < 60000) {
+    const epoch = new Date(Date.UTC(1899, 11, 30));
+    epoch.setUTCDate(epoch.getUTCDate() + Math.floor(serial));
+    return epoch;
+  }
+
+  const d = new Date(raw);
   return Number.isNaN(d.getTime()) ? null : d;
 }
-
 function dateKey(value?: string) {
   const d = parseDate(value);
   if (!d) return "";
@@ -167,6 +189,13 @@ function metaOsLast7DateKey(row: Row) {
     return `${y}-${m}-${d}`;
   }
 
+  const serial = Number(raw);
+  if (Number.isFinite(serial) && serial > 30000 && serial < 60000) {
+    const epoch = new Date(Date.UTC(1899, 11, 30));
+    epoch.setUTCDate(epoch.getUTCDate() + Math.floor(serial));
+    return epoch.toISOString().slice(0, 10);
+  }
+
   const parsed = new Date(raw);
   if (!Number.isNaN(parsed.getTime())) {
     return parsed.toISOString().slice(0, 10);
@@ -174,7 +203,6 @@ function metaOsLast7DateKey(row: Row) {
 
   return raw;
 }
-
 function addDaysToDateKey(dateKey: string, days: number) {
   const d = new Date(`${dateKey}T00:00:00`);
   if (Number.isNaN(d.getTime())) return "";

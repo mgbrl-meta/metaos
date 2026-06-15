@@ -98,8 +98,44 @@ function safeDiv(a: number, b: number) {
   return b > 0 ? a / b : 0;
 }
 
+
+function normalizeMetaDate(value: unknown) {
+  if (value === null || value === undefined || value === "") return "";
+
+  const raw = String(value).trim();
+  if (!raw) return "";
+
+  const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
+
+  const slash = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (slash) {
+    const d = slash[1].padStart(2, "0");
+    const m = slash[2].padStart(2, "0");
+    const y = slash[3];
+    return `${y}-${m}-${d}`;
+  }
+
+  // Google Sheets serial date support.
+  // Example: 46257 = 2026-08? depending on sheet epoch; this conversion uses the standard Sheets/Excel epoch.
+  // We only treat values in a realistic modern date range as serial dates.
+  const serial = Number(raw);
+  if (Number.isFinite(serial) && serial > 30000 && serial < 60000) {
+    const epoch = new Date(Date.UTC(1899, 11, 30));
+    epoch.setUTCDate(epoch.getUTCDate() + Math.floor(serial));
+    return epoch.toISOString().slice(0, 10);
+  }
+
+  const parsed = new Date(raw);
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed.toISOString().slice(0, 10);
+  }
+
+  return raw;
+}
+
 function dateValue(row: Record<string, any>) {
-  return String(
+  return normalizeMetaDate(
     firstValue(row, [
       "date",
       "day",
@@ -109,8 +145,8 @@ function dateValue(row: Record<string, any>) {
       "Reporting_starts",
       "Reporting starts",
       "Reporting Starts",
-    ]) || ""
-  ).trim();
+    ])
+  );
 }
 
 function getRawFields(row: Record<string, any>) {
