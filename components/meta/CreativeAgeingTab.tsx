@@ -15,6 +15,7 @@ import {
 import { Clock3, Sparkles, TrendingUp } from "lucide-react";
 import { useMetaStore } from "@/store/metaStore";
 import { onlyLiveRows } from "@/lib/liveFilter";
+import type { MetaPerformanceRow } from "@/types/meta";
 
 type Row = Record<string, any>;
 type WindowKey = "yesterday" | "l7" | "l15" | "l30";
@@ -325,7 +326,7 @@ function ChartTooltip({ active, payload, label }: any) {
 
 export function CreativeAgeingTab() {
   const [selectedWindow, setSelectedWindow] = useState<WindowKey>("l7");
-  const rows = useMetaStore((state) => state.performanceRows as Row[]);
+  const rows = useMetaStore((state) => state.performanceRows as MetaPerformanceRow[]);
 
   const data = useMemo(() => {
     const liveRows = onlyLiveRows(rows || []) as Row[];
