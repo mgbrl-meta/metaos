@@ -5499,3 +5499,28 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   opacity: 1 !important;
 }
 
+
+/* =========================================================
+   CREATIVE AGEING TAB — TABLE + CHART READABILITY
+   ========================================================= */
+
+.metaos-app .creative-ageing-root table thead,
+.metaos-app .creative-ageing-root table thead tr,
+.metaos-app .creative-ageing-root table thead th {
+  background: #14233b !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.metaos-app .creative-ageing-root table tbody td {
+  color: var(--meta-text-soft) !important;
+  opacity: 1 !important;
+}
+
+.metaos-app .creative-ageing-root .recharts-wrapper text,
+.metaos-app .creative-ageing-root .recharts-surface text {
+  fill: var(--meta-chart-axis) !important;
+  color: var(--meta-chart-axis) !important;
+  opacity: 1 !important;
+}
+

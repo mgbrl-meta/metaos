@@ -19,14 +19,14 @@ import {
   PiggyBank,
   Trophy,
   MousePointerClick,
-  TrendingUp,
-} from "lucide-react";
+  TrendingUp,, Hourglass } from "lucide-react";
 import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
 import { useMetaStore } from "@/store/metaStore";
 
 export type OSMode = "meta" | "google";
 
 export type MetaTab =
+  | "creative_ageing"
   | "data_qc"
   | "top_descaling"
   | "top_scaling"
@@ -57,6 +57,14 @@ type NavItem<T extends string> = {
 };
 
 const metaNav: NavItem<MetaTab>[] = [
+  {
+    id: "creative_ageing",
+    label: "Creative Ageing",
+    shortLabel: "Ageing",
+    description: "Creative age mix and spend exposure",
+    icon: Hourglass,
+  },
+
   {
     id: "data_qc",
     label: "Data QC",
