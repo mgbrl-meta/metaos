@@ -1,8 +1,10 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo, useState } from "react";
 import {
-  AlertTriangle,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useState } from "react"; import {   AlertTriangle,
   BarChart3,
   FileText,
   Grid2X2,
@@ -19,7 +21,9 @@ import {
   PiggyBank,
   Trophy,
   MousePointerClick,
-  TrendingUp,, Hourglass } from "lucide-react";
+  TrendingUp,
+  Hourglass,
+} from "lucide-react";
 import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
 import { useMetaStore } from "@/store/metaStore";
 
