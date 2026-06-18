@@ -151,6 +151,25 @@ function daysBetweenUtc(startKey: string, endKey: string) {
   return Math.max(0, Math.floor((endMs - startMs) / 86400000));
 }
 
+function monthKeyFromDateKey(dateKey: string) {
+  const key = normalizeDateKey(dateKey);
+  return key ? key.slice(0, 7) : "";
+}
+
+function monthLabelFromKey(monthKey: string) {
+  if (!monthKey || !/^\d{4}-\d{2}$/.test(monthKey)) return "Unknown";
+
+  const [year, month] = monthKey.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, 1));
+
+  return date.toLocaleDateString("en-IN", {
+    month: "short",
+    year: "2-digit",
+    timeZone: "UTC",
+  });
+}
+
+
 function getDate(row: Row) {
   return normalizeDateKey(
     row.date ??
@@ -351,6 +370,7 @@ export function CreativeAgeingTab() {
         adSetName: string;
         firstSeen: string;
         lastSeen: string;
+        firstSeenMonth: string;
         lifetimeSpend: number;
       }
     >();
@@ -368,10 +388,13 @@ export function CreativeAgeingTab() {
           adSetName: getAdSetName(row),
           firstSeen: date,
           lastSeen: date,
+          firstSeenMonth: monthKeyFromDateKey(date),
           lifetimeSpend: getSpend(row),
         });
       } else {
-        existing.firstSeen = date < existing.firstSeen ? date : existing.firstSeen;
+        const nextFirstSeen = date < existing.firstSeen ? date : existing.firstSeen;
+        existing.firstSeen = nextFirstSeen;
+        existing.firstSeenMonth = monthKeyFromDateKey(nextFirstSeen);
         existing.lastSeen = date > existing.lastSeen ? date : existing.lastSeen;
         existing.name = getCreativeName(row) || existing.name;
         existing.campaignName = getCampaignName(row) || existing.campaignName;
@@ -427,6 +450,77 @@ export function CreativeAgeingTab() {
       };
     });
 
+    const monthlyNewCreativeMap = new Map<
+      string,
+      ReturnType<typeof emptyMetric> & {
+        month: string;
+        label: string;
+        newCreativeKeys: Set<string>;
+      }
+    >();
+
+    for (const creative of creativeMap.values()) {
+      const month = creative.firstSeenMonth || monthKeyFromDateKey(creative.firstSeen);
+      if (!month) continue;
+
+      if (!monthlyNewCreativeMap.has(month)) {
+        monthlyNewCreativeMap.set(month, {
+          ...emptyMetric(),
+          month,
+          label: monthLabelFromKey(month),
+          newCreativeKeys: new Set<string>(),
+        });
+      }
+
+      monthlyNewCreativeMap.get(month)?.newCreativeKeys.add(creative.key);
+    }
+
+    for (const row of validRows) {
+      const creativeKey = getCreativeKey(row);
+      const creative = creativeMap.get(creativeKey);
+      if (!creative) continue;
+
+      const month = creative.firstSeenMonth || monthKeyFromDateKey(creative.firstSeen);
+      if (!month) continue;
+
+      const metric = monthlyNewCreativeMap.get(month);
+      if (!metric) continue;
+
+      metric.spend += getSpend(row);
+      metric.revenue += getRevenue(row);
+      metric.purchases += getPurchases(row);
+      metric.impressions += getImpressions(row);
+      metric.clicks += getClicks(row);
+      metric.lpv += getLpv(row);
+      metric.creativeKeys.add(creativeKey);
+    }
+
+    const monthlyRows = Array.from(monthlyNewCreativeMap.values())
+      .sort((a, b) => a.month.localeCompare(b.month))
+      .map((metric) => {
+        const finalized = finalizeMetric(metric, metric.spend);
+
+        return {
+          month: metric.month,
+          label: metric.label,
+          newCreatives: metric.newCreativeKeys.size,
+          spend: metric.spend,
+          revenue: metric.revenue,
+          purchases: metric.purchases,
+          impressions: metric.impressions,
+          clicks: metric.clicks,
+          lpv: metric.lpv,
+          cpm: finalized.cpm,
+          ctr: finalized.ctr,
+          cvr: finalized.cvr,
+          aov: finalized.aov,
+          cpa: finalized.cpa,
+          roas: finalized.roas,
+        };
+      });
+
+    const latestMonthlyRows = monthlyRows.slice(-12);
+
     const activeSpendRows = cohortRows.filter((row) => row.spend > 0);
     const agedSpend = activeSpendRows
       .filter((row) => row.min >= 91)
@@ -457,6 +551,8 @@ export function CreativeAgeingTab() {
 
     return {
       cohortRows,
+      monthlyRows,
+      latestMonthlyRows,
       totals: {
         ...totalsBase,
         blendedCpm: safeDiv(totalsBase.totalSpend * 1000, totalsBase.totalImpressions),
@@ -536,6 +632,74 @@ export function CreativeAgeingTab() {
           <div>
             <h2 className="text-lg font-black">Operator read</h2>
             <p className="mt-1 text-sm leading-6 text-[var(--meta-text-muted)]">{insight}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="rounded-3xl border border-current/10 bg-current/[0.025] p-5">
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h2 className="text-lg font-black">New Creative Upload Trend</h2>
+              <p className="mt-1 text-sm text-[var(--meta-text-muted)]">
+                Month-on-month count of newly uploaded creatives based on first seen date.
+              </p>
+            </div>
+            <span className="rounded-full border border-current/10 bg-current/[0.035] px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[var(--meta-text-muted)]">
+              Last 12 months shown
+            </span>
+          </div>
+
+          <div className="mt-5 h-[340px] w-full">
+            <ResponsiveContainer width="100%" height={340}>
+              <ComposedChart data={data.latestMonthlyRows} margin={{ top: 8, right: 18, left: 0, bottom: 0 }}>
+                <CartesianGrid stroke="var(--meta-border)" strokeDasharray="3 3" />
+                <XAxis dataKey="label" tick={{ fontSize: 10, fill: "var(--meta-chart-axis)" }} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="left" tick={{ fontSize: 10, fill: "var(--meta-chart-axis)" }} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10, fill: "var(--meta-chart-axis)" }} axisLine={false} tickLine={false} tickFormatter={(v) => compactMoney(Number(v))} />
+                <Tooltip content={<ChartTooltip />} />
+                <Bar yAxisId="left" dataKey="newCreatives" name="New Creatives" fill="#0A84FF" radius={[8, 8, 0, 0]} />
+                <Line yAxisId="right" type="monotone" dataKey="spend" name="Spend" stroke="#34d399" strokeWidth={3} dot={false} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-3xl border border-current/10 bg-current/[0.025]">
+          <div className="border-b border-current/10 p-5">
+            <h2 className="text-lg font-black">Monthly New Creative Metrics</h2>
+            <p className="mt-1 text-sm text-[var(--meta-text-muted)]">
+              Performance generated by creatives grouped by their upload/first-seen month.
+            </p>
+          </div>
+
+          <div className="max-h-[390px] overflow-auto">
+            <table className="w-full min-w-[760px] text-left text-xs">
+              <thead className="bg-[#14233b] text-white">
+                <tr>
+                  {["Month", "New", "Spend", "CPA", "ROAS", "CTR", "CVR", "AOV"].map((header) => (
+                    <th key={header} className="px-3 py-3 text-[10px] font-black uppercase tracking-[0.12em] text-white">
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+
+              <tbody>
+                {data.monthlyRows.slice().reverse().map((row) => (
+                  <tr key={row.month} className="border-b border-current/10 hover:bg-current/[0.035]">
+                    <td className="px-3 py-3 font-black text-[var(--meta-text)]">{row.label}</td>
+                    <td className="px-3 py-3 font-black">{num(row.newCreatives, 0)}</td>
+                    <td className="px-3 py-3">{money(row.spend)}</td>
+                    <td className="px-3 py-3">{row.purchases > 0 ? money(row.cpa) : "No sale"}</td>
+                    <td className="px-3 py-3 font-black text-emerald-600 dark:text-emerald-300">{num(row.roas)}x</td>
+                    <td className="px-3 py-3">{pct(row.ctr, 2)}</td>
+                    <td className="px-3 py-3">{pct(row.cvr, 2)}</td>
+                    <td className="px-3 py-3">{money(row.aov)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
