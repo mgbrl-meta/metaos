@@ -118,7 +118,14 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "High ROAS",
     description: "Live ads with strong lifetime ROAS",
     icon: LineChart,
+  },  {
+    id: "spend_visuals",
+    label: "Spend",
+    shortLabel: "Spend",
+    description: "Spend movement and efficiency visuals",
+    icon: BarChart3,
   },
+
 
   {
     id: "creative_ageing",
@@ -126,13 +133,6 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "Ageing",
     description: "Creative age mix and spend exposure",
     icon: Hourglass,
-  },
-  {
-    id: "spend_visuals",
-    label: "Spend",
-    shortLabel: "Spend",
-    description: "Spend movement and efficiency visuals",
-    icon: BarChart3,
   },
   {
     id: "monthly",
