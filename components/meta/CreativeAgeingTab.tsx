@@ -751,14 +751,24 @@ export function CreativeAgeingTab() {
           <div>
             <h2 className="text-lg font-black">Age Cohort Metrics</h2>
             <p className="mt-1 text-sm text-[var(--meta-text-muted)]">
-              Combined performance metrics by creative age cohort for {data.totals.selected.label}.
+              Creatives are grouped by first-seen age. Spend, CPM, CTR, CVR, AOV, CPA and ROAS are calculated only for the selected metric window.
             </p>
           </div>
 
-          <div className="inline-flex items-center gap-2 rounded-full border border-current/10 bg-current/[0.035] px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[var(--meta-text-muted)]">
-            <TrendingUp className="h-3.5 w-3.5" />
-            {data.totals.windowStart || "—"} → {data.totals.windowEnd || "—"}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#0A84FF]/25 bg-[#0A84FF]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#0A84FF]">
+              <TrendingUp className="h-3.5 w-3.5" />
+              Metric Window: {data.totals.selected.label} · {data.totals.windowStart || "—"} → {data.totals.windowEnd || "—"}
+            </div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-current/10 bg-current/[0.035] px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[var(--meta-text-muted)]">
+              Age Basis: First Seen → {data.totals.latestDate || "—"}
+            </div>
           </div>
+        </div>
+
+        <div className="mx-5 mb-4 rounded-2xl border border-current/10 bg-current/[0.025] px-4 py-3 text-xs leading-5 text-[var(--meta-text-muted)]">
+          <span className="font-black text-[var(--meta-text)]">How to read this:</span>{" "}
+          a 360D+ row does not mean the table is using 360 days of performance. It means those creatives are 360+ days old, while the metrics shown are only for the selected metric window.
         </div>
 
         <div className="overflow-x-auto">
@@ -767,7 +777,7 @@ export function CreativeAgeingTab() {
               <tr>
                 {[
                   "Age Cohort",
-                  "Creatives",
+                  "Total Creatives",
                   "Spend",
                   "Spend %",
                   "CPM",
