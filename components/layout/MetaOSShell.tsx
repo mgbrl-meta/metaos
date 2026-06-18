@@ -62,14 +62,6 @@ type NavItem<T extends string> = {
 
 const metaNav: NavItem<MetaTab>[] = [
   {
-    id: "creative_ageing",
-    label: "Creative Ageing",
-    shortLabel: "Ageing",
-    description: "Creative age mix and spend exposure",
-    icon: Hourglass,
-  },
-
-  {
     id: "data_qc",
     label: "Data QC",
     shortLabel: "QC",
@@ -126,6 +118,14 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "High ROAS",
     description: "Live ads with strong lifetime ROAS",
     icon: LineChart,
+  },
+
+  {
+    id: "creative_ageing",
+    label: "Creative Ageing",
+    shortLabel: "Ageing",
+    description: "Creative age mix and spend exposure",
+    icon: Hourglass,
   },
   {
     id: "spend_visuals",
