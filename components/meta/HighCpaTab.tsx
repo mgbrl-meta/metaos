@@ -394,17 +394,18 @@ export function HighCpaTab() {
       totalPurchases: result.items.reduce((s, x) => s + x.lifetime.purchases, 0),
       yesterdaySpend: result.items.reduce((s, x) => s + x.yesterday.spend, 0),
 
-      // Action split:
-      // Persistent high CPA = bad lifetime AND bad recent L7D.
-      // Improving high CPA = bad lifetime BUT L7D CPA is now below threshold.
+      // Clean operator split:
+      // Still High CPA = lifetime CPA is high AND recent L7D CPA is also high.
+      // Improving CPA = lifetime CPA is high BUT recent L7D CPA has improved below target.
+      // No L7D Purchase = recent spend exists but no recent conversion, so L7D CPA is not comparable.
       persistentHighCpaItems: result.items.filter(
-        (item) => item.last7.purchases > 0 && item.last7.cpa >= threshold
+        (item) => item.lifetime.cpa > threshold && item.last7.purchases > 0 && item.last7.cpa > threshold
       ),
       improvingHighCpaItems: result.items.filter(
-        (item) => item.last7.purchases > 0 && item.last7.cpa < threshold
+        (item) => item.lifetime.cpa > threshold && item.last7.purchases > 0 && item.last7.cpa <= threshold
       ),
       noRecentPurchaseItems: result.items.filter(
-        (item) => item.last7.spend > 0 && item.last7.purchases <= 0
+        (item) => item.lifetime.cpa > threshold && item.last7.spend > 0 && item.last7.purchases <= 0
       ),
     };
   }, [rows, threshold]);
@@ -484,96 +485,148 @@ export function HighCpaTab() {
         <div className="border-b border-current/10 px-4 py-3">
           <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h2 className="text-lg font-black">High CPA Action Split</h2>
+              <h2 className="text-lg font-black">High CPA Decision Split</h2>
               <p className="mt-1 text-sm opacity-60">
-                Separates ads that are still inefficient in L7D from ads whose recent CPA has improved below the selected threshold.
+                Uses your dynamic target CPA to separate ads that are still inefficient from ads improving in the last 7 days.
               </p>
             </div>
 
             <div className="rounded-full border border-current/10 bg-current/[0.035] px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.1em] opacity-70">
-              Threshold: {money(threshold)}
+              Target CPA: {money(threshold)}
             </div>
           </div>
         </div>
 
         <div className="grid gap-3 p-4 md:grid-cols-3">
-          <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4">
+          <div className="rounded-2xl border border-red-500/25 bg-red-500/10 p-4">
             <p className="text-[10px] font-black uppercase tracking-[0.14em] text-red-600 dark:text-red-300">
               Still High CPA
             </p>
-            <p className="mt-2 text-2xl font-black">{data.persistentHighCpaItems.length}</p>
-            <p className="mt-1 text-xs opacity-60">
-              Lifetime CPA and L7D CPA both above threshold. Prioritize these for pause, bid cut, or creative review.
+            <p className="mt-2 text-2xl font-black text-red-600 dark:text-red-300">
+              {data.persistentHighCpaItems.length}
+            </p>
+            <p className="mt-1 text-xs opacity-70">
+              Lifetime CPA and L7D CPA are both above target. These are the real pause / cut / review candidates.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4">
+          <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 p-4">
             <p className="text-[10px] font-black uppercase tracking-[0.14em] text-emerald-600 dark:text-emerald-300">
-              Improving Recently
+              Improving CPA
             </p>
-            <p className="mt-2 text-2xl font-black">{data.improvingHighCpaItems.length}</p>
-            <p className="mt-1 text-xs opacity-60">
-              Lifetime CPA is high, but L7D CPA is below threshold. Give these more time before pausing.
+            <p className="mt-2 text-2xl font-black text-emerald-600 dark:text-emerald-300">
+              {data.improvingHighCpaItems.length}
+            </p>
+            <p className="mt-1 text-xs opacity-70">
+              Lifetime CPA is high, but L7D CPA is now below target. Give these time instead of pausing immediately.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-orange-500/20 bg-orange-500/10 p-4">
+          <div className="rounded-2xl border border-orange-500/25 bg-orange-500/10 p-4">
             <p className="text-[10px] font-black uppercase tracking-[0.14em] text-orange-600 dark:text-orange-300">
               No L7D Purchase
             </p>
-            <p className="mt-2 text-2xl font-black">{data.noRecentPurchaseItems.length}</p>
-            <p className="mt-1 text-xs opacity-60">
-              Recent spend but no L7D purchase. Review with Zero Purchase logic separately.
+            <p className="mt-2 text-2xl font-black text-orange-600 dark:text-orange-300">
+              {data.noRecentPurchaseItems.length}
+            </p>
+            <p className="mt-1 text-xs opacity-70">
+              Recent spend but no L7D purchase. Review separately with Zero Purchase logic.
             </p>
           </div>
         </div>
 
-        <div className="border-t border-current/10 px-4 py-3">
-          <h3 className="text-sm font-black">Immediate Action Candidates</h3>
-          <p className="mt-1 text-xs opacity-60">
-            Showing only ads where lifetime CPA and L7D CPA are both above {money(threshold)}.
-          </p>
-        </div>
+        <div className="grid gap-4 border-t border-current/10 p-4 xl:grid-cols-2">
+          <div className="overflow-hidden rounded-2xl border border-red-500/20">
+            <div className="bg-red-500/10 px-4 py-3">
+              <h3 className="text-sm font-black text-red-600 dark:text-red-300">Still High CPA — Action Required</h3>
+              <p className="mt-1 text-xs opacity-70">
+                Lifetime CPA and L7D CPA are both above {money(threshold)}.
+              </p>
+            </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[980px] border-collapse text-left text-xs">
-            <thead className="monthly-table-head">
-              <tr>
-                {["Ad", "Campaign / Ad Set", "Y Spend", "Life CPA", "L7D CPA", "L7D Spend", "L7D Purch.", "L7D ROAS"].map((h) => (
-                  <th key={h} className="monthly-table-th">{h}</th>
-                ))}
-              </tr>
-            </thead>
+            <div className="max-h-[420px] overflow-auto">
+              <table className="w-full min-w-[760px] border-collapse text-left text-xs">
+                <thead className="monthly-table-head">
+                  <tr>
+                    {["Ad", "Y Spend", "Life CPA", "L7D CPA", "L7D Spend", "L7D ROAS"].map((h) => (
+                      <th key={h} className="monthly-table-th">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.persistentHighCpaItems.map((item) => (
+                    <tr key={item.key} className="border-b border-current/10">
+                      <td className="max-w-[360px] px-3 py-3">
+                        <p className="truncate font-black">{item.ad}</p>
+                        <p className="mt-0.5 truncate opacity-55">{item.campaign} · {item.adSet}</p>
+                      </td>
+                      <td className="px-3 py-3 font-black">{money(item.yesterday.spend)}</td>
+                      <td className="px-3 py-3 font-black text-red-600 dark:text-red-300">{money(item.lifetime.cpa)}</td>
+                      <td className="px-3 py-3 font-black text-red-600 dark:text-red-300">{money(item.last7.cpa)}</td>
+                      <td className="px-3 py-3">{money(item.last7.spend)}</td>
+                      <td className={item.last7.roas >= 1 ? "px-3 py-3 font-black text-emerald-600 dark:text-emerald-300" : "px-3 py-3 font-black text-red-600 dark:text-red-300"}>
+                        {num(item.last7.roas)}x
+                      </td>
+                    </tr>
+                  ))}
 
-            <tbody>
-              {data.persistentHighCpaItems.map((item) => (
-                <tr key={item.key} className="border-b border-current/10">
-                  <td className="max-w-[360px] px-3 py-3">
-                    <p className="truncate font-black">{item.ad}</p>
-                  </td>
-                  <td className="max-w-[360px] px-3 py-3 opacity-70">
-                    <p className="truncate">{item.campaign} · {item.adSet}</p>
-                  </td>
-                  <td className="px-3 py-3 font-black">{money(item.yesterday.spend)}</td>
-                  <td className="px-3 py-3 font-black text-red-600 dark:text-red-300">{money(item.lifetime.cpa)}</td>
-                  <td className="px-3 py-3 font-black text-red-600 dark:text-red-300">{money(item.last7.cpa)}</td>
-                  <td className="px-3 py-3">{money(item.last7.spend)}</td>
-                  <td className="px-3 py-3">{num(item.last7.purchases, 0)}</td>
-                  <td className={item.last7.roas >= 1 ? "px-3 py-3 font-black text-emerald-600 dark:text-emerald-300" : "px-3 py-3 font-black text-red-600 dark:text-red-300"}>
-                    {num(item.last7.roas)}x
-                  </td>
-                </tr>
-              ))}
+                  {!data.persistentHighCpaItems.length ? (
+                    <tr>
+                      <td colSpan={6} className="p-5 opacity-70">
+                        No ads have both lifetime CPA and L7D CPA above the current target.
+                      </td>
+                    </tr>
+                  ) : null}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-              {!data.persistentHighCpaItems.length ? (
-                <tr>
-                  <td colSpan={8} className="p-5">
-                    No ads currently have both lifetime CPA and L7D CPA above this threshold.
-                  </td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
+          <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
+            <div className="bg-emerald-500/10 px-4 py-3">
+              <h3 className="text-sm font-black text-emerald-600 dark:text-emerald-300">Improving CPA — Give Time</h3>
+              <p className="mt-1 text-xs opacity-70">
+                Lifetime CPA is above {money(threshold)}, but L7D CPA is now below target.
+              </p>
+            </div>
+
+            <div className="max-h-[420px] overflow-auto">
+              <table className="w-full min-w-[760px] border-collapse text-left text-xs">
+                <thead className="monthly-table-head">
+                  <tr>
+                    {["Ad", "Y Spend", "Life CPA", "L7D CPA", "L7D Spend", "L7D ROAS"].map((h) => (
+                      <th key={h} className="monthly-table-th">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.improvingHighCpaItems.map((item) => (
+                    <tr key={item.key} className="border-b border-current/10">
+                      <td className="max-w-[360px] px-3 py-3">
+                        <p className="truncate font-black">{item.ad}</p>
+                        <p className="mt-0.5 truncate opacity-55">{item.campaign} · {item.adSet}</p>
+                      </td>
+                      <td className="px-3 py-3 font-black">{money(item.yesterday.spend)}</td>
+                      <td className="px-3 py-3 font-black text-red-600 dark:text-red-300">{money(item.lifetime.cpa)}</td>
+                      <td className="px-3 py-3 font-black text-emerald-600 dark:text-emerald-300">{money(item.last7.cpa)}</td>
+                      <td className="px-3 py-3">{money(item.last7.spend)}</td>
+                      <td className={item.last7.roas >= 1 ? "px-3 py-3 font-black text-emerald-600 dark:text-emerald-300" : "px-3 py-3 font-black text-orange-600 dark:text-orange-300"}>
+                        {num(item.last7.roas)}x
+                      </td>
+                    </tr>
+                  ))}
+
+                  {!data.improvingHighCpaItems.length ? (
+                    <tr>
+                      <td colSpan={6} className="p-5 opacity-70">
+                        No improving CPA ads at this target.
+                      </td>
+                    </tr>
+                  ) : null}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -666,6 +719,20 @@ export function HighCpaTab() {
                     <span className="rounded-full border border-current/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] opacity-70">
                       Y Spend {money(item.yesterday.spend)}
                     </span>
+
+                    {item.last7.purchases > 0 && item.last7.cpa <= threshold ? (
+                      <span className="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-emerald-600 dark:text-emerald-300">
+                        Improving L7D
+                      </span>
+                    ) : item.last7.purchases > 0 && item.last7.cpa > threshold ? (
+                      <span className="rounded-full border border-red-500/25 bg-red-500/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-red-600 dark:text-red-300">
+                        Still High L7D
+                      </span>
+                    ) : (
+                      <span className="rounded-full border border-orange-500/25 bg-orange-500/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-orange-600 dark:text-orange-300">
+                        No L7D Sale
+                      </span>
+                    )}
                   </div>
 
                   <p className="mt-1 truncate text-sm font-black">{item.ad}</p>
@@ -685,7 +752,7 @@ export function HighCpaTab() {
                 <Metric
                   label="L7D CPA"
                   value={item.last7.purchases > 0 ? money(item.last7.cpa) : "No sale"}
-                  tone={item.last7.purchases > 0 && item.last7.cpa <= item.lifetime.cpa ? "green" : "red"}
+                  tone={item.last7.purchases <= 0 ? "red" : item.last7.cpa <= threshold ? "green" : "red"}
                 />
                 <Metric
                   label="L7D ROAS"
