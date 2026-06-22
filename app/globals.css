@@ -5592,3 +5592,10 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   }
 }
 
+
+.meta-copy-filter-button-secondary {
+  background: rgba(17, 24, 39, 0.96) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22) !important;
+}
+

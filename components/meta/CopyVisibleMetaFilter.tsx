@@ -166,6 +166,35 @@ function extractAdNameFromRow(el: Element) {
   return lines.find(looksLikeAdName) || "";
 }
 
+function toMetaHandleOnly(adName: string) {
+  const cleaned = cutMetricLeak(adName);
+
+  // Most Brillare collab ad names start with creator handle/name before " - ".
+  const firstPart = cleaned.split(" - ")[0]?.trim() || cleaned;
+
+  return firstPart
+    .replace(/[|·,\s]+$/g, "")
+    .trim();
+}
+
+function dedupeLines(values: string[]) {
+  const out: string[] = [];
+  const seen = new Set<string>();
+
+  for (const value of values) {
+    const cleaned = cleanLine(value);
+    if (!cleaned) continue;
+
+    const key = cleaned.toLowerCase();
+    if (seen.has(key)) continue;
+
+    seen.add(key);
+    out.push(cleaned);
+  }
+
+  return out;
+}
+
 function extractVisibleAdNames() {
   const root =
     document.querySelector("main") ||
@@ -230,11 +259,12 @@ export function CopyVisibleMetaFilter() {
     return "Copy Meta OR Filter";
   }, [copiedCount, error]);
 
-  async function handleCopy() {
+  async function handleCopy(mode: "handles" | "full" = "handles") {
     setError("");
     setCopiedCount(null);
 
-    const names = extractVisibleAdNames();
+    const rawNames = extractVisibleAdNames();
+    const names = mode === "handles" ? dedupeLines(rawNames.map(toMetaHandleOnly)) : dedupeLines(rawNames);
 
     if (!names.length) {
       setError("No visible ad names found on this tab.");
@@ -242,10 +272,9 @@ export function CopyVisibleMetaFilter() {
       return;
     }
 
-    // Meta Ads Manager's "contains any of" filter behaves most reliably
-    // when values are pasted as a single OR-separated expression.
-    // Example: ad name 1 or ad name 2 or ad name 3
-    const text = names.join(" or ");
+    // Actual CRLF line breaks. Meta may still display it in one input,
+    // but this is the correct clipboard format for one value per line.
+    const text = names.join("\r\n");
 
     try {
       await navigator.clipboard.writeText(text);
@@ -271,11 +300,20 @@ export function CopyVisibleMetaFilter() {
     <div className="meta-copy-filter-fixed">
       <button
         type="button"
-        onClick={handleCopy}
+        onClick={() => handleCopy("handles")}
         className="meta-copy-filter-button"
-        title="Copies visible ad names in Meta-ready OR format for: Ad name contains any of"
+        title="Copies creator handles only, one per line, for Meta Ads Manager: Ad name contains any of"
       >
-        {label}
+        {copiedCount !== null ? `Copied ${copiedCount}` : "Copy Handles"}
+      </button>
+
+      <button
+        type="button"
+        onClick={() => handleCopy("full")}
+        className="meta-copy-filter-button meta-copy-filter-button-secondary"
+        title="Copies full visible ad names, one per line"
+      >
+        Full Names
       </button>
 
       {error ? <div className="meta-copy-filter-toast">{error}</div> : null}
