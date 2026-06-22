@@ -346,7 +346,6 @@ function buildHighCpaItems(rows: Row[], threshold: number) {
 function toHighCpaHandleOnly(adName: string) {
   return String(adName || "")
     .split(" - ")[0]
-    .join(" - ")
     .replace(/[|·,\s]+$/g, "")
     .trim();
 }
