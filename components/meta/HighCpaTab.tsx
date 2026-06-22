@@ -342,9 +342,50 @@ function buildHighCpaItems(rows: Row[], threshold: number) {
   return { latest, items, campaigns };
 }
 
+
+function toHighCpaHandleOnly(adName: string) {
+  return String(adName || "")
+    .split(" - ")[0]
+    .join(" - ")
+    .replace(/[|·,\s]+$/g, "")
+    .trim();
+}
+
+async function copyHighCpaText(values: string[]) {
+  const cleaned = Array.from(
+    new Set(
+      values
+        .map((value) => String(value || "").trim())
+        .filter(Boolean)
+    )
+  );
+
+  const text = cleaned.join("\r\n");
+
+  if (!text) return 0;
+
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "true");
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  }
+
+  return cleaned.length;
+}
+
+
 export function HighCpaTab() {
   const rows = useMetaStore((state) => state.performanceRows);
   const [threshold, setThreshold] = useState(3000);
+  const [copiedMetaFilter, setCopiedMetaFilter] = useState("");
 
   const data = useMemo(() => {
     const result = buildHighCpaItems(rows || [], threshold);
@@ -355,6 +396,18 @@ export function HighCpaTab() {
       yesterdaySpend: result.items.reduce((s, x) => s + x.yesterday.spend, 0),
     };
   }, [rows, threshold]);
+
+  async function handleCopyHighCpaHandles() {
+    const count = await copyHighCpaText(data.items.map((item) => toHighCpaHandleOnly(item.ad)));
+    setCopiedMetaFilter(count ? `Copied ${count} handles` : "No ads found");
+    window.setTimeout(() => setCopiedMetaFilter(""), 2200);
+  }
+
+  async function handleCopyHighCpaFullNames() {
+    const count = await copyHighCpaText(data.items.map((item) => item.ad));
+    setCopiedMetaFilter(count ? `Copied ${count} ad names` : "No ads found");
+    window.setTimeout(() => setCopiedMetaFilter(""), 2200);
+  }
 
   return (
     <div className="high-cpa-tab-root grid gap-3">
@@ -457,11 +510,39 @@ export function HighCpaTab() {
       </section>
 
       <section className="rounded-xl border border-current/10 bg-current/[0.025]">
-        <div className="border-b border-current/10 px-4 py-3">
-          <h2 className="text-lg font-black">High CPA Creatives</h2>
-          <p className="mt-1 text-sm opacity-60">
-            Active latest-date ads where lifetime purchases &gt; 0 and lifetime CPA is above {money(threshold)}.
-          </p>
+        <div className="flex flex-col gap-3 border-b border-current/10 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 className="text-lg font-black">High CPA Creatives</h2>
+            <p className="mt-1 text-sm opacity-60">
+              Active latest-date ads where lifetime purchases &gt; 0 and lifetime CPA is above {money(threshold)}.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {copiedMetaFilter ? (
+              <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.1em] text-emerald-600 dark:text-emerald-300">
+                {copiedMetaFilter}
+              </span>
+            ) : null}
+
+            <button
+              type="button"
+              onClick={handleCopyHighCpaHandles}
+              className="rounded-full bg-[#0A84FF] px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.1em] text-white"
+              title="Copies creator handles only, one per line, for Meta Ads Manager: Ad name contains any of"
+            >
+              Copy Handles
+            </button>
+
+            <button
+              type="button"
+              onClick={handleCopyHighCpaFullNames}
+              className="rounded-full border border-current/10 bg-current/[0.035] px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.1em]"
+              title="Copies full High CPA ad names, one per line"
+            >
+              Full Names
+            </button>
+          </div>
         </div>
 
         <div className="divide-y divide-current/10">
