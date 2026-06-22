@@ -411,14 +411,14 @@ export function HighCpaTab() {
   }, [rows, threshold]);
 
   async function handleCopyHighCpaHandles() {
-    const count = await copyHighCpaText(data.items.map((item) => toHighCpaHandleOnly(item.ad)));
-    setCopiedMetaFilter(count ? `Copied ${count} handles` : "No ads found");
+    const count = await copyHighCpaText(data.persistentHighCpaItems.map((item) => toHighCpaHandleOnly(item.ad)));
+    setCopiedMetaFilter(count ? `Copied ${count} action handles` : "No action ads found");
     window.setTimeout(() => setCopiedMetaFilter(""), 2200);
   }
 
   async function handleCopyHighCpaFullNames() {
-    const count = await copyHighCpaText(data.items.map((item) => item.ad));
-    setCopiedMetaFilter(count ? `Copied ${count} ad names` : "No ads found");
+    const count = await copyHighCpaText(data.persistentHighCpaItems.map((item) => item.ad));
+    setCopiedMetaFilter(count ? `Copied ${count} action ad names` : "No action ads found");
     window.setTimeout(() => setCopiedMetaFilter(""), 2200);
   }
 
@@ -691,18 +691,18 @@ export function HighCpaTab() {
               type="button"
               onClick={handleCopyHighCpaHandles}
               className="rounded-full bg-[#0A84FF] px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.1em] text-white"
-              title="Copies creator handles only, one per line, for Meta Ads Manager: Ad name contains any of"
+              title="Copies handles only from Still High CPA — Action Required, one per line"
             >
-              Copy Handles
+              Copy Action Handles
             </button>
 
             <button
               type="button"
               onClick={handleCopyHighCpaFullNames}
               className="rounded-full border border-current/10 bg-current/[0.035] px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.1em]"
-              title="Copies full High CPA ad names, one per line"
+              title="Copies full ad names only from Still High CPA — Action Required, one per line"
             >
-              Full Names
+              Action Full Names
             </button>
           </div>
         </div>
