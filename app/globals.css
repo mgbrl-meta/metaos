@@ -5524,3 +5524,71 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   opacity: 1 !important;
 }
 
+
+/* =========================================================
+   GLOBAL META ADS MANAGER FILTER COPY BUTTON
+   ========================================================= */
+
+.meta-copy-filter-fixed {
+  position: fixed;
+  right: 18px;
+  bottom: 22px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.meta-copy-filter-button {
+  pointer-events: auto;
+  border: 1px solid rgba(10, 132, 255, 0.35);
+  background: linear-gradient(135deg, #0A84FF, #0067d6);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 11px 16px;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 12px 35px rgba(10, 132, 255, 0.28);
+  transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+}
+
+.meta-copy-filter-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 45px rgba(10, 132, 255, 0.38);
+}
+
+.meta-copy-filter-button:active {
+  transform: translateY(0);
+  opacity: 0.9;
+}
+
+.meta-copy-filter-toast {
+  pointer-events: none;
+  max-width: 280px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(17, 24, 39, 0.96);
+  color: #ffffff;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 14px 45px rgba(0, 0, 0, 0.28);
+}
+
+@media (max-width: 768px) {
+  .meta-copy-filter-fixed {
+    right: 12px;
+    bottom: 14px;
+  }
+
+  .meta-copy-filter-button {
+    padding: 10px 13px;
+    font-size: 10px;
+  }
+}
+
