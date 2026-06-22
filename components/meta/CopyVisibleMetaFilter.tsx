@@ -2,43 +2,46 @@
 
 import { useMemo, useState } from "react";
 
-const EXCLUDE_PHRASES = [
-  "meta os",
-  "daily performance os",
-  "sheet live",
-  "settings",
-  "summary",
-  "de-scale",
-  "scale",
-  "zero purchase",
-  "high cpa",
-  "high roas",
-  "spend",
-  "monthly",
-  "creative ageing",
-  "copy meta filter",
-  "ad name contains any of",
-  "why this is critical",
-  "metric read",
-  "select metrics trend",
-  "life spend",
-  "last 7d spend",
-  "last 7d cpa",
-  "last 7d roas",
-  "l7d spend",
-  "l7d cpa",
-  "l7d roas",
-  "cpm",
-  "ctr",
-  "cpa",
-  "roas",
-  "aov",
-  "purch",
-  "impr",
-  "lpv",
+const BAD_LINE_PATTERNS = [
+  /^meta os$/i,
+  /^daily performance os$/i,
+  /^sheet live$/i,
+  /^settings$/i,
+  /^summary$/i,
+  /^de-scale$/i,
+  /^scale$/i,
+  /^zero purchase$/i,
+  /^high cpa$/i,
+  /^high roas$/i,
+  /^spend$/i,
+  /^monthly$/i,
+  /^creative ageing$/i,
+  /^copy meta filter$/i,
+  /^why this is critical$/i,
+  /^metric read$/i,
+  /^select metrics trend$/i,
+  /^life spend$/i,
+  /^last 7d spend$/i,
+  /^last 7d cpa$/i,
+  /^last 7d roas$/i,
+  /^l7d spend$/i,
+  /^l7d cpa$/i,
+  /^l7d roas$/i,
+  /^cpm$/i,
+  /^ctr$/i,
+  /^cpa$/i,
+  /^roas$/i,
+  /^aov$/i,
+  /^purch\.?$/i,
+  /^impr\.?$/i,
+  /^lpv$/i,
+  /^no sale$/i,
+  /^₹[\d,]+$/i,
+  /^\d+(\.\d+)?x$/i,
+  /^\d+(\.\d+)?%$/i,
 ];
 
-const POSITIVE_PATTERNS = [
+const AD_NAME_HINTS = [
   "collab",
   "creative test",
   "ad-set",
@@ -46,8 +49,8 @@ const POSITIVE_PATTERNS = [
   "pixel",
   "socialcrew",
   "wishlink",
-  "static",
   "individual",
+  "static",
   "vernacular",
   "rosemary",
   "scalp",
@@ -59,13 +62,29 @@ const POSITIVE_PATTERNS = [
   "march",
 ];
 
-function cleanCandidate(value: string) {
-  let text = String(value || "")
+function cleanLine(value: string) {
+  return String(value || "")
     .replace(/\u00a0/g, " ")
     .replace(/\s+/g, " ")
+    .trim()
+    .replace(/[|·,\s]+$/g, "")
     .trim();
+}
 
-  // If table row text leaks metrics after the name, cut before metric labels.
+function removeBadgePrefix(value: string) {
+  return cleanLine(value)
+    .replace(/^ZERO PURCHASE\s+/i, "")
+    .replace(/^HIGH CPA\s+/i, "")
+    .replace(/^HIGH ROAS\s+/i, "")
+    .replace(/^TOP SPENDER\s+/i, "")
+    .replace(/^APPROVAL CHECK\s+/i, "")
+    .replace(/^Y SPEND\s+₹?[\d,]+\s*/i, "")
+    .trim();
+}
+
+function cutMetricLeak(value: string) {
+  let text = removeBadgePrefix(value);
+
   const cutMarkers = [
     " LIFE SPEND ",
     " Y SPEND ",
@@ -85,41 +104,66 @@ function cleanCandidate(value: string) {
     if (idx > 12) text = text.slice(0, idx).trim();
   }
 
-  // Remove common status/badge prefixes if they joined into the same line.
-  text = text
-    .replace(/^ZERO PURCHASE\s+/i, "")
-    .replace(/^HIGH CPA\s+/i, "")
-    .replace(/^HIGH ROAS\s+/i, "")
-    .replace(/^TOP SPENDER\s+/i, "")
-    .replace(/^APPROVAL CHECK\s+/i, "")
-    .replace(/^Y SPEND\s+₹?[\d,]+\s*/i, "")
-    .trim();
+  return cleanLine(text);
+}
 
-  // Meta filter works better without accidental trailing separators.
-  text = text.replace(/[|·,\s]+$/g, "").trim();
+function isCampaignPath(line: string) {
+  const lower = line.toLowerCase();
 
-  return text;
+  // This prevents copying the second descriptive path line:
+  // "Rosemary Oil Shots | Test Campaign · Rosemary Oil Shot - Collab..."
+  return (
+    lower.includes(" campaign ·") ||
+    lower.includes(" test campaign ·") ||
+    lower.includes(" ad-concept ·") ||
+    lower.includes(" ad concept ·") ||
+    lower.includes("main ad set") ||
+    lower.includes("campaign ·") ||
+    lower.includes("·")
+  );
 }
 
 function looksLikeAdName(value: string) {
-  const text = cleanCandidate(value);
+  const text = cutMetricLeak(value);
   const lower = text.toLowerCase();
 
-  if (text.length < 8 || text.length > 220) return false;
-  if (!/[a-zA-Z0-9_@]/.test(text)) return false;
+  if (!text || text.length < 8 || text.length > 180) return false;
+  if (BAD_LINE_PATTERNS.some((pattern) => pattern.test(text))) return false;
+  if (isCampaignPath(text)) return false;
 
-  if (EXCLUDE_PHRASES.some((phrase) => lower === phrase || lower.startsWith(`${phrase}:`))) {
-    return false;
-  }
+  // Avoid full table/header text and metric-only text.
+  if (lower.includes("why this is critical")) return false;
+  if (lower.includes("metric window")) return false;
+  if (lower.includes("select metrics")) return false;
+  if (lower.includes("operator read")) return false;
+  if (lower.includes("source: google sheet")) return false;
 
-  if (lower.includes("₹") && !lower.includes("collab")) return false;
-  if (/^\d+(\.\d+)?x?$/.test(lower)) return false;
-  if (/^\d{4}-\d{2}-\d{2}/.test(lower)) return false;
+  const hasHint = AD_NAME_HINTS.some((hint) => lower.includes(hint));
+  const hasNameShape =
+    lower.includes(" - ") ||
+    lower.includes(" | ") ||
+    lower.includes("_") ||
+    lower.includes("@");
 
-  const hasPositivePattern = POSITIVE_PATTERNS.some((pattern) => lower.includes(pattern));
-  const hasNameShape = lower.includes(" - ") || lower.includes(" | ") || lower.includes("_") || lower.includes("@");
+  return hasHint && hasNameShape;
+}
 
-  return hasPositivePattern && hasNameShape;
+function candidateLinesFromElement(el: Element) {
+  const text = (el as HTMLElement).innerText || "";
+
+  return text
+    .split(/\n+/)
+    .flatMap((line) => line.split(/\t+/))
+    .map(cutMetricLeak)
+    .filter(Boolean);
+}
+
+function extractAdNameFromRow(el: Element) {
+  const lines = candidateLinesFromElement(el);
+
+  // Prefer the first clean ad-name looking line in the row.
+  // This avoids copying the campaign/adset path below the ad name.
+  return lines.find(looksLikeAdName) || "";
 }
 
 function extractVisibleAdNames() {
@@ -128,27 +172,49 @@ function extractVisibleAdNames() {
     document.querySelector(".metaos-app") ||
     document.body;
 
-  const rawText = (root as HTMLElement).innerText || "";
+  const rowSelectors = [
+    "tbody tr",
+    "[role='row']",
+    "section .border-b",
+    "div.border-b",
+    "article",
+  ];
 
-  const lines = rawText
-    .split(/\n+/)
-    .flatMap((line) => line.split(/\t+/))
-    .map(cleanCandidate)
-    .filter(Boolean);
+  const candidates: string[] = [];
+
+  for (const selector of rowSelectors) {
+    const elements = Array.from(root.querySelectorAll(selector));
+
+    for (const el of elements) {
+      const rect = (el as HTMLElement).getBoundingClientRect();
+
+      // Only visible rows/cards.
+      if (rect.width < 100 || rect.height < 20) continue;
+      if (rect.bottom < 0 || rect.top > window.innerHeight + 600) continue;
+
+      const adName = extractAdNameFromRow(el);
+      if (adName) candidates.push(adName);
+    }
+  }
+
+  // Fallback: scan visible page lines, but still copy only ad-name shaped lines.
+  if (!candidates.length) {
+    const pageLines = candidateLinesFromElement(root);
+    candidates.push(...pageLines.filter(looksLikeAdName));
+  }
 
   const names: string[] = [];
   const seen = new Set<string>();
 
-  for (const line of lines) {
-    const candidate = cleanCandidate(line);
+  for (const candidate of candidates) {
+    const cleaned = cutMetricLeak(candidate);
+    const key = cleaned.toLowerCase();
 
-    if (!looksLikeAdName(candidate)) continue;
-
-    const key = candidate.toLowerCase();
+    if (!looksLikeAdName(cleaned)) continue;
     if (seen.has(key)) continue;
 
     seen.add(key);
-    names.push(candidate);
+    names.push(cleaned);
   }
 
   return names;
@@ -176,7 +242,8 @@ export function CopyVisibleMetaFilter() {
       return;
     }
 
-    const text = names.join("\n");
+    // Meta Ads Manager "contains any of" works best with one ad name per line.
+    const text = names.join("\r\n");
 
     try {
       await navigator.clipboard.writeText(text);
@@ -204,7 +271,7 @@ export function CopyVisibleMetaFilter() {
         type="button"
         onClick={handleCopy}
         className="meta-copy-filter-button"
-        title="Copies visible ad names as newline-separated text for Meta Ads Manager: Ad name contains any of"
+        title="Copies visible ad names, one per line, for Meta Ads Manager: Ad name contains any of"
       >
         {label}
       </button>
