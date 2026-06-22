@@ -227,7 +227,7 @@ export function CopyVisibleMetaFilter() {
   const label = useMemo(() => {
     if (copiedCount !== null) return `Copied ${copiedCount} ads`;
     if (error) return "No ads found";
-    return "Copy Meta Filter";
+    return "Copy Meta OR Filter";
   }, [copiedCount, error]);
 
   async function handleCopy() {
@@ -242,8 +242,10 @@ export function CopyVisibleMetaFilter() {
       return;
     }
 
-    // Meta Ads Manager "contains any of" works best with one ad name per line.
-    const text = names.join("\r\n");
+    // Meta Ads Manager's "contains any of" filter behaves most reliably
+    // when values are pasted as a single OR-separated expression.
+    // Example: ad name 1 or ad name 2 or ad name 3
+    const text = names.join(" or ");
 
     try {
       await navigator.clipboard.writeText(text);
@@ -271,7 +273,7 @@ export function CopyVisibleMetaFilter() {
         type="button"
         onClick={handleCopy}
         className="meta-copy-filter-button"
-        title="Copies visible ad names, one per line, for Meta Ads Manager: Ad name contains any of"
+        title="Copies visible ad names in Meta-ready OR format for: Ad name contains any of"
       >
         {label}
       </button>
