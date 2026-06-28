@@ -26,6 +26,7 @@ import { CriticalCpaCreatives } from "@/components/meta/CriticalCpaCreatives";
 import { CreativeTimelineMetrics } from "@/components/meta/CreativeTimelineMetrics";
 import { DataQCTab } from "@/components/meta/DataQCTab";
 import { CreativeAgeingTab } from "@/components/meta/CreativeAgeingTab";
+import { CreativeTab } from "@/components/meta/CreativeTab";
 
 export default function Home() {
   const [osMode, setOsMode] = useState<OSMode>("meta");
@@ -67,7 +68,8 @@ export default function Home() {
           {activeMetaTab === "high_cpa" && <HighCpaTab />}
           {activeMetaTab === "high_roas" && <HighRoasTab />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
-          {activeMetaTab === "creative_ageing" && <CreativeAgeingTab />}
+          {activeMetaTab === "creative" && <CreativeTab />}
+      {activeMetaTab === "creative_ageing" && <CreativeAgeingTab />}
       {activeMetaTab === "data_qc" && <DataQCTab />}
       {activeMetaTab === "summary" && <MetaExecutiveSummary />}
           {activeMetaTab === "monthly" && <EnhancedMonthlyReport />}

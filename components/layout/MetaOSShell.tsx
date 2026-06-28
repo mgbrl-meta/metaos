@@ -23,6 +23,7 @@ import {
   MousePointerClick,
   TrendingUp,
   Hourglass,
+  Flame,
 } from "lucide-react";
 import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
 import { useMetaStore } from "@/store/metaStore";
@@ -30,6 +31,7 @@ import { useMetaStore } from "@/store/metaStore";
 export type OSMode = "meta" | "google";
 
 export type MetaTab =
+  | "creative"
   | "creative_ageing"
   | "data_qc"
   | "top_descaling"
@@ -124,6 +126,13 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "Spend",
     description: "Spend movement and efficiency visuals",
     icon: BarChart3,
+  },
+  {
+    id: "creative",
+    label: "Creative",
+    shortLabel: "Creative",
+    description: "Creative fatigue and saturation signals",
+    icon: Flame,
   },
 
 
