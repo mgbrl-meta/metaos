@@ -277,30 +277,38 @@ function dailyTrend(rows: Row[]) {
 
 function buildZeroPurchaseItems(rows: Row[], threshold: number) {
   const latest = latestDate(rows);
-  const map = new Map<string, Row[]>();
 
-  const activeYesterdayIds = new Set(
+  // Zero Purchase is an operator control tab.
+  // Active = ad spent on the latest available data date.
+  // Do not depend on delivery/status fields here because Meta exports can mark a latest-spend ad as learning/off/missing.
+  const latestSpendAdIds = new Set(
     rows
       .filter((row) => dateKey(getDate(row)) === latest)
       .filter((row) => getSpend(row) > 0)
       .map((row) => getAdId(row))
+      .filter(Boolean)
   );
+
+  const map = new Map<string, Row[]>();
 
   rows.forEach((row) => {
     const key = getAdId(row);
-    if (!activeYesterdayIds.has(key)) return;
+    if (!latestSpendAdIds.has(key)) return;
 
     if (!map.has(key)) map.set(key, []);
     map.get(key)!.push(row);
   });
 
-  return Array.from(map.entries())
+  const items = Array.from(map.entries())
     .map(([key, adRows]) => {
-      const sample = adRows[0];
+      const latestRow =
+        adRows.find((row) => dateKey(getDate(row)) === latest && getSpend(row) > 0) ||
+        adRows[adRows.length - 1];
+
+      const sample = latestRow || adRows[0];
       const lifetime = summarize(adRows);
       const last7 = summarizeCalendarWindow(adRows, latest, 7);
       const yesterday = summarize(adRows.filter((row) => dateKey(getDate(row)) === latest));
-      const trend = dailyTrend(adRows);
 
       return {
         key,
@@ -310,13 +318,15 @@ function buildZeroPurchaseItems(rows: Row[], threshold: number) {
         lifetime,
         last7,
         yesterday,
-        trend,
+        trend: dailyTrend(adRows),
       };
     })
     .filter((item) => item.yesterday.spend > 0)
     .filter((item) => item.lifetime.spend >= threshold)
     .filter((item) => item.lifetime.purchases === 0)
     .sort((a, b) => b.lifetime.spend - a.lifetime.spend);
+
+  return { latest, items };
 }
 
 export function ZeroPurchaseTab() {
@@ -402,7 +412,7 @@ export function ZeroPurchaseTab() {
           <div>
             <h2 className="text-lg font-black">Live Ads With Zero Purchases</h2>
             <p className="mt-1 max-w-3xl text-sm opacity-60">
-              Active ads that spent on the latest date, crossed {money(threshold)} lifetime spend, and still have 0 recorded purchases.
+              Ads that spent on the latest available date, crossed {money(threshold)} lifetime spend, and still have 0 recorded purchases.
               Review these first for pause, cap, or rebuild decisions.
             </p>
           </div>
