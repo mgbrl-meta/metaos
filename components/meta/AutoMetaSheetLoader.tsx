@@ -7,23 +7,40 @@ import { enrichRows } from "@/lib/metrics";
 
 type LoadStatus = "loading" | "connected" | "error";
 
+function formatSyncTime(value: string) {
+  if (!value) return "";
+
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+
+  return d.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export function AutoMetaSheetLoader() {
   const [status, setStatus] = useState<LoadStatus>("loading");
   const [message, setMessage] = useState("Connecting to Meta Google Sheet...");
   const [rowCount, setRowCount] = useState(0);
+  const [latestDate, setLatestDate] = useState("");
   const [lastLoadedAt, setLastLoadedAt] = useState("");
 
   async function loadMetaSheet() {
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 30000);
+    const timeout = window.setTimeout(() => controller.abort(), 45000);
 
     try {
       setStatus("loading");
       setMessage("Syncing latest Meta data from Google Sheet...");
 
-      const res = await fetch("/api/meta-sheet", {
+      const res = await fetch(`/api/meta-sheet?source=raw&t=${Date.now()}`, {
         cache: "no-store",
         signal: controller.signal,
+        headers: {
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache",
+        },
       });
 
       const json = await res.json();
@@ -34,24 +51,34 @@ export function AutoMetaSheetLoader() {
 
       const rows = enrichRows(json.rows || [], useMetaStore.getState().settings);
 
-      // Important: use the store action, not setState, so QC normalization + alert summary always runs.
       useMetaStore.getState().setPerformanceRows(rows as any);
+
+      useMetaStore.getState().setMetaFreshness({
+        latestDate: json.latestDate || "",
+        fetchedAt: json.generatedAt || new Date().toISOString(),
+        rowCount: rows.length,
+      });
 
       if (json.qcSummary) {
         useMetaStore.getState().setMetaQcSummary(json.qcSummary);
       }
 
       setRowCount(rows.length);
+      setLatestDate(json.latestDate || "");
+      setLastLoadedAt(json.generatedAt || new Date().toISOString());
       setStatus("connected");
-      setLastLoadedAt(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
 
       const shifted = Number(json.qcSummary?.shiftedRowsFixed || 0);
       const critical = Number(json.qcSummary?.rowsWithCritical || 0);
 
       if (shifted > 0 || critical > 0) {
-        setMessage(`Meta Sheet live · ${rows.length.toLocaleString()} rows loaded · QC alert found`);
+        setMessage(
+          `Meta Sheet live · ${rows.length.toLocaleString()} rows loaded · Latest ${json.latestDate || "NA"} · QC alert found`
+        );
       } else {
-        setMessage(`Meta Sheet live · ${rows.length.toLocaleString()} rows loaded`);
+        setMessage(
+          `Meta Sheet live · ${rows.length.toLocaleString()} rows loaded · Latest ${json.latestDate || "NA"}`
+        );
       }
     } catch (error: any) {
       setStatus("error");
@@ -95,7 +122,8 @@ export function AutoMetaSheetLoader() {
             <p className="text-sm font-black leading-5">{message}</p>
             <p className="mt-1 text-xs leading-5 opacity-70">
               Source: Google Sheet · Auto-loads on every dashboard open
-              {lastLoadedAt ? ` · Last sync ${lastLoadedAt}` : ""}
+              {latestDate ? ` · Data latest ${latestDate}` : ""}
+              {lastLoadedAt ? ` · Last sync ${formatSyncTime(lastLoadedAt)}` : ""}
             </p>
           </div>
         </div>
@@ -105,6 +133,12 @@ export function AutoMetaSheetLoader() {
             <span className="inline-flex items-center gap-1 rounded-full border border-current/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.12em]">
               <Wifi className="h-3.5 w-3.5" />
               Live Source
+            </span>
+          )}
+
+          {latestDate && (
+            <span className="rounded-full border border-current/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.12em]">
+              Latest {latestDate}
             </span>
           )}
 

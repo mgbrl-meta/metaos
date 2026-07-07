@@ -22,6 +22,7 @@ import { SettingsPanel } from "@/components/settings/SettingsPanel";
 
 import { GoogleSearchTermAudit } from "@/components/google/GoogleSearchTermAudit";
 import { AutoMetaSheetLoader } from "@/components/meta/AutoMetaSheetLoader";
+import { MetaFreshnessBadge } from "@/components/meta/MetaFreshnessBadge";
 import { CriticalCpaCreatives } from "@/components/meta/CriticalCpaCreatives";
 import { CreativeTimelineMetrics } from "@/components/meta/CreativeTimelineMetrics";
 import { DataQCTab } from "@/components/meta/DataQCTab";
@@ -84,6 +85,7 @@ export default function Home() {
       {!activeSystemTab && osMode === "meta" && (
         <>
           <AutoMetaSheetLoader />
+      <MetaFreshnessBadge />
           {activeMetaTab === "top_descaling" && <TopDescalingPrioritiesTab />}
           {activeMetaTab === "top_scaling" && <TopScalingPrioritiesTab />}
           {activeMetaTab === "influencer_ads" && <InfluencerAdsTab />}

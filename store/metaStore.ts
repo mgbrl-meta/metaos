@@ -48,6 +48,9 @@ interface MetaStore {
   performanceRows: MetaPerformanceRow[];
   dataHealth: DataHealth | null;
   metaQcSummary: MetaQcSummary | null;
+  metaLatestDate: string;
+  metaFetchedAt: string;
+  metaRowCount: number;
 
   updateSettings: (settings: Partial<MetaSettings>) => void;
   resetSettings: () => void;
@@ -56,6 +59,7 @@ interface MetaStore {
   setPerformanceRows: (rows: MetaPerformanceRow[]) => void;
   setDataHealth: (dataHealth: DataHealth) => void;
   setMetaQcSummary: (summary: MetaQcSummary | null) => void;
+  setMetaFreshness: (freshness: { latestDate?: string; fetchedAt?: string; rowCount?: number }) => void;
 
   clearUpload: () => void;
 }
@@ -76,6 +80,9 @@ export const useMetaStore = create<MetaStore>()(
       performanceRows: [],
       dataHealth: null,
       metaQcSummary: null,
+      metaLatestDate: "",
+      metaFetchedAt: "",
+      metaRowCount: 0,
 
       updateSettings: (settings) =>
         set((state) => ({
@@ -117,6 +124,13 @@ export const useMetaStore = create<MetaStore>()(
         set({
           metaQcSummary: summary,
         }),
+
+      setMetaFreshness: (freshness) =>
+        set((state) => ({
+          metaLatestDate: freshness.latestDate ?? state.metaLatestDate,
+          metaFetchedAt: freshness.fetchedAt ?? state.metaFetchedAt,
+          metaRowCount: freshness.rowCount ?? state.metaRowCount,
+        })),
 
       clearUpload: () =>
         set({

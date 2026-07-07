@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { google } from "googleapis";
 import {
   buildMetaDataQualitySummary,
@@ -6,6 +6,15 @@ import {
 } from "@/lib/metaDataQuality";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
+const NO_CACHE_HEADERS = {
+  "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+  "Pragma": "no-cache",
+  "Expires": "0",
+  "Surrogate-Control": "no-store",
+};
 
 const sheetId = process.env.META_SHEET_ID;
 const sheetTab = process.env.META_SHEET_TAB || "Meta_Raw_Data";
@@ -38,7 +47,25 @@ function cleanHeader(value: string) {
     .replace(/_/g, " ");
 }
 
-export async function GET() {
+function latestDateFromRows(rows: Array<{ date?: string | null }>) {
+  const dates = rows
+    .map((row) => String(row.date || "").slice(0, 10))
+    .filter(Boolean)
+    .sort();
+
+  return dates[dates.length - 1] || "";
+}
+
+function jsonNoCache(payload: Record<string, any>, init?: { status?: number }) {
+  return NextResponse.json(payload, {
+    status: init?.status || 200,
+    headers: NO_CACHE_HEADERS,
+  });
+}
+
+export async function GET(_request: NextRequest) {
+  const generatedAt = new Date().toISOString();
+
   try {
     if (!sheetId) {
       throw new Error("Missing META_SHEET_ID. Add it in Vercel Environment Variables.");
@@ -52,8 +79,6 @@ export async function GET() {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
       range,
-      // Important: FORMATTED_VALUE prevents Google Sheet date cells from coming as serial numbers like 46258.
-      // Numeric strings are cleaned by metaDataQuality.toNumber(), so this is safer for dashboard date windows.
       valueRenderOption: "FORMATTED_VALUE",
       dateTimeRenderOption: "FORMATTED_STRING",
     });
@@ -61,11 +86,13 @@ export async function GET() {
     const values = response.data.values || [];
 
     if (values.length < 2) {
-      return NextResponse.json({
+      return jsonNoCache({
         source: "google_sheet",
         sheetTab,
         rows: [],
         rowCount: 0,
+        latestDate: "",
+        generatedAt,
         qcSummary: buildMetaDataQualitySummary([]),
         message: "No Meta rows found in sheet",
       });
@@ -87,21 +114,28 @@ export async function GET() {
       return row.date && row.adId && row.campaignName;
     });
 
+    const latestDate = latestDateFromRows(normalizedRows);
     const qcSummary = buildMetaDataQualitySummary(normalizedRows);
 
-    return NextResponse.json({
+    return jsonNoCache({
       source: "google_sheet",
       sheetTab,
       rowCount: normalizedRows.length,
+      latestDate,
+      generatedAt,
       rows: normalizedRows,
       qcSummary,
     });
   } catch (error: any) {
     console.error("Meta Sheet API error:", error);
 
-    return NextResponse.json(
+    return jsonNoCache(
       {
         error: error?.message || "Failed to fetch Meta sheet data",
+        latestDate: "",
+        generatedAt,
+        rows: [],
+        rowCount: 0,
       },
       { status: 500 }
     );
