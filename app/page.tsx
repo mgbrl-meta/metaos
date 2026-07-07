@@ -28,6 +28,7 @@ import { DataQCTab } from "@/components/meta/DataQCTab";
 import { CreativeAgeingTab } from "@/components/meta/CreativeAgeingTab";
 import { CreativeTab } from "@/components/meta/CreativeTab";
 import { GptTab } from "@/components/meta/GptTab";
+import { FunnelTab } from "@/components/meta/FunnelTab";
 
 export default function Home() {
   const [osMode, setOsMode] = useState<OSMode>("meta");
@@ -69,7 +70,8 @@ export default function Home() {
           {activeMetaTab === "high_cpa" && <HighCpaTab />}
           {activeMetaTab === "high_roas" && <HighRoasTab />}
           {activeMetaTab === "spend_visuals" && <SpendVisuals />}
-          {activeMetaTab === "gpt" && <GptTab />}
+          {activeMetaTab === "funnel" && <FunnelTab />}
+      {activeMetaTab === "gpt" && <GptTab />}
       {activeMetaTab === "creative" && <CreativeTab />}
       {activeMetaTab === "creative_ageing" && <CreativeAgeingTab />}
       {activeMetaTab === "data_qc" && <DataQCTab />}

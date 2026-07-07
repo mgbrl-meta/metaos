@@ -25,6 +25,7 @@ import {
   Hourglass,
   Flame,
   IndianRupee,
+  Filter,
 } from "lucide-react";
 import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
 import { useMetaStore } from "@/store/metaStore";
@@ -33,6 +34,7 @@ export type OSMode = "meta" | "google";
 
 export type MetaTab =
   | "gpt"
+  | "funnel"
   | "creative"
   | "creative_ageing"
   | "data_qc"
@@ -122,6 +124,13 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "GPT",
     description: "Gross profit per transaction control",
     icon: IndianRupee,
+  },
+  {
+    id: "funnel",
+    label: "Funnel",
+    shortLabel: "Funnel",
+    description: "WoW and MoM funnel movement",
+    icon: Filter,
   },
   {
     id: "high_roas",
