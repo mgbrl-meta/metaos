@@ -498,7 +498,7 @@ function WeeklyGroupedTable({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[2600px] border-collapse text-left text-xs">
+          <table className="w-full min-w-[2500px] table-fixed border-collapse text-left text-[11px]">
             <thead className="monthly-table-head">
               <tr>
                 <th className="monthly-table-th">Week</th>
@@ -506,8 +506,8 @@ function WeeklyGroupedTable({
                 {SUMMARY_COLUMNS.map((column) => (
                   <>
                     <th key={`${column.key}-value`} className="monthly-table-th">{column.label}</th>
-                    <th key={`${column.key}-multiple`} className="monthly-table-th">{column.label} Multiple</th>
-                    <th key={`${column.key}-change`} className="monthly-table-th">{column.label} %</th>
+                    <th key={`${column.key}-multiple`} className="monthly-table-th">Multiple</th>
+                    <th key={`${column.key}-change`} className="monthly-table-th">%</th>
                   </>
                 ))}
               </tr>
@@ -552,8 +552,8 @@ function WeeklyGroupedTable({
                 {RATE_COLUMNS.map((column) => (
                   <>
                     <th key={`${column.key}-value`} className="monthly-table-th">{column.label}</th>
-                    <th key={`${column.key}-multiple`} className="monthly-table-th">{column.label} Multiple</th>
-                    <th key={`${column.key}-change`} className="monthly-table-th">{column.label} %</th>
+                    <th key={`${column.key}-multiple`} className="monthly-table-th">Multiple</th>
+                    <th key={`${column.key}-change`} className="monthly-table-th">%</th>
                   </>
                 ))}
               </tr>
@@ -680,18 +680,18 @@ export function FunnelTab() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[2600px] border-collapse text-left text-xs">
+          <table className="w-full min-w-[2500px] table-fixed border-collapse text-left text-[11px]">
             <thead className="monthly-table-head sticky top-0 z-10">
               <tr>
-                <th className="monthly-table-th">Month</th>
+                <th className="monthly-table-th sticky left-0 z-[2] w-[140px] bg-[#13233A]">Month</th>
                 {SUMMARY_COLUMNS.map((column) => (
                   <>
                     <th key={`${column.key}-value`} className="monthly-table-th">{column.label}</th>
-                    <th key={`${column.key}-multiple`} className="monthly-table-th">{column.label} Multiple</th>
-                    <th key={`${column.key}-change`} className="monthly-table-th">{column.label} %</th>
+                    <th key={`${column.key}-multiple`} className="monthly-table-th">Multiple</th>
+                    <th key={`${column.key}-change`} className="monthly-table-th">%</th>
                   </>
                 ))}
-                <th className="monthly-table-th">Open</th>
+                <th className="monthly-table-th w-[70px] text-center"> </th>
               </tr>
             </thead>
 
@@ -706,21 +706,12 @@ export function FunnelTab() {
                       onClick={() => toggleMonth(row.month)}
                       className={
                         isOpen
-                          ? "cursor-pointer border-b border-[#0A84FF]/30 bg-[#0A84FF]/10"
+                          ? "cursor-pointer border-b border-[#0A84FF]/30 bg-[#0A84FF]/5"
                           : "cursor-pointer border-b border-current/10 hover:bg-current/[0.035]"
                       }
                     >
-                      <td className="px-3 py-3 align-top">
+                      <td className="sticky left-0 z-[1] bg-[#101418] px-3 py-3 align-middle">
                         <p className="text-sm font-black">{row.label}</p>
-                        <p className="mt-0.5 text-[10px] opacity-55">
-                          {row.currentStart} → {row.currentEnd || "—"}
-                        </p>
-                        <p className="mt-0.5 text-[10px] opacity-45">
-                          Prev {row.previousStart || "—"} → {row.previousEnd || "—"}
-                        </p>
-                        <p className="mt-1 text-[10px] font-black uppercase tracking-[0.12em] opacity-45">
-                          Click to open weekly
-                        </p>
                       </td>
 
                       {SUMMARY_COLUMNS.map((column) => (
@@ -732,17 +723,17 @@ export function FunnelTab() {
                         />
                       ))}
 
-                      <td className="px-3 py-3 align-top">
+                      <td className="px-3 py-3 text-center align-middle">
                         <button
                           type="button"
+                          aria-label={isOpen ? `Close ${row.label} weekly breakdown` : `Open ${row.label} weekly breakdown`}
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleMonth(row.month);
                           }}
-                          className="inline-flex items-center gap-2 rounded-full border border-current/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em]"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-current/10 hover:bg-current/10"
                         >
-                          {isOpen ? "Close" : "Open"}
-                          <ChevronDown className={isOpen ? "h-3.5 w-3.5 rotate-180 transition" : "h-3.5 w-3.5 transition"} />
+                          <ChevronDown className={isOpen ? "h-4 w-4 rotate-180 transition" : "h-4 w-4 transition"} />
                         </button>
                       </td>
                     </tr>
