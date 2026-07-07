@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
-import { ChevronDown, Filter, Layers3, Table2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ChevronDown, Filter, Table2 } from "lucide-react";
 import { useMetaStore } from "@/store/metaStore";
 import type { MetaPerformanceRow } from "@/types/meta";
 
@@ -46,6 +46,9 @@ function toNumber(value: unknown) {
   return Number.isFinite(n) ? n : 0;
 }
 
+/**
+ * UTC-safe date logic.
+ */
 function toUtcDateKeyFromParts(year: number, month: number, day: number) {
   return new Date(Date.UTC(year, month - 1, day)).toISOString().slice(0, 10);
 }
@@ -404,7 +407,7 @@ const RATE_COLUMNS = [
   { key: "clickToPurchase", label: "Purchase / Clicks" },
 ];
 
-function MetricCard({
+function MetricTableCell({
   label,
   current,
   previous,
@@ -418,18 +421,20 @@ function MetricCard({
   const tone = changeTone(label, chg);
 
   return (
-    <div className="rounded-xl border border-current/10 bg-current/[0.025] px-3 py-2">
-      <p className="text-[9px] font-black uppercase tracking-[0.13em] opacity-50">{label}</p>
-      <p className="mt-1 text-sm font-black">{formatMetric(label, current)}</p>
+    <td className="px-3 py-3 align-top">
+      <p className="font-black">{formatMetric(label, current)}</p>
       <p className="mt-0.5 text-[10px] opacity-55">Prev {formatMetric(label, previous)}</p>
-      <p className={`mt-1 text-[10px] font-black ${toneClass(tone)}`}>
-        {formatMultiple(mult)} · {formatChange(chg)}
+      <p className={`mt-0.5 text-[10px] font-black ${toneClass(tone)}`}>
+        {formatMultiple(mult)}
       </p>
-    </div>
+      <p className={`mt-0.5 text-[10px] font-black ${toneClass(tone)}`}>
+        {formatChange(chg)}
+      </p>
+    </td>
   );
 }
 
-function WeeklyTable({
+function WeeklyGroupedTable({
   weekRows,
 }: {
   weekRows: Array<{
@@ -442,99 +447,88 @@ function WeeklyTable({
 }) {
   return (
     <div className="grid gap-4 p-4">
-      <div className="overflow-x-auto rounded-2xl border border-current/10">
-        <table className="w-full min-w-[1300px] border-collapse text-left text-xs">
-          <thead className="monthly-table-head">
-            <tr>
-              {[
-                "Week",
-                "Date Range",
-                "Purchases",
-                "Purch. Multiple",
-                "Purch. % Change",
-                "CPA",
-                "CPA % Change",
-                "ROAS",
-                "ROAS % Change",
-                "GPT",
-                "GPT % Change",
-                "Clicks",
-                "LPV",
-                "ATC",
-                "Checkout",
-                "Payment",
-              ].map((heading) => (
-                <th key={heading} className="monthly-table-th">{heading}</th>
-              ))}
-            </tr>
-          </thead>
+      <div className="rounded-2xl border border-current/10 bg-current/[0.02]">
+        <div className="border-b border-current/10 px-4 py-3">
+          <h3 className="text-sm font-black">Weekly Volume + Economics</h3>
+          <p className="mt-1 text-xs opacity-60">Each week compares against the immediately previous 7-day period.</p>
+        </div>
 
-          <tbody>
-            {weekRows.map((row) => {
-              const purchaseChange = changePct(row.current.purchases, row.previous.purchases);
-              const purchaseMultiple = multiple(row.current.purchases, row.previous.purchases);
-              const cpaChange = changePct(row.current.cpa, row.previous.cpa);
-              const roasChange = changePct(row.current.roas, row.previous.roas);
-              const gptChange = changePct(row.current.gpt, row.previous.gpt);
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1500px] border-collapse text-left text-xs">
+            <thead className="monthly-table-head">
+              <tr>
+                <th className="monthly-table-th">Week</th>
+                <th className="monthly-table-th">Period</th>
+                {SUMMARY_COLUMNS.map((column) => (
+                  <th key={column.key} className="monthly-table-th">{column.label}</th>
+                ))}
+              </tr>
+            </thead>
 
-              return (
+            <tbody>
+              {weekRows.map((row) => (
                 <tr key={`${row.start}-${row.end}`} className="border-b border-current/10 hover:bg-current/[0.035]">
                   <td className="px-3 py-3 font-black">{row.label}</td>
-                  <td className="px-3 py-3 opacity-70">{row.start} → {row.end}</td>
-                  <td className="px-3 py-3 font-black">{num(row.current.purchases, 0)}</td>
-                  <td className={`px-3 py-3 font-black ${toneClass(changeTone("Purchases", purchaseChange))}`}>{formatMultiple(purchaseMultiple)}</td>
-                  <td className={`px-3 py-3 font-black ${toneClass(changeTone("Purchases", purchaseChange))}`}>{formatChange(purchaseChange)}</td>
-                  <td className="px-3 py-3">{money(row.current.cpa)}</td>
-                  <td className={`px-3 py-3 font-black ${toneClass(changeTone("CPA", cpaChange))}`}>{formatChange(cpaChange)}</td>
-                  <td className="px-3 py-3">{num(row.current.roas)}x</td>
-                  <td className={`px-3 py-3 font-black ${toneClass(changeTone("ROAS", roasChange))}`}>{formatChange(roasChange)}</td>
-                  <td className="px-3 py-3">{money(row.current.gpt)}</td>
-                  <td className={`px-3 py-3 font-black ${toneClass(changeTone("GPT", gptChange))}`}>{formatChange(gptChange)}</td>
-                  <td className="px-3 py-3">{num(row.current.clicks, 0)}</td>
-                  <td className="px-3 py-3">{num(row.current.lpv, 0)}</td>
-                  <td className="px-3 py-3">{num(row.current.atc, 0)}</td>
-                  <td className="px-3 py-3">{num(row.current.checkout, 0)}</td>
-                  <td className="px-3 py-3">{num(row.current.payment, 0)}</td>
+                  <td className="px-3 py-3">
+                    <p className="font-black">{row.start} → {row.end}</p>
+                    <p className="mt-0.5 text-[10px] opacity-55">vs previous 7D</p>
+                  </td>
+
+                  {SUMMARY_COLUMNS.map((column) => (
+                    <MetricTableCell
+                      key={column.key}
+                      label={column.label}
+                      current={getMetricValue(row.current, column.key)}
+                      previous={getMetricValue(row.previous, column.key)}
+                    />
+                  ))}
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-current/10">
-        <table className="w-full min-w-[980px] border-collapse text-left text-xs">
-          <thead className="monthly-table-head">
-            <tr>
-              {["Week", ...RATE_COLUMNS.map((column) => column.label)].map((heading) => (
-                <th key={heading} className="monthly-table-th">{heading}</th>
-              ))}
-            </tr>
-          </thead>
+      <div className="rounded-2xl border border-current/10 bg-current/[0.02]">
+        <div className="border-b border-current/10 px-4 py-3">
+          <h3 className="text-sm font-black">Weekly Funnel Conversion Rates</h3>
+          <p className="mt-1 text-xs opacity-60">Step-wise conversion rates for each week.</p>
+        </div>
 
-          <tbody>
-            {weekRows.map((row) => (
-              <tr key={`rate-${row.start}-${row.end}`} className="border-b border-current/10 hover:bg-current/[0.035]">
-                <td className="px-3 py-3 font-black">{row.label}</td>
-                {RATE_COLUMNS.map((column) => {
-                  const current = getMetricValue(row.current, column.key);
-                  const previous = getMetricValue(row.previous, column.key);
-                  const chg = changePct(current, previous);
-
-                  return (
-                    <td key={column.key} className="px-3 py-3">
-                      <p className="font-black">{pct(current, 2)}</p>
-                      <p className="mt-0.5 text-[10px] opacity-55">Prev {pct(previous, 2)}</p>
-                      <p className={`mt-0.5 text-[10px] font-black ${toneClass(changeTone(column.label, chg))}`}>
-                        {formatChange(chg)}
-                      </p>
-                    </td>
-                  );
-                })}
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1100px] border-collapse text-left text-xs">
+            <thead className="monthly-table-head">
+              <tr>
+                <th className="monthly-table-th">Week</th>
+                <th className="monthly-table-th">Period</th>
+                {RATE_COLUMNS.map((column) => (
+                  <th key={column.key} className="monthly-table-th">{column.label}</th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {weekRows.map((row) => (
+                <tr key={`rates-${row.start}-${row.end}`} className="border-b border-current/10 hover:bg-current/[0.035]">
+                  <td className="px-3 py-3 font-black">{row.label}</td>
+                  <td className="px-3 py-3">
+                    <p className="font-black">{row.start} → {row.end}</p>
+                    <p className="mt-0.5 text-[10px] opacity-55">vs previous 7D</p>
+                  </td>
+
+                  {RATE_COLUMNS.map((column) => (
+                    <MetricTableCell
+                      key={column.key}
+                      label={column.label}
+                      current={getMetricValue(row.current, column.key)}
+                      previous={getMetricValue(row.previous, column.key)}
+                    />
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
@@ -542,6 +536,7 @@ function WeeklyTable({
 
 export function FunnelTab() {
   const rows = useMetaStore((state) => state.performanceRows as MetaPerformanceRow[]);
+  const [openMonth, setOpenMonth] = useState<string | null>(null);
 
   const data = useMemo(() => {
     const validRows = ((rows || []) as unknown as Row[]).filter((row) => getDate(row));
@@ -589,9 +584,12 @@ export function FunnelTab() {
     return {
       monthlyRows,
       totalMonths: monthlyRows.length,
-      latestMonth: monthlyRows[0],
     };
   }, [rows]);
+
+  function toggleMonth(month: string) {
+    setOpenMonth((current) => (current === month ? null : month));
+  }
 
   return (
     <div className="funnel-tab-root grid gap-4">
@@ -610,79 +608,111 @@ export function FunnelTab() {
 
             <h1 className="mt-2 text-2xl font-black">Funnel Movement Master Table</h1>
             <p className="mt-1 max-w-5xl text-sm opacity-60">
-              One-view month-on-month funnel summary. Each card shows current value, previous month value, multiple and percentage change. Open a month to see week-wise breakdown.
+              Month-on-month funnel table with clear headers. Click a month row to open grouped weekly data below it.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="rounded-xl border border-current/10 bg-current/[0.025] p-4">
-        <div className="flex items-start gap-3">
-          <Table2 className="mt-1 h-4 w-4 text-[#0A84FF]" />
-          <div>
-            <h2 className="text-lg font-black">Monthly Summary Cards</h2>
-            <p className="mt-1 text-sm opacity-60">
-              Headings are fixed inside every card: Period, Purchases, CPA, ROAS, GPT, Clicks, LPV, ATC, Checkout and Payment.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="grid gap-3">
-        {data.monthlyRows.map((row) => (
-          <details key={row.month} className="group overflow-hidden rounded-2xl border border-current/10 bg-current/[0.025]">
-            <summary className="cursor-pointer list-none p-4 hover:bg-current/[0.035]">
-              <div className="grid gap-3">
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                  <div className="min-w-[220px]">
-                    <p className="text-lg font-black">{row.label}</p>
-                    <p className="mt-1 text-xs opacity-65">Current: {row.currentStart} → {row.currentEnd || "—"}</p>
-                    <p className="mt-0.5 text-xs opacity-45">Previous: {row.previousStart || "—"} → {row.previousEnd || "—"}</p>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-xs opacity-60">
-                    <span>Click to open weekly breakdown</span>
-                    <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
-                  </div>
-                </div>
-
-                <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-5">
-                  {SUMMARY_COLUMNS.map((column) => (
-                    <MetricCard
-                      key={column.key}
-                      label={column.label}
-                      current={getMetricValue(row.current, column.key)}
-                      previous={getMetricValue(row.previous, column.key)}
-                    />
-                  ))}
-                </div>
-              </div>
-            </summary>
-
-            <div className="border-t border-current/10 bg-current/[0.018]">
-              <div className="px-4 pt-4">
-                <div className="flex items-start gap-3">
-                  <Layers3 className="mt-1 h-4 w-4 text-[#0A84FF]" />
-                  <div>
-                    <h3 className="text-sm font-black">Weekly Breakdown inside {row.label}</h3>
-                    <p className="mt-1 text-xs opacity-60">
-                      Each week compares against the immediately previous 7-day period. The first table is volume/economics; the second table is funnel conversion rate.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <WeeklyTable weekRows={row.weekRows} />
+      <section className="overflow-hidden rounded-xl border border-current/10 bg-current/[0.025]">
+        <div className="border-b border-current/10 px-4 py-3">
+          <div className="flex items-start gap-3">
+            <Table2 className="mt-1 h-4 w-4 text-[#0A84FF]" />
+            <div>
+              <h2 className="text-lg font-black">Month on Month Funnel Table</h2>
+              <p className="mt-1 text-sm opacity-60">
+                Every metric cell shows current value, previous month value, multiple and % change.
+              </p>
             </div>
-          </details>
-        ))}
-
-        {!data.monthlyRows.length ? (
-          <div className="rounded-xl border border-current/10 bg-current/[0.025] p-5">
-            <p className="font-black">No funnel data available.</p>
-            <p className="mt-1 text-sm opacity-60">Check if the Meta sheet rows include date and funnel columns.</p>
           </div>
-        ) : null}
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1680px] border-collapse text-left text-xs">
+            <thead className="monthly-table-head sticky top-0 z-10">
+              <tr>
+                <th className="monthly-table-th">Month</th>
+                <th className="monthly-table-th">Period</th>
+                {SUMMARY_COLUMNS.map((column) => (
+                  <th key={column.key} className="monthly-table-th">{column.label}</th>
+                ))}
+                <th className="monthly-table-th">Open</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {data.monthlyRows.map((row) => {
+                const isOpen = openMonth === row.month;
+
+                return (
+                  <>
+                    <tr
+                      key={row.month}
+                      onClick={() => toggleMonth(row.month)}
+                      className={
+                        isOpen
+                          ? "cursor-pointer border-b border-[#0A84FF]/30 bg-[#0A84FF]/10"
+                          : "cursor-pointer border-b border-current/10 hover:bg-current/[0.035]"
+                      }
+                    >
+                      <td className="px-3 py-3 align-top">
+                        <p className="text-sm font-black">{row.label}</p>
+                        <p className="mt-0.5 text-[10px] opacity-55">Click to open weekly</p>
+                      </td>
+
+                      <td className="px-3 py-3 align-top">
+                        <p className="font-black">{row.currentStart} → {row.currentEnd || "—"}</p>
+                        <p className="mt-0.5 text-[10px] opacity-55">
+                          Prev {row.previousStart || "—"} → {row.previousEnd || "—"}
+                        </p>
+                      </td>
+
+                      {SUMMARY_COLUMNS.map((column) => (
+                        <MetricTableCell
+                          key={column.key}
+                          label={column.label}
+                          current={getMetricValue(row.current, column.key)}
+                          previous={getMetricValue(row.previous, column.key)}
+                        />
+                      ))}
+
+                      <td className="px-3 py-3 align-top">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleMonth(row.month);
+                          }}
+                          className="inline-flex items-center gap-2 rounded-full border border-current/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em]"
+                        >
+                          {isOpen ? "Close" : "Open"}
+                          <ChevronDown className={isOpen ? "h-3.5 w-3.5 rotate-180 transition" : "h-3.5 w-3.5 transition"} />
+                        </button>
+                      </td>
+                    </tr>
+
+                    {isOpen ? (
+                      <tr key={`${row.month}-weekly`} className="border-b border-current/10">
+                        <td colSpan={12} className="p-0">
+                          <WeeklyGroupedTable weekRows={row.weekRows} />
+                        </td>
+                      </tr>
+                    ) : null}
+                  </>
+                );
+              })}
+
+              {!data.monthlyRows.length ? (
+                <tr>
+                  <td colSpan={12} className="p-5">
+                    <p className="font-black">No funnel data available.</p>
+                    <p className="mt-1 text-sm opacity-60">Check if the Meta sheet rows include date and funnel columns.</p>
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
       </section>
     </div>
   );
