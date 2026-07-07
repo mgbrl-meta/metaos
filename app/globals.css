@@ -5666,7 +5666,7 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
 
 .metaos-app .rounded-xl,
 .metaos-app .rounded-2xl,
-.metaos-app .rounded-\$begin:math:display$1\\\.5rem\$end:math:display$ {
+.metaos-app [class*="rounded-[1.5rem]"] {
   transition:
     background-color 180ms ease,
     border-color 180ms ease,
@@ -5676,7 +5676,7 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
 
 .metaos-app .rounded-xl:hover,
 .metaos-app .rounded-2xl:hover,
-.metaos-app .rounded-\$begin:math:display$1\\\.5rem\$end:math:display$:hover {
+.metaos-app [class*="rounded-[1.5rem]"]:hover {
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
 }
 
