@@ -47,9 +47,9 @@ function cleanHeader(value: string) {
     .replace(/_/g, " ");
 }
 
-function latestDateFromRows(rows: Array<{ date?: string | null }>) {
+function latestDateFromRows(rows: Array<Record<string, any>>) {
   const dates = rows
-    .map((row) => String(row.date || "").slice(0, 10))
+    .map((row) => String(row?.date || "").slice(0, 10))
     .filter(Boolean)
     .sort();
 
