@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
   BarChart3,
+  CalendarDays,
   Filter,
   Layers3,
 } from "lucide-react";
@@ -13,7 +14,6 @@ import { onlyLiveRows } from "@/lib/liveFilter";
 import type { MetaPerformanceRow } from "@/types/meta";
 
 type Row = Record<string, any>;
-type PeriodMode = "wow" | "mom";
 
 const money = (n: number) => `₹${Math.round(Number(n || 0)).toLocaleString("en-IN")}`;
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
@@ -36,7 +36,6 @@ function toNumber(value: unknown) {
 /**
  * UTC-safe date logic.
  * Do not replace with local-time date math.
- * L7D ending 2026-06-14 must start 2026-06-08, not 2026-06-07.
  */
 function toUtcDateKeyFromParts(year: number, month: number, day: number) {
   return new Date(Date.UTC(year, month - 1, day)).toISOString().slice(0, 10);
@@ -115,6 +114,34 @@ function getDate(row: Row) {
       row["Reporting Starts"] ??
       ""
   );
+}
+
+function getMonthKey(dateKey: string) {
+  const key = normalizeDateKey(dateKey);
+  return key ? key.slice(0, 7) : "";
+}
+
+function getPreviousMonthKey(monthKey: string) {
+  if (!/^\d{4}-\d{2}$/.test(monthKey)) return "";
+
+  const [year, month] = monthKey.split("-").map(Number);
+  const d = new Date(Date.UTC(year, month - 1, 1));
+  d.setUTCMonth(d.getUTCMonth() - 1);
+
+  return d.toISOString().slice(0, 7);
+}
+
+function monthLabel(monthKey: string) {
+  if (!/^\d{4}-\d{2}$/.test(monthKey)) return "Unknown";
+
+  const [year, month] = monthKey.split("-").map(Number);
+  const d = new Date(Date.UTC(year, month - 1, 1));
+
+  return d.toLocaleDateString("en-IN", {
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 }
 
 function getSpend(row: Row) {
@@ -256,12 +283,19 @@ function metricTone(metric: string, change: number) {
 
   const lower = metric.toLowerCase();
 
-  // CPA falling is good. Everything else rising is generally good.
   if (lower === "cpa") return change <= 0 ? "green" : "red";
   if (lower === "gpt") return change >= 0 ? "green" : "red";
   if (lower === "roas") return change >= 0 ? "green" : "red";
 
   return change >= 0 ? "green" : "red";
+}
+
+function toneClass(tone: "red" | "green" | "blue" | "orange" | "neutral") {
+  if (tone === "red") return "text-red-600 dark:text-red-300";
+  if (tone === "green") return "text-emerald-600 dark:text-emerald-300";
+  if (tone === "blue") return "text-[#0A84FF]";
+  if (tone === "orange") return "text-orange-600 dark:text-orange-300";
+  return "";
 }
 
 function Kpi({
@@ -275,21 +309,10 @@ function Kpi({
   sub?: string;
   tone?: "red" | "green" | "blue" | "orange" | "neutral";
 }) {
-  const toneClass =
-    tone === "red"
-      ? "text-red-600 dark:text-red-300"
-      : tone === "green"
-        ? "text-emerald-600 dark:text-emerald-300"
-        : tone === "blue"
-          ? "text-[#0A84FF]"
-          : tone === "orange"
-            ? "text-orange-600 dark:text-orange-300"
-            : "";
-
   return (
     <div className="rounded-2xl border border-current/10 bg-current/[0.025] p-4">
       <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-55">{label}</p>
-      <p className={`mt-2 text-2xl font-black tracking-[-0.04em] ${toneClass}`}>{value}</p>
+      <p className={`mt-2 text-2xl font-black tracking-[-0.04em] ${toneClass(tone)}`}>{value}</p>
       {sub ? <p className="mt-1 text-xs opacity-60">{sub}</p> : null}
     </div>
   );
@@ -310,20 +333,13 @@ function MetricRow({
   const chg = changePct(current, previous);
   const tone = metricTone(label, chg);
 
-  const toneClass =
-    tone === "green"
-      ? "text-emerald-600 dark:text-emerald-300"
-      : tone === "red"
-        ? "text-red-600 dark:text-red-300"
-        : "text-[#0A84FF]";
-
   return (
     <tr className="border-b border-current/10 hover:bg-current/[0.035]">
       <td className="px-3 py-3 font-black">{label}</td>
       <td className="px-3 py-3">{format(current)}</td>
       <td className="px-3 py-3 opacity-70">{format(previous)}</td>
-      <td className={`px-3 py-3 font-black ${toneClass}`}>{formatMultiple(mult)}</td>
-      <td className={`px-3 py-3 font-black ${toneClass}`}>{formatChange(chg)}</td>
+      <td className={`px-3 py-3 font-black ${toneClass(tone)}`}>{formatMultiple(mult)}</td>
+      <td className={`px-3 py-3 font-black ${toneClass(tone)}`}>{formatChange(chg)}</td>
     </tr>
   );
 }
@@ -339,66 +355,131 @@ function FunnelStepRow({
 }) {
   const mult = multiple(current, previous);
   const chg = changePct(current, previous);
-  const toneClass =
-    !Number.isFinite(chg) || chg >= 0
-      ? "text-emerald-600 dark:text-emerald-300"
-      : "text-red-600 dark:text-red-300";
+  const tone = !Number.isFinite(chg) || chg >= 0 ? "green" : "red";
 
   return (
     <tr className="border-b border-current/10 hover:bg-current/[0.035]">
       <td className="px-3 py-3 font-black">{label}</td>
       <td className="px-3 py-3">{pct(current, 2)}</td>
       <td className="px-3 py-3 opacity-70">{pct(previous, 2)}</td>
-      <td className={`px-3 py-3 font-black ${toneClass}`}>{formatMultiple(mult)}</td>
-      <td className={`px-3 py-3 font-black ${toneClass}`}>{formatChange(chg)}</td>
+      <td className={`px-3 py-3 font-black ${toneClass(tone)}`}>{formatMultiple(mult)}</td>
+      <td className={`px-3 py-3 font-black ${toneClass(tone)}`}>{formatChange(chg)}</td>
     </tr>
   );
 }
 
+function getWeekBucketsForMonth(monthKey: string) {
+  if (!/^\d{4}-\d{2}$/.test(monthKey)) return [];
+
+  const [year, month] = monthKey.split("-").map(Number);
+  const monthStart = new Date(Date.UTC(year, month - 1, 1));
+  const nextMonth = new Date(Date.UTC(year, month, 1));
+  const monthEnd = new Date(nextMonth);
+  monthEnd.setUTCDate(monthEnd.getUTCDate() - 1);
+
+  const buckets: Array<{ label: string; start: string; end: string; prevStart: string; prevEnd: string }> = [];
+  let cursor = new Date(monthStart);
+  let week = 1;
+
+  while (cursor <= monthEnd) {
+    const start = cursor.toISOString().slice(0, 10);
+
+    const endDate = new Date(cursor);
+    endDate.setUTCDate(endDate.getUTCDate() + 6);
+    if (endDate > monthEnd) endDate.setTime(monthEnd.getTime());
+
+    const end = endDate.toISOString().slice(0, 10);
+    const prevStart = addDaysToDateKeyUtc(start, -7);
+    const prevEnd = addDaysToDateKeyUtc(end, -7);
+
+    buckets.push({
+      label: `W${week}`,
+      start,
+      end,
+      prevStart,
+      prevEnd,
+    });
+
+    cursor = new Date(endDate);
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+    week += 1;
+  }
+
+  return buckets;
+}
+
 export function FunnelTab() {
   const rows = useMetaStore((state) => state.performanceRows as MetaPerformanceRow[]);
-  const [mode, setMode] = useState<PeriodMode>("wow");
+  const [selectedMonth, setSelectedMonth] = useState("");
 
-  const data = useMemo(() => {
+  const base = useMemo(() => {
     const liveRows = onlyLiveRows(rows || []) as unknown as Row[];
     const validRows = liveRows.filter((row) => getDate(row));
     const dates = Array.from(new Set(validRows.map(getDate).filter(Boolean))).sort();
-    const latest = dates[dates.length - 1] || "";
+    const months = Array.from(new Set(validRows.map((row) => getMonthKey(getDate(row))).filter(Boolean))).sort();
 
-    const days = mode === "wow" ? 7 : 30;
+    return {
+      rows: validRows,
+      dates,
+      months,
+      latestDate: dates[dates.length - 1] || "",
+      latestMonth: months[months.length - 1] || "",
+    };
+  }, [rows]);
 
-    // Inclusive UTC calendar windows.
-    // WoW: latest 7D vs previous 7D.
-    // MoM: latest 30D vs previous 30D.
-    const currentStart = addDaysToDateKeyUtc(latest, 1 - days);
-    const currentEnd = latest;
-    const previousStart = addDaysToDateKeyUtc(latest, 1 - days * 2);
-    const previousEnd = addDaysToDateKeyUtc(latest, -days);
+  useEffect(() => {
+    if (!selectedMonth && base.latestMonth) setSelectedMonth(base.latestMonth);
+  }, [base.latestMonth, selectedMonth]);
 
-    const currentRows = validRows.filter((row) => isDateInWindow(getDate(row), currentStart, currentEnd));
-    const previousRows = validRows.filter((row) => isDateInWindow(getDate(row), previousStart, previousEnd));
+  const activeMonth = selectedMonth || base.latestMonth;
+
+  const data = useMemo(() => {
+    const previousMonth = getPreviousMonthKey(activeMonth);
+
+    const currentRows = base.rows.filter((row) => getMonthKey(getDate(row)) === activeMonth);
+    const previousRows = base.rows.filter((row) => getMonthKey(getDate(row)) === previousMonth);
+
+    const currentDates = Array.from(new Set(currentRows.map(getDate).filter(Boolean))).sort();
+    const previousDates = Array.from(new Set(previousRows.map(getDate).filter(Boolean))).sort();
 
     const current = summarize(currentRows);
     const previous = summarize(previousRows);
 
+    const weeklyRows = getWeekBucketsForMonth(activeMonth).map((bucket) => {
+      const weekRows = base.rows.filter((row) => isDateInWindow(getDate(row), bucket.start, bucket.end));
+      const prevWeekRows = base.rows.filter((row) => isDateInWindow(getDate(row), bucket.prevStart, bucket.prevEnd));
+
+      const week = summarize(weekRows);
+      const prevWeek = summarize(prevWeekRows);
+
+      return {
+        ...bucket,
+        week,
+        prevWeek,
+        purchaseChange: changePct(week.purchases, prevWeek.purchases),
+        cpaChange: changePct(week.cpa, prevWeek.cpa),
+        roasChange: changePct(week.roas, prevWeek.roas),
+        gptChange: changePct(week.gpt, prevWeek.gpt),
+      };
+    });
+
     return {
-      latest,
-      days,
-      currentStart,
-      currentEnd,
-      previousStart,
-      previousEnd,
+      activeMonth,
+      previousMonth,
+      currentStart: currentDates[0] || `${activeMonth}-01`,
+      currentEnd: currentDates[currentDates.length - 1] || "",
+      previousStart: previousDates[0] || "",
+      previousEnd: previousDates[previousDates.length - 1] || "",
       current,
       previous,
+      weeklyRows,
     };
-  }, [rows, mode]);
+  }, [base.rows, activeMonth]);
 
-  const label = mode === "wow" ? "WoW" : "MoM";
-
+  const purchaseChange = changePct(data.current.purchases, data.previous.purchases);
   const cpaChange = changePct(data.current.cpa, data.previous.cpa);
   const roasChange = changePct(data.current.roas, data.previous.roas);
   const gptChange = changePct(data.current.gpt, data.previous.gpt);
-  const purchaseChange = changePct(data.current.purchases, data.previous.purchases);
 
   return (
     <div className="funnel-tab-root grid gap-4">
@@ -420,59 +501,54 @@ export function FunnelTab() {
 
             <h1 className="mt-2 text-2xl font-black">Funnel Movement Control</h1>
             <p className="mt-1 max-w-4xl text-sm opacity-60">
-              Compares traffic, landing, cart, checkout, payment, purchase, CPA, ROAS and GPT across week-on-week or month-on-month windows.
+              Select a month to compare it against the previous month. The selected month is also distributed week-by-week below.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setMode("wow")}
-              className={
-                mode === "wow"
-                  ? "rounded-full bg-[#0A84FF] px-4 py-2 text-xs font-black text-white"
-                  : "rounded-full border border-current/10 px-4 py-2 text-xs font-black opacity-70"
-              }
-            >
-              Week on Week
-            </button>
+            <div className="flex items-center gap-2 rounded-full border border-current/10 bg-current/[0.035] px-3 py-1.5">
+              <CalendarDays className="h-4 w-4 text-[#0A84FF]" />
+              <select
+                value={activeMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="bg-transparent text-xs font-black outline-none"
+              >
+                {base.months.slice().reverse().map((month) => (
+                  <option key={month} value={month} className="bg-[#111827] text-white">
+                    {monthLabel(month)}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            <button
-              type="button"
-              onClick={() => setMode("mom")}
-              className={
-                mode === "mom"
-                  ? "rounded-full bg-[#0A84FF] px-4 py-2 text-xs font-black text-white"
-                  : "rounded-full border border-current/10 px-4 py-2 text-xs font-black opacity-70"
-              }
-            >
-              Month on Month
-            </button>
+            <span className="rounded-full bg-[#0A84FF] px-4 py-2 text-xs font-black text-white">
+              MoM View
+            </span>
           </div>
         </div>
       </section>
 
       <section className="grid gap-3 md:grid-cols-4">
         <Kpi
-          label={`${label} Purchases`}
+          label="MoM Purchases"
           value={formatChange(purchaseChange)}
           sub={`${num(data.current.purchases, 0)} vs ${num(data.previous.purchases, 0)}`}
           tone={!Number.isFinite(purchaseChange) || purchaseChange >= 0 ? "green" : "red"}
         />
         <Kpi
-          label={`${label} CPA`}
+          label="MoM CPA"
           value={formatChange(cpaChange)}
           sub={`${money(data.current.cpa)} vs ${money(data.previous.cpa)}`}
           tone={cpaChange <= 0 ? "green" : "red"}
         />
         <Kpi
-          label={`${label} ROAS`}
+          label="MoM ROAS"
           value={formatChange(roasChange)}
           sub={`${num(data.current.roas)}x vs ${num(data.previous.roas)}x`}
           tone={!Number.isFinite(roasChange) || roasChange >= 0 ? "green" : "red"}
         />
         <Kpi
-          label={`${label} GPT`}
+          label="MoM GPT"
           value={formatChange(gptChange)}
           sub={`${money(data.current.gpt)} vs ${money(data.previous.gpt)}`}
           tone={!Number.isFinite(gptChange) || gptChange >= 0 ? "green" : "red"}
@@ -485,8 +561,8 @@ export function FunnelTab() {
             <div className="flex items-start gap-3">
               <BarChart3 className="mt-1 h-4 w-4 text-[#0A84FF]" />
               <div>
-                <h2 className="text-lg font-black">Funnel Volume Movement</h2>
-                <p className="mt-1 text-sm opacity-60">Multiple and percentage movement for each funnel volume metric.</p>
+                <h2 className="text-lg font-black">Monthly Funnel Volume Movement</h2>
+                <p className="mt-1 text-sm opacity-60">Selected month vs previous month.</p>
               </div>
             </div>
           </div>
@@ -495,7 +571,7 @@ export function FunnelTab() {
             <table className="w-full min-w-[760px] border-collapse text-left text-xs">
               <thead className="monthly-table-head">
                 <tr>
-                  {["Metric", "Current", "Previous", "Multiple", "% Change"].map((h) => (
+                  {["Metric", "Current Month", "Previous Month", "Multiple", "% Change"].map((h) => (
                     <th key={h} className="monthly-table-th">{h}</th>
                   ))}
                 </tr>
@@ -521,8 +597,8 @@ export function FunnelTab() {
             <div className="flex items-start gap-3">
               <Layers3 className="mt-1 h-4 w-4 text-[#0A84FF]" />
               <div>
-                <h2 className="text-lg font-black">Funnel Conversion Rate Movement</h2>
-                <p className="mt-1 text-sm opacity-60">Step-wise conversion rates and whether each stage is improving or declining.</p>
+                <h2 className="text-lg font-black">Monthly Funnel Conversion Movement</h2>
+                <p className="mt-1 text-sm opacity-60">Stage-wise conversion movement vs previous month.</p>
               </div>
             </div>
           </div>
@@ -531,7 +607,7 @@ export function FunnelTab() {
             <table className="w-full min-w-[760px] border-collapse text-left text-xs">
               <thead className="monthly-table-head">
                 <tr>
-                  {["Step", "Current", "Previous", "Multiple", "% Change"].map((h) => (
+                  {["Step", "Current Month", "Previous Month", "Multiple", "% Change"].map((h) => (
                     <th key={h} className="monthly-table-th">{h}</th>
                   ))}
                 </tr>
@@ -550,12 +626,85 @@ export function FunnelTab() {
         </div>
       </section>
 
+      <section className="overflow-hidden rounded-xl border border-current/10 bg-current/[0.025]">
+        <div className="border-b border-current/10 px-4 py-3">
+          <h2 className="text-lg font-black">Weekly Breakdown inside {monthLabel(activeMonth)}</h2>
+          <p className="mt-1 text-sm opacity-60">
+            Each week in the selected month is compared against the immediately previous 7-day period.
+          </p>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1160px] border-collapse text-left text-xs">
+            <thead className="monthly-table-head">
+              <tr>
+                {[
+                  "Week",
+                  "Date Range",
+                  "Purch.",
+                  "Purch. % Chg",
+                  "CPA",
+                  "CPA % Chg",
+                  "ROAS",
+                  "ROAS % Chg",
+                  "GPT",
+                  "GPT % Chg",
+                  "Clicks",
+                  "LPV",
+                  "ATC",
+                  "Checkout",
+                  "Payment",
+                ].map((h) => (
+                  <th key={h} className="monthly-table-th">{h}</th>
+                ))}
+              </tr>
+            </thead>
+
+            <tbody>
+              {data.weeklyRows.map((row) => (
+                <tr key={`${row.start}-${row.end}`} className="border-b border-current/10 hover:bg-current/[0.035]">
+                  <td className="px-3 py-3 font-black">{row.label}</td>
+                  <td className="px-3 py-3 opacity-70">{row.start} → {row.end}</td>
+                  <td className="px-3 py-3 font-black">{num(row.week.purchases, 0)}</td>
+                  <td className={`px-3 py-3 font-black ${toneClass(!Number.isFinite(row.purchaseChange) || row.purchaseChange >= 0 ? "green" : "red")}`}>
+                    {formatChange(row.purchaseChange)}
+                  </td>
+                  <td className="px-3 py-3">{money(row.week.cpa)}</td>
+                  <td className={`px-3 py-3 font-black ${toneClass(row.cpaChange <= 0 ? "green" : "red")}`}>
+                    {formatChange(row.cpaChange)}
+                  </td>
+                  <td className="px-3 py-3">{num(row.week.roas)}x</td>
+                  <td className={`px-3 py-3 font-black ${toneClass(!Number.isFinite(row.roasChange) || row.roasChange >= 0 ? "green" : "red")}`}>
+                    {formatChange(row.roasChange)}
+                  </td>
+                  <td className="px-3 py-3">{money(row.week.gpt)}</td>
+                  <td className={`px-3 py-3 font-black ${toneClass(!Number.isFinite(row.gptChange) || row.gptChange >= 0 ? "green" : "red")}`}>
+                    {formatChange(row.gptChange)}
+                  </td>
+                  <td className="px-3 py-3">{num(row.week.clicks, 0)}</td>
+                  <td className="px-3 py-3">{num(row.week.lpv, 0)}</td>
+                  <td className="px-3 py-3">{num(row.week.atc, 0)}</td>
+                  <td className="px-3 py-3">{num(row.week.checkout, 0)}</td>
+                  <td className="px-3 py-3">{num(row.week.payment, 0)}</td>
+                </tr>
+              ))}
+
+              {!data.weeklyRows.length ? (
+                <tr>
+                  <td colSpan={15} className="p-5">No weekly data available for selected month.</td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section className="rounded-xl border border-current/10 bg-current/[0.025] p-4">
         <div className="flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <h2 className="text-lg font-black">Operator Read</h2>
             <p className="mt-1 text-sm opacity-60">
-              Use the volume table to identify where scale increased or dropped. Use the conversion-rate table to identify where funnel efficiency improved or leaked.
+              Use the month dropdown to compare every available month against the previous month. Then use the weekly breakdown to identify which week created the movement.
             </p>
           </div>
 
