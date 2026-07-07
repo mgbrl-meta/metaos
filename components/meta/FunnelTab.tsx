@@ -493,36 +493,47 @@ function WeeklyGroupedTable({
   const weeklyColumns = SUMMARY_COLUMNS;
 
   return (
-    <div className="border-t border-current/10 bg-black/10 px-5 py-4">
-      <div className="mb-4 flex flex-col gap-1">
-        <h3 className="text-base font-black">Weekly Funnel Breakdown · {monthLabel}</h3>
-        <p className="text-sm opacity-60">
-          Each metric card shows current value, multiple vs previous 7-day period, and percentage change.
-        </p>
+    <div className="border-t border-current/10 bg-current/[0.012] px-3 py-3">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div>
+          <h3 className="text-sm font-black">Weekly Breakdown · {monthLabel}</h3>
+          <p className="mt-0.5 text-xs opacity-55">
+            Same funnel order as monthly table. Each cell shows value, multiple and % change.
+          </p>
+        </div>
       </div>
 
-      <div className="grid gap-3">
-        {weeks.map((week) => (
-          <div
-            key={week.key || week.label || week.periodLabel}
-            className="rounded-2xl border border-current/10 bg-current/[0.025] p-3"
-          >
-            <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm font-black">{week.label || week.week || "Week"}</p>
-                <p className="text-xs opacity-55">
-                  {week.periodLabel || week.currentPeriod || week.period || "Current period"}
+      <table className="w-full table-fixed border-collapse text-left text-[11px]">
+        <thead className="monthly-table-head">
+          <tr>
+            <th className="monthly-table-th w-[56px] px-2 py-2">Week</th>
+            <th className="monthly-table-th w-[120px] px-2 py-2">Period</th>
+            {weeklyColumns.map((column) => (
+              <th key={column.key} className="monthly-table-th px-2 py-2">
+                {column.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+
+        <tbody>
+          {weeks.map((week) => (
+            <tr key={week.key || week.label || week.periodLabel} className="border-b border-current/10 last:border-b-0">
+              <td className="px-2 py-3 align-middle">
+                <span className="inline-flex rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em]">
+                  {week.label || week.week || "W"}
+                </span>
+              </td>
+
+              <td className="px-2 py-3 align-middle">
+                <p className="text-[11px] font-black leading-4">
+                  {week.periodLabel || week.currentPeriod || week.period || "Current"}
                 </p>
-              </div>
+                <p className="mt-0.5 text-[10px] opacity-45">vs previous 7D</p>
+              </td>
 
-              <p className="rounded-full border border-current/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] opacity-60">
-                vs previous 7D
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9">
               {weeklyColumns.map((column) => (
-                <WeeklyMetricCard
+                <WeeklyMetricTableCell
                   key={column.key}
                   label={column.label}
                   current={Number(week.current?.[column.key] ?? week[column.key] ?? 0)}
@@ -533,15 +544,15 @@ function WeeklyGroupedTable({
                   )}
                 />
               ))}
-            </div>
-          </div>
-        ))}
-      </div>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
 
-function WeeklyMetricCard({
+function WeeklyMetricTableCell({
   label,
   current,
   previous,
@@ -555,32 +566,21 @@ function WeeklyMetricCard({
   const tone = changeTone(label, chg);
   const isGood = tone === "green";
   const isBad = tone === "red";
-  const cardToneClass = isGood
-    ? "border-emerald-500/20 bg-emerald-500/[0.045]"
+  const cellToneClass = isGood
+    ? "text-emerald-600 dark:text-emerald-300"
     : isBad
-      ? "border-red-500/20 bg-red-500/[0.045]"
-      : "border-current/10 bg-black/10";
+      ? "text-red-600 dark:text-red-300"
+      : "opacity-80";
 
   return (
-    <div className={`min-w-0 rounded-xl border px-2.5 py-2 ${cardToneClass}`}>
-      <p className="truncate text-[9px] font-black uppercase tracking-[0.12em] opacity-50" title={label}>
-        {label}
-      </p>
-
-      <p className="mt-1 truncate text-[13px] font-black leading-4" title={formatMetric(label, current)}>
+    <td className="px-2 py-3 align-middle">
+      <p className="truncate text-[12px] font-black leading-4" title={formatMetric(label, current)}>
         {formatMetric(label, current)}
       </p>
-
-      <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[10px] font-black leading-4">
-        <span className={`rounded-full border px-1.5 py-0.5 ${toneClass(tone)} ${isGood ? "border-emerald-500/20 bg-emerald-500/10" : isBad ? "border-red-500/20 bg-red-500/10" : "border-current/10 bg-current/[0.06]"}`}>
-          {formatMultiple(mult)}
-        </span>
-        <span className="opacity-45">|</span>
-        <span className={`rounded-full border px-1.5 py-0.5 ${toneClass(tone)} ${isGood ? "border-emerald-500/20 bg-emerald-500/10" : isBad ? "border-red-500/20 bg-red-500/10" : "border-current/10 bg-current/[0.06]"}`}>
-          {formatChange(chg)}
-        </span>
-      </div>
-    </div>
+      <p className={`mt-1 truncate text-[10px] font-black leading-4 ${cellToneClass}`} title={`${formatMultiple(mult)} | ${formatChange(chg)}`}>
+        {formatMultiple(mult)} <span className="mx-1 opacity-45">|</span> {formatChange(chg)}
+      </p>
+    </td>
   );
 }
 
