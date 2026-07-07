@@ -3,7 +3,7 @@
 import { getMetaLatestDate } from "@/lib/meta/dataFreshness";
 import { CreativeTrendTooltip } from "@/components/meta/shared/CreativeTrendTooltip";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
   ChevronDown,
@@ -276,6 +276,16 @@ function dailyTrend(rows: Row[]) {
     });
 }
 
+
+function extractRowsFromMetaSheetPayload(payload: any): Row[] {
+  if (!payload) return [];
+  if (Array.isArray(payload)) return payload as Row[];
+  if (Array.isArray(payload.rows)) return payload.rows as Row[];
+  if (Array.isArray(payload.data)) return payload.data as Row[];
+  if (Array.isArray(payload.performanceRows)) return payload.performanceRows as Row[];
+  return [];
+}
+
 function buildZeroPurchaseItems(rows: Row[], threshold: number) {
   const latest = latestDate(rows);
 
@@ -331,14 +341,66 @@ function buildZeroPurchaseItems(rows: Row[], threshold: number) {
 }
 
 export function ZeroPurchaseTab() {
-  const rows = useMetaStore((state) => state.performanceRows);
+  const storeRows = useMetaStore((state) => state.performanceRows);
   const [threshold, setThreshold] = useState(3000);
+  const [rawRows, setRawRows] = useState<Row[]>([]);
+  const [rawStatus, setRawStatus] = useState<"loading" | "ready" | "fallback" | "error">("loading");
+  const [rawError, setRawError] = useState("");
 
-  const zeroPurchaseStoreLatest = getMetaLatestDate((rows || []) as any[]);
-  const zeroPurchaseStoreRowCount = (rows || []).length;
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadRawRows() {
+      setRawStatus("loading");
+      setRawError("");
+
+      try {
+        const response = await fetch(`/api/meta-sheet?source=raw&t=${Date.now()}`, {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Raw meta-sheet fetch failed: ${response.status}`);
+        }
+
+        const payload = await response.json();
+        const rowsFromApi = extractRowsFromMetaSheetPayload(payload);
+
+        if (cancelled) return;
+
+        if (rowsFromApi.length) {
+          setRawRows(rowsFromApi);
+          setRawStatus("ready");
+        } else {
+          setRawRows([]);
+          setRawStatus("fallback");
+        }
+      } catch (error: any) {
+        if (cancelled) return;
+        setRawRows([]);
+        setRawStatus("error");
+        setRawError(error?.message || "Raw fetch failed");
+      }
+    }
+
+    loadRawRows();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const effectiveRows = rawRows.length ? rawRows : ((storeRows || []) as unknown as Row[]);
+  const storeLatest = latestDate((storeRows || []) as unknown as Row[]);
+  const rawLatest = rawRows.length ? latestDate(rawRows) : "";
+  const effectiveSource = rawRows.length ? "Raw Sheet" : "Store Fallback";
 
   const data = useMemo(() => {
-    const result = buildZeroPurchaseItems(rows || [], threshold);
+    const result = buildZeroPurchaseItems(effectiveRows || [], threshold);
     const items = result.items;
 
     const totalSpend = items.reduce((s, x) => s + x.lifetime.spend, 0);
@@ -350,7 +412,7 @@ export function ZeroPurchaseTab() {
       totalSpend,
       yesterdaySpend,
     };
-  }, [rows, threshold]);
+  }, [effectiveRows, threshold]);
 
   return (
     <div className="grid gap-3">
