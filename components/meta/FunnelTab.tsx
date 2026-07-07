@@ -458,18 +458,6 @@ function MetricSplitCells({
       </td>
     </>
   );
-}: {
-  label: string;
-  current: number;
-  previous: number;
-}) {
-  return (
-    <>
-      <MetricValueCell label={label} current={current} />
-      <MetricMultipleCell label={label} current={current} previous={previous} />
-      <MetricChangeCell label={label} current={current} previous={previous} />
-    </>
-  );
 }
 
 function WeeklyGroupedTable({
