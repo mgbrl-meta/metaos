@@ -9,6 +9,11 @@ import {
   MetaSettings,
 } from "@/types/meta";
 import { defaultMetaSettings } from "@/lib/defaultSettings";
+import {
+  buildMetaDataQualitySummary,
+  normalizeMetaRows,
+  MetaQcSummary,
+} from "@/lib/metaDataQuality";
 import { extractMetaRows, getMetaLatestDate } from "@/lib/meta/dataFreshness";
 
 export async function fetchFreshMetaRowsForStore() {
@@ -36,12 +41,6 @@ export async function fetchFreshMetaRowsForStore() {
     fetchedAt: new Date().toISOString(),
   };
 }
-
-
-  buildMetaDataQualitySummary,
-  normalizeMetaRows,
-  MetaQcSummary,
-} from "@/lib/metaDataQuality";
 
 interface MetaStore {
   settings: MetaSettings;
