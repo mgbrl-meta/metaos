@@ -1,5 +1,6 @@
 "use client";
 
+import { extractMetaRows, getMetaLatestDate, isApiRowsFresher } from "@/lib/meta/dataFreshness";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
@@ -10,6 +11,32 @@ import {
 } from "@/types/meta";
 import { defaultMetaSettings } from "@/lib/defaultSettings";
 import {
+
+export async function fetchFreshMetaRowsForStore() {
+  const response = await fetch(`/api/meta-sheet?source=raw&t=${Date.now()}`, {
+    cache: "no-store",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Meta sheet fetch failed: ${response.status}`);
+  }
+
+  const payload = await response.json();
+  const rows = extractMetaRows(payload);
+
+  return {
+    rows,
+    latestDate: getMetaLatestDate(rows),
+    rowCount: rows.length,
+    source: payload?.source || "unknown",
+    sheetTab: payload?.sheetTab || "",
+    fetchedAt: new Date().toISOString(),
+  };
+}
   buildMetaDataQualitySummary,
   normalizeMetaRows,
   MetaQcSummary,

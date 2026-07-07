@@ -1,5 +1,6 @@
 "use client";
 
+import { getMetaLatestDate } from "@/lib/meta/dataFreshness";
 import { CreativeTrendTooltip } from "@/components/meta/shared/CreativeTrendTooltip";
 
 import { useMemo, useState } from "react";
@@ -332,6 +333,9 @@ function buildZeroPurchaseItems(rows: Row[], threshold: number) {
 export function ZeroPurchaseTab() {
   const rows = useMetaStore((state) => state.performanceRows);
   const [threshold, setThreshold] = useState(3000);
+
+  const zeroPurchaseStoreLatest = getMetaLatestDate((rows || []) as any[]);
+  const zeroPurchaseStoreRowCount = (rows || []).length;
 
   const data = useMemo(() => {
     const result = buildZeroPurchaseItems(rows || [], threshold);

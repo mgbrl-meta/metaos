@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   GoogleTab,
   MetaOSShell,
@@ -31,6 +31,27 @@ import { GptTab } from "@/components/meta/GptTab";
 import { FunnelTab } from "@/components/meta/FunnelTab";
 
 export default function Home() {
+
+  useEffect(() => {
+    const versionKey = "METAOS_DATA_VERSION_2026_07_06_FRESHNESS_FIX";
+    const existing = window.localStorage.getItem(versionKey);
+
+    if (existing !== "1") {
+      Object.keys(window.localStorage).forEach((key) => {
+        if (
+          key.toLowerCase().includes("meta") ||
+          key.toLowerCase().includes("zustand")
+        ) {
+          window.localStorage.removeItem(key);
+        }
+      });
+
+      window.localStorage.setItem(versionKey, "1");
+      window.location.reload();
+    }
+  }, []);
+
+
   const [osMode, setOsMode] = useState<OSMode>("meta");
   const [activeMetaTab, setActiveMetaTab] = useState<MetaTab>("summary");
   const [activeGoogleTab, setActiveGoogleTab] = useState<GoogleTab>("google_search_terms");
