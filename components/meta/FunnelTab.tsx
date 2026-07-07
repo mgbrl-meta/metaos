@@ -419,8 +419,6 @@ function CompactMetricCell({
   const mult = multiple(current, previous);
   const chg = changePct(current, previous);
   const tone = changeTone(label, chg);
-  const isCostMetric = label === "CPA";
-  const isEfficiencyMetric = label === "ROAS" || label === "GPT" || label === "CPA";
 
   return (
     <td className="px-2 py-3 align-middle">
@@ -447,30 +445,11 @@ function CompactMetricCell({
           <p className="mt-1 truncate text-[10px] leading-4 opacity-45" title={`Previous ${formatMetric(label, previous)}`}>
             Prev {formatMetric(label, previous)}
           </p>
-        ) : isEfficiencyMetric ? (
+        ) : (
           <p className="mt-1 truncate text-[10px] leading-4 opacity-35">
             Prev NA
           </p>
-        ) : null}
-      </div>
-    </td>
-  );
-}: {
-  label: string;
-  current: number;
-  previous: number;
-}) {
-  const mult = multiple(current, previous);
-  const chg = changePct(current, previous);
-  const tone = changeTone(label, chg);
-
-  return (
-    <td className="px-2 py-3 align-middle">
-      <p className="text-[12px] font-black leading-4">{formatMetric(label, current)}</p>
-      <div className={`mt-1 flex items-center gap-1.5 text-[10px] font-black leading-3 ${toneClass(tone)}`}>
-        <span>{formatMultiple(mult)}</span>
-        <span className="opacity-45">|</span>
-        <span>{formatChange(chg)}</span>
+        )}
       </div>
     </td>
   );
@@ -505,108 +484,94 @@ function MetricSplitCells({
 }
 
 function WeeklyGroupedTable({
-  weekRows,
+  weeks,
+  monthLabel,
 }: {
-  weekRows: Array<{
-    label: string;
-    start: string;
-    end: string;
-    current: Metrics;
-    previous: Metrics;
-  }>;
+  weeks: any[];
+  monthLabel: string;
 }) {
+  const weeklyColumns = SUMMARY_COLUMNS;
+
   return (
-    <div className="grid gap-4 p-4">
-      <div className="rounded-2xl border border-current/10 bg-current/[0.02]">
-        <div className="border-b border-current/10 px-4 py-3">
-          <h3 className="text-sm font-black">Weekly Volume + Economics</h3>
-          <p className="mt-1 text-xs opacity-60">Each week compares against the immediately previous 7-day period.</p>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full table-fixed border-separate border-spacing-y-1 text-left text-[11px]">
-            <thead className="monthly-table-head">
-              <tr>
-                <th className="monthly-table-th">Week</th>
-                <th className="monthly-table-th">Period</th>
-                {SUMMARY_COLUMNS.map((column) => (
-                  <>
-                    <th key={`${column.key}-value`} className="monthly-table-th">{column.label}</th>
-                    <th key={`${column.key}-multiple`} className="monthly-table-th">Multiple</th>
-                    <th key={`${column.key}-change`} className="monthly-table-th">%</th>
-                  </>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody>
-              {weekRows.map((row) => (
-                <tr key={`${row.start}-${row.end}`} className="border-b border-current/10 hover:bg-current/[0.035]">
-                  <td className="px-3 py-3 font-black">{row.label}</td>
-                  <td className="px-3 py-3">
-                    <p className="font-black">{row.start} → {row.end}</p>
-                    <p className="mt-0.5 text-[10px] opacity-55">vs previous 7D</p>
-                  </td>
-
-                  {SUMMARY_COLUMNS.map((column) => (
-                    <MetricSplitCells
-                      key={column.key}
-                      label={column.label}
-                      current={getMetricValue(row.current, column.key)}
-                      previous={getMetricValue(row.previous, column.key)}
-                    />
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+    <div className="border-t border-current/10 bg-black/10 px-5 py-4">
+      <div className="mb-4 flex flex-col gap-1">
+        <h3 className="text-base font-black">Weekly Funnel Breakdown · {monthLabel}</h3>
+        <p className="text-sm opacity-60">
+          Each metric card shows current value, multiple vs previous 7-day period, and percentage change.
+        </p>
       </div>
 
-      <div className="rounded-2xl border border-current/10 bg-current/[0.02]">
-        <div className="border-b border-current/10 px-4 py-3">
-          <h3 className="text-sm font-black">Weekly Funnel Conversion Rates</h3>
-          <p className="mt-1 text-xs opacity-60">Step-wise conversion rates for each week.</p>
-        </div>
+      <div className="grid gap-3">
+        {weeks.map((week) => (
+          <div
+            key={week.key || week.label || week.periodLabel}
+            className="rounded-2xl border border-current/10 bg-current/[0.025] p-3"
+          >
+            <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-black">{week.label || week.week || "Week"}</p>
+                <p className="text-xs opacity-55">
+                  {week.periodLabel || week.currentPeriod || week.period || "Current period"}
+                </p>
+              </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1900px] border-collapse text-left text-xs">
-            <thead className="monthly-table-head">
-              <tr>
-                <th className="monthly-table-th">Week</th>
-                <th className="monthly-table-th">Period</th>
-                {RATE_COLUMNS.map((column) => (
-                  <>
-                    <th key={`${column.key}-value`} className="monthly-table-th">{column.label}</th>
-                    <th key={`${column.key}-multiple`} className="monthly-table-th">Multiple</th>
-                    <th key={`${column.key}-change`} className="monthly-table-th">%</th>
-                  </>
-                ))}
-              </tr>
-            </thead>
+              <p className="rounded-full border border-current/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] opacity-60">
+                vs previous 7D
+              </p>
+            </div>
 
-            <tbody>
-              {weekRows.map((row) => (
-                <tr key={`rates-${row.start}-${row.end}`} className="border-b border-current/10 hover:bg-current/[0.035]">
-                  <td className="px-3 py-3 font-black">{row.label}</td>
-                  <td className="px-3 py-3">
-                    <p className="font-black">{row.start} → {row.end}</p>
-                    <p className="mt-0.5 text-[10px] opacity-55">vs previous 7D</p>
-                  </td>
-
-                  {RATE_COLUMNS.map((column) => (
-                    <MetricSplitCells
-                      key={column.key}
-                      label={column.label}
-                      current={getMetricValue(row.current, column.key)}
-                      previous={getMetricValue(row.previous, column.key)}
-                    />
-                  ))}
-                </tr>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9">
+              {weeklyColumns.map((column) => (
+                <WeeklyMetricCard
+                  key={column.key}
+                  label={column.label}
+                  current={Number(week.current?.[column.key] ?? week[column.key] ?? 0)}
+                  previous={Number(
+                    week.previous?.[column.key] ??
+                      week[`previous${String(column.key).charAt(0).toUpperCase()}${String(column.key).slice(1)}`] ??
+                      0
+                  )}
+                />
               ))}
-            </tbody>
-          </table>
-        </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function WeeklyMetricCard({
+  label,
+  current,
+  previous,
+}: {
+  label: string;
+  current: number;
+  previous: number;
+}) {
+  const mult = multiple(current, previous);
+  const chg = changePct(current, previous);
+  const tone = changeTone(label, chg);
+
+  return (
+    <div className="min-w-0 rounded-xl border border-current/10 bg-black/10 px-2.5 py-2">
+      <p className="truncate text-[9px] font-black uppercase tracking-[0.12em] opacity-50" title={label}>
+        {label}
+      </p>
+
+      <p className="mt-1 truncate text-[13px] font-black leading-4" title={formatMetric(label, current)}>
+        {formatMetric(label, current)}
+      </p>
+
+      <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[10px] font-black leading-4">
+        <span className={`rounded-full px-1.5 py-0.5 ${toneClass(tone)} bg-current/[0.06]`}>
+          {formatMultiple(mult)}
+        </span>
+        <span className="opacity-45">|</span>
+        <span className={`rounded-full px-1.5 py-0.5 ${toneClass(tone)} bg-current/[0.06]`}>
+          {formatChange(chg)}
+        </span>
       </div>
     </div>
   );
@@ -768,7 +733,7 @@ export function FunnelTab() {
                     {isOpen ? (
                       <tr key={`${row.month}-weekly`} className="border-b border-current/10">
                         <td colSpan={29} className="p-0">
-                          <WeeklyGroupedTable weekRows={row.weekRows} />
+                          <WeeklyGroupedTable weeks={row.weekRows} monthLabel={row.label} />
                         </td>
                       </tr>
                     ) : null}
