@@ -140,6 +140,79 @@ function Metric({
   );
 }
 
+function ZpMetric({
+  label,
+  value,
+  tone = "neutral",
+}: {
+  label: string;
+  value: string;
+  tone?: "red" | "green" | "neutral";
+}) {
+  const cls =
+    tone === "red"
+      ? "text-red-600 dark:text-red-300"
+      : tone === "green"
+        ? "text-emerald-600 dark:text-emerald-300"
+        : "";
+
+  return (
+    <div className="min-w-0">
+      <p className="truncate text-[9px] font-black uppercase tracking-[0.12em] opacity-50" title={label}>
+        {label}
+      </p>
+      <p className={`mt-1 truncate text-xs font-black ${cls}`} title={value}>
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function TrendBox({ data }: { data: any[] }) {
+  const rows = Array.isArray(data) ? data.slice(-7) : [];
+
+  return (
+    <div className="rounded-xl border border-current/10 bg-current/[0.025] p-3">
+      <h3 className="text-sm font-black">Latest Trend</h3>
+      <p className="mt-1 text-xs opacity-60">Last available daily movement for this ad.</p>
+
+      <div className="mt-3 overflow-hidden rounded-lg border border-current/10">
+        <table className="w-full border-collapse text-left text-[11px]">
+          <thead className="monthly-table-head">
+            <tr>
+              <th className="monthly-table-th px-2 py-2">Day</th>
+              <th className="monthly-table-th px-2 py-2">Spend</th>
+              <th className="monthly-table-th px-2 py-2">CTR</th>
+              <th className="monthly-table-th px-2 py-2">Purch.</th>
+              <th className="monthly-table-th px-2 py-2">ROAS</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {rows.map((row, index) => (
+              <tr key={`${row.date || row.label || index}`} className="border-b border-current/10 last:border-b-0">
+                <td className="px-2 py-2 font-black">{row.label || row.date || "—"}</td>
+                <td className="px-2 py-2">{money(row.spend)}</td>
+                <td className="px-2 py-2">{pct(row.ctr)}</td>
+                <td className="px-2 py-2">{num(row.purchases, 0)}</td>
+                <td className="px-2 py-2 font-black text-red-600 dark:text-red-300">{num(row.roas)}x</td>
+              </tr>
+            ))}
+
+            {!rows.length ? (
+              <tr>
+                <td colSpan={5} className="px-2 py-3 text-xs opacity-60">
+                  No trend data available.
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function InfoBox({
   title,
   lines,
@@ -223,7 +296,7 @@ export function ZeroPurchaseTab() {
   }
 
   return (
-    <div className="grid gap-3">
+    <div className="zero-purchase-tab-root grid gap-3">
       <section className="rounded-xl border border-current/10 bg-current/[0.03] p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -362,42 +435,45 @@ export function ZeroPurchaseTab() {
 
           {status !== "loading" &&
             data.items.map((item) => (
-              <details key={item.key} className="group">
-                <summary className="grid cursor-pointer list-none items-center gap-3 px-4 py-3 text-xs hover:bg-current/[0.035] xl:grid-cols-[minmax(420px,1fr)_repeat(8,120px)_24px]">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-full border border-red-300 bg-red-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300">
-                        Zero Purchase
-                      </span>
-                      <span className="rounded-full border border-current/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] opacity-70">
-                        Latest Spend {money(item.yesterday.spend)}
-                      </span>
+              <details key={item.key} className="group zero-purchase-row border-b border-current/10 last:border-b-0">
+                <summary className="list-none cursor-pointer px-4 py-3 hover:bg-current/[0.03]">
+                  <div className="zp-summary-grid grid items-center gap-3 text-xs">
+                    <div className="min-w-0">
+                      <div className="mb-1 flex flex-wrap items-center gap-2">
+                        <span className="rounded-full border border-red-300 bg-red-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300">
+                          Zero Purchase
+                        </span>
+                        <span className="rounded-full border border-current/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] opacity-70">
+                          Latest Spend {money(item.yesterday.spend)}
+                        </span>
+                      </div>
+
+                      <p className="truncate text-sm font-black" title={item.ad}>{item.ad}</p>
+                      <p className="mt-0.5 truncate text-xs opacity-60" title={`${item.campaign} · ${item.adSet}`}>
+                        {item.campaign} · {item.adSet}
+                      </p>
                     </div>
 
-                    <p className="mt-1 truncate text-sm font-black">{item.ad}</p>
-                    <p className="mt-0.5 truncate opacity-60">
-                      {item.campaign} · {item.adSet}
-                    </p>
-                  </div>
+                    <ZpMetric label="Life Spend" value={money(item.lifetime.spend)} tone="red" />
+                    <ZpMetric label="CPM" value={money(item.lifetime.cpm)} />
+                    <ZpMetric label="CTR" value={pct(item.lifetime.ctr)} />
+                    <ZpMetric label="CPA" value="No sale" tone="red" />
+                    <ZpMetric label="ROAS" value={`${num(item.lifetime.roas)}x`} tone="red" />
+                    <ZpMetric label="L7D Spend" value={money(item.last7.spend)} />
+                    <ZpMetric label="L7D CPA" value="No sale" tone="red" />
+                    <ZpMetric label="L7D ROAS" value={`${num(item.last7.roas)}x`} tone="red" />
 
-                  <Metric label="Life Spend" value={money(item.lifetime.spend)} tone="red" />
-                  <Metric label="CPM" value={money(item.lifetime.cpm)} />
-                  <Metric label="CTR" value={pct(item.lifetime.ctr)} />
-                  <Metric label="CPA" value="No sale" tone="red" />
-                  <Metric label="ROAS" value={`${num(item.lifetime.roas)}x`} tone="red" />
-                  <Metric label="Last 7D Spend" value={money(item.last7.spend)} />
-                  <Metric label="Last 7D CPA" value="No sale" tone="red" />
-                  <Metric label="Last 7D ROAS" value={`${num(item.last7.roas)}x`} tone="red" />
-                  <ChevronDown className="h-4 w-4 opacity-45 transition group-open:rotate-180" />
+                    <ChevronDown className="h-4 w-4 opacity-45 transition group-open:rotate-180" />
+                  </div>
                 </summary>
 
-                <div className="grid gap-3 px-4 pb-4 lg:grid-cols-3">
+                <div className="grid gap-3 px-4 pb-4 lg:grid-cols-[1fr_1fr_440px]">
                   <InfoBox
                     title="Why This Is Critical"
                     lines={[
                       `This ad spent ${money(item.lifetime.spend)} lifetime with 0 purchases.`,
-                      `It spent ${money(item.yesterday.spend)} on latest date ${payload.latest || "NA"}.`,
-                      `Last 7D spend is ${money(item.last7.spend)} with 0 purchases.`,
+                      `Latest-day spend was ${money(item.yesterday.spend)}.`,
+                      `Last 7D spend was ${money(item.last7.spend)} with 0 purchases.`,
                     ]}
                   />
 
@@ -407,19 +483,11 @@ export function ZeroPurchaseTab() {
                       `CPM: ${money(item.lifetime.cpm)}`,
                       `CTR: ${pct(item.lifetime.ctr)}`,
                       `CPC: ${money(item.lifetime.cpc)}`,
-                      `Frequency: ${num(item.lifetime.freq)}`,
                       `ROAS: ${num(item.lifetime.roas)}x`,
                     ]}
                   />
 
-                  <InfoBox
-                    title="Action"
-                    lines={[
-                      "Pause if creative has no strategic learning value.",
-                      "If CTR is strong, inspect PDP, offer, audience, and landing-page fit.",
-                      "If CPM is high and CTR is weak, rebuild the creative angle.",
-                    ]}
-                  />
+                  <TrendBox data={item.trend} />
                 </div>
               </details>
             ))}

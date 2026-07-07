@@ -5599,3 +5599,34 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22) !important;
 }
 
+
+/* Zero Purchase scoped row isolation.
+   This prevents broad .metaos-app details > summary rules from breaking this tab. */
+.metaos-app .zero-purchase-tab-root .zero-purchase-row summary {
+  display: block !important;
+}
+
+.metaos-app .zero-purchase-tab-root .zero-purchase-row summary::-webkit-details-marker {
+  display: none;
+}
+
+.metaos-app .zero-purchase-tab-root .zero-purchase-row .zp-summary-grid {
+  grid-template-columns: minmax(360px, 1.7fr) repeat(8, minmax(86px, 0.7fr)) 28px !important;
+}
+
+.metaos-app .zero-purchase-tab-root .zero-purchase-row .zp-summary-grid > div {
+  width: auto !important;
+  max-width: none !important;
+}
+
+@media (max-width: 1280px) {
+  .metaos-app .zero-purchase-tab-root .zero-purchase-row .zp-summary-grid {
+    grid-template-columns: minmax(300px, 1.4fr) repeat(4, minmax(86px, 0.7fr)) 28px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .metaos-app .zero-purchase-tab-root .zero-purchase-row .zp-summary-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
