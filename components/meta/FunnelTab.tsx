@@ -553,9 +553,16 @@ function WeeklyMetricCard({
   const mult = multiple(current, previous);
   const chg = changePct(current, previous);
   const tone = changeTone(label, chg);
+  const isGood = tone === "green";
+  const isBad = tone === "red";
+  const cardToneClass = isGood
+    ? "border-emerald-500/20 bg-emerald-500/[0.045]"
+    : isBad
+      ? "border-red-500/20 bg-red-500/[0.045]"
+      : "border-current/10 bg-black/10";
 
   return (
-    <div className="min-w-0 rounded-xl border border-current/10 bg-black/10 px-2.5 py-2">
+    <div className={`min-w-0 rounded-xl border px-2.5 py-2 ${cardToneClass}`}>
       <p className="truncate text-[9px] font-black uppercase tracking-[0.12em] opacity-50" title={label}>
         {label}
       </p>
@@ -565,11 +572,11 @@ function WeeklyMetricCard({
       </p>
 
       <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[10px] font-black leading-4">
-        <span className={`rounded-full px-1.5 py-0.5 ${toneClass(tone)} bg-current/[0.06]`}>
+        <span className={`rounded-full border px-1.5 py-0.5 ${toneClass(tone)} ${isGood ? "border-emerald-500/20 bg-emerald-500/10" : isBad ? "border-red-500/20 bg-red-500/10" : "border-current/10 bg-current/[0.06]"}`}>
           {formatMultiple(mult)}
         </span>
         <span className="opacity-45">|</span>
-        <span className={`rounded-full px-1.5 py-0.5 ${toneClass(tone)} bg-current/[0.06]`}>
+        <span className={`rounded-full border px-1.5 py-0.5 ${toneClass(tone)} ${isGood ? "border-emerald-500/20 bg-emerald-500/10" : isBad ? "border-red-500/20 bg-red-500/10" : "border-current/10 bg-current/[0.06]"}`}>
           {formatChange(chg)}
         </span>
       </div>
