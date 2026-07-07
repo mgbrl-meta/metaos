@@ -1,6 +1,5 @@
 "use client";
 
-import { extractMetaRows, getMetaLatestDate, isApiRowsFresher } from "@/lib/meta/dataFreshness";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
@@ -11,6 +10,7 @@ import {
 } from "@/types/meta";
 import { defaultMetaSettings } from "@/lib/defaultSettings";
 import {
+import { extractMetaRows, getMetaLatestDate } from "@/lib/meta/dataFreshness";
 
 export async function fetchFreshMetaRowsForStore() {
   const response = await fetch(`/api/meta-sheet?source=raw&t=${Date.now()}`, {
@@ -37,6 +37,7 @@ export async function fetchFreshMetaRowsForStore() {
     fetchedAt: new Date().toISOString(),
   };
 }
+
   buildMetaDataQualitySummary,
   normalizeMetaRows,
   MetaQcSummary,
