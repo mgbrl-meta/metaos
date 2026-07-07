@@ -24,6 +24,7 @@ import {
   TrendingUp,
   Hourglass,
   Flame,
+  IndianRupee,
 } from "lucide-react";
 import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
 import { useMetaStore } from "@/store/metaStore";
@@ -31,6 +32,7 @@ import { useMetaStore } from "@/store/metaStore";
 export type OSMode = "meta" | "google";
 
 export type MetaTab =
+  | "gpt"
   | "creative"
   | "creative_ageing"
   | "data_qc"
@@ -113,6 +115,13 @@ const metaNav: NavItem<MetaTab>[] = [
     shortLabel: "High CPA",
     description: "Live ads with high lifetime CPA",
     icon: ShieldAlert,
+  },
+  {
+    id: "gpt",
+    label: "GPT",
+    shortLabel: "GPT",
+    description: "Gross profit per transaction control",
+    icon: IndianRupee,
   },
   {
     id: "high_roas",
