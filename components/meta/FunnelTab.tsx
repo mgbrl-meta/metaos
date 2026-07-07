@@ -387,16 +387,16 @@ function getWeekBucketsForMonth(monthKey: string) {
 }
 
 const SUMMARY_COLUMNS = [
-  { key: "purchases", label: "Purchases" },
-  { key: "cpa", label: "CPA" },
-  { key: "roas", label: "ROAS" },
-  { key: "gpt", label: "GPT" },
   { key: "clicks", label: "Clicks" },
   { key: "lpv", label: "LPV" },
   { key: "atc", label: "ATC" },
   { key: "checkout", label: "Checkout" },
   { key: "payment", label: "Payment" },
-];
+  { key: "purchases", label: "Purchases" },
+  { key: "cpa", label: "CPA" },
+  { key: "roas", label: "ROAS" },
+  { key: "gpt", label: "GPT" },
+] as const;
 
 const RATE_COLUMNS = [
   { key: "clickToLpv", label: "LPV / Clicks" },
@@ -411,6 +411,50 @@ function CompactMetricCell({
   label,
   current,
   previous,
+}: {
+  label: string;
+  current: number;
+  previous: number;
+}) {
+  const mult = multiple(current, previous);
+  const chg = changePct(current, previous);
+  const tone = changeTone(label, chg);
+  const isCostMetric = label === "CPA";
+  const isEfficiencyMetric = label === "ROAS" || label === "GPT" || label === "CPA";
+
+  return (
+    <td className="px-2 py-3 align-middle">
+      <div className="min-w-0 rounded-xl border border-current/10 bg-current/[0.018] px-2.5 py-2">
+        <p className="truncate text-[10px] font-black uppercase tracking-[0.12em] opacity-50" title={label}>
+          {label}
+        </p>
+
+        <p className="mt-1 truncate text-[13px] font-black leading-4" title={formatMetric(label, current)}>
+          {formatMetric(label, current)}
+        </p>
+
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[10px] font-black leading-4">
+          <span className={`rounded-full px-1.5 py-0.5 ${toneClass(tone)} bg-current/[0.06]`}>
+            {formatMultiple(mult)}
+          </span>
+          <span className="opacity-45">vs prev</span>
+          <span className={`rounded-full px-1.5 py-0.5 ${toneClass(tone)} bg-current/[0.06]`}>
+            {formatChange(chg)}
+          </span>
+        </div>
+
+        {previous > 0 ? (
+          <p className="mt-1 truncate text-[10px] leading-4 opacity-45" title={`Previous ${formatMetric(label, previous)}`}>
+            Prev {formatMetric(label, previous)}
+          </p>
+        ) : isEfficiencyMetric ? (
+          <p className="mt-1 truncate text-[10px] leading-4 opacity-35">
+            Prev NA
+          </p>
+        ) : null}
+      </div>
+    </td>
+  );
 }: {
   label: string;
   current: number;
@@ -480,7 +524,7 @@ function WeeklyGroupedTable({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full table-fixed border-collapse text-left text-[11px]">
+          <table className="w-full table-fixed border-separate border-spacing-y-1 text-left text-[11px]">
             <thead className="monthly-table-head">
               <tr>
                 <th className="monthly-table-th">Week</th>
@@ -655,21 +699,21 @@ export function FunnelTab() {
             <div>
               <h2 className="text-lg font-black">Month on Month Funnel Table</h2>
               <p className="mt-1 text-sm opacity-60">
-                Every metric cell shows current value, previous month value, multiple and % change.
+                Each cell shows current value on top, then multiple vs previous month and percentage change below.
               </p>
             </div>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full table-fixed border-collapse text-left text-[11px]">
+          <table className="w-full table-fixed border-separate border-spacing-y-1 text-left text-[11px]">
             <thead className="monthly-table-head sticky top-0 z-10">
               <tr>
-                <th className="monthly-table-th w-[110px]">Month</th>
+                <th className="monthly-table-th w-[105px] px-2 py-2 text-[10px]">Month</th>
                 {SUMMARY_COLUMNS.map((column) => (
-                  <th key={column.key} className="monthly-table-th">{column.label}</th>
+                  <th key={column.key} className="monthly-table-th px-2 py-2 text-[10px]">{column.label}</th>
                 ))}
-                <th className="monthly-table-th w-[44px] text-center"> </th>
+                <th className="monthly-table-th w-[42px] px-1 py-2 text-center"> </th>
               </tr>
             </thead>
 
@@ -689,7 +733,12 @@ export function FunnelTab() {
                       }
                     >
                       <td className="px-2 py-3 align-middle">
-                        <p className="text-[12px] font-black leading-4">{row.label}</p>
+                        <div className="rounded-xl border border-current/10 bg-current/[0.025] px-2.5 py-2">
+                          <p className="text-[13px] font-black leading-4">{row.label}</p>
+                          <p className="mt-1 text-[10px] font-black uppercase tracking-[0.1em] opacity-40">
+                            MoM
+                          </p>
+                        </div>
                       </td>
 
                       {SUMMARY_COLUMNS.map((column) => (
@@ -709,7 +758,7 @@ export function FunnelTab() {
                             e.stopPropagation();
                             toggleMonth(row.month);
                           }}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-current/10 hover:bg-current/10"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-current/10 bg-current/[0.025] hover:bg-current/10"
                         >
                           <ChevronDown className={isOpen ? "h-4 w-4 rotate-180 transition" : "h-4 w-4 transition"} />
                         </button>
