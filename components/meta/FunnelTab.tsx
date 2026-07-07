@@ -407,7 +407,21 @@ const RATE_COLUMNS = [
   { key: "clickToPurchase", label: "Purchase / Clicks" },
 ];
 
-function MetricTableCell({
+function MetricValueCell({
+  label,
+  current,
+}: {
+  label: string;
+  current: number;
+}) {
+  return (
+    <td className="px-3 py-3 align-top">
+      <p className="font-black">{formatMetric(label, current)}</p>
+    </td>
+  );
+}
+
+function MetricMultipleCell({
   label,
   current,
   previous,
@@ -421,16 +435,46 @@ function MetricTableCell({
   const tone = changeTone(label, chg);
 
   return (
-    <td className="px-3 py-3 align-top">
-      <p className="font-black">{formatMetric(label, current)}</p>
-      <p className="mt-0.5 text-[10px] opacity-55">Prev {formatMetric(label, previous)}</p>
-      <p className={`mt-0.5 text-[10px] font-black ${toneClass(tone)}`}>
-        {formatMultiple(mult)}
-      </p>
-      <p className={`mt-0.5 text-[10px] font-black ${toneClass(tone)}`}>
-        {formatChange(chg)}
-      </p>
+    <td className={`px-3 py-3 align-top font-black ${toneClass(tone)}`}>
+      {formatMultiple(mult)}
     </td>
+  );
+}
+
+function MetricChangeCell({
+  label,
+  current,
+  previous,
+}: {
+  label: string;
+  current: number;
+  previous: number;
+}) {
+  const chg = changePct(current, previous);
+  const tone = changeTone(label, chg);
+
+  return (
+    <td className={`px-3 py-3 align-top font-black ${toneClass(tone)}`}>
+      {formatChange(chg)}
+    </td>
+  );
+}
+
+function MetricSplitCells({
+  label,
+  current,
+  previous,
+}: {
+  label: string;
+  current: number;
+  previous: number;
+}) {
+  return (
+    <>
+      <MetricValueCell label={label} current={current} />
+      <MetricMultipleCell label={label} current={current} previous={previous} />
+      <MetricChangeCell label={label} current={current} previous={previous} />
+    </>
   );
 }
 
@@ -454,13 +498,17 @@ function WeeklyGroupedTable({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1500px] border-collapse text-left text-xs">
+          <table className="w-full min-w-[2600px] border-collapse text-left text-xs">
             <thead className="monthly-table-head">
               <tr>
                 <th className="monthly-table-th">Week</th>
                 <th className="monthly-table-th">Period</th>
                 {SUMMARY_COLUMNS.map((column) => (
-                  <th key={column.key} className="monthly-table-th">{column.label}</th>
+                  <>
+                    <th key={`${column.key}-value`} className="monthly-table-th">{column.label}</th>
+                    <th key={`${column.key}-multiple`} className="monthly-table-th">{column.label} Multiple</th>
+                    <th key={`${column.key}-change`} className="monthly-table-th">{column.label} %</th>
+                  </>
                 ))}
               </tr>
             </thead>
@@ -475,7 +523,7 @@ function WeeklyGroupedTable({
                   </td>
 
                   {SUMMARY_COLUMNS.map((column) => (
-                    <MetricTableCell
+                    <MetricSplitCells
                       key={column.key}
                       label={column.label}
                       current={getMetricValue(row.current, column.key)}
@@ -496,13 +544,17 @@ function WeeklyGroupedTable({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1100px] border-collapse text-left text-xs">
+          <table className="w-full min-w-[1900px] border-collapse text-left text-xs">
             <thead className="monthly-table-head">
               <tr>
                 <th className="monthly-table-th">Week</th>
                 <th className="monthly-table-th">Period</th>
                 {RATE_COLUMNS.map((column) => (
-                  <th key={column.key} className="monthly-table-th">{column.label}</th>
+                  <>
+                    <th key={`${column.key}-value`} className="monthly-table-th">{column.label}</th>
+                    <th key={`${column.key}-multiple`} className="monthly-table-th">{column.label} Multiple</th>
+                    <th key={`${column.key}-change`} className="monthly-table-th">{column.label} %</th>
+                  </>
                 ))}
               </tr>
             </thead>
@@ -517,7 +569,7 @@ function WeeklyGroupedTable({
                   </td>
 
                   {RATE_COLUMNS.map((column) => (
-                    <MetricTableCell
+                    <MetricSplitCells
                       key={column.key}
                       label={column.label}
                       current={getMetricValue(row.current, column.key)}
@@ -628,13 +680,16 @@ export function FunnelTab() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1680px] border-collapse text-left text-xs">
+          <table className="w-full min-w-[2600px] border-collapse text-left text-xs">
             <thead className="monthly-table-head sticky top-0 z-10">
               <tr>
                 <th className="monthly-table-th">Month</th>
-                <th className="monthly-table-th">Period</th>
                 {SUMMARY_COLUMNS.map((column) => (
-                  <th key={column.key} className="monthly-table-th">{column.label}</th>
+                  <>
+                    <th key={`${column.key}-value`} className="monthly-table-th">{column.label}</th>
+                    <th key={`${column.key}-multiple`} className="monthly-table-th">{column.label} Multiple</th>
+                    <th key={`${column.key}-change`} className="monthly-table-th">{column.label} %</th>
+                  </>
                 ))}
                 <th className="monthly-table-th">Open</th>
               </tr>
@@ -657,18 +712,19 @@ export function FunnelTab() {
                     >
                       <td className="px-3 py-3 align-top">
                         <p className="text-sm font-black">{row.label}</p>
-                        <p className="mt-0.5 text-[10px] opacity-55">Click to open weekly</p>
-                      </td>
-
-                      <td className="px-3 py-3 align-top">
-                        <p className="font-black">{row.currentStart} → {row.currentEnd || "—"}</p>
                         <p className="mt-0.5 text-[10px] opacity-55">
+                          {row.currentStart} → {row.currentEnd || "—"}
+                        </p>
+                        <p className="mt-0.5 text-[10px] opacity-45">
                           Prev {row.previousStart || "—"} → {row.previousEnd || "—"}
+                        </p>
+                        <p className="mt-1 text-[10px] font-black uppercase tracking-[0.12em] opacity-45">
+                          Click to open weekly
                         </p>
                       </td>
 
                       {SUMMARY_COLUMNS.map((column) => (
-                        <MetricTableCell
+                        <MetricSplitCells
                           key={column.key}
                           label={column.label}
                           current={getMetricValue(row.current, column.key)}
@@ -693,7 +749,7 @@ export function FunnelTab() {
 
                     {isOpen ? (
                       <tr key={`${row.month}-weekly`} className="border-b border-current/10">
-                        <td colSpan={12} className="p-0">
+                        <td colSpan={29} className="p-0">
                           <WeeklyGroupedTable weekRows={row.weekRows} />
                         </td>
                       </tr>
@@ -704,7 +760,7 @@ export function FunnelTab() {
 
               {!data.monthlyRows.length ? (
                 <tr>
-                  <td colSpan={12} className="p-5">
+                  <td colSpan={29} className="p-5">
                     <p className="font-black">No funnel data available.</p>
                     <p className="mt-1 text-sm opacity-60">Check if the Meta sheet rows include date and funnel columns.</p>
                   </td>
