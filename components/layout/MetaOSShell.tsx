@@ -332,20 +332,6 @@ export function MetaOSShell({
                   )}
                 </div>
 
-                <div className="hidden min-w-0 sm:block">
-                  <p
-                    className={
-                      isGoogle
-                        ? "text-[12px] font-black uppercase tracking-[0.18em] text-emerald-300"
-                        : "text-[12px] font-black uppercase tracking-[0.18em] text-[#0A84FF]"
-                    }
-                  >
-                    Meta OS
-                  </p>
-                  <p className="metaos-brand-subtitle">
-                    Daily Performance OS
-                  </p>
-                </div>
               </div>
 
               <div className="min-w-0 flex-1" />
@@ -437,10 +423,6 @@ export function MetaOSShell({
                   >
                     <Zap className="h-5 w-5 fill-white" />
                   </div>
-                  <div>
-                    <p className="text-sm font-black">Meta OS</p>
-                    <p className="text-xs opacity-45">Daily Performance OS</p>
-                  </div>
                 </div>
 
                 <button
@@ -501,33 +483,6 @@ export function MetaOSShell({
 
         <main className="min-w-0">
           <div className="mx-auto w-full max-w-[1920px] min-w-0 px-3 py-3 lg:px-4">
-            <section className={isDark ? "mb-3 rounded-xl border border-current/10 bg-current/[0.035] px-4 py-3" : "mb-3 rounded-xl border border-black/10 bg-white px-4 py-3"}>
-              <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-                <div className="min-w-0">
-                  <div className="flex flex-wrap gap-1.5">
-                    <span
-                      className={
-                        isGoogle
-                          ? "rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-emerald-300"
-                          : "rounded-full border border-[#0A84FF]/25 bg-[#0A84FF]/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#0A84FF]"
-                      }
-                    >
-                      {isGoogle ? "Google Ads" : "Meta Ads"}
-                    </span>
-                    <span className="rounded-full border border-current/10 bg-current/[0.035] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] opacity-45">
-                      Sheet Live
-                    </span>
-                  </div>
-
-                  <h1 className="mt-2 text-2xl font-black tracking-tight lg:text-3xl">
-                    {activeSystemTab === "settings" ? "Settings" : isGoogle ? "Google OS" : "Meta OS"}
-                  </h1>
-                  <p className="mt-1 text-sm leading-5 opacity-60">
-                    {activeTitle} · {activeDescription}
-                  </p>
-                </div>
-              </div>
-            </section>
 
             <div className="min-w-0 overflow-x-hidden">{children}</div>
           </div>
