@@ -1,418 +1,226 @@
 "use client";
 
-import { getMetaLatestDate } from "@/lib/meta/dataFreshness";
-import { CreativeTrendTooltip } from "@/components/meta/shared/CreativeTrendTooltip";
-
 import { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
   ChevronDown,
-  LineChart as LineChartIcon,
+  Copy,
+  RefreshCw,
   SlidersHorizontal,
 } from "lucide-react";
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import { useMetaStore } from "@/store/metaStore";
 
+type MetricPack = {
+  spend: number;
+  revenue: number;
+  purchases: number;
+  impressions: number;
+  reach: number;
+  clicks: number;
+  roas: number;
+  cpa: number;
+  aov: number;
+  cpm: number;
+  ctr: number;
+  cpc: number;
+  freq: number;
+};
 
-function toUtcDateKeyFromParts(year: number, month: number, day: number) {
-  return new Date(Date.UTC(year, month - 1, day)).toISOString().slice(0, 10);
-}
+type ZeroPurchaseItem = {
+  key: string;
+  ad: string;
+  campaign: string;
+  adSet: string;
+  lifetime: MetricPack;
+  last7: MetricPack;
+  yesterday: MetricPack;
+  trend: Array<{
+    date: string;
+    spend: number;
+    cpa: number | null;
+    roas: number;
+    purchases: number;
+  }>;
+};
 
-function addDaysToDateKeyUtc(dateKey: string, days: number) {
-  const raw = String(dateKey || "").slice(0, 10);
-  const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+type ZeroPurchasePayload = {
+  source: string;
+  sheetTab: string;
+  rowCount: number;
+  latest: string;
+  latestRowCount: number;
+  latestSpendAdCount: number;
+  generatedAt: string;
+  items: ZeroPurchaseItem[];
+  error?: string;
+};
 
-  if (!match) return "";
+const EMPTY_PAYLOAD: ZeroPurchasePayload = {
+  source: "",
+  sheetTab: "",
+  rowCount: 0,
+  latest: "",
+  latestRowCount: 0,
+  latestSpendAdCount: 0,
+  generatedAt: "",
+  items: [],
+};
 
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-
-  const d = new Date(Date.UTC(year, month - 1, day));
-  d.setUTCDate(d.getUTCDate() + days);
-
-  return d.toISOString().slice(0, 10);
-}
-
-type Row = Record<string, any>;
-
-const money = (n: number) => `₹${Math.round(Number(n || 0)).toLocaleString()}`;
+const money = (n: number) => `₹${Math.round(Number(n || 0)).toLocaleString("en-IN")}`;
 const num = (n: number, d = 2) => Number(n || 0).toFixed(d);
-const pct = (n: number, d = 2) => `${num(Number(n || 0) * 100, d)}%`;
-const safeDiv = (a: number, b: number) => (b > 0 ? a / b : 0);
+const pct = (n: number, d = 2) => `${Number(n || 0).toFixed(d)}%`;
 
-function parseDate(value?: string) {
-  if (value === null || value === undefined || value === "") return null;
+function toHandleOnly(adName: string) {
+  const value = String(adName || "").trim();
+  const handle = value.match(/@[a-zA-Z0-9._]+/);
+  if (handle?.[0]) return handle[0];
 
-  const raw = String(value).trim();
-  if (!raw) return null;
-
-  const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (iso) return new Date(`${iso[1]}-${iso[2]}-${iso[3]}T00:00:00`);
-
-  const slash = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if (slash) {
-    const d = slash[1].padStart(2, "0");
-    const m = slash[2].padStart(2, "0");
-    const y = slash[3];
-    return new Date(`${y}-${m}-${d}T00:00:00`);
-  }
-
-  // Google Sheets serial date fallback.
-  const serial = Number(raw);
-  if (Number.isFinite(serial) && serial > 30000 && serial < 60000) {
-    const epoch = new Date(Date.UTC(1899, 11, 30));
-    epoch.setUTCDate(epoch.getUTCDate() + Math.floor(serial));
-    return epoch;
-  }
-
-  const d = new Date(raw);
-  return Number.isNaN(d.getTime()) ? null : d;
-}
-function dateKey(value?: string) {
-  const d = parseDate(value);
-  if (!d) return "";
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-    d.getDate()
-  ).padStart(2, "0")}`;
+  return value
+    .split(/\s+-\s+/)[0]
+    .replace(/[|·,\s]+$/g, "")
+    .trim();
 }
 
-function displayDate(value?: string) {
-  const d = parseDate(value);
-  if (!d) return value || "";
-  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
+async function copyLines(lines: string[]) {
+  const clean = Array.from(new Set(lines.map((line) => line.trim()).filter(Boolean)));
+  const text = clean.join("\n");
+
+  if (!text) return 0;
+
+  await navigator.clipboard.writeText(text);
+  return clean.length;
 }
 
-function getDate(row: Row) {
-  return String(row.date || row.day || row.Day || "");
-}
+function Kpi({
+  label,
+  value,
+  tone = "neutral",
+}: {
+  label: string;
+  value: string;
+  tone?: "red" | "green" | "blue" | "neutral";
+}) {
+  const toneClass =
+    tone === "red"
+      ? "text-red-600 dark:text-red-300"
+      : tone === "green"
+        ? "text-emerald-600 dark:text-emerald-300"
+        : tone === "blue"
+          ? "text-[#0A84FF]"
+          : "";
 
-function getCampaign(row: Row) {
-  return String(row.campaignName || row.campaign_name || row["Campaign name"] || "Unknown Campaign");
-}
-
-function getAdSet(row: Row) {
-  return String(row.adSetName || row.adset_name || row.ad_set_name || row["Ad set name"] || "Unknown Ad Set");
-}
-
-function getAd(row: Row) {
-  return String(row.adName || row.ad_name || row["Ad name"] || "Unknown Creative");
-}
-
-function getAdId(row: Row) {
-  return String(row.adId || row.ad_id || row["Ad ID"] || getAd(row));
-}
-
-function getSpend(row: Row) {
-  return Number(row.spend ?? row.amountSpent ?? row.amount_spent ?? row["Amount spent (INR)"] ?? 0);
-}
-
-function getRevenue(row: Row) {
-  return Number(
-    row.revenue ??
-      row.purchaseValue ??
-      row.purchase_value ??
-      row.conversionValue ??
-      row.conversion_value ??
-      row["Purchases conversion value"] ??
-      0
+  return (
+    <div className="rounded-xl border border-current/10 bg-current/[0.035] px-4 py-3">
+      <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-55">{label}</p>
+      <p className={`mt-1 text-sm font-black ${toneClass}`}>{value}</p>
+    </div>
   );
 }
 
-function getPurchases(row: Row) {
-  return Number(row.purchases ?? row.Purchases ?? 0);
-}
+function Metric({
+  label,
+  value,
+  tone = "neutral",
+}: {
+  label: string;
+  value: string;
+  tone?: "red" | "green" | "neutral";
+}) {
+  const cls =
+    tone === "red"
+      ? "text-red-600 dark:text-red-300"
+      : tone === "green"
+        ? "text-emerald-600 dark:text-emerald-300"
+        : "";
 
-function getImpressions(row: Row) {
-  return Number(row.impressions ?? row.Impressions ?? 0);
-}
-
-function getReach(row: Row) {
-  return Number(row.reach ?? row.Reach ?? 0);
-}
-
-function getClicks(row: Row) {
-  return Number(
-    row.clicks ??
-      row.linkClicks ??
-      row.link_clicks ??
-      row.outboundClicks ??
-      row.outbound_clicks ??
-      row["Link clicks"] ??
-      row["Clicks (all)"] ??
-      0
+  return (
+    <div className="min-w-[86px]">
+      <p className="text-[10px] font-black uppercase tracking-[0.16em] opacity-55">{label}</p>
+      <p className={`mt-1 text-sm font-black ${cls}`}>{value}</p>
+    </div>
   );
 }
 
-function latestDate(rows: Row[]) {
-  const dates = rows.map((r) => parseDate(getDate(r))).filter(Boolean) as Date[];
-  if (!dates.length) return "";
-  return dateKey(new Date(Math.max(...dates.map((d) => d.getTime()))).toISOString());
-}
-
-function summarize(rows: Row[]) {
-  const spend = rows.reduce((s, r) => s + getSpend(r), 0);
-  const revenue = rows.reduce((s, r) => s + getRevenue(r), 0);
-  const purchases = rows.reduce((s, r) => s + getPurchases(r), 0);
-  const impressions = rows.reduce((s, r) => s + getImpressions(r), 0);
-  const reach = rows.reduce((s, r) => s + getReach(r), 0);
-  const clicks = rows.reduce((s, r) => s + getClicks(r), 0);
-
-  return {
-    spend,
-    revenue,
-    purchases,
-    impressions,
-    reach,
-    clicks,
-    roas: safeDiv(revenue, spend),
-    cpa: safeDiv(spend, purchases),
-    aov: safeDiv(revenue, purchases),
-    cpm: safeDiv(spend * 1000, impressions),
-    ctr: safeDiv(clicks, impressions),
-    cpc: safeDiv(spend, clicks),
-    freq: safeDiv(impressions, reach),
-  };
-}
-
-
-function metaOsLast7DateKey(row: Row) {
-  const raw = String(
-    row.date ??
-      row.day ??
-      row.Date ??
-      row.Day ??
-      row["Date"] ??
-      row["Day"] ??
-      row["Reporting starts"] ??
-      row["Reporting Starts"] ??
-      row["Start Date"] ??
-      ""
-  ).trim();
-
-  if (!raw) return "";
-
-  const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
-
-  const slash = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if (slash) {
-    const d = slash[1].padStart(2, "0");
-    const m = slash[2].padStart(2, "0");
-    const y = slash[3];
-    return `${y}-${m}-${d}`;
-  }
-
-  const serial = Number(raw);
-  if (Number.isFinite(serial) && serial > 30000 && serial < 60000) {
-    const epoch = new Date(Date.UTC(1899, 11, 30));
-    epoch.setUTCDate(epoch.getUTCDate() + Math.floor(serial));
-    return epoch.toISOString().slice(0, 10);
-  }
-
-  const parsed = new Date(raw);
-  if (!Number.isNaN(parsed.getTime())) {
-    return parsed.toISOString().slice(0, 10);
-  }
-
-  return raw;
-}
-function addDaysToDateKey(dateKey: string, days: number) {
-  return addDaysToDateKeyUtc(dateKey, days);
-}
-
-function summarizeCalendarWindow(rows: Row[], endDateKey: string, days = 7) {
-  const end = String(endDateKey || "").slice(0, 10);
-  if (!end) return summarize([]);
-
-  // Inclusive calendar window: L7D ending 2026-06-14 starts 2026-06-08, not 2026-06-07.
-  const start = addDaysToDateKeyUtc(end, 1 - days);
-  if (!start) return summarize([]);
-
-  return summarize(
-    rows.filter((row) => {
-      const key = metaOsLast7DateKey(row);
-      return key >= start && key <= end;
-    })
+function InfoBox({
+  title,
+  lines,
+}: {
+  title: string;
+  lines: string[];
+}) {
+  return (
+    <div className="rounded-xl border border-current/10 bg-current/[0.02] p-3">
+      <h3 className="text-xs font-black uppercase tracking-[0.14em] opacity-70">{title}</h3>
+      <div className="mt-2 grid gap-1 text-sm opacity-70">
+        {lines.map((line) => (
+          <p key={line}>• {line}</p>
+        ))}
+      </div>
+    </div>
   );
-}
-
-
-function dailyTrend(rows: Row[]) {
-  const map = new Map<string, Row[]>();
-
-  rows.forEach((row) => {
-    const key = dateKey(getDate(row));
-    if (!key) return;
-
-    if (!map.has(key)) map.set(key, []);
-    map.get(key)!.push(row);
-  });
-
-  return Array.from(map.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .slice(-30)
-    .map(([date, dayRows]) => {
-      const s = summarize(dayRows);
-
-      return {
-        date,
-        label: displayDate(date),
-        spend: s.spend,
-        cpm: s.cpm,
-        ctr: s.ctr,
-        roas: s.roas,
-        cpa: s.purchases > 0 ? s.cpa : null,
-        purchases: s.purchases,
-      };
-    });
-}
-
-
-function extractRowsFromMetaSheetPayload(payload: any): Row[] {
-  if (!payload) return [];
-  if (Array.isArray(payload)) return payload as Row[];
-  if (Array.isArray(payload.rows)) return payload.rows as Row[];
-  if (Array.isArray(payload.data)) return payload.data as Row[];
-  if (Array.isArray(payload.performanceRows)) return payload.performanceRows as Row[];
-  return [];
-}
-
-function buildZeroPurchaseItems(rows: Row[], threshold: number) {
-  const latest = latestDate(rows);
-
-  // Zero Purchase is an operator control tab.
-  // Active = ad spent on the latest available data date.
-  // Do not depend on delivery/status fields here because Meta exports can mark a latest-spend ad as learning/off/missing.
-  const latestSpendAdIds = new Set(
-    rows
-      .filter((row) => dateKey(getDate(row)) === latest)
-      .filter((row) => getSpend(row) > 0)
-      .map((row) => getAdId(row))
-      .filter(Boolean)
-  );
-
-  const map = new Map<string, Row[]>();
-
-  rows.forEach((row) => {
-    const key = getAdId(row);
-    if (!latestSpendAdIds.has(key)) return;
-
-    if (!map.has(key)) map.set(key, []);
-    map.get(key)!.push(row);
-  });
-
-  const items = Array.from(map.entries())
-    .map(([key, adRows]) => {
-      const latestRow =
-        adRows.find((row) => dateKey(getDate(row)) === latest && getSpend(row) > 0) ||
-        adRows[adRows.length - 1];
-
-      const sample = latestRow || adRows[0];
-      const lifetime = summarize(adRows);
-      const last7 = summarizeCalendarWindow(adRows, latest, 7);
-      const yesterday = summarize(adRows.filter((row) => dateKey(getDate(row)) === latest));
-
-      return {
-        key,
-        ad: getAd(sample),
-        campaign: getCampaign(sample),
-        adSet: getAdSet(sample),
-        lifetime,
-        last7,
-        yesterday,
-        trend: dailyTrend(adRows),
-      };
-    })
-    .filter((item) => item.yesterday.spend > 0)
-    .filter((item) => item.lifetime.spend >= threshold)
-    .filter((item) => item.lifetime.purchases === 0)
-    .sort((a, b) => b.lifetime.spend - a.lifetime.spend);
-
-  return { latest, items };
 }
 
 export function ZeroPurchaseTab() {
-  const storeRows = useMetaStore((state) => state.performanceRows);
   const [threshold, setThreshold] = useState(3000);
-  const [rawRows, setRawRows] = useState<Row[]>([]);
-  const [rawStatus, setRawStatus] = useState<"loading" | "ready" | "fallback" | "error">("loading");
-  const [rawError, setRawError] = useState("");
+  const [payload, setPayload] = useState<ZeroPurchasePayload>(EMPTY_PAYLOAD);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [error, setError] = useState("");
+  const [copied, setCopied] = useState("");
+
+  async function loadZeroPurchase() {
+    setStatus("loading");
+    setError("");
+
+    try {
+      const response = await fetch(`/api/meta-zero-purchase?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache",
+        },
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        throw new Error(json?.error || `Zero Purchase API failed: ${response.status}`);
+      }
+
+      setPayload(json);
+      setStatus("ready");
+    } catch (err: any) {
+      setPayload(EMPTY_PAYLOAD);
+      setStatus("error");
+      setError(err?.message || "Zero Purchase API failed");
+    }
+  }
 
   useEffect(() => {
-    let cancelled = false;
-
-    async function loadRawRows() {
-      setRawStatus("loading");
-      setRawError("");
-
-      try {
-        const response = await fetch(`/api/meta-sheet?source=raw&t=${Date.now()}`, {
-          cache: "no-store",
-          headers: {
-            "Cache-Control": "no-cache",
-            "Pragma": "no-cache",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Raw meta-sheet fetch failed: ${response.status}`);
-        }
-
-        const payload = await response.json();
-        const rowsFromApi = extractRowsFromMetaSheetPayload(payload);
-
-        if (cancelled) return;
-
-        if (rowsFromApi.length) {
-          setRawRows(rowsFromApi);
-          setRawStatus("ready");
-        } else {
-          setRawRows([]);
-          setRawStatus("fallback");
-        }
-      } catch (error: any) {
-        if (cancelled) return;
-        setRawRows([]);
-        setRawStatus("error");
-        setRawError(error?.message || "Raw fetch failed");
-      }
-    }
-
-    loadRawRows();
-
-    return () => {
-      cancelled = true;
-    };
+    loadZeroPurchase();
   }, []);
 
-  const effectiveRows = rawRows.length ? rawRows : ((storeRows || []) as unknown as Row[]);
-  const storeLatest = latestDate((storeRows || []) as unknown as Row[]);
-  const rawLatest = rawRows.length ? latestDate(rawRows) : "";
-  const effectiveSource = rawRows.length ? "Raw Sheet" : "Store Fallback";
-
   const data = useMemo(() => {
-    const result = buildZeroPurchaseItems(effectiveRows || [], threshold);
-    const items = result.items;
-
-    const totalSpend = items.reduce((s, x) => s + x.lifetime.spend, 0);
-    const yesterdaySpend = items.reduce((s, x) => s + x.yesterday.spend, 0);
+    const items = (payload.items || [])
+      .filter((item) => item.lifetime.spend >= threshold)
+      .sort((a, b) => b.lifetime.spend - a.lifetime.spend);
 
     return {
-      latest: result.latest,
       items,
-      totalSpend,
-      yesterdaySpend,
+      totalSpend: items.reduce((sum, item) => sum + item.lifetime.spend, 0),
+      yesterdaySpend: items.reduce((sum, item) => sum + item.yesterday.spend, 0),
     };
-  }, [effectiveRows, threshold]);
+  }, [payload.items, threshold]);
+
+  async function copyHandles() {
+    const count = await copyLines(data.items.map((item) => toHandleOnly(item.ad)));
+    setCopied(`${count} handles copied`);
+    window.setTimeout(() => setCopied(""), 2000);
+  }
+
+  async function copyFullNames() {
+    const count = await copyLines(data.items.map((item) => item.ad));
+    setCopied(`${count} full names copied`);
+    window.setTimeout(() => setCopied(""), 2000);
+  }
 
   return (
     <div className="grid gap-3">
@@ -424,14 +232,14 @@ export function ZeroPurchaseTab() {
             </p>
             <h1 className="mt-1 text-2xl font-black">Live Zero-Purchase Ads</h1>
             <p className="mt-1 text-sm opacity-60">
-              Only ads that spent yesterday are shown. Lifetime purchases must be zero and lifetime spend must cross your selected threshold.
+              Server-side calculation from latest Google Sheet data. This tab no longer depends on stale browser performanceRows.
             </p>
           </div>
 
           <div className="grid grid-cols-3 gap-2 text-xs">
             <Kpi label="Ads" value={String(data.items.length)} tone={data.items.length > 0 ? "red" : "green"} />
             <Kpi label="Lifetime Waste" value={money(data.totalSpend)} tone={data.totalSpend > 0 ? "red" : "green"} />
-            <Kpi label="Yesterday Waste" value={money(data.yesterdaySpend)} tone={data.yesterdaySpend > 0 ? "red" : "green"} />
+            <Kpi label="Latest-Day Waste" value={money(data.yesterdaySpend)} tone={data.yesterdaySpend > 0 ? "red" : "green"} />
           </div>
         </div>
       </section>
@@ -466,287 +274,166 @@ export function ZeroPurchaseTab() {
               type="number"
               value={threshold}
               onChange={(e) => setThreshold(Math.max(0, Number(e.target.value || 0)))}
-              className="w-[120px] rounded-full border border-current/10 bg-transparent px-3 py-1.5 text-xs font-black outline-none"
-              placeholder="Custom"
+              className="w-[130px] rounded-full border border-current/10 bg-transparent px-3 py-1.5 text-xs font-black outline-none"
             />
           </div>
         </div>
       </section>
 
-      <section className="rounded-xl border border-current/10 bg-current/[0.025]">
-        <div className="flex items-center justify-between gap-3 border-b border-current/10 px-4 py-3">
+      <section className="rounded-xl border border-current/10 bg-current/[0.025] p-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full border border-current/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em]">
+              API Source
+            </span>
+            <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-emerald-600 dark:text-emerald-300">
+              Latest {payload.latest || "NA"}
+            </span>
+            <span className="rounded-full border border-current/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em]">
+              Rows {payload.rowCount.toLocaleString("en-IN")}
+            </span>
+            <span className="rounded-full border border-current/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em]">
+              Latest Rows {payload.latestRowCount.toLocaleString("en-IN")}
+            </span>
+            <span className="rounded-full border border-current/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em]">
+              Latest Spend Ads {payload.latestSpendAdCount.toLocaleString("en-IN")}
+            </span>
+            <span className="rounded-full border border-current/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em]">
+              Sheet {payload.sheetTab || "NA"}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={loadZeroPurchase}
+            className="inline-flex items-center gap-2 rounded-full border border-current/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.12em] hover:bg-current/10"
+          >
+            <RefreshCw className={status === "loading" ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} />
+            Refresh
+          </button>
+        </div>
+
+        {status === "error" ? (
+          <div className="mt-3 flex items-start gap-2 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-600 dark:text-red-300">
+            <AlertTriangle className="mt-0.5 h-4 w-4" />
+            <div>
+              <p className="font-black">Zero Purchase API failed</p>
+              <p className="mt-1 opacity-80">{error}</p>
+            </div>
+          </div>
+        ) : null}
+      </section>
+
+      <section className="overflow-hidden rounded-xl border border-current/10 bg-current/[0.025]">
+        <div className="flex flex-col gap-3 border-b border-current/10 px-4 py-3 md:flex-row md:items-center md:justify-between">
           <div>
             <h2 className="text-lg font-black">Live Ads With Zero Purchases</h2>
-            <p className="mt-1 max-w-3xl text-sm opacity-60">
-              Ads that spent on the latest available date, crossed {money(threshold)} lifetime spend, and still have 0 recorded purchases.
-              Review these first for pause, cap, or rebuild decisions.
+            <p className="mt-1 text-sm opacity-60">
+              Latest-day spending ads with lifetime purchases = 0 and lifetime spend above {money(threshold)}.
             </p>
           </div>
 
-          <span className="rounded-full border border-current/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em]">
-            Latest {data.latest || "NA"}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            {copied ? <span className="text-xs font-black text-emerald-600 dark:text-emerald-300">{copied}</span> : null}
+
+            <button
+              type="button"
+              onClick={copyHandles}
+              className="inline-flex items-center gap-2 rounded-full bg-[#0A84FF] px-3 py-2 text-[11px] font-black uppercase tracking-[0.12em] text-white"
+            >
+              <Copy className="h-3.5 w-3.5" />
+              Copy Handles
+            </button>
+
+            <button
+              type="button"
+              onClick={copyFullNames}
+              className="inline-flex items-center gap-2 rounded-full border border-current/10 px-3 py-2 text-[11px] font-black uppercase tracking-[0.12em]"
+            >
+              Full Names
+            </button>
+          </div>
         </div>
 
         <div className="divide-y divide-current/10">
-          {data.items.map((item) => (
-            <details key={item.key} className="group">
-              <summary className="creative-summary-row cursor-pointer list-none px-4 py-3 text-xs hover:bg-current/[0.035]">
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full border border-red-300 bg-red-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300">
-                      Zero Purchase
-                    </span>
-                    <span className="rounded-full border border-current/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] opacity-70">
-                      Y Spend {money(item.yesterday.spend)}
-                    </span>
+          {status === "loading" ? (
+            <div className="p-5 text-sm opacity-60">Loading server-side Zero Purchase data...</div>
+          ) : null}
+
+          {status !== "loading" &&
+            data.items.map((item) => (
+              <details key={item.key} className="group">
+                <summary className="grid cursor-pointer list-none items-center gap-3 px-4 py-3 text-xs hover:bg-current/[0.035] xl:grid-cols-[minmax(420px,1fr)_repeat(8,120px)_24px]">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full border border-red-300 bg-red-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300">
+                        Zero Purchase
+                      </span>
+                      <span className="rounded-full border border-current/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] opacity-70">
+                        Latest Spend {money(item.yesterday.spend)}
+                      </span>
+                    </div>
+
+                    <p className="mt-1 truncate text-sm font-black">{item.ad}</p>
+                    <p className="mt-0.5 truncate opacity-60">
+                      {item.campaign} · {item.adSet}
+                    </p>
                   </div>
 
-                  <p className="mt-1 truncate text-sm font-black">{item.ad}</p>
-                  <p className="mt-0.5 truncate opacity-60">
-                    {item.campaign} · {item.adSet}
-                  </p>
+                  <Metric label="Life Spend" value={money(item.lifetime.spend)} tone="red" />
+                  <Metric label="CPM" value={money(item.lifetime.cpm)} />
+                  <Metric label="CTR" value={pct(item.lifetime.ctr)} />
+                  <Metric label="CPA" value="No sale" tone="red" />
+                  <Metric label="ROAS" value={`${num(item.lifetime.roas)}x`} tone="red" />
+                  <Metric label="Last 7D Spend" value={money(item.last7.spend)} />
+                  <Metric label="Last 7D CPA" value="No sale" tone="red" />
+                  <Metric label="Last 7D ROAS" value={`${num(item.last7.roas)}x`} tone="red" />
+                  <ChevronDown className="h-4 w-4 opacity-45 transition group-open:rotate-180" />
+                </summary>
+
+                <div className="grid gap-3 px-4 pb-4 lg:grid-cols-3">
+                  <InfoBox
+                    title="Why This Is Critical"
+                    lines={[
+                      `This ad spent ${money(item.lifetime.spend)} lifetime with 0 purchases.`,
+                      `It spent ${money(item.yesterday.spend)} on latest date ${payload.latest || "NA"}.`,
+                      `Last 7D spend is ${money(item.last7.spend)} with 0 purchases.`,
+                    ]}
+                  />
+
+                  <InfoBox
+                    title="Metric Read"
+                    lines={[
+                      `CPM: ${money(item.lifetime.cpm)}`,
+                      `CTR: ${pct(item.lifetime.ctr)}`,
+                      `CPC: ${money(item.lifetime.cpc)}`,
+                      `Frequency: ${num(item.lifetime.freq)}`,
+                      `ROAS: ${num(item.lifetime.roas)}x`,
+                    ]}
+                  />
+
+                  <InfoBox
+                    title="Action"
+                    lines={[
+                      "Pause if creative has no strategic learning value.",
+                      "If CTR is strong, inspect PDP, offer, audience, and landing-page fit.",
+                      "If CPM is high and CTR is weak, rebuild the creative angle.",
+                    ]}
+                  />
                 </div>
+              </details>
+            ))}
 
-                <Metric label="Life Spend" value={money(item.lifetime.spend)} tone="red" />
-                <Metric label="CPM" value={money(item.lifetime.cpm)} />
-                <Metric label="CTR" value={pct(item.lifetime.ctr)} />
-                <Metric label="CPA" value="No sale" tone="red" />
-                <Metric label="ROAS" value="0.00x" tone="red" />
-                <Metric label="Last 7D Spend" value={money(item.last7.spend)} />
-                <Metric label="Last 7D CPA" value="No sale" tone="red" />
-                <Metric
-                  label="Last 7D ROAS"
-                  value={`${num(item.last7.roas)}x`}
-                  tone={item.last7.roas > 0 ? "green" : "red"}
-                />
-                <ChevronDown className="h-4 w-4 opacity-45 transition group-open:rotate-180" />
-              </summary>
-
-              <div className="grid gap-3 px-4 pb-4 lg:grid-cols-[1fr_1fr_440px]">
-                <InfoBox
-                  title="Why This Is Critical"
-                  lines={[
-                    `This ad spent ${money(item.lifetime.spend)} lifetime with 0 purchases.`,
-                    `It still spent yesterday, so it is not an old paused ad.`,
-                    `Yesterday spend was ${money(item.yesterday.spend)} with 0 purchases.`,
-                    "This should usually be paused, capped, or rebuilt before it consumes more delivery.",
-                  ]}
-                />
-
-                <InfoBox
-                  title="Metric Read"
-                  lines={[
-                    `CPM: ${money(item.lifetime.cpm)}`,
-                    `CTR: ${pct(item.lifetime.ctr)}`,
-                    `CPC: ${money(item.lifetime.cpc)}`,
-                    `Frequency: ${num(item.lifetime.freq)}x`,
-                    "CPA, AOV and ROAS are not valid because purchases are zero.",
-                  ]}
-                />
-
-                <TrendBox data={item.trend} />
-              </div>
-            </details>
-          ))}
-
-          {!data.items.length && (
+          {status !== "loading" && !data.items.length ? (
             <div className="p-5">
               <p className="font-black">No zero-purchase live ads found at this threshold.</p>
               <p className="mt-1 text-sm opacity-60">
-                Try lowering the lifetime spend threshold or check after tomorrow’s spend sync.
+                Try lowering the threshold. Remember: Akanksha lifetime spend is around ₹2,851, so it appears at ₹2,000 but not ₹3,000.
               </p>
             </div>
-          )}
+          ) : null}
         </div>
       </section>
     </div>
   );
 }
-
-function Kpi({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: string;
-  tone?: "red" | "green";
-}) {
-  return (
-    <div className="rounded-lg border border-current/10 bg-current/[0.035] px-3 py-2">
-      <p className="text-[9px] font-black uppercase tracking-[0.12em] opacity-45">{label}</p>
-      <p
-        className={
-          tone === "red"
-            ? "mt-0.5 font-black text-red-600 dark:text-red-300"
-            : tone === "green"
-            ? "mt-0.5 font-black text-emerald-600 dark:text-emerald-300"
-            : "mt-0.5 font-black"
-        }
-      >
-        {value}
-      </p>
-    </div>
-  );
-}
-
-function Metric({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: string;
-  tone?: "red" | "green";
-}) {
-  return (
-    <div className="min-w-0">
-      <p className="text-[9px] font-black uppercase tracking-[0.12em] opacity-45">{label}</p>
-      <p
-        className={
-          tone === "red"
-            ? "mt-0.5 font-black text-red-600 dark:text-red-300"
-            : tone === "green"
-            ? "mt-0.5 font-black text-emerald-600 dark:text-emerald-300"
-            : "mt-0.5 font-black"
-        }
-      >
-        {value}
-      </p>
-    </div>
-  );
-}
-
-function InfoBox({ title, lines }: { title: string; lines: string[] }) {
-  return (
-    <div className="rounded-lg border border-current/10 bg-current/[0.025] p-3">
-      <p className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.14em] opacity-55">
-        <AlertTriangle className="h-4 w-4" />
-        {title}
-      </p>
-      <ul className="mt-2 grid gap-1.5 text-xs leading-5 opacity-75">
-        {lines.map((line) => (
-          <li key={line}>• {line}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function TrendBox({ data }: { data: any[] }) {
-  const [visibleMetrics, setVisibleMetrics] = useState<Record<string, boolean>>({
-    spend: true,
-    cpm: false,
-    ctr: false,
-    cpa: true,
-    aov: false,
-    roas: true,
-  });
-
-  const metricOptions = [
-    { key: "spend", label: "Spend", axis: "money", color: "#0A84FF" },
-    { key: "cpm", label: "CPM", axis: "money", color: "#64748b" },
-    { key: "ctr", label: "CTR", axis: "rate", color: "#087f5b" },
-    { key: "cpa", label: "CPA", axis: "money", color: "#b42318" },
-    { key: "aov", label: "AOV", axis: "money", color: "#9333ea" },
-    { key: "roas", label: "ROAS", axis: "rate", color: "#f97316" },
-  ];
-
-  function toggleMetric(key: string) {
-    setVisibleMetrics((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-  }
-
-  const hasVisibleMetric = metricOptions.some((metric) => visibleMetrics[metric.key]);
-
-  return (
-    <div className="rounded-lg border border-current/10 bg-current/[0.025] p-3">
-      <div className="mb-2 flex flex-col gap-2">
-        <p className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.14em] opacity-55">
-          <LineChartIcon className="h-4 w-4" />
-          Select Metrics Trend
-        </p>
-
-        <div className="flex flex-wrap gap-2">
-          {metricOptions.map((metric) => (
-            <label
-              key={metric.key}
-              className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-current/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.08em]"
-            >
-              <input
-                type="checkbox"
-                checked={Boolean(visibleMetrics[metric.key])}
-                onChange={() => toggleMetric(metric.key)}
-                className="h-3 w-3 accent-[#0A84FF]"
-              />
-              <span>{metric.label}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <div className="h-[180px] w-full">
-        {hasVisibleMetric ? (
-          <ResponsiveContainer width="100%" height={180}>
-            <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.16)" />
-
-              <XAxis
-                dataKey="label"
-                tick={{ fontSize: 9, fill: "currentColor" }}
-                axisLine={false}
-                tickLine={false}
-                minTickGap={16}
-              />
-
-              <YAxis
-                yAxisId="money"
-                tick={{ fontSize: 9, fill: "currentColor" }}
-                axisLine={false}
-                tickLine={false}
-                width={54}
-                tickFormatter={(v) => `₹${Math.round(Number(v || 0))}`}
-              />
-
-              <YAxis
-                yAxisId="rate"
-                orientation="right"
-                tick={{ fontSize: 9, fill: "currentColor" }}
-                axisLine={false}
-                tickLine={false}
-                width={44}
-                tickFormatter={(v) => `${Math.round(Number(v || 0) * 100)}%`}
-              />
-
-              <Tooltip content={<CreativeTrendTooltip />} />
-
-              {metricOptions.map((metric) =>
-                visibleMetrics[metric.key] ? (
-                  <Line
-                    key={metric.key}
-                    yAxisId={metric.axis}
-                    type="monotone"
-                    dataKey={metric.key}
-                    name={metric.label}
-                    stroke={metric.color}
-                    strokeWidth={2}
-                    dot={false}
-                    connectNulls
-                  />
-                ) : null
-              )}
-            </LineChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="flex h-full items-center justify-center text-xs opacity-60">
-            Select at least one metric to view trend.
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
