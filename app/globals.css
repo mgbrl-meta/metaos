@@ -5630,3 +5630,64 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* Global Meta OS compact interaction polish */
+.metaos-app button,
+.metaos-app a,
+.metaos-app summary,
+.metaos-app [role="button"] {
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    opacity 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.metaos-app button:hover,
+.metaos-app a:hover,
+.metaos-app summary:hover,
+.metaos-app [role="button"]:hover {
+  transform: translateY(-1px);
+}
+
+.metaos-app button:active,
+.metaos-app a:active,
+.metaos-app summary:active,
+.metaos-app [role="button"]:active {
+  transform: translateY(0) scale(0.985);
+}
+
+.metaos-app details[open] > summary svg {
+  transform: rotate(180deg);
+}
+
+.metaos-app .rounded-xl,
+.metaos-app .rounded-2xl,
+.metaos-app .rounded-\$begin:math:display$1\\\.5rem\$end:math:display$ {
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.metaos-app .rounded-xl:hover,
+.metaos-app .rounded-2xl:hover,
+.metaos-app .rounded-\$begin:math:display$1\\\.5rem\$end:math:display$:hover {
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metaos-app *,
+  .metaos-app *::before,
+  .metaos-app *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+

@@ -104,58 +104,15 @@ export function AutoMetaSheetLoader() {
         ? "border-red-400/20 bg-red-400/10 text-red-300"
         : "border-[#0A84FF]/20 bg-[#0A84FF]/10 text-[#8cc8ff]";
 
+
   return (
-    <div className={`mb-5 rounded-[1.5rem] border px-4 py-3 ${base}`}>
-      <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-        <div className="flex min-w-0 items-start gap-3">
-          <div className="mt-0.5">
-            {status === "connected" ? (
-              <CheckCircle2 className="h-5 w-5" />
-            ) : status === "error" ? (
-              <AlertTriangle className="h-5 w-5" />
-            ) : (
-              <RefreshCw className="h-5 w-5 animate-spin" />
-            )}
-          </div>
-
-          <div className="min-w-0">
-            <p className="text-sm font-black leading-5">{message}</p>
-            <p className="mt-1 text-xs leading-5 opacity-70">
-              Source: Google Sheet · Auto-loads on every dashboard open
-              {latestDate ? ` · Data latest ${latestDate}` : ""}
-              {lastLoadedAt ? ` · Last sync ${formatSyncTime(lastLoadedAt)}` : ""}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          {status === "connected" && (
-            <span className="inline-flex items-center gap-1 rounded-full border border-current/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.12em]">
-              <Wifi className="h-3.5 w-3.5" />
-              Live Source
-            </span>
-          )}
-
-          {latestDate && (
-            <span className="rounded-full border border-current/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.12em]">
-              Latest {latestDate}
-            </span>
-          )}
-
-          {rowCount > 0 && (
-            <span className="rounded-full border border-current/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.12em]">
-              {rowCount.toLocaleString()} Rows
-            </span>
-          )}
-
-          <button
-            onClick={loadMetaSheet}
-            className="rounded-full border border-current/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.12em] hover:bg-current/10"
-          >
-            Refresh
-          </button>
-        </div>
-      </div>
-    </div>
+    <div
+      className="hidden"
+      data-meta-sheet-loader="true"
+      data-meta-sheet-status={status}
+      data-meta-sheet-message={message}
+      data-meta-sheet-row-count={rowCount}
+      data-meta-sheet-last-loaded-at={lastLoadedAt}
+    />
   );
 }
