@@ -407,21 +407,7 @@ const RATE_COLUMNS = [
   { key: "clickToPurchase", label: "Purchase / Clicks" },
 ];
 
-function MetricValueCell({
-  label,
-  current,
-}: {
-  label: string;
-  current: number;
-}) {
-  return (
-    <td className="px-3 py-3 align-top">
-      <p className="font-black">{formatMetric(label, current)}</p>
-    </td>
-  );
-}
-
-function MetricMultipleCell({
+function CompactMetricCell({
   label,
   current,
   previous,
@@ -435,27 +421,13 @@ function MetricMultipleCell({
   const tone = changeTone(label, chg);
 
   return (
-    <td className={`px-3 py-3 align-top font-black ${toneClass(tone)}`}>
-      {formatMultiple(mult)}
-    </td>
-  );
-}
-
-function MetricChangeCell({
-  label,
-  current,
-  previous,
-}: {
-  label: string;
-  current: number;
-  previous: number;
-}) {
-  const chg = changePct(current, previous);
-  const tone = changeTone(label, chg);
-
-  return (
-    <td className={`px-3 py-3 align-top font-black ${toneClass(tone)}`}>
-      {formatChange(chg)}
+    <td className="px-2 py-3 align-middle">
+      <p className="text-[12px] font-black leading-4">{formatMetric(label, current)}</p>
+      <div className={`mt-1 flex items-center gap-1.5 text-[10px] font-black leading-3 ${toneClass(tone)}`}>
+        <span>{formatMultiple(mult)}</span>
+        <span className="opacity-45">|</span>
+        <span>{formatChange(chg)}</span>
+      </div>
     </td>
   );
 }
@@ -464,6 +436,28 @@ function MetricSplitCells({
   label,
   current,
   previous,
+}: {
+  label: string;
+  current: number;
+  previous: number;
+}) {
+  const mult = multiple(current, previous);
+  const chg = changePct(current, previous);
+  const tone = changeTone(label, chg);
+
+  return (
+    <>
+      <td className="px-3 py-3 align-top">
+        <p className="font-black">{formatMetric(label, current)}</p>
+      </td>
+      <td className={`px-3 py-3 align-top font-black ${toneClass(tone)}`}>
+        {formatMultiple(mult)}
+      </td>
+      <td className={`px-3 py-3 align-top font-black ${toneClass(tone)}`}>
+        {formatChange(chg)}
+      </td>
+    </>
+  );
 }: {
   label: string;
   current: number;
@@ -498,7 +492,7 @@ function WeeklyGroupedTable({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[2500px] table-fixed border-collapse text-left text-[11px]">
+          <table className="w-full table-fixed border-collapse text-left text-[11px]">
             <thead className="monthly-table-head">
               <tr>
                 <th className="monthly-table-th">Week</th>
@@ -680,18 +674,14 @@ export function FunnelTab() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[2500px] table-fixed border-collapse text-left text-[11px]">
+          <table className="w-full table-fixed border-collapse text-left text-[11px]">
             <thead className="monthly-table-head sticky top-0 z-10">
               <tr>
-                <th className="monthly-table-th sticky left-0 z-[2] w-[140px] bg-[#13233A]">Month</th>
+                <th className="monthly-table-th w-[110px]">Month</th>
                 {SUMMARY_COLUMNS.map((column) => (
-                  <>
-                    <th key={`${column.key}-value`} className="monthly-table-th">{column.label}</th>
-                    <th key={`${column.key}-multiple`} className="monthly-table-th">Multiple</th>
-                    <th key={`${column.key}-change`} className="monthly-table-th">%</th>
-                  </>
+                  <th key={column.key} className="monthly-table-th">{column.label}</th>
                 ))}
-                <th className="monthly-table-th w-[70px] text-center"> </th>
+                <th className="monthly-table-th w-[44px] text-center"> </th>
               </tr>
             </thead>
 
@@ -710,12 +700,12 @@ export function FunnelTab() {
                           : "cursor-pointer border-b border-current/10 hover:bg-current/[0.035]"
                       }
                     >
-                      <td className="sticky left-0 z-[1] bg-[#101418] px-3 py-3 align-middle">
-                        <p className="text-sm font-black">{row.label}</p>
+                      <td className="px-2 py-3 align-middle">
+                        <p className="text-[12px] font-black leading-4">{row.label}</p>
                       </td>
 
                       {SUMMARY_COLUMNS.map((column) => (
-                        <MetricSplitCells
+                        <CompactMetricCell
                           key={column.key}
                           label={column.label}
                           current={getMetricValue(row.current, column.key)}
