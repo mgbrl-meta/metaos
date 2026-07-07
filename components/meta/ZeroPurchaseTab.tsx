@@ -334,15 +334,15 @@ export function ZeroPurchaseTab() {
   const [threshold, setThreshold] = useState(3000);
 
   const data = useMemo(() => {
-    const items = buildZeroPurchaseItems(rows || [], threshold);
+    const result = buildZeroPurchaseItems(rows || [], threshold);
+    const items = result.items;
 
     const totalSpend = items.reduce((s, x) => s + x.lifetime.spend, 0);
     const yesterdaySpend = items.reduce((s, x) => s + x.yesterday.spend, 0);
-    const latest = latestDate(rows || []);
 
     return {
+      latest: result.latest,
       items,
-      latest,
       totalSpend,
       yesterdaySpend,
     };
