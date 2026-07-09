@@ -42,25 +42,9 @@ export function MetaOSV2RefreshButton() {
         throw new Error("Meta sheet returned 0 rows.");
       }
 
-      /**
-       * Clean V2 bridge:
-       * Sheet API returns raw rows.
-       * Existing V2 app/store path normalizes rows before engines use them.
-       */
       useMetaStore.setState({
         performanceRows: rows as any,
       });
-
-      window.dispatchEvent(
-        new CustomEvent("metaos:v2:sheet-refreshed", {
-          detail: {
-            rowCount: rows.length,
-            totalRowCount: payload.totalRowCount || payload.rowCount || rows.length,
-            latestDate: payload.latestDate || "",
-            source: payload.source || "google_sheet",
-          },
-        })
-      );
 
       setStatus(`${rows.length.toLocaleString()} rows loaded`);
     } catch (error) {
@@ -74,15 +58,15 @@ export function MetaOSV2RefreshButton() {
 
   return (
     <div
-      className="metaos-v2-refresh-button"
       style={{
         position: "fixed",
-        top: 14,
-        right: 328,
-        zIndex: 9999,
+        top: 16,
+        right: 360,
+        zIndex: 2147483647,
         display: "flex",
         alignItems: "center",
         gap: 8,
+        pointerEvents: "auto",
       }}
     >
       <button
@@ -91,16 +75,16 @@ export function MetaOSV2RefreshButton() {
         disabled={loading}
         style={{
           height: 32,
-          padding: "0 12px",
+          padding: "0 13px",
           borderRadius: 10,
-          border: "1px solid rgba(148, 163, 184, 0.45)",
+          border: "1px solid rgba(14, 165, 233, 0.65)",
           background: loading ? "#64748b" : "#0ea5e9",
           color: "#ffffff",
           fontSize: 12,
-          fontWeight: 800,
+          fontWeight: 900,
           letterSpacing: "0.04em",
           cursor: loading ? "not-allowed" : "pointer",
-          boxShadow: "0 6px 18px rgba(14, 165, 233, 0.22)",
+          boxShadow: "0 8px 20px rgba(14, 165, 233, 0.25)",
         }}
       >
         {loading ? "REFRESHING..." : "REFRESH DATA"}
@@ -108,16 +92,16 @@ export function MetaOSV2RefreshButton() {
 
       {status ? (
         <span
+          title={status}
           style={{
-            maxWidth: 220,
+            maxWidth: 170,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
             fontSize: 11,
-            fontWeight: 700,
-            color: "var(--metaos-readable-muted, #64748b)",
+            fontWeight: 800,
+            color: "var(--metaos-readable-muted, #94a3b8)",
           }}
-          title={status}
         >
           {status}
         </span>
