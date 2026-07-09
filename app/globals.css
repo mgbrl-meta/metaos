@@ -5982,3 +5982,80 @@ html:not(.dark) body:not(.dark) main :is(
 ) {
   color: #f8fafc !important;
 }
+
+/* METAOS V2 TOP SHEET STATUS — beside SHEET LIVE */
+
+.metaos-v2-top-sheet-status {
+  position: fixed;
+  top: 15px;
+  right: 318px;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.metaos-v2-sheet-chip {
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.42);
+  background: rgba(15, 23, 42, 0.76);
+  color: #f8fafc !important;
+  padding: 0 12px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  backdrop-filter: blur(12px);
+}
+
+.metaos-v2-sheet-chip,
+.metaos-v2-sheet-chip * {
+  color: #f8fafc !important;
+}
+
+.metaos-v2-sheet-chip-green {
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.48);
+  background: rgba(6, 78, 59, 0.52);
+}
+
+.metaos-v2-sheet-chip-green * {
+  color: #34d399 !important;
+}
+
+html:not(.dark) body:not(.dark) .metaos-v2-sheet-chip {
+  background: rgba(255, 255, 255, 0.94);
+  color: #0f172a !important;
+}
+
+html:not(.dark) body:not(.dark) .metaos-v2-sheet-chip * {
+  color: #0f172a !important;
+}
+
+html:not(.dark) body:not(.dark) .metaos-v2-sheet-chip-green {
+  background: rgba(236, 253, 245, 0.96);
+  color: #047857 !important;
+  border-color: rgba(16, 185, 129, 0.32);
+}
+
+html:not(.dark) body:not(.dark) .metaos-v2-sheet-chip-green * {
+  color: #047857 !important;
+}
+
+@media (max-width: 1440px) {
+  .metaos-v2-top-sheet-status {
+    right: 290px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .metaos-v2-top-sheet-status {
+    top: 54px;
+    right: 16px;
+  }
+}
