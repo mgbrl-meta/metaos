@@ -1,20 +1,15 @@
-# Python
-__pycache__/
-*.pyc
-*.pyo
-.venv/
-venv/
-env/
+node_modules/
+.next/
+out/
+dist/
 
-# IDE
-.vscode/
-.idea/
-
-# Secrets (extra safety — never commit JSON keys)
-*.json
 .env
-.env.local
+.env.*
+!.env.example
 
-# OS
+*.log
 .DS_Store
-Thumbs.db
+
+.metaos-backups/
+.metaos-baselines/
+.vercel/

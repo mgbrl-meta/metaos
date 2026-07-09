@@ -1,0 +1,476 @@
+/* =========================================================
+   METAOS READABILITY CONTRACT
+   Purpose:
+   - Separate readability from dashboard layout.
+   - Do not redesign tabs.
+   - Enforce readable text on dark and light surfaces.
+   - Preserve status colors and blue action buttons.
+   ========================================================= */
+
+/* -----------------------------
+   1. Theme Tokens
+------------------------------ */
+
+[data-os-root="true"],
+.metaos-app {
+  --read-blue: #0a84ff;
+
+  --read-good-light: #047857;
+  --read-bad-light: #b42318;
+  --read-warn-light: #b45309;
+
+  --read-good-dark: #34d399;
+  --read-bad-dark: #ff6b5f;
+  --read-warn-dark: #fbbf24;
+}
+
+[data-os-root="true"][data-os-theme="light"],
+.metaos-app.metaos-light {
+  --read-page: #f6f7f4;
+  --read-surface: #ffffff;
+  --read-surface-soft: #f1f2ef;
+  --read-surface-elevated: #ffffff;
+  --read-border: rgba(17, 24, 39, 0.14);
+
+  --read-text: #0f172a;
+  --read-text-strong: #020617;
+  --read-text-muted: rgba(15, 23, 42, 0.68);
+  --read-text-soft: rgba(15, 23, 42, 0.52);
+
+  --read-good: var(--read-good-light);
+  --read-bad: var(--read-bad-light);
+  --read-warn: var(--read-warn-light);
+
+  --read-table-head-bg: #13223a;
+  --read-table-head-text: #ffffff;
+}
+
+[data-os-root="true"][data-os-theme="dark"],
+.metaos-app.metaos-dark,
+.os-dark [data-os-root="true"],
+.os-dark .metaos-app {
+  --read-page: #050607;
+  --read-surface: #101318;
+  --read-surface-soft: #171b22;
+  --read-surface-elevated: #111827;
+  --read-border: rgba(255, 255, 255, 0.14);
+
+  --read-text: #f8fafc;
+  --read-text-strong: #ffffff;
+  --read-text-muted: rgba(248, 250, 252, 0.72);
+  --read-text-soft: rgba(248, 250, 252, 0.58);
+
+  --read-good: var(--read-good-dark);
+  --read-bad: var(--read-bad-dark);
+  --read-warn: var(--read-warn-dark);
+
+  --read-table-head-bg: #13223a;
+  --read-table-head-text: #ffffff;
+}
+
+/* -----------------------------
+   2. Root Readability
+------------------------------ */
+
+[data-os-root="true"],
+.metaos-app {
+  background: var(--read-page) !important;
+  color: var(--read-text) !important;
+}
+
+[data-os-root="true"] main,
+.metaos-app main {
+  color: var(--read-text) !important;
+}
+
+/* -----------------------------
+   3. Text Contract
+   Keeps all normal text readable.
+------------------------------ */
+
+[data-os-root="true"] h1,
+[data-os-root="true"] h2,
+[data-os-root="true"] h3,
+[data-os-root="true"] h4,
+[data-os-root="true"] h5,
+[data-os-root="true"] h6,
+[data-os-root="true"] p,
+[data-os-root="true"] div,
+[data-os-root="true"] span,
+[data-os-root="true"] label,
+[data-os-root="true"] summary,
+[data-os-root="true"] button,
+[data-os-root="true"] td,
+[data-os-root="true"] th,
+.metaos-app h1,
+.metaos-app h2,
+.metaos-app h3,
+.metaos-app h4,
+.metaos-app h5,
+.metaos-app h6,
+.metaos-app p,
+.metaos-app div,
+.metaos-app span,
+.metaos-app label,
+.metaos-app summary,
+.metaos-app button,
+.metaos-app td,
+.metaos-app th {
+  color: inherit;
+}
+
+/* Text utilities should map to readable tokens inside MetaOS only. */
+[data-os-root="true"] .text-black,
+[data-os-root="true"] .text-slate-950,
+[data-os-root="true"] .text-slate-900,
+[data-os-root="true"] .text-slate-800,
+[data-os-root="true"] .text-neutral-950,
+[data-os-root="true"] .text-neutral-900,
+.metaos-app .text-black,
+.metaos-app .text-slate-950,
+.metaos-app .text-slate-900,
+.metaos-app .text-slate-800,
+.metaos-app .text-neutral-950,
+.metaos-app .text-neutral-900 {
+  color: var(--read-text-strong) !important;
+}
+
+[data-os-root="true"] .text-slate-700,
+[data-os-root="true"] .text-slate-600,
+[data-os-root="true"] .text-slate-500,
+[data-os-root="true"] .text-neutral-700,
+[data-os-root="true"] .text-neutral-600,
+[data-os-root="true"] .text-neutral-500,
+.metaos-app .text-slate-700,
+.metaos-app .text-slate-600,
+.metaos-app .text-slate-500,
+.metaos-app .text-neutral-700,
+.metaos-app .text-neutral-600,
+.metaos-app .text-neutral-500 {
+  color: var(--read-text-muted) !important;
+}
+
+[data-os-root="true"] .text-slate-400,
+[data-os-root="true"] .text-slate-300,
+[data-os-root="true"] .text-white\/30,
+[data-os-root="true"] .text-white\/35,
+[data-os-root="true"] .text-white\/40,
+[data-os-root="true"] .text-white\/45,
+[data-os-root="true"] .text-white\/50,
+[data-os-root="true"] .text-white\/55,
+[data-os-root="true"] .text-white\/60,
+.metaos-app .text-slate-400,
+.metaos-app .text-slate-300,
+.metaos-app .text-white\/30,
+.metaos-app .text-white\/35,
+.metaos-app .text-white\/40,
+.metaos-app .text-white\/45,
+.metaos-app .text-white\/50,
+.metaos-app .text-white\/55,
+.metaos-app .text-white\/60 {
+  color: var(--read-text-muted) !important;
+}
+
+/* Opacity-based muted text must remain readable. */
+[data-os-root="true"] .opacity-30,
+[data-os-root="true"] .opacity-35,
+[data-os-root="true"] .opacity-40,
+[data-os-root="true"] .opacity-45,
+[data-os-root="true"] .opacity-50,
+[data-os-root="true"] .opacity-55,
+[data-os-root="true"] .opacity-60,
+[data-os-root="true"] .opacity-65,
+[data-os-root="true"] .opacity-70,
+[data-os-root="true"] .opacity-75,
+.metaos-app .opacity-30,
+.metaos-app .opacity-35,
+.metaos-app .opacity-40,
+.metaos-app .opacity-45,
+.metaos-app .opacity-50,
+.metaos-app .opacity-55,
+.metaos-app .opacity-60,
+.metaos-app .opacity-65,
+.metaos-app .opacity-70,
+.metaos-app .opacity-75 {
+  opacity: 1 !important;
+  color: var(--read-text-muted) !important;
+}
+
+/* -----------------------------
+   4. Surface Contract
+   Cards/panels/tables stay readable.
+------------------------------ */
+
+[data-os-root="true"] main section,
+[data-os-root="true"] main article,
+[data-os-root="true"] main details,
+[data-os-root="true"] main summary,
+[data-os-root="true"] .metaos-card,
+[data-os-root="true"] .metaos-table-wrap,
+[data-os-root="true"] .rounded-xl,
+[data-os-root="true"] .rounded-2xl,
+[data-os-root="true"] .rounded-3xl,
+.metaos-app main section,
+.metaos-app main article,
+.metaos-app main details,
+.metaos-app main summary,
+.metaos-app .metaos-card,
+.metaos-app .metaos-table-wrap,
+.metaos-app .rounded-xl,
+.metaos-app .rounded-2xl,
+.metaos-app .rounded-3xl {
+  color: var(--read-text) !important;
+  border-color: var(--read-border) !important;
+}
+
+/* Light/dark surface correction without changing structure. */
+[data-os-root="true"][data-os-theme="light"] main section,
+[data-os-root="true"][data-os-theme="light"] main article,
+[data-os-root="true"][data-os-theme="light"] main details,
+[data-os-root="true"][data-os-theme="light"] .metaos-card,
+[data-os-root="true"][data-os-theme="light"] .metaos-table-wrap,
+.metaos-app.metaos-light main section,
+.metaos-app.metaos-light main article,
+.metaos-app.metaos-light main details,
+.metaos-app.metaos-light .metaos-card,
+.metaos-app.metaos-light .metaos-table-wrap {
+  background-color: var(--read-surface) !important;
+}
+
+[data-os-root="true"][data-os-theme="dark"] main section,
+[data-os-root="true"][data-os-theme="dark"] main article,
+[data-os-root="true"][data-os-theme="dark"] main details,
+[data-os-root="true"][data-os-theme="dark"] .metaos-card,
+[data-os-root="true"][data-os-theme="dark"] .metaos-table-wrap,
+.metaos-app.metaos-dark main section,
+.metaos-app.metaos-dark main article,
+.metaos-app.metaos-dark main details,
+.metaos-app.metaos-dark .metaos-card,
+.metaos-app.metaos-dark .metaos-table-wrap {
+  background-color: var(--read-surface) !important;
+}
+
+/* Header should always match theme. */
+[data-os-root="true"] header,
+.metaos-app header {
+  background-color: var(--read-surface) !important;
+  color: var(--read-text) !important;
+  border-color: var(--read-border) !important;
+}
+
+[data-os-root="true"] header *,
+.metaos-app header * {
+  color: inherit;
+}
+
+/* -----------------------------
+   5. Table Contract
+------------------------------ */
+
+[data-os-root="true"] table,
+.metaos-app table {
+  background: var(--read-surface) !important;
+  color: var(--read-text) !important;
+}
+
+[data-os-root="true"] thead,
+[data-os-root="true"] thead tr,
+[data-os-root="true"] thead th,
+[data-os-root="true"] .monthly-table-head,
+[data-os-root="true"] .monthly-table-head tr,
+[data-os-root="true"] .monthly-table-head th,
+[data-os-root="true"] .monthly-table-th,
+.metaos-app thead,
+.metaos-app thead tr,
+.metaos-app thead th,
+.metaos-app .monthly-table-head,
+.metaos-app .monthly-table-head tr,
+.metaos-app .monthly-table-head th,
+.metaos-app .monthly-table-th {
+  background: var(--read-table-head-bg) !important;
+  color: var(--read-table-head-text) !important;
+  opacity: 1 !important;
+}
+
+[data-os-root="true"] thead *,
+[data-os-root="true"] .monthly-table-head *,
+[data-os-root="true"] .monthly-table-th *,
+.metaos-app thead *,
+.metaos-app .monthly-table-head *,
+.metaos-app .monthly-table-th * {
+  color: var(--read-table-head-text) !important;
+  opacity: 1 !important;
+}
+
+[data-os-root="true"] tbody,
+[data-os-root="true"] tbody tr,
+[data-os-root="true"] tbody td,
+.metaos-app tbody,
+.metaos-app tbody tr,
+.metaos-app tbody td {
+  color: var(--read-text) !important;
+  border-color: var(--read-border) !important;
+}
+
+/* Zebra/soft rows remain readable. */
+[data-os-root="true"] tbody tr:nth-child(even),
+.metaos-app tbody tr:nth-child(even) {
+  background-color: color-mix(in srgb, var(--read-surface-soft) 68%, transparent) !important;
+}
+
+/* -----------------------------
+   6. Inputs / Buttons
+------------------------------ */
+
+[data-os-root="true"] input,
+[data-os-root="true"] select,
+[data-os-root="true"] textarea,
+.metaos-app input,
+.metaos-app select,
+.metaos-app textarea {
+  background: var(--read-surface-elevated) !important;
+  color: var(--read-text) !important;
+  border-color: var(--read-border) !important;
+}
+
+[data-os-root="true"] input::placeholder,
+[data-os-root="true"] textarea::placeholder,
+.metaos-app input::placeholder,
+.metaos-app textarea::placeholder {
+  color: var(--read-text-soft) !important;
+}
+
+/* Blue primary actions must stay white. */
+[data-os-root="true"] .bg-\[\#0A84FF\],
+[data-os-root="true"] .bg-\[\#0A84FF\] *,
+[data-os-root="true"] button.bg-\[\#0A84FF\],
+[data-os-root="true"] button.bg-\[\#0A84FF\] *,
+.metaos-app .bg-\[\#0A84FF\],
+.metaos-app .bg-\[\#0A84FF\] *,
+.metaos-app button.bg-\[\#0A84FF\],
+.metaos-app button.bg-\[\#0A84FF\] * {
+  background-color: var(--read-blue) !important;
+  color: #ffffff !important;
+}
+
+/* White active buttons on dark headers must not create unreadable white text. */
+[data-os-root="true"][data-os-theme="dark"] button.bg-white,
+[data-os-root="true"][data-os-theme="dark"] .bg-white,
+.metaos-app.metaos-dark button.bg-white,
+.metaos-app.metaos-dark .bg-white {
+  color: #020617 !important;
+}
+
+/* -----------------------------
+   7. Status Colors
+   Preserve semantic meaning.
+------------------------------ */
+
+[data-os-root="true"] .text-red-300,
+[data-os-root="true"] .text-red-400,
+[data-os-root="true"] .text-red-500,
+[data-os-root="true"] .text-red-600,
+[data-os-root="true"] .text-red-700,
+[data-os-root="true"] .text-rose-300,
+[data-os-root="true"] .text-rose-400,
+[data-os-root="true"] .text-rose-500,
+[data-os-root="true"] .text-rose-600,
+[data-os-root="true"] .text-rose-700,
+.metaos-app .text-red-300,
+.metaos-app .text-red-400,
+.metaos-app .text-red-500,
+.metaos-app .text-red-600,
+.metaos-app .text-red-700,
+.metaos-app .text-rose-300,
+.metaos-app .text-rose-400,
+.metaos-app .text-rose-500,
+.metaos-app .text-rose-600,
+.metaos-app .text-rose-700 {
+  color: var(--read-bad) !important;
+}
+
+[data-os-root="true"] .text-emerald-300,
+[data-os-root="true"] .text-emerald-400,
+[data-os-root="true"] .text-emerald-500,
+[data-os-root="true"] .text-emerald-600,
+[data-os-root="true"] .text-emerald-700,
+[data-os-root="true"] .text-green-300,
+[data-os-root="true"] .text-green-400,
+[data-os-root="true"] .text-green-500,
+[data-os-root="true"] .text-green-600,
+[data-os-root="true"] .text-green-700,
+.metaos-app .text-emerald-300,
+.metaos-app .text-emerald-400,
+.metaos-app .text-emerald-500,
+.metaos-app .text-emerald-600,
+.metaos-app .text-emerald-700,
+.metaos-app .text-green-300,
+.metaos-app .text-green-400,
+.metaos-app .text-green-500,
+.metaos-app .text-green-600,
+.metaos-app .text-green-700 {
+  color: var(--read-good) !important;
+}
+
+[data-os-root="true"] .text-amber-200,
+[data-os-root="true"] .text-amber-300,
+[data-os-root="true"] .text-amber-400,
+[data-os-root="true"] .text-amber-500,
+[data-os-root="true"] .text-amber-600,
+[data-os-root="true"] .text-yellow-300,
+[data-os-root="true"] .text-yellow-400,
+[data-os-root="true"] .text-yellow-500,
+.metaos-app .text-amber-200,
+.metaos-app .text-amber-300,
+.metaos-app .text-amber-400,
+.metaos-app .text-amber-500,
+.metaos-app .text-amber-600,
+.metaos-app .text-yellow-300,
+.metaos-app .text-yellow-400,
+.metaos-app .text-yellow-500 {
+  color: var(--read-warn) !important;
+}
+
+/* -----------------------------
+   8. Charts / Tooltips
+------------------------------ */
+
+[data-os-root="true"] .recharts-text,
+[data-os-root="true"] .recharts-cartesian-axis-tick-value,
+.metaos-app .recharts-text,
+.metaos-app .recharts-cartesian-axis-tick-value {
+  fill: var(--read-text-muted) !important;
+  color: var(--read-text-muted) !important;
+  opacity: 1 !important;
+}
+
+[data-os-root="true"] .recharts-cartesian-grid line,
+.metaos-app .recharts-cartesian-grid line {
+  stroke: var(--read-border) !important;
+  stroke-opacity: 1 !important;
+}
+
+.recharts-tooltip-wrapper,
+.recharts-tooltip-wrapper *,
+.recharts-default-tooltip,
+.recharts-default-tooltip *,
+.recharts-tooltip-item,
+.recharts-tooltip-label,
+.scatter-tooltip-card,
+.scatter-tooltip-card * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.recharts-default-tooltip,
+.scatter-tooltip-card {
+  background: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 12px !important;
+}
+
+/* -----------------------------
+   9. Safety: Never affect non-MetaOS pages.
+   All broad rules above are scoped to:
+   [data-os-root="true"] or .metaos-app
+------------------------------ */
