@@ -22,12 +22,53 @@ function getPrivateKey() {
   return raw.replace(/\\n/g, "\n");
 }
 
-export async function GET() {
+function toDateValue(value: unknown) {
+  const raw = String(value || "").trim();
+  if (!raw) return 0;
+
+  const parsed = new Date(raw);
+  const time = parsed.getTime();
+
+  return Number.isFinite(time) ? time : 0;
+}
+
+function getRowDate(row: Record<string, unknown>) {
+  return (
+    toDateValue(row.Day) ||
+    toDateValue(row.day) ||
+    toDateValue(row["Reporting starts"]) ||
+    toDateValue(row["Reporting Starts"]) ||
+    toDateValue(row["reporting starts"])
+  );
+}
+
+function filterRecentRows(rows: Record<string, unknown>[], latestDays: number) {
+  const datedRows = rows
+    .map((row) => ({ row, time: getRowDate(row) }))
+    .filter((item) => item.time > 0);
+
+  if (!datedRows.length) return rows;
+
+  const latestTime = Math.max(...datedRows.map((item) => item.time));
+  const cutoff = latestTime - latestDays * 24 * 60 * 60 * 1000;
+
+  return datedRows
+    .filter((item) => item.time >= cutoff)
+    .map((item) => item.row);
+}
+
+export async function GET(request: Request) {
   const startedAt = Date.now();
 
   try {
+    const url = new URL(request.url);
+
+    const full = url.searchParams.get("full") === "1";
+    const latestDays = Number(url.searchParams.get("days") || "120");
+    const hardLimit = Number(url.searchParams.get("limit") || "20000");
+
     const sheetId = process.env.META_SHEET_ID;
-    const sheetTab = process.env.META_SHEET_TAB || "Meta_Raw_Data";
+    const sheetTab = process.env.META_SHEET_TAB || "meta_ads_raw_data";
     const clientEmail = process.env.GCP_CLIENT_EMAIL;
     const privateKey = getPrivateKey();
 
@@ -63,7 +104,7 @@ export async function GET() {
       return json({
         ok: false,
         source: "google_sheet",
-        error: "GCP_PRIVATE_KEY does not look valid. It must include BEGIN PRIVATE KEY and END PRIVATE KEY.",
+        error: "GCP_PRIVATE_KEY does not look valid.",
         envStatus,
       }, 500);
     }
@@ -75,7 +116,6 @@ export async function GET() {
     });
 
     const sheets = google.sheets({ version: "v4", auth });
-
     const range = `${sheetTab}!A:ZZ`;
 
     const response = await withTimeout(
@@ -90,7 +130,7 @@ export async function GET() {
     const values = response.data.values || [];
     const [headers = [], ...bodyRows] = values;
 
-    const rows = bodyRows
+    const allRows = bodyRows
       .filter((row) => row.some((cell) => String(cell || "").trim()))
       .map((row) => {
         const item: Record<string, unknown> = {};
@@ -102,12 +142,25 @@ export async function GET() {
         return item;
       });
 
+    const recentRows = full ? allRows : filterRecentRows(allRows, latestDays);
+    const rows = full ? recentRows : recentRows.slice(-hardLimit);
+
+    const latestDateMs = Math.max(0, ...allRows.map(getRowDate));
+    const latestDate = latestDateMs
+      ? new Date(latestDateMs).toISOString().slice(0, 10)
+      : "";
+
     return json({
       ok: true,
       source: "google_sheet",
       sheetId,
       sheetTab,
       range,
+      latestDate,
+      full,
+      latestDays: full ? null : latestDays,
+      totalRowCount: allRows.length,
+      returnedRowCount: rows.length,
       rowCount: rows.length,
       headerCount: headers.length,
       headers,
@@ -122,7 +175,7 @@ export async function GET() {
       source: "google_sheet",
       error: message,
       timingMs: Date.now() - startedAt,
-      hint: "Check Vercel env variables, service-account private key formatting, and Google Sheet sharing access.",
+      hint: "Check Vercel env variables, service-account access, sheet tab name, and payload size.",
     }, 500);
   }
 }
