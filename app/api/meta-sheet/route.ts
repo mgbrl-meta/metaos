@@ -63,9 +63,9 @@ export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
 
-    const full = url.searchParams.get("full") === "1";
-    const latestDays = Number(url.searchParams.get("days") || "120");
-    const hardLimit = Number(url.searchParams.get("limit") || "20000");
+    const full = url.searchParams.get("full") !== "0";
+    const latestDays = Number(url.searchParams.get("days") || "730");
+    const hardLimit = Number(url.searchParams.get("limit") || "1000000");
 
     const sheetId = process.env.META_SHEET_ID;
     const sheetTab = process.env.META_SHEET_TAB || "meta_ads_raw_data";
@@ -143,7 +143,7 @@ export async function GET(request: Request) {
       });
 
     const recentRows = full ? allRows : filterRecentRows(allRows, latestDays);
-    const rows = full ? recentRows : recentRows.slice(-hardLimit);
+    const rows = full ? allRows : recentRows.slice(-hardLimit);
 
     const latestDateMs = Math.max(0, ...allRows.map(getRowDate));
     const latestDate = latestDateMs

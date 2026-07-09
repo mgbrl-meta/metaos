@@ -25,7 +25,7 @@ export function MetaOSV2RefreshButton() {
     setStatus("Loading...");
 
     try {
-      const response = await fetch("/api/meta-sheet?days=120&limit=20000", {
+      const response = await fetch("/api/meta-sheet?full=1", {
         method: "GET",
         cache: "no-store",
       });
