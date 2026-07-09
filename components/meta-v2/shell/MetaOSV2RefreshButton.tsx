@@ -48,7 +48,7 @@ export function MetaOSV2RefreshButton() {
        * Existing V2 app/store path normalizes rows before engines use them.
        */
       useMetaStore.setState({
-        performanceRows: rows,
+        performanceRows: rows as any,
       });
 
       window.dispatchEvent(
