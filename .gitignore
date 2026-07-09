@@ -13,3 +13,10 @@ dist/
 .metaos-backups/
 .metaos-baselines/
 .vercel/
+
+# Local repair / generated artifacts
+.repair-backups/
+*.zip
+tsconfig.tsbuildinfo
+*.backup*
+*.before-*
