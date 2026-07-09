@@ -20,3 +20,5 @@ dist/
 tsconfig.tsbuildinfo
 *.backup*
 *.before-*
+.vercel
+.env*
