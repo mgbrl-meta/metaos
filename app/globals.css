@@ -5691,3 +5691,294 @@ html:not(.dark):not(.os-dark) .metaos-app .monthly-chart-tooltip * {
   }
 }
 
+
+/* METAOS V2 TOP DATA CONTROLS */
+
+.metaos-v2-top-data-controls {
+  position: fixed;
+  top: 16px;
+  right: 318px;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.metaos-v2-top-refresh-btn,
+.metaos-v2-top-chip {
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  background: rgba(15, 23, 42, 0.72);
+  color: #f8fafc !important;
+  padding: 0 12px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  backdrop-filter: blur(12px);
+}
+
+.metaos-v2-top-refresh-btn {
+  cursor: pointer;
+  border-color: rgba(14, 165, 233, 0.65);
+  background: #0ea5e9;
+  color: #ffffff !important;
+}
+
+.metaos-v2-top-refresh-btn:disabled {
+  cursor: not-allowed;
+  background: #64748b;
+}
+
+.metaos-v2-top-chip-green {
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.45);
+  background: rgba(6, 78, 59, 0.45);
+}
+
+.metaos-v2-top-chip-error {
+  color: #fecaca !important;
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(127, 29, 29, 0.55);
+}
+
+html:not(.dark) body:not(.dark) .metaos-v2-top-chip {
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f172a !important;
+}
+
+html:not(.dark) body:not(.dark) .metaos-v2-top-chip-green {
+  color: #047857 !important;
+  background: rgba(236, 253, 245, 0.96);
+}
+
+@media (max-width: 1280px) {
+  .metaos-v2-top-data-controls {
+    right: 16px;
+    top: 56px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+
+/* METAOS STEP 14 — TABLE HEADER READABILITY */
+/* Force table header text to stay readable on dark/navy header bands in both light and dark modes. */
+
+main table thead,
+main table thead tr,
+main table tr[class*="bg-slate"],
+main table tr[class*="bg-gray"],
+main table tr[class*="bg-neutral"],
+main table tr[class*="bg-zinc"],
+main table tr[class*="bg-[#"],
+main table .bg-slate-900,
+main table .bg-slate-950,
+main table .bg-gray-900,
+main table .bg-gray-950,
+main table .bg-neutral-900,
+main table .bg-neutral-950 {
+  background-color: #0f1f35 !important;
+}
+
+main table thead th,
+main table thead th *,
+main table tr[class*="bg-slate"] th,
+main table tr[class*="bg-slate"] th *,
+main table tr[class*="bg-gray"] th,
+main table tr[class*="bg-gray"] th *,
+main table tr[class*="bg-neutral"] th,
+main table tr[class*="bg-neutral"] th *,
+main table tr[class*="bg-zinc"] th,
+main table tr[class*="bg-zinc"] th *,
+main table tr[class*="bg-[#"] th,
+main table tr[class*="bg-[#"] th * {
+  color: #f8fafc !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* Header letter labels like MONTH / CLICKS / LPV should not become black in light mode. */
+main table thead :is(
+  .text-black,
+  .text-neutral-950,
+  .text-neutral-900,
+  .text-zinc-950,
+  .text-zinc-900,
+  .text-slate-950,
+  .text-slate-900,
+  .text-gray-950,
+  .text-gray-900,
+  .text-stone-950,
+  .text-stone-900,
+  .font-bold,
+  .font-semibold,
+  .font-medium
+) {
+  color: #f8fafc !important;
+}
+
+/* Body cells remain readable in each mode. */
+html.dark main table tbody td,
+html.dark main table tbody td * {
+  color: #e5e7eb !important;
+}
+
+html:not(.dark) body:not(.dark) main table tbody td,
+html:not(.dark) body:not(.dark) main table tbody td * {
+  color: #111827 !important;
+}
+
+/* Keep small secondary text readable without overpowering values. */
+html.dark main table tbody td small,
+html.dark main table tbody td .text-xs,
+html.dark main table tbody td .text-sm {
+  color: #cbd5e1 !important;
+}
+
+html:not(.dark) body:not(.dark) main table tbody td small,
+html:not(.dark) body:not(.dark) main table tbody td .text-xs,
+html:not(.dark) body:not(.dark) main table tbody td .text-sm {
+  color: #4b5563 !important;
+}
+
+/* METAOS FINAL TABLE HEADER CONTRAST FIX */
+/* This targets both real table headers and custom grid/table header bands. */
+
+/* 1. Native table headers */
+html body main table thead,
+html body main table thead tr {
+  background: #0f1f35 !important;
+}
+
+html body main table thead th,
+html body main table thead th *,
+html body main table thead td,
+html body main table thead td * {
+  color: #f8fafc !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  text-shadow: none !important;
+}
+
+/* 2. Custom header rows using dark/navy background classes */
+html body main :is(
+  [class*="bg-slate-900"],
+  [class*="bg-slate-950"],
+  [class*="bg-gray-900"],
+  [class*="bg-gray-950"],
+  [class*="bg-neutral-900"],
+  [class*="bg-neutral-950"],
+  [class*="bg-zinc-900"],
+  [class*="bg-zinc-950"],
+  [class*="bg-[#0"],
+  [class*="bg-[#1"]
+) {
+  background-color: #0f1f35 !important;
+}
+
+html body main :is(
+  [class*="bg-slate-900"],
+  [class*="bg-slate-950"],
+  [class*="bg-gray-900"],
+  [class*="bg-gray-950"],
+  [class*="bg-neutral-900"],
+  [class*="bg-neutral-950"],
+  [class*="bg-zinc-900"],
+  [class*="bg-zinc-950"],
+  [class*="bg-[#0"],
+  [class*="bg-[#1"]
+) :is(
+  span,
+  div,
+  p,
+  th,
+  td,
+  strong,
+  b,
+  small,
+  label,
+  .text-black,
+  .text-gray-950,
+  .text-gray-900,
+  .text-gray-800,
+  .text-slate-950,
+  .text-slate-900,
+  .text-slate-800,
+  .text-neutral-950,
+  .text-neutral-900,
+  .text-neutral-800,
+  .text-zinc-950,
+  .text-zinc-900,
+  .text-zinc-800,
+  .font-bold,
+  .font-semibold,
+  .font-medium
+) {
+  color: #f8fafc !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 3. Role-based table/grid headers */
+html body main :is(
+  [role="columnheader"],
+  [data-slot="table-head"],
+  [data-table-header],
+  [class*="table-head"],
+  [class*="TableHead"],
+  [class*="tableHeader"],
+  [class*="TableHeader"]
+),
+html body main :is(
+  [role="columnheader"],
+  [data-slot="table-head"],
+  [data-table-header],
+  [class*="table-head"],
+  [class*="TableHead"],
+  [class*="tableHeader"],
+  [class*="TableHeader"]
+) * {
+  color: #f8fafc !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 4. Funnel table specific: header labels are uppercase inside the first dark band */
+html body main :is(section, article, div[class*="rounded"], div[class*="border"])
+  :is([class*="uppercase"], [class*="tracking"], [class*="text-xs"]) {
+  opacity: 1 !important;
+}
+
+/* 5. Do not let light-mode global title rules override dark table header bands */
+html:not(.dark) body:not(.dark) main :is(
+  [class*="bg-slate-900"],
+  [class*="bg-slate-950"],
+  [class*="bg-gray-900"],
+  [class*="bg-gray-950"],
+  [class*="bg-neutral-900"],
+  [class*="bg-neutral-950"],
+  [class*="bg-zinc-900"],
+  [class*="bg-zinc-950"],
+  [class*="bg-[#0"],
+  [class*="bg-[#1"]
+) :is(
+  span,
+  div,
+  p,
+  th,
+  td,
+  strong,
+  b,
+  small,
+  label,
+  .font-bold,
+  .font-semibold,
+  .font-medium
+) {
+  color: #f8fafc !important;
+}
