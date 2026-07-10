@@ -6059,3 +6059,387 @@ html:not(.dark) body:not(.dark) .metaos-v2-sheet-chip-green * {
     right: 16px;
   }
 }
+
+/* METAOS CLASSIC BLACK WHITE UI SYSTEM */
+/* UI-only layer. Data flow, engines, metrics and backend calculations remain untouched. */
+
+:root {
+  --metaos-classic-sidebar-w: 218px;
+  --metaos-classic-bg: #f7f7f7;
+  --metaos-classic-surface: #ffffff;
+  --metaos-classic-surface-soft: #f3f4f6;
+  --metaos-classic-border: #d9dce1;
+  --metaos-classic-border-strong: #111827;
+  --metaos-classic-text: #111111;
+  --metaos-classic-muted: #6b7280;
+  --metaos-classic-header: #f5f5f5;
+  --metaos-classic-table-head: #111827;
+  --metaos-classic-table-head-text: #ffffff;
+  --metaos-classic-green: #039855;
+  --metaos-classic-red: #d92d20;
+  --metaos-classic-blue: #1473e6;
+}
+
+html.dark,
+body.dark,
+.dark,
+[data-theme="dark"] {
+  --metaos-classic-bg: #060606;
+  --metaos-classic-surface: #111315;
+  --metaos-classic-surface-soft: #16191d;
+  --metaos-classic-border: #30363d;
+  --metaos-classic-border-strong: #f3f4f6;
+  --metaos-classic-text: #f5f5f5;
+  --metaos-classic-muted: #a1a1aa;
+  --metaos-classic-header: #0d0f12;
+  --metaos-classic-table-head: #f5f5f5;
+  --metaos-classic-table-head-text: #050505;
+}
+
+html[data-metaos-classic-sidebar="collapsed"] {
+  --metaos-classic-sidebar-w: 62px;
+}
+
+html,
+body {
+  background: var(--metaos-classic-bg) !important;
+  color: var(--metaos-classic-text) !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+body {
+  padding-left: var(--metaos-classic-sidebar-w) !important;
+  transition: padding-left 180ms ease;
+}
+
+/* Hide old horizontal tab buttons. They remain in DOM so data and tab switching still work through sidebar. */
+button[data-metaos-original-tab="true"] {
+  display: none !important;
+}
+
+/* Sidebar */
+.metaos-classic-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 2147483600;
+  width: var(--metaos-classic-sidebar-w);
+  background: var(--metaos-classic-surface);
+  border-right: 1px solid var(--metaos-classic-border);
+  color: var(--metaos-classic-text);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: width 180ms ease;
+}
+
+.metaos-classic-sidebar-header {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--metaos-classic-border);
+  background: var(--metaos-classic-surface);
+}
+
+.metaos-classic-brand-mark {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #111111;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 900;
+  flex: 0 0 auto;
+}
+
+html.dark .metaos-classic-brand-mark {
+  background: #ffffff;
+  color: #111111;
+}
+
+.metaos-classic-brand-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.metaos-classic-brand-title {
+  font-size: 13px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: var(--metaos-classic-text) !important;
+}
+
+.metaos-classic-brand-subtitle {
+  margin-top: 2px;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--metaos-classic-muted) !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.metaos-classic-collapse {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid var(--metaos-classic-border);
+  background: var(--metaos-classic-surface);
+  color: var(--metaos-classic-text) !important;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.metaos-classic-menu {
+  padding: 12px 8px;
+  overflow-y: auto;
+}
+
+.metaos-classic-menu-item {
+  width: 100%;
+  height: 34px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--metaos-classic-text) !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.metaos-classic-menu-item:hover {
+  background: var(--metaos-classic-surface-soft);
+}
+
+.metaos-classic-menu-item.is-active {
+  background: #111111;
+  color: #ffffff !important;
+}
+
+html.dark .metaos-classic-menu-item.is-active {
+  background: #ffffff;
+  color: #111111 !important;
+}
+
+.metaos-classic-menu-icon {
+  width: 16px;
+  flex: 0 0 16px;
+  color: currentColor !important;
+  opacity: 0.8;
+}
+
+.metaos-classic-menu-label {
+  color: currentColor !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Compact classical layout */
+body :is(main, section, article, div, p, span, button, table, th, td, input, select) {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+body main {
+  background: var(--metaos-classic-bg) !important;
+  color: var(--metaos-classic-text) !important;
+}
+
+body main :is(section, article, [class*="rounded"], [class*="card"], [class*="Card"], [class*="panel"], [class*="Panel"]) {
+  border-color: var(--metaos-classic-border) !important;
+}
+
+body main :is(h1, h2, h3, h4, h5, h6, strong, b, .font-bold, .font-semibold, .font-medium) {
+  color: var(--metaos-classic-text) !important;
+}
+
+body main :is(p, small, .text-muted, [class*="text-gray"], [class*="text-slate"], [class*="text-neutral"]) {
+  color: var(--metaos-classic-muted) !important;
+}
+
+/* Cards and KPI blocks */
+body main :is([class*="rounded"], [class*="border"]) {
+  border-radius: 8px !important;
+}
+
+body main :is([class*="shadow"], [class*="shadow-"]) {
+  box-shadow: none !important;
+}
+
+body main :is([class*="bg-white"], [class*="bg-slate"], [class*="bg-gray"], [class*="bg-neutral"], [class*="bg-zinc"]) {
+  background-color: var(--metaos-classic-surface) !important;
+}
+
+/* Tables: simple P&L-style dense grid */
+body main table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  font-size: 11px !important;
+  background: var(--metaos-classic-surface) !important;
+  color: var(--metaos-classic-text) !important;
+}
+
+body main table thead,
+body main table thead tr {
+  background: var(--metaos-classic-table-head) !important;
+}
+
+body main table thead th,
+body main table thead th *,
+body main table thead td,
+body main table thead td * {
+  color: var(--metaos-classic-table-head-text) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+body main table tbody tr {
+  border-bottom: 1px solid var(--metaos-classic-border) !important;
+}
+
+body main table tbody td,
+body main table tbody td * {
+  color: var(--metaos-classic-text) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+body main table tbody tr:hover {
+  background: var(--metaos-classic-surface-soft) !important;
+}
+
+/* Custom grid/table header bands that are not native thead */
+body main :is(
+  [role="columnheader"],
+  [data-slot="table-head"],
+  [data-table-header],
+  [class*="table-head"],
+  [class*="TableHead"],
+  [class*="tableHeader"],
+  [class*="TableHeader"]
+),
+body main :is(
+  [role="columnheader"],
+  [data-slot="table-head"],
+  [data-table-header],
+  [class*="table-head"],
+  [class*="TableHead"],
+  [class*="tableHeader"],
+  [class*="TableHeader"]
+) * {
+  color: var(--metaos-classic-table-head-text) !important;
+  background: var(--metaos-classic-table-head) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Dark/navy table bands must always have visible text */
+body main :is(
+  [class*="bg-slate-900"],
+  [class*="bg-slate-950"],
+  [class*="bg-gray-900"],
+  [class*="bg-gray-950"],
+  [class*="bg-neutral-900"],
+  [class*="bg-neutral-950"],
+  [class*="bg-zinc-900"],
+  [class*="bg-zinc-950"],
+  [class*="bg-[#0"],
+  [class*="bg-[#1"]
+) {
+  background: var(--metaos-classic-table-head) !important;
+}
+
+body main :is(
+  [class*="bg-slate-900"],
+  [class*="bg-slate-950"],
+  [class*="bg-gray-900"],
+  [class*="bg-gray-950"],
+  [class*="bg-neutral-900"],
+  [class*="bg-neutral-950"],
+  [class*="bg-zinc-900"],
+  [class*="bg-zinc-950"],
+  [class*="bg-[#0"],
+  [class*="bg-[#1"]
+) * {
+  color: var(--metaos-classic-table-head-text) !important;
+  opacity: 1 !important;
+}
+
+/* Red / green performance coding */
+body main :is(
+  .text-green-500,
+  .text-green-600,
+  .text-green-700,
+  .text-emerald-500,
+  .text-emerald-600,
+  .text-emerald-700,
+  [class*="text-green"],
+  [class*="text-emerald"]
+) {
+  color: var(--metaos-classic-green) !important;
+}
+
+body main :is(
+  .text-red-500,
+  .text-red-600,
+  .text-red-700,
+  .text-rose-500,
+  .text-rose-600,
+  .text-rose-700,
+  [class*="text-red"],
+  [class*="text-rose"]
+) {
+  color: var(--metaos-classic-red) !important;
+}
+
+/* Top controls: keep sheet/settings visible and classic */
+body :is(button, [role="button"]) {
+  font-size: 11px !important;
+}
+
+body :is(button:not(.metaos-classic-menu-item):not(.metaos-classic-collapse)) {
+  border-radius: 7px !important;
+}
+
+/* Keep primary/active tabs crisp if any remain visible */
+body :is(.bg-blue-500, .bg-blue-600, .bg-blue-700, [class*="bg-blue"]) {
+  background: var(--metaos-classic-blue) !important;
+  color: #ffffff !important;
+}
+
+body :is(.bg-blue-500, .bg-blue-600, .bg-blue-700, [class*="bg-blue"]) * {
+  color: #ffffff !important;
+}
+
+/* Mobile/tablet: sidebar collapses by default visually */
+@media (max-width: 1024px) {
+  body {
+    padding-left: 62px !important;
+  }
+
+  .metaos-classic-sidebar {
+    width: 62px !important;
+  }
+
+  .metaos-classic-brand-copy,
+  .metaos-classic-menu-label {
+    display: none !important;
+  }
+}
+

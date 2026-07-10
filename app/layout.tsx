@@ -4,6 +4,7 @@ import "./globals.css";
 import "./os-theme-final.css";
 import "./metaos-readability.css";
 import { CopyVisibleMetaFilter } from "@/components/meta/CopyVisibleMetaFilter";
+import { MetaOSClassicUXLayer } from "@/components/meta-v2/shell/MetaOSClassicUXLayer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col"><CopyVisibleMetaFilter />
+        <MetaOSClassicUXLayer />
         {children}</body>
     </html>
   );
