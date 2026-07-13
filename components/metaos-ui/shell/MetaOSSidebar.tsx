@@ -11,6 +11,7 @@ import type {
 } from "lucide-react";
 
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -52,8 +53,8 @@ const modules =
 const sections =
   METAOS_SECTIONS as unknown as readonly ShellSection[];
 
-const OPEN_DELAY_MS = 150;
-const CLOSE_DELAY_MS = 260;
+const OPEN_DELAY_MS = 210;
+const CLOSE_DELAY_MS = 340;
 
 export function MetaOSSidebar() {
   const [
@@ -62,16 +63,14 @@ export function MetaOSSidebar() {
   ] = useState(false);
 
   const openTimer =
-    useRef<
-      ReturnType<typeof setTimeout>
-      | null
-    >(null);
+    useRef<ReturnType<typeof setTimeout> | null>(
+      null
+    );
 
   const closeTimer =
-    useRef<
-      ReturnType<typeof setTimeout>
-      | null
-    >(null);
+    useRef<ReturnType<typeof setTimeout> | null>(
+      null
+    );
 
   const activeModuleId =
     useMetaOSUiStore(
@@ -109,75 +108,95 @@ export function MetaOSSidebar() {
         state.setNavigationSearch
     );
 
-  const clearTimers = () => {
-    if (openTimer.current) {
+  const clearOpenTimer =
+    useCallback(() => {
+      if (!openTimer.current) {
+        return;
+      }
+
       clearTimeout(
         openTimer.current
       );
 
       openTimer.current = null;
-    }
+    }, []);
 
-    if (closeTimer.current) {
+  const clearCloseTimer =
+    useCallback(() => {
+      if (!closeTimer.current) {
+        return;
+      }
+
       clearTimeout(
         closeTimer.current
       );
 
       closeTimer.current = null;
-    }
-  };
+    }, []);
 
-  const scheduleOpen = () => {
-    if (!collapsed) {
-      return;
-    }
+  const clearTimers =
+    useCallback(() => {
+      clearOpenTimer();
+      clearCloseTimer();
+    }, [
+      clearCloseTimer,
+      clearOpenTimer,
+    ]);
 
-    if (closeTimer.current) {
-      clearTimeout(
-        closeTimer.current
-      );
+  const openPreview =
+    useCallback(() => {
+      if (!collapsed) {
+        return;
+      }
 
-      closeTimer.current = null;
-    }
+      clearCloseTimer();
 
-    if (previewExpanded) {
-      return;
-    }
-
-    openTimer.current =
-      setTimeout(() => {
-        setPreviewExpanded(true);
-        openTimer.current = null;
-      }, OPEN_DELAY_MS);
-  };
-
-  const scheduleClose = () => {
-    if (openTimer.current) {
-      clearTimeout(
+      if (
+        previewExpanded ||
         openTimer.current
-      );
+      ) {
+        return;
+      }
 
-      openTimer.current = null;
-    }
+      openTimer.current =
+        setTimeout(() => {
+          setPreviewExpanded(true);
+          openTimer.current = null;
+        }, OPEN_DELAY_MS);
+    }, [
+      clearCloseTimer,
+      collapsed,
+      previewExpanded,
+    ]);
 
-    closeTimer.current =
-      setTimeout(() => {
-        setPreviewExpanded(false);
-        closeTimer.current = null;
-      }, CLOSE_DELAY_MS);
-  };
+  const closePreview =
+    useCallback(() => {
+      clearOpenTimer();
 
-  useEffect(
-    () => clearTimers,
-    []
-  );
+      if (closeTimer.current) {
+        return;
+      }
+
+      closeTimer.current =
+        setTimeout(() => {
+          setPreviewExpanded(false);
+          closeTimer.current = null;
+        }, CLOSE_DELAY_MS);
+    }, [clearOpenTimer]);
+
+  useEffect(() => {
+    return clearTimers;
+  }, [clearTimers]);
 
   useEffect(() => {
     if (!collapsed) {
       clearTimers();
       setPreviewExpanded(false);
     }
-  }, [collapsed]);
+  }, [
+    clearTimers,
+    collapsed,
+  ]);
 
   const normalizedSearch =
     search.trim().toLowerCase();
@@ -227,9 +246,9 @@ export function MetaOSSidebar() {
           : "",
       ].join(" ")}
       aria-label="MetaOS modules"
-      onMouseEnter={scheduleOpen}
-      onMouseLeave={scheduleClose}
-      onFocusCapture={scheduleOpen}
+      onMouseEnter={openPreview}
+      onMouseLeave={closePreview}
+      onFocusCapture={openPreview}
       onBlurCapture={(event) => {
         const nextTarget =
           event.relatedTarget;
@@ -240,155 +259,151 @@ export function MetaOSSidebar() {
             nextTarget as Node
           )
         ) {
-          scheduleClose();
+          closePreview();
         }
       }}
     >
-      <div className="mos-sidebar-brand">
-        <div className="mos-brand-mark">
-          M
-        </div>
-
-        <div className="mos-brand-copy">
-          <div className="mos-brand-name">
-            MetaOS
+      <div className="mos-sidebar-panel">
+        <div className="mos-sidebar-brand">
+          <div className="mos-brand-mark">
+            M
           </div>
 
-          <div className="mos-brand-context">
-            Paid Media System
+          <div className="mos-brand-copy">
+            <div className="mos-brand-name">
+              MetaOS
+            </div>
+
+            <div className="mos-brand-context">
+              Paid Media System
+            </div>
           </div>
-        </div>
 
-        <button
-          type="button"
-          className="mos-sidebar-toggle"
-          aria-label={
-            collapsed
-              ? "Pin sidebar open"
-              : "Collapse sidebar"
-          }
-          title={
-            collapsed
-              ? "Pin sidebar open"
-              : "Collapse sidebar"
-          }
-          onClick={() => {
-            clearTimers();
-            setPreviewExpanded(
-              false
-            );
-            toggleSidebar();
-          }}
-        >
-          {collapsed ? (
-            <ChevronRight
-              size={14}
-            />
-          ) : (
-            <ChevronLeft
-              size={14}
-            />
-          )}
-        </button>
-      </div>
-
-      <div className="mos-sidebar-search">
-        <div className="mos-search-field">
-          <Search />
-
-          <input
-            className="mos-search-input"
-            value={search}
-            placeholder="Find a module"
-            aria-label="Search MetaOS modules"
-            onChange={(event) =>
-              setNavigationSearch(
-                event.target.value
-              )
+          <button
+            type="button"
+            className="mos-sidebar-toggle"
+            aria-label={
+              collapsed
+                ? "Pin sidebar open"
+                : "Collapse sidebar"
             }
-          />
+            title={
+              collapsed
+                ? "Pin sidebar open"
+                : "Collapse sidebar"
+            }
+            onClick={() => {
+              clearTimers();
+              setPreviewExpanded(false);
+              toggleSidebar();
+            }}
+          >
+            {collapsed ? (
+              <ChevronRight size={14} />
+            ) : (
+              <ChevronLeft size={14} />
+            )}
+          </button>
         </div>
-      </div>
 
-      <nav className="mos-sidebar-nav">
-        {visibleSections.map(
-          (section) => {
-            const sectionModules =
-              visibleModules
-                .filter(
-                  (module) =>
-                    module.sectionId ===
-                    section.id
+        <div className="mos-sidebar-search">
+          <div className="mos-search-field">
+            <Search />
+
+            <input
+              className="mos-search-input"
+              value={search}
+              placeholder="Find a module"
+              aria-label="Search MetaOS modules"
+              onChange={(event) =>
+                setNavigationSearch(
+                  event.target.value
                 )
-                .slice()
-                .sort(
-                  (a, b) =>
-                    a.order - b.order
-                );
+              }
+            />
+          </div>
+        </div>
 
-            return (
-              <section
-                className="mos-nav-section"
-                key={section.id}
-              >
-                <div className="mos-nav-section-title">
-                  {section.label}
-                </div>
+        <nav className="mos-sidebar-nav">
+          {visibleSections.map(
+            (section) => {
+              const sectionModules =
+                visibleModules
+                  .filter(
+                    (module) =>
+                      module.sectionId ===
+                      section.id
+                  )
+                  .slice()
+                  .sort(
+                    (a, b) =>
+                      a.order - b.order
+                  );
 
-                <div className="mos-nav-list">
-                  {sectionModules.map(
-                    (module) => {
-                      const Icon =
-                        module.icon;
+              return (
+                <section
+                  className="mos-nav-section"
+                  key={section.id}
+                >
+                  <div className="mos-nav-section-title">
+                    {section.label}
+                  </div>
 
-                      const active =
-                        activeModuleId ===
-                        module.id;
+                  <div className="mos-nav-list">
+                    {sectionModules.map(
+                      (module) => {
+                        const Icon =
+                          module.icon;
 
-                      return (
-                        <button
-                          key={module.id}
-                          type="button"
-                          className={[
-                            "mos-nav-item",
-                            active
-                              ? "is-active"
-                              : "",
-                          ].join(" ")}
-                          title={
-                            collapsed &&
-                            !previewActive
-                              ? module.label
-                              : module.description
-                          }
-                          aria-current={
-                            active
-                              ? "page"
-                              : undefined
-                          }
-                          onClick={() =>
-                            setActiveModule(
-                              module.id
-                            )
-                          }
-                        >
-                          <Icon className="mos-nav-icon" />
+                        const active =
+                          activeModuleId ===
+                          module.id;
 
-                          <span className="mos-nav-label">
-                            {
-                              module.shortLabel
+                        return (
+                          <button
+                            key={module.id}
+                            type="button"
+                            className={[
+                              "mos-nav-item",
+                              active
+                                ? "is-active"
+                                : "",
+                            ].join(" ")}
+                            title={
+                              collapsed &&
+                              !previewActive
+                                ? module.label
+                                : module.description
                             }
-                          </span>
-                        </button>
-                      );
-                    }
-                  )}
-                </div>
-              </section>
-            );
-          }
-        )}
-      </nav>
+                            aria-current={
+                              active
+                                ? "page"
+                                : undefined
+                            }
+                            onClick={() =>
+                              setActiveModule(
+                                module.id
+                              )
+                            }
+                          >
+                            <Icon className="mos-nav-icon" />
+
+                            <span className="mos-nav-label">
+                              {
+                                module.shortLabel
+                              }
+                            </span>
+                          </button>
+                        );
+                      }
+                    )}
+                  </div>
+                </section>
+              );
+            }
+          )}
+        </nav>
+      </div>
     </aside>
   );
 }
