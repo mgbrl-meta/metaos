@@ -555,3 +555,111 @@
     animation-duration: 1400ms;
   }
 }
+
+/* ==========================================================
+   METAOS SHARED SURFACE INTERACTION
+
+   Applies to canonical Card and MetricCard primitives.
+   Individual modules do not own hover elevation.
+   ========================================================== */
+
+.metaos-ui .mos-card,
+.metaos-ui .mos-metric-card {
+  transform:
+    translate3d(0, 0, 0);
+
+  transition:
+    transform
+      var(--mos-motion-standard)
+      var(--mos-motion-ease),
+    border-color
+      var(--mos-motion-fast)
+      var(--mos-motion-ease-soft),
+    box-shadow
+      var(--mos-motion-standard)
+      var(--mos-motion-ease),
+    background-color
+      var(--mos-motion-fast)
+      var(--mos-motion-ease-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .metaos-ui .mos-card:hover,
+  .metaos-ui .mos-metric-card:hover {
+    transform:
+      translate3d(
+        0,
+        var(--mos-card-hover-lift),
+        0
+      );
+
+    border-color:
+      var(--mos-border-hover);
+
+    box-shadow:
+      var(--mos-shadow-card-hover);
+  }
+
+  .metaos-ui
+    .mos-card.is-positive:hover,
+  .metaos-ui
+    .mos-metric-card.is-positive:hover {
+    border-color:
+      var(--mos-positive);
+  }
+
+  .metaos-ui
+    .mos-card.is-negative:hover,
+  .metaos-ui
+    .mos-metric-card.is-negative:hover {
+    border-color:
+      var(--mos-negative);
+  }
+
+  .metaos-ui
+    .mos-card.is-warning:hover,
+  .metaos-ui
+    .mos-metric-card.is-warning:hover {
+    border-color:
+      var(--mos-warning);
+  }
+}
+
+/* METAOS CARD INTERACTION START */
+
+.metaos-ui .mos-card,
+.metaos-ui .mos-metric-card {
+  transform: translate3d(0, 0, 0);
+
+  transition:
+    transform
+    var(--mos-motion-standard)
+    var(--mos-motion-ease),
+    border-color
+    var(--mos-motion-fast)
+    var(--mos-motion-ease-soft),
+    box-shadow
+    var(--mos-motion-standard)
+    var(--mos-motion-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .metaos-ui .mos-card:hover,
+  .metaos-ui .mos-metric-card:hover {
+    transform:
+      translate3d(
+        0,
+        var(--mos-card-hover-lift),
+        0
+      );
+
+    border-color:
+      var(--mos-border-strong);
+
+    box-shadow:
+      var(--mos-shadow-card-hover);
+  }
+}
+
+/* METAOS CARD INTERACTION END */
+

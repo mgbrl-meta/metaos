@@ -93,3 +93,48 @@
   color: var(--mos-text-secondary);
   font-size: 12px;
 }
+
+/* METAOS REDUCED MOTION CONTRACT */
+
+@media (prefers-reduced-motion: reduce) {
+  .metaos-workspace,
+  .metaos-workspace *,
+  .metaos-ui,
+  .metaos-ui * {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+
+  .metaos-workspace .mos-nav-item:hover,
+  .metaos-workspace .mos-sidebar-toggle:hover,
+  .metaos-workspace .mos-icon-button:hover,
+  .metaos-workspace .mos-header-action:hover,
+  .metaos-ui .mos-card:hover,
+  .metaos-ui .mos-metric-card:hover {
+    transform: none;
+  }
+}
+
+/* METAOS REDUCED MOTION START */
+
+@media (prefers-reduced-motion: reduce) {
+  .metaos-workspace,
+  .metaos-workspace *,
+  .metaos-ui,
+  .metaos-ui * {
+    transition-duration: 0.01ms;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+
+  .metaos-workspace .mos-nav-item:hover,
+  .metaos-ui .mos-card:hover,
+  .metaos-ui .mos-metric-card:hover {
+    transform: none;
+  }
+}
+
+/* METAOS REDUCED MOTION END */
+

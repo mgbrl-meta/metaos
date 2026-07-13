@@ -86,7 +86,7 @@ export const useMetaOSUiStore =
         activeModuleId:
           METAOS_DEFAULT_MODULE_ID,
 
-        sidebarCollapsed: false,
+        sidebarCollapsed: true,
         mobileNavigationOpen: false,
         commandPaletteOpen: false,
         navigationSearch: "",
@@ -168,7 +168,7 @@ export const useMetaOSUiStore =
             activeModuleId:
               METAOS_DEFAULT_MODULE_ID,
 
-            sidebarCollapsed: false,
+            sidebarCollapsed: true,
             mobileNavigationOpen: false,
             commandPaletteOpen: false,
             navigationSearch: "",
@@ -188,7 +188,7 @@ export const useMetaOSUiStore =
           () => localStorage
         ),
 
-        version: 1,
+        version: 2,
 
         partialize: (state) => ({
           activeModuleId:
@@ -203,6 +203,25 @@ export const useMetaOSUiStore =
           lastModuleByPlatform:
             state.lastModuleByPlatform,
         }),
+
+        migrate: (
+          persistedState,
+          version
+        ) => {
+          const saved =
+            (
+              persistedState ?? {}
+            ) as Partial<MetaOSUiStore>;
+
+          if (version < 2) {
+            return {
+              ...saved,
+              sidebarCollapsed: true,
+            };
+          }
+
+          return saved;
+        },
 
         merge: (
           persisted,
@@ -224,6 +243,10 @@ export const useMetaOSUiStore =
             ...saved,
 
             activeModuleId,
+
+            sidebarCollapsed:
+              saved.sidebarCollapsed ??
+              true,
 
             mobileNavigationOpen: false,
             commandPaletteOpen: false,

@@ -5,7 +5,14 @@ import {
   ChevronRight,
   Search,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+
+import type {
+  LucideIcon,
+} from "lucide-react";
+
+import {
+  useState,
+} from "react";
 
 import type {
   MetaOSModuleId,
@@ -16,7 +23,9 @@ import {
   METAOS_SECTIONS,
 } from "@/lib/metaos-ui/moduleRegistry";
 
-import { useMetaOSUiStore } from "@/store/metaOSUiStore";
+import {
+  useMetaOSUiStore,
+} from "@/store/metaOSUiStore";
 
 type ShellModule = {
   id: MetaOSModuleId;
@@ -42,28 +51,55 @@ const sections =
   METAOS_SECTIONS as unknown as readonly ShellSection[];
 
 export function MetaOSSidebar() {
-  const activeModuleId = useMetaOSUiStore(
-    (state) => state.activeModuleId
-  );
+  const [
+    previewExpanded,
+    setPreviewExpanded,
+  ] = useState(false);
 
-  const setActiveModule = useMetaOSUiStore(
-    (state) => state.setActiveModule
-  );
+  const activeModuleId =
+    useMetaOSUiStore(
+      (state) =>
+        state.activeModuleId
+    );
 
-  const collapsed = useMetaOSUiStore(
-    (state) => state.sidebarCollapsed
-  );
+  const setActiveModule =
+    useMetaOSUiStore(
+      (state) =>
+        state.setActiveModule
+    );
 
-  const search = useMetaOSUiStore(
-    (state) => state.navigationSearch
-  );
+  const collapsed =
+    useMetaOSUiStore(
+      (state) =>
+        state.sidebarCollapsed
+    );
+
+  const toggleSidebar =
+    useMetaOSUiStore(
+      (state) =>
+        state.toggleSidebar
+    );
+
+  const search =
+    useMetaOSUiStore(
+      (state) =>
+        state.navigationSearch
+    );
+
+  const setNavigationSearch =
+    useMetaOSUiStore(
+      (state) =>
+        state.setNavigationSearch
+    );
 
   const normalizedSearch =
     search.trim().toLowerCase();
 
-  const visibleModules = modules.filter(
-    (module) => {
-      if (!normalizedSearch) return true;
+  const visibleModules =
+    modules.filter((module) => {
+      if (!normalizedSearch) {
+        return true;
+      }
 
       return [
         module.label,
@@ -74,23 +110,62 @@ export function MetaOSSidebar() {
         .join(" ")
         .toLowerCase()
         .includes(normalizedSearch);
-    }
-  );
+    });
 
-  const visibleSections = sections
-    .slice()
-    .sort((a, b) => a.order - b.order)
-    .filter((section) =>
-      visibleModules.some(
-        (module) =>
-          module.sectionId === section.id
+  const visibleSections =
+    sections
+      .slice()
+      .sort(
+        (a, b) =>
+          a.order - b.order
       )
-    );
+      .filter((section) =>
+        visibleModules.some(
+          (module) =>
+            module.sectionId ===
+            section.id
+        )
+      );
+
+  const previewActive =
+    collapsed &&
+    previewExpanded;
 
   return (
     <aside
-      className="mos-sidebar"
+      className={[
+        "mos-sidebar",
+        previewActive
+          ? "is-preview-expanded"
+          : "",
+      ].join(" ")}
       aria-label="MetaOS modules"
+      onMouseEnter={() => {
+        if (collapsed) {
+          setPreviewExpanded(true);
+        }
+      }}
+      onMouseLeave={() => {
+        setPreviewExpanded(false);
+      }}
+      onFocusCapture={() => {
+        if (collapsed) {
+          setPreviewExpanded(true);
+        }
+      }}
+      onBlurCapture={(event) => {
+        const nextTarget =
+          event.relatedTarget;
+
+        if (
+          !nextTarget ||
+          !event.currentTarget.contains(
+            nextTarget as Node
+          )
+        ) {
+          setPreviewExpanded(false);
+        }
+      }}
     >
       <div className="mos-sidebar-brand">
         <div className="mos-brand-mark">
@@ -112,20 +187,18 @@ export function MetaOSSidebar() {
           className="mos-sidebar-toggle"
           aria-label={
             collapsed
-              ? "Expand sidebar"
+              ? "Pin sidebar open"
               : "Collapse sidebar"
           }
           title={
             collapsed
-              ? "Expand sidebar"
+              ? "Pin sidebar open"
               : "Collapse sidebar"
           }
-          onClick={() =>
-            useMetaOSUiStore.setState({
-              sidebarCollapsed:
-                !collapsed,
-            })
-          }
+          onClick={() => {
+            setPreviewExpanded(false);
+            toggleSidebar();
+          }}
         >
           {collapsed ? (
             <ChevronRight size={14} />
@@ -145,88 +218,92 @@ export function MetaOSSidebar() {
             placeholder="Find a module"
             aria-label="Search MetaOS modules"
             onChange={(event) =>
-              useMetaOSUiStore.setState({
-                navigationSearch:
-                  event.target.value,
-              })
+              setNavigationSearch(
+                event.target.value
+              )
             }
           />
         </div>
       </div>
 
       <nav className="mos-sidebar-nav">
-        {visibleSections.map((section) => {
-          const sectionModules =
-            visibleModules
-              .filter(
-                (module) =>
-                  module.sectionId ===
-                  section.id
-              )
-              .slice()
-              .sort(
-                (a, b) =>
-                  a.order - b.order
-              );
+        {visibleSections.map(
+          (section) => {
+            const sectionModules =
+              visibleModules
+                .filter(
+                  (module) =>
+                    module.sectionId ===
+                    section.id
+                )
+                .slice()
+                .sort(
+                  (a, b) =>
+                    a.order - b.order
+                );
 
-          return (
-            <section
-              className="mos-nav-section"
-              key={section.id}
-            >
-              <div className="mos-nav-section-title">
-                {section.label}
-              </div>
+            return (
+              <section
+                className="mos-nav-section"
+                key={section.id}
+              >
+                <div className="mos-nav-section-title">
+                  {section.label}
+                </div>
 
-              <div className="mos-nav-list">
-                {sectionModules.map(
-                  (module) => {
-                    const Icon =
-                      module.icon;
+                <div className="mos-nav-list">
+                  {sectionModules.map(
+                    (module) => {
+                      const Icon =
+                        module.icon;
 
-                    const active =
-                      activeModuleId ===
-                      module.id;
+                      const active =
+                        activeModuleId ===
+                        module.id;
 
-                    return (
-                      <button
-                        key={module.id}
-                        type="button"
-                        className={[
-                          "mos-nav-item",
-                          active
-                            ? "is-active"
-                            : "",
-                        ].join(" ")}
-                        title={
-                          collapsed
-                            ? module.label
-                            : module.description
-                        }
-                        aria-current={
-                          active
-                            ? "page"
-                            : undefined
-                        }
-                        onClick={() =>
-                          setActiveModule(
-                            module.id
-                          )
-                        }
-                      >
-                        <Icon className="mos-nav-icon" />
+                      return (
+                        <button
+                          key={module.id}
+                          type="button"
+                          className={[
+                            "mos-nav-item",
+                            active
+                              ? "is-active"
+                              : "",
+                          ].join(" ")}
+                          title={
+                            collapsed &&
+                            !previewActive
+                              ? module.label
+                              : module.description
+                          }
+                          aria-current={
+                            active
+                              ? "page"
+                              : undefined
+                          }
+                          onClick={() =>
+                            setActiveModule(
+                              module.id
+                            )
+                          }
+                        >
+                          <Icon className="mos-nav-icon" />
 
-                        <span className="mos-nav-label">
-                          {module.shortLabel}
-                        </span>
-                      </button>
-                    );
-                  }
-                )}
-              </div>
-            </section>
-          );
-        })}
+                          <span className="mos-nav-label">
+                            {
+                              module.shortLabel
+                            }
+                          </span>
+                        </button>
+                      );
+                    }
+                  )}
+                </div>
+              </section>
+            );
+          }
+        )}
       </nav>
     </aside>
   );
