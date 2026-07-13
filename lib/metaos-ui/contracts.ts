@@ -23,6 +23,7 @@ export const METAOS_MODULE_IDS = [
   "high_roas",
   "spend_visuals",
   "creative",
+  "creative_scaling",
   "creative_ageing",
   "monthly",
   "google_search_terms",

@@ -1,7 +1,11 @@
 {
   "version": "2026-07-10",
   "defaultModuleId": "command_center",
-  "platformOrder": ["meta", "google", "system"],
+  "platformOrder": [
+    "meta",
+    "google",
+    "system"
+  ],
   "sections": [
     {
       "id": "meta_overview",
@@ -61,7 +65,13 @@
       "implementation": "v2_engine",
       "status": "ready",
       "order": 10,
-      "keywords": ["overview", "health", "account", "priority", "command"]
+      "keywords": [
+        "overview",
+        "health",
+        "account",
+        "priority",
+        "command"
+      ]
     },
     {
       "id": "summary",
@@ -77,7 +87,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 20,
-      "keywords": ["daily", "executive", "performance", "actions"]
+      "keywords": [
+        "daily",
+        "executive",
+        "performance",
+        "actions"
+      ]
     },
     {
       "id": "data_qc",
@@ -94,7 +109,13 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 30,
-      "keywords": ["quality", "rows", "mapping", "health", "validation"]
+      "keywords": [
+        "quality",
+        "rows",
+        "mapping",
+        "health",
+        "validation"
+      ]
     },
     {
       "id": "top_descaling",
@@ -110,7 +131,13 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 40,
-      "keywords": ["reduce", "pause", "cut", "waste", "descale"]
+      "keywords": [
+        "reduce",
+        "pause",
+        "cut",
+        "waste",
+        "descale"
+      ]
     },
     {
       "id": "top_scaling",
@@ -126,7 +153,13 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 50,
-      "keywords": ["scale", "increase", "winner", "budget", "growth"]
+      "keywords": [
+        "scale",
+        "increase",
+        "winner",
+        "budget",
+        "growth"
+      ]
     },
     {
       "id": "influencer_ads",
@@ -142,7 +175,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 60,
-      "keywords": ["creator", "influencer", "ugc", "approval"]
+      "keywords": [
+        "creator",
+        "influencer",
+        "ugc",
+        "approval"
+      ]
     },
     {
       "id": "zero_purchase",
@@ -159,7 +197,12 @@
       "implementation": "v2_screen",
       "status": "ready",
       "order": 70,
-      "keywords": ["waste", "no sale", "zero conversion", "spend"]
+      "keywords": [
+        "waste",
+        "no sale",
+        "zero conversion",
+        "spend"
+      ]
     },
     {
       "id": "high_cpa",
@@ -175,7 +218,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 80,
-      "keywords": ["cpa", "cost", "expensive", "acquisition"]
+      "keywords": [
+        "cpa",
+        "cost",
+        "expensive",
+        "acquisition"
+      ]
     },
     {
       "id": "gpt",
@@ -191,7 +239,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 90,
-      "keywords": ["profit", "transaction", "margin", "gpt"]
+      "keywords": [
+        "profit",
+        "transaction",
+        "margin",
+        "gpt"
+      ]
     },
     {
       "id": "funnel",
@@ -208,7 +261,13 @@
       "implementation": "v2_screen",
       "status": "ready",
       "order": 100,
-      "keywords": ["lpv", "atc", "checkout", "purchase", "conversion"]
+      "keywords": [
+        "lpv",
+        "atc",
+        "checkout",
+        "purchase",
+        "conversion"
+      ]
     },
     {
       "id": "high_roas",
@@ -224,7 +283,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 110,
-      "keywords": ["roas", "winner", "return", "scale"]
+      "keywords": [
+        "roas",
+        "winner",
+        "return",
+        "scale"
+      ]
     },
     {
       "id": "spend_visuals",
@@ -240,7 +304,37 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 120,
-      "keywords": ["spend", "budget", "movement", "concentration"]
+      "keywords": [
+        "spend",
+        "budget",
+        "movement",
+        "concentration"
+      ]
+    },
+    {
+      "id": "creative_scaling",
+      "platform": "meta",
+      "sectionId": "meta_intelligence",
+      "label": "Creative Scaling",
+      "shortLabel": "Scaling",
+      "description": "Poisson confidence map for scale, watch and kill decisions on ads live on the latest reporting date.",
+      "iconKey": "sparkles",
+      "componentKey": "creative_scaling",
+      "componentPath": "components/metaos-ui/modules/creative-scaling/CreativeScalingModule.tsx",
+      "currentRoute": "/",
+      "implementation": "v2_engine",
+      "status": "ready",
+      "order": 125,
+      "keywords": [
+        "creative scaling",
+        "poisson",
+        "scatter",
+        "scale",
+        "watch",
+        "kill",
+        "confidence",
+        "active ads"
+      ]
     },
     {
       "id": "creative",
@@ -256,7 +350,13 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 130,
-      "keywords": ["creative", "fatigue", "hook", "ad", "saturation"]
+      "keywords": [
+        "creative",
+        "fatigue",
+        "hook",
+        "ad",
+        "saturation"
+      ]
     },
     {
       "id": "creative_ageing",
@@ -272,7 +372,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 140,
-      "keywords": ["age", "fatigue", "replacement", "days live"]
+      "keywords": [
+        "age",
+        "fatigue",
+        "replacement",
+        "days live"
+      ]
     },
     {
       "id": "monthly",
@@ -288,7 +393,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 150,
-      "keywords": ["month", "report", "trend", "review"]
+      "keywords": [
+        "month",
+        "report",
+        "trend",
+        "review"
+      ]
     },
     {
       "id": "google_search_terms",
@@ -305,7 +415,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 160,
-      "keywords": ["query", "search term", "negative", "exact"]
+      "keywords": [
+        "query",
+        "search term",
+        "negative",
+        "exact"
+      ]
     },
     {
       "id": "google_campaign_audit",
@@ -322,7 +437,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 170,
-      "keywords": ["google", "campaign", "efficiency", "budget"]
+      "keywords": [
+        "google",
+        "campaign",
+        "efficiency",
+        "budget"
+      ]
     },
     {
       "id": "google_adgroup_audit",
@@ -339,7 +459,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 180,
-      "keywords": ["google", "ad group", "structure", "control"]
+      "keywords": [
+        "google",
+        "ad group",
+        "structure",
+        "control"
+      ]
     },
     {
       "id": "google_keyword_audit",
@@ -356,7 +481,13 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 190,
-      "keywords": ["google", "keyword", "bid", "prune", "scale"]
+      "keywords": [
+        "google",
+        "keyword",
+        "bid",
+        "prune",
+        "scale"
+      ]
     },
     {
       "id": "google_ad_audit",
@@ -373,7 +504,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 200,
-      "keywords": ["google", "ad copy", "landing page", "message"]
+      "keywords": [
+        "google",
+        "ad copy",
+        "landing page",
+        "message"
+      ]
     },
     {
       "id": "google_team_summary",
@@ -390,7 +526,12 @@
       "implementation": "existing_screen",
       "status": "ready",
       "order": 210,
-      "keywords": ["google", "summary", "daily", "actions"]
+      "keywords": [
+        "google",
+        "summary",
+        "daily",
+        "actions"
+      ]
     },
     {
       "id": "settings",
@@ -406,7 +547,12 @@
       "implementation": "system_screen",
       "status": "ready",
       "order": 220,
-      "keywords": ["target", "threshold", "rules", "preferences"]
+      "keywords": [
+        "target",
+        "threshold",
+        "rules",
+        "preferences"
+      ]
     }
   ]
 }

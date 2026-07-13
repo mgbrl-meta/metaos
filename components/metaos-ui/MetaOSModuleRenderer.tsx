@@ -5,6 +5,7 @@ import { MonthlyAnalysisModule } from "@/components/metaos-ui/modules/MonthlyAna
 
 import { SpendAnalysisModule } from "@/components/metaos-ui/modules/SpendAnalysisModule";
 import { CreativeFatigueModule } from "@/components/metaos-ui/modules/CreativeFatigueModule";
+import { CreativeScalingModule } from "@/components/metaos-ui/modules/creative-scaling/CreativeScalingModule";
 
 
 import { GoogleSearchTermAudit } from "@/components/google/GoogleSearchTermAudit";
@@ -74,6 +75,9 @@ export function MetaOSModuleRenderer({
 
     case "creative":
       return <CreativeFatigueModule />;
+
+    case "creative_scaling":
+      return <CreativeScalingModule />;
 
     case "creative_ageing":
       return <CreativeAgeingModule />;

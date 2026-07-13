@@ -857,3 +857,129 @@
 
 /* METAOS SIDEBAR INTERACTION END */
 
+/* METAOS CLASSICAL SIDEBAR START */
+
+.metaos-workspace {
+  transition:
+    grid-template-columns
+    var(--mos-motion-sidebar)
+    var(--mos-motion-ease-classical);
+}
+
+.metaos-workspace .mos-sidebar {
+  will-change:
+    width,
+    box-shadow;
+
+  transition:
+    width
+    var(--mos-motion-sidebar)
+    var(--mos-motion-ease-enter),
+    box-shadow
+    var(--mos-motion-soft)
+    var(--mos-motion-ease-classical),
+    border-color
+    var(--mos-motion-soft)
+    var(--mos-motion-ease-classical);
+}
+
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 70;
+  width:
+    var(--mos-sidebar-width);
+
+  box-shadow:
+    20px 0 48px
+    rgba(0, 0, 0, 0.10);
+}
+
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-brand-copy,
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-sidebar-search,
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-nav-section-title,
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-nav-label {
+  display: block;
+
+  animation:
+    mos-sidebar-content-reveal
+    var(--mos-motion-soft)
+    var(--mos-motion-ease-enter)
+    both;
+}
+
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-sidebar-brand {
+  justify-content:
+    flex-start;
+
+  padding: 0 14px;
+}
+
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-sidebar-toggle {
+  position: static;
+}
+
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-sidebar-nav {
+  padding: 0 8px 16px;
+}
+
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-nav-item {
+  justify-content:
+    flex-start;
+
+  padding: 7px 9px;
+}
+
+.metaos-workspace .mos-nav-item {
+  transition:
+    background-color
+    var(--mos-motion-soft)
+    var(--mos-motion-ease-classical),
+    color
+    var(--mos-motion-soft)
+    var(--mos-motion-ease-classical),
+    transform
+    var(--mos-motion-soft)
+    var(--mos-motion-ease-classical);
+}
+
+.metaos-workspace
+  .mos-nav-item:hover {
+  transform:
+    translateX(2px);
+}
+
+@keyframes
+  mos-sidebar-content-reveal {
+  from {
+    opacity: 0;
+    transform:
+      translateX(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateX(0);
+  }
+}
+
+/* METAOS CLASSICAL SIDEBAR END */
+

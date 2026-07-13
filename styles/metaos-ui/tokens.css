@@ -126,6 +126,21 @@
   --mos-radius-md: 9px;
   --mos-radius-lg: 12px;
 
+  /* METAOS CLASSICAL MOTION START */
+  --mos-motion-quick: 150ms;
+  --mos-motion-soft: 280ms;
+  --mos-motion-sidebar: 420ms;
+
+  --mos-motion-ease-classical:
+    cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --mos-motion-ease-enter:
+    cubic-bezier(0.16, 1, 0.3, 1);
+
+  --mos-motion-ease-exit:
+    cubic-bezier(0.4, 0, 0.2, 1);
+  /* METAOS CLASSICAL MOTION END */
+
   /* METAOS INTERACTION TOKENS START */
   --mos-motion-fast: 120ms;
   --mos-motion-standard: 180ms;

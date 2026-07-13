@@ -11,6 +11,8 @@ import type {
 } from "lucide-react";
 
 import {
+  useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -50,11 +52,26 @@ const modules =
 const sections =
   METAOS_SECTIONS as unknown as readonly ShellSection[];
 
+const OPEN_DELAY_MS = 150;
+const CLOSE_DELAY_MS = 260;
+
 export function MetaOSSidebar() {
   const [
     previewExpanded,
     setPreviewExpanded,
   ] = useState(false);
+
+  const openTimer =
+    useRef<
+      ReturnType<typeof setTimeout>
+      | null
+    >(null);
+
+  const closeTimer =
+    useRef<
+      ReturnType<typeof setTimeout>
+      | null
+    >(null);
 
   const activeModuleId =
     useMetaOSUiStore(
@@ -91,6 +108,76 @@ export function MetaOSSidebar() {
       (state) =>
         state.setNavigationSearch
     );
+
+  const clearTimers = () => {
+    if (openTimer.current) {
+      clearTimeout(
+        openTimer.current
+      );
+
+      openTimer.current = null;
+    }
+
+    if (closeTimer.current) {
+      clearTimeout(
+        closeTimer.current
+      );
+
+      closeTimer.current = null;
+    }
+  };
+
+  const scheduleOpen = () => {
+    if (!collapsed) {
+      return;
+    }
+
+    if (closeTimer.current) {
+      clearTimeout(
+        closeTimer.current
+      );
+
+      closeTimer.current = null;
+    }
+
+    if (previewExpanded) {
+      return;
+    }
+
+    openTimer.current =
+      setTimeout(() => {
+        setPreviewExpanded(true);
+        openTimer.current = null;
+      }, OPEN_DELAY_MS);
+  };
+
+  const scheduleClose = () => {
+    if (openTimer.current) {
+      clearTimeout(
+        openTimer.current
+      );
+
+      openTimer.current = null;
+    }
+
+    closeTimer.current =
+      setTimeout(() => {
+        setPreviewExpanded(false);
+        closeTimer.current = null;
+      }, CLOSE_DELAY_MS);
+  };
+
+  useEffect(
+    () => clearTimers,
+    []
+  );
+
+  useEffect(() => {
+    if (!collapsed) {
+      clearTimers();
+      setPreviewExpanded(false);
+    }
+  }, [collapsed]);
 
   const normalizedSearch =
     search.trim().toLowerCase();
@@ -140,19 +227,9 @@ export function MetaOSSidebar() {
           : "",
       ].join(" ")}
       aria-label="MetaOS modules"
-      onMouseEnter={() => {
-        if (collapsed) {
-          setPreviewExpanded(true);
-        }
-      }}
-      onMouseLeave={() => {
-        setPreviewExpanded(false);
-      }}
-      onFocusCapture={() => {
-        if (collapsed) {
-          setPreviewExpanded(true);
-        }
-      }}
+      onMouseEnter={scheduleOpen}
+      onMouseLeave={scheduleClose}
+      onFocusCapture={scheduleOpen}
       onBlurCapture={(event) => {
         const nextTarget =
           event.relatedTarget;
@@ -163,7 +240,7 @@ export function MetaOSSidebar() {
             nextTarget as Node
           )
         ) {
-          setPreviewExpanded(false);
+          scheduleClose();
         }
       }}
     >
@@ -196,14 +273,21 @@ export function MetaOSSidebar() {
               : "Collapse sidebar"
           }
           onClick={() => {
-            setPreviewExpanded(false);
+            clearTimers();
+            setPreviewExpanded(
+              false
+            );
             toggleSidebar();
           }}
         >
           {collapsed ? (
-            <ChevronRight size={14} />
+            <ChevronRight
+              size={14}
+            />
           ) : (
-            <ChevronLeft size={14} />
+            <ChevronLeft
+              size={14}
+            />
           )}
         </button>
       </div>
