@@ -42,7 +42,8 @@
     "metaos:reconcile-final": "node scripts/metaos-final-reconciliation-audit.mjs",
     "metaos:frontend-freeze-final": "node scripts/metaos-final-frontend-freeze-audit.mjs",
     "metaos:data-connections": "node scripts/metaos-data-connection-architecture-audit.mjs",
-    "metaos:route-handlers": "node scripts/metaos-route-handler-architecture-audit.mjs"
+    "metaos:route-handlers": "node scripts/metaos-route-handler-architecture-audit.mjs",
+    "metaos:header-typography": "node scripts/metaos-header-typography-audit.mjs"
   },
   "dependencies": {
     "@google-cloud/bigquery": "^8.3.1",

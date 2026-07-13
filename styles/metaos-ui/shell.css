@@ -565,3 +565,62 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* METAOS ACTUAL HEADER CONTROL CONTRACT
+ *
+ * Actual architecture:
+ * - .mos-status-chip: data status, latest date, row count, sync state
+ * - .mos-header-action: refresh and light/dark controls
+ * - .mos-icon-button: settings and mobile controls
+ *
+ * Typography and geometry come only from shared tokens.
+ */
+
+.metaos-workspace .mos-status-chip,
+.metaos-workspace .mos-header-action {
+  min-height: var(--mos-control-height-sm);
+  gap: var(--mos-control-gap-sm);
+  padding-right: var(--mos-control-padding-sm);
+  padding-left: var(--mos-control-padding-sm);
+
+  font-family: var(--mos-font-sans);
+  font-size: var(--mos-type-control-size);
+  font-weight: var(--mos-type-control-weight);
+  line-height: var(--mos-type-control-line-height);
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.metaos-workspace .mos-icon-button {
+  width: var(--mos-control-height-sm);
+  height: var(--mos-control-height-sm);
+  min-width: var(--mos-control-height-sm);
+  min-height: var(--mos-control-height-sm);
+  padding: 0;
+}
+
+.metaos-workspace .mos-status-chip svg,
+.metaos-workspace .mos-header-action svg,
+.metaos-workspace .mos-icon-button svg {
+  width: var(--mos-control-icon-sm);
+  height: var(--mos-control-icon-sm);
+  flex: 0 0 auto;
+}
+
+.metaos-workspace .mos-status-chip > span,
+.metaos-workspace .mos-header-action > span {
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+.metaos-workspace .mos-header-right,
+.metaos-workspace .mos-data-status {
+  align-items: center;
+}
+
+.metaos-workspace .mos-header-right > *,
+.metaos-workspace .mos-data-status > * {
+  flex-shrink: 0;
+}

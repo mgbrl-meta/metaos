@@ -6,8 +6,11 @@
   justify-content: center;
   border: 1px solid transparent;
   border-radius: var(--mos-radius-sm);
-  font-weight: 640;
-  line-height: 1;
+  font-family: var(--mos-font-sans);
+  font-size: var(--mos-type-control-size);
+  font-weight: var(--mos-type-control-weight);
+  line-height: var(--mos-type-control-line-height);
+  letter-spacing: 0;
   white-space: nowrap;
   transition:
     background-color 120ms ease,
@@ -21,21 +24,21 @@
 }
 
 .metaos-ui .mos-button.is-xs {
-  min-height: 26px;
-  padding: 0 8px;
-  font-size: 9px;
+  min-height: var(--mos-control-height-xs);
+  padding: 0 var(--mos-control-padding-xs);
+  font-size: var(--mos-type-meta-size);
 }
 
 .metaos-ui .mos-button.is-sm {
-  min-height: 30px;
-  padding: 0 10px;
-  font-size: 10px;
+  min-height: var(--mos-control-height-sm);
+  padding: 0 var(--mos-control-padding-sm);
+  font-size: var(--mos-type-control-size);
 }
 
 .metaos-ui .mos-button.is-md {
-  min-height: 34px;
-  padding: 0 13px;
-  font-size: 11px;
+  min-height: var(--mos-control-height-md);
+  padding: 0 var(--mos-control-padding-md);
+  font-size: var(--mos-type-body-size);
 }
 
 .metaos-ui .mos-button.is-full-width {
@@ -96,14 +99,14 @@
 
 .metaos-ui .mos-button-icon,
 .metaos-ui .mos-button-icon svg {
-  width: 13px;
-  height: 13px;
+  width: var(--mos-control-icon-size);
+  height: var(--mos-control-icon-size);
 }
 
 .metaos-ui .mos-button-spinner,
 .metaos-ui .mos-state-spinner {
-  width: 13px;
-  height: 13px;
+  width: var(--mos-control-icon-size);
+  height: var(--mos-control-icon-size);
   animation: mos-spin 700ms linear infinite;
 }
 
@@ -112,18 +115,18 @@
 }
 
 .metaos-ui .mos-icon-control.is-xs {
-  width: 26px;
-  height: 26px;
+  width: var(--mos-control-height-xs);
+  height: var(--mos-control-height-xs);
 }
 
 .metaos-ui .mos-icon-control.is-sm {
-  width: 30px;
-  height: 30px;
+  width: var(--mos-control-height-sm);
+  height: var(--mos-control-height-sm);
 }
 
 .metaos-ui .mos-icon-control.is-md {
-  width: 34px;
-  height: 34px;
+  width: var(--mos-control-height-md);
+  height: var(--mos-control-height-md);
 }
 
 .metaos-ui .mos-icon-control svg {
@@ -489,8 +492,8 @@
 
 .metaos-ui .mos-state-panel-icon {
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: var(--mos-control-height-md);
+  height: var(--mos-control-height-md);
   place-items: center;
   border: 1px solid var(--mos-border);
   border-radius: var(--mos-radius-md);

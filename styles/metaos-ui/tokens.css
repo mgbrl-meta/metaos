@@ -45,6 +45,83 @@
   --mos-sidebar-collapsed-width: 68px;
   --mos-header-height: 62px;
 
+  /* METAOS TYPOGRAPHY CONTRACT START */
+  /*
+   * Interface hierarchy:
+   * Display → Title → Body → Control → Meta
+   */
+  --mos-type-display-size: 20px;
+  --mos-type-display-weight: 730;
+  --mos-type-display-line-height: 1.2;
+
+  --mos-type-title-size: 14px;
+  --mos-type-title-weight: 700;
+  --mos-type-title-line-height: 1.25;
+
+  --mos-type-body-size: 11px;
+  --mos-type-body-weight: 500;
+  --mos-type-body-line-height: 1.45;
+
+  --mos-type-control-size: 10px;
+  --mos-type-control-weight: 640;
+  --mos-type-control-line-height: 1;
+
+  --mos-type-meta-size: 9px;
+  --mos-type-meta-weight: 620;
+  --mos-type-meta-line-height: 1.2;
+
+  /*
+   * Shared compact-control geometry.
+   */
+  --mos-control-height-sm: 30px;
+  --mos-control-padding-sm: 9px;
+  --mos-control-gap-sm: 6px;
+  --mos-control-icon-sm: 13px;
+  /* METAOS TYPOGRAPHY CONTRACT END */
+
+  /*
+   * Canonical interface typography hierarchy
+   *
+   * Display: page-level headline
+   * Title: section and active-module title
+   * Body: standard interface copy
+   * Control: all header buttons, statuses and compact actions
+   * Meta: supporting labels and timestamps
+   */
+  --mos-type-display-size: 20px;
+  --mos-type-display-weight: 730;
+  --mos-type-display-line-height: 1.2;
+
+  --mos-type-title-size: 14px;
+  --mos-type-title-weight: 700;
+  --mos-type-title-line-height: 1.25;
+
+  --mos-type-body-size: 11px;
+  --mos-type-body-weight: 500;
+  --mos-type-body-line-height: 1.45;
+
+  --mos-type-control-size: 10px;
+  --mos-type-control-weight: 640;
+  --mos-type-control-line-height: 1;
+
+  --mos-type-meta-size: 9px;
+  --mos-type-meta-weight: 620;
+  --mos-type-meta-line-height: 1.2;
+
+  /*
+   * Canonical compact-control geometry
+   */
+  --mos-control-height-xs: 26px;
+  --mos-control-height-sm: 30px;
+  --mos-control-height-md: 34px;
+
+  --mos-control-padding-xs: 8px;
+  --mos-control-padding-sm: 9px;
+  --mos-control-padding-md: 13px;
+
+  --mos-control-gap: 6px;
+  --mos-control-icon-size: 13px;
+
   --mos-radius-sm: 6px;
   --mos-radius-md: 9px;
   --mos-radius-lg: 12px;
