@@ -1,0 +1,255 @@
+.metaos-ui .mos-screen-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.metaos-ui .mos-badge-stack,
+.metaos-ui .mos-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.metaos-ui .mos-entity-cell {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.metaos-ui .mos-entity-title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--mos-text);
+  font-size: 10px;
+  font-weight: 690;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metaos-ui .mos-entity-subtitle {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--mos-text-tertiary);
+  font-size: 9px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metaos-ui .mos-threshold-controls {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.metaos-ui .mos-number-control {
+  display: grid;
+  gap: 4px;
+  color: var(--mos-text-secondary);
+  font-size: 9px;
+  font-weight: 620;
+}
+
+.metaos-ui .mos-number-control input {
+  width: 142px;
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid var(--mos-border);
+  border-radius: var(--mos-radius-sm);
+  outline: 0;
+  background: var(--mos-bg);
+  color: var(--mos-text);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.metaos-ui .mos-number-control input:focus-visible {
+  border-color: var(--mos-border-strong);
+  outline: 2px solid var(--mos-text);
+  outline-offset: 2px;
+}
+
+.metaos-ui .mos-detail-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 0.8fr)
+    minmax(220px, 0.8fr)
+    minmax(460px, 1.6fr);
+  gap: 10px;
+}
+
+.metaos-ui .mos-detail-list {
+  display: grid;
+  gap: 7px;
+  color: var(--mos-text-secondary);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.metaos-ui .mos-detail-list strong {
+  color: var(--mos-text);
+  font-weight: 690;
+}
+
+.metaos-ui .mos-detail-trend {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+}
+
+.metaos-ui .mos-detail-heading {
+  color: var(--mos-text);
+  font-size: 10px;
+  font-weight: 690;
+}
+
+@media (max-width: 1180px) {
+  .metaos-ui .mos-detail-layout {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .metaos-ui .mos-detail-trend {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .metaos-ui .mos-screen-controls,
+  .metaos-ui .mos-threshold-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .metaos-ui .mos-number-control input {
+    width: 100%;
+  }
+
+  .metaos-ui .mos-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .metaos-ui .mos-detail-trend {
+    grid-column: auto;
+  }
+}
+
+
+.metaos-ui .mos-funnel-stage-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(6, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.metaos-ui .mos-funnel-highlight-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metaos-ui .mos-funnel-highlight-value {
+  font-size: 18px;
+  font-weight: 730;
+  letter-spacing: -0.035em;
+}
+
+.metaos-ui .mos-funnel-control-copy {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+  color: var(--mos-text-secondary);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.metaos-ui .mos-funnel-control-copy svg {
+  flex: 0 0 auto;
+  color: var(--mos-text-tertiary);
+}
+
+.metaos-ui .mos-funnel-period {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.metaos-ui .mos-funnel-period strong {
+  overflow: hidden;
+  color: var(--mos-text);
+  font-size: 10px;
+  font-weight: 690;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metaos-ui .mos-funnel-period span {
+  overflow: hidden;
+  color: var(--mos-text-tertiary);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metaos-ui .mos-funnel-period.is-week {
+  padding-left: 18px;
+}
+
+.metaos-ui .mos-funnel-period.is-week strong {
+  color: var(--mos-text-secondary);
+  font-weight: 600;
+}
+
+.metaos-ui .mos-data-table tr.is-funnel-month > td {
+  font-weight: 620;
+}
+
+.metaos-ui .mos-data-table tr.is-funnel-week > td {
+  background: var(--mos-surface-subtle);
+  color: var(--mos-text-secondary);
+}
+
+.metaos-ui .mos-data-table tr.is-funnel-week:hover > td {
+  background: color-mix(
+    in srgb,
+    var(--mos-surface-subtle) 82%,
+    var(--mos-surface)
+  );
+}
+
+.metaos-ui .mos-table-muted-dash {
+  color: var(--mos-text-tertiary);
+}
+
+@media (max-width: 1180px) {
+  .metaos-ui .mos-funnel-stage-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .metaos-ui .mos-funnel-stage-grid,
+  .metaos-ui .mos-funnel-highlight-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .metaos-ui .mos-funnel-control-copy {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .metaos-ui .mos-funnel-stage-grid,
+  .metaos-ui .mos-funnel-highlight-grid {
+    grid-template-columns: 1fr;
+  }
+}

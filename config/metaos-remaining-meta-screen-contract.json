@@ -1,0 +1,204 @@
+{
+  "version": "2026-07-10",
+  "purpose": "Freeze the functional contract of all remaining Meta screens before architecture-owned migration.",
+  "moduleCount": 11,
+  "sourceFileCount": 10,
+  "modules": [
+    {
+      "id": "summary",
+      "label": "Summary",
+      "sourceFile": "components/metaos-ui/modules/SummaryModule.tsx",
+      "exportName": "SummaryModule",
+      "rendererToken": "return <SummaryModule />",
+      "migrationGroup": "6B",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2ExecutiveSummary",
+        "DataTable"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "top_descaling",
+      "label": "Top De-scaling Priorities",
+      "sourceFile": "components/metaos-ui/modules/PriorityModule.tsx",
+      "exportName": "TopDescalingModule",
+      "rendererToken": "return <TopDescalingModule />",
+      "migrationGroup": "6B",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2PriorityMatrix",
+        "PriorityTrendChart",
+        "DataTable"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "top_scaling",
+      "label": "Top Scaling Priorities",
+      "sourceFile": "components/metaos-ui/modules/PriorityModule.tsx",
+      "exportName": "TopScalingModule",
+      "rendererToken": "return <TopScalingModule />",
+      "migrationGroup": "6B",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2PriorityMatrix",
+        "PriorityTrendChart",
+        "DataTable"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "influencer_ads",
+      "label": "Influencer Ads",
+      "sourceFile": "components/metaos-ui/modules/InfluencerModule.tsx",
+      "exportName": "InfluencerModule",
+      "rendererToken": "return <InfluencerModule />",
+      "migrationGroup": "6B",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2InfluencerQueue",
+        "exportInfluencerExcel",
+        "DataTable"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "high_cpa",
+      "label": "High CPA",
+      "sourceFile": "components/metaos-ui/modules/HighCpaModule.tsx",
+      "exportName": "HighCpaModule",
+      "rendererToken": "return <HighCpaModule />",
+      "migrationGroup": "6C",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2HighCpaControl",
+        "copyPersistentQueue",
+        "EconomicTrendChart",
+        "DataTable",
+        "TablePagination"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "gpt",
+      "label": "GPT",
+      "sourceFile": "components/metaos-ui/modules/GptControlModule.tsx",
+      "exportName": "GptControlModule",
+      "rendererToken": "return <GptControlModule />",
+      "migrationGroup": "6C",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2GptControl",
+        "copyRiskQueue",
+        "campaignAverage",
+        "DataTable",
+        "TablePagination"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "high_roas",
+      "label": "High ROAS",
+      "sourceFile": "components/metaos-ui/modules/HighRoasModule.tsx",
+      "exportName": "HighRoasModule",
+      "rendererToken": "return <HighRoasModule />",
+      "migrationGroup": "6C",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2HighRoasControl",
+        "EconomicTrendChart",
+        "DataTable",
+        "TablePagination"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "spend_visuals",
+      "label": "Spend",
+      "sourceFile": "components/metaos-ui/modules/SpendAnalysisModule.tsx",
+      "exportName": "SpendAnalysisModule",
+      "rendererToken": "return <SpendAnalysisModule />",
+      "migrationGroup": "6D",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2SpendAnalysis",
+        "SpendTrendChart",
+        "SpendConcentrationChart",
+        "DataTable",
+        "TablePagination",
+        "customStartDate",
+        "customEndDate"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "creative",
+      "label": "Creative",
+      "sourceFile": "components/metaos-ui/modules/CreativeFatigueModule.tsx",
+      "exportName": "CreativeFatigueModule",
+      "rendererToken": "return <CreativeFatigueModule />",
+      "migrationGroup": "6D",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2CreativeFatigue",
+        "copyHandles",
+        "copyFullNames",
+        "TableDensityControl",
+        "TablePagination",
+        "renderExpandedRow"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "creative_ageing",
+      "label": "Creative Ageing",
+      "sourceFile": "components/metaos-ui/modules/CreativeAgeingModule.tsx",
+      "exportName": "CreativeAgeingModule",
+      "rendererToken": "return <CreativeAgeingModule />",
+      "migrationGroup": "6D",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2CreativeAgeing",
+        "CreativeCohortChart",
+        "CreativeAgeBucketChart",
+        "monthlyRows",
+        "ageRows",
+        "TableDensityControl",
+        "TablePagination"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "monthly",
+      "label": "Monthly",
+      "sourceFile": "components/metaos-ui/modules/MonthlyAnalysisModule.tsx",
+      "exportName": "MonthlyAnalysisModule",
+      "rendererToken": "return <MonthlyAnalysisModule />",
+      "migrationGroup": "6D",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2MonthlyAnalysis",
+        "MonthlyPerformanceChart",
+        "WeeklyPerformanceChart",
+        "selectedMonth",
+        "monthlyRows",
+        "weeklyRows",
+        "TableDensityControl",
+        "TablePagination"
+      ],
+      "migrationStatus": "migrated"
+    }
+  ]
+}

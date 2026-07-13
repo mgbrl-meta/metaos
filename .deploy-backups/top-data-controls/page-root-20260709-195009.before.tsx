@@ -22,7 +22,6 @@ import { SettingsPanel } from "@/components/settings/SettingsPanel";
 
 import { GoogleSearchTermAudit } from "@/components/google/GoogleSearchTermAudit";
 import { AutoMetaSheetLoader } from "@/components/meta/AutoMetaSheetLoader";
-import { MetaOSV2TopDataControls } from "@/components/meta-v2/shell/MetaOSV2TopDataControls";
 import { MetaFreshnessBadge } from "@/components/meta/MetaFreshnessBadge";
 import { CriticalCpaCreatives } from "@/components/meta/CriticalCpaCreatives";
 import { CreativeTimelineMetrics } from "@/components/meta/CreativeTimelineMetrics";
@@ -60,9 +59,7 @@ export default function Home() {
   const [activeSystemTab, setActiveSystemTab] = useState<"settings" | null>(null);
 
   return (
-    <>
-      <MetaOSV2TopDataControls />
-      <MetaOSShell
+    <MetaOSShell
       osMode={osMode}
       setOsMode={(mode) => {
         setOsMode(mode);
@@ -116,7 +113,6 @@ export default function Home() {
           {activeGoogleTab === "google_team_summary" && <GoogleSearchTermAudit initialTab="summary" />}
         </>
       )}
-      </MetaOSShell>
-    </>
+    </MetaOSShell>
   );
 }

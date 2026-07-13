@@ -1,0 +1,500 @@
+@import "./metaos-tokens.css";
+
+/*
+ * MetaOS Foundation
+ *
+ * Every selector is scoped under .metaos-ui.
+ * This file must not style the legacy dashboard.
+ */
+
+.metaos-ui {
+  min-height: 100%;
+  background: var(--mos-canvas);
+  color: var(--mos-text);
+  font-family: var(--mos-font-sans);
+  font-size: var(--mos-font-md);
+  font-weight: var(--mos-weight-regular);
+  line-height: var(--mos-line-body);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.metaos-ui,
+.metaos-ui *,
+.metaos-ui *::before,
+.metaos-ui *::after {
+  box-sizing: border-box;
+}
+
+.metaos-ui button,
+.metaos-ui input,
+.metaos-ui select,
+.metaos-ui textarea {
+  color: inherit;
+  font: inherit;
+}
+
+.metaos-ui button,
+.metaos-ui [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.metaos-ui a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.metaos-ui :focus {
+  outline: none;
+}
+
+.metaos-ui :focus-visible {
+  outline: 2px solid var(--mos-focus);
+  outline-offset: 2px;
+}
+
+.metaos-ui ::selection {
+  background: var(--mos-surface-inverse);
+  color: var(--mos-text-inverse);
+}
+
+.metaos-ui .mos-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.metaos-ui .mos-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.metaos-ui .mos-truncate {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metaos-ui .mos-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--mos-divider);
+}
+
+/* Button */
+
+.metaos-ui .mos-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mos-space-3);
+  border: 1px solid transparent;
+  border-radius: var(--mos-radius-sm);
+  cursor: pointer;
+  font-size: var(--mos-font-sm);
+  font-weight: var(--mos-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color var(--mos-duration-base) var(--mos-ease-standard),
+    border-color var(--mos-duration-base) var(--mos-ease-standard),
+    color var(--mos-duration-base) var(--mos-ease-standard),
+    box-shadow var(--mos-duration-base) var(--mos-ease-standard),
+    transform var(--mos-duration-fast) var(--mos-ease-standard);
+  user-select: none;
+}
+
+.metaos-ui .mos-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.metaos-ui .mos-button:disabled,
+.metaos-ui .mos-button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.metaos-ui .mos-button svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex: none;
+  stroke-width: 1.8;
+}
+
+.metaos-ui .mos-button--xs {
+  height: var(--mos-control-xs);
+  padding-inline: var(--mos-space-4);
+  font-size: var(--mos-font-xs);
+}
+
+.metaos-ui .mos-button--sm {
+  height: var(--mos-control-sm);
+  padding-inline: var(--mos-space-5);
+}
+
+.metaos-ui .mos-button--md {
+  height: var(--mos-control-md);
+  padding-inline: var(--mos-space-6);
+}
+
+.metaos-ui .mos-button--lg {
+  height: var(--mos-control-lg);
+  padding-inline: var(--mos-space-7);
+  font-size: var(--mos-font-md);
+}
+
+.metaos-ui .mos-button--primary {
+  background: var(--mos-surface-inverse);
+  color: var(--mos-text-inverse);
+}
+
+.metaos-ui .mos-button--primary:hover:not(:disabled) {
+  box-shadow: var(--mos-shadow-xs);
+  opacity: 0.9;
+}
+
+.metaos-ui .mos-button--secondary {
+  border-color: var(--mos-border);
+  background: var(--mos-surface);
+  color: var(--mos-text);
+}
+
+.metaos-ui .mos-button--secondary:hover:not(:disabled) {
+  background: var(--mos-hover);
+}
+
+.metaos-ui .mos-button--ghost {
+  background: transparent;
+  color: var(--mos-text-secondary);
+}
+
+.metaos-ui .mos-button--ghost:hover:not(:disabled) {
+  background: var(--mos-hover);
+  color: var(--mos-text);
+}
+
+.metaos-ui .mos-button--positive {
+  border-color: var(--mos-positive-border);
+  background: var(--mos-positive-surface);
+  color: var(--mos-positive-strong);
+}
+
+.metaos-ui .mos-button--positive:hover:not(:disabled) {
+  border-color: var(--mos-positive);
+}
+
+.metaos-ui .mos-button--negative {
+  border-color: var(--mos-negative-border);
+  background: var(--mos-negative-surface);
+  color: var(--mos-negative-strong);
+}
+
+.metaos-ui .mos-button--negative:hover:not(:disabled) {
+  border-color: var(--mos-negative);
+}
+
+/* Icon button */
+
+.metaos-ui .mos-icon-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--mos-radius-sm);
+  background: transparent;
+  color: var(--mos-text-secondary);
+  cursor: pointer;
+  transition:
+    background-color var(--mos-duration-base) var(--mos-ease-standard),
+    border-color var(--mos-duration-base) var(--mos-ease-standard),
+    color var(--mos-duration-base) var(--mos-ease-standard),
+    transform var(--mos-duration-fast) var(--mos-ease-standard);
+}
+
+.metaos-ui .mos-icon-button:hover:not(:disabled) {
+  background: var(--mos-hover);
+  color: var(--mos-text);
+}
+
+.metaos-ui .mos-icon-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.metaos-ui .mos-icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.metaos-ui .mos-icon-button svg {
+  width: 0.9375rem;
+  height: 0.9375rem;
+  stroke-width: 1.8;
+}
+
+.metaos-ui .mos-icon-button--xs {
+  width: var(--mos-control-xs);
+  height: var(--mos-control-xs);
+}
+
+.metaos-ui .mos-icon-button--sm {
+  width: var(--mos-control-sm);
+  height: var(--mos-control-sm);
+}
+
+.metaos-ui .mos-icon-button--md {
+  width: var(--mos-control-md);
+  height: var(--mos-control-md);
+}
+
+.metaos-ui .mos-icon-button--bordered {
+  border-color: var(--mos-border);
+  background: var(--mos-surface);
+}
+
+.metaos-ui .mos-icon-button--negative {
+  color: var(--mos-negative);
+}
+
+.metaos-ui .mos-icon-button--positive {
+  color: var(--mos-positive);
+}
+
+/* Badge */
+
+.metaos-ui .mos-badge {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mos-space-2);
+  border: 1px solid transparent;
+  border-radius: var(--mos-radius-full);
+  padding: 0.125rem var(--mos-space-4);
+  font-size: var(--mos-font-2xs);
+  font-weight: var(--mos-weight-semibold);
+  line-height: 1.2;
+  letter-spacing: var(--mos-tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.metaos-ui .mos-badge svg {
+  width: 0.6875rem;
+  height: 0.6875rem;
+}
+
+.metaos-ui .mos-badge--neutral {
+  border-color: var(--mos-border);
+  background: var(--mos-surface-subtle);
+  color: var(--mos-text-secondary);
+}
+
+.metaos-ui .mos-badge--strong {
+  background: var(--mos-surface-inverse);
+  color: var(--mos-text-inverse);
+}
+
+.metaos-ui .mos-badge--positive {
+  border-color: var(--mos-positive-border);
+  background: var(--mos-positive-surface);
+  color: var(--mos-positive-strong);
+}
+
+.metaos-ui .mos-badge--negative {
+  border-color: var(--mos-negative-border);
+  background: var(--mos-negative-surface);
+  color: var(--mos-negative-strong);
+}
+
+/* Panel */
+
+.metaos-ui .mos-panel {
+  min-width: 0;
+  border: 1px solid var(--mos-border);
+  border-radius: var(--mos-radius-md);
+  background: var(--mos-surface);
+  color: var(--mos-text);
+}
+
+.metaos-ui .mos-panel--subtle {
+  border-color: var(--mos-border-subtle);
+  background: var(--mos-surface-subtle);
+}
+
+.metaos-ui .mos-panel--raised {
+  background: var(--mos-surface-raised);
+  box-shadow: var(--mos-shadow-sm);
+}
+
+.metaos-ui .mos-panel--inverse {
+  border-color: var(--mos-surface-inverse);
+  background: var(--mos-surface-inverse);
+  color: var(--mos-text-inverse);
+}
+
+.metaos-ui .mos-panel--padded-sm {
+  padding: var(--mos-space-5);
+}
+
+.metaos-ui .mos-panel--padded-md {
+  padding: var(--mos-space-6);
+}
+
+.metaos-ui .mos-panel--padded-lg {
+  padding: var(--mos-space-8);
+}
+
+/* Metric */
+
+.metaos-ui .mos-metric {
+  display: grid;
+  min-width: 0;
+  gap: var(--mos-space-3);
+}
+
+.metaos-ui .mos-metric__header {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mos-space-4);
+}
+
+.metaos-ui .mos-metric__label {
+  min-width: 0;
+  color: var(--mos-text-muted);
+  font-size: var(--mos-font-xs);
+  font-weight: var(--mos-weight-semibold);
+  letter-spacing: var(--mos-tracking-label);
+  line-height: var(--mos-line-compact);
+  text-transform: uppercase;
+}
+
+.metaos-ui .mos-metric__value {
+  min-width: 0;
+  color: var(--mos-text);
+  font-size: var(--mos-font-xl);
+  font-weight: var(--mos-weight-semibold);
+  letter-spacing: var(--mos-tracking-tight);
+  line-height: var(--mos-line-tight);
+  font-variant-numeric: tabular-nums;
+}
+
+.metaos-ui .mos-metric__value--large {
+  font-size: var(--mos-font-2xl);
+}
+
+.metaos-ui .mos-metric__value--positive {
+  color: var(--mos-positive);
+}
+
+.metaos-ui .mos-metric__value--negative {
+  color: var(--mos-negative);
+}
+
+.metaos-ui .mos-metric__note {
+  color: var(--mos-text-subtle);
+  font-size: var(--mos-font-xs);
+  line-height: var(--mos-line-compact);
+}
+
+.metaos-ui .mos-metric__change {
+  flex: none;
+  font-size: var(--mos-font-xs);
+  font-weight: var(--mos-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.metaos-ui .mos-metric__change--positive {
+  color: var(--mos-positive);
+}
+
+.metaos-ui .mos-metric__change--negative {
+  color: var(--mos-negative);
+}
+
+.metaos-ui .mos-metric__change--neutral {
+  color: var(--mos-text-muted);
+}
+
+/* Page header */
+
+.metaos-ui .mos-page-header {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--mos-space-8);
+}
+
+.metaos-ui .mos-page-header__copy {
+  min-width: 0;
+  max-width: 56rem;
+}
+
+.metaos-ui .mos-page-header__eyebrow {
+  margin: 0 0 var(--mos-space-3);
+  color: var(--mos-text-muted);
+  font-size: var(--mos-font-2xs);
+  font-weight: var(--mos-weight-semibold);
+  letter-spacing: var(--mos-tracking-label);
+  line-height: var(--mos-line-compact);
+  text-transform: uppercase;
+}
+
+.metaos-ui .mos-page-header__title {
+  margin: 0;
+  color: var(--mos-text);
+  font-size: var(--mos-font-2xl);
+  font-weight: var(--mos-weight-semibold);
+  letter-spacing: var(--mos-tracking-tight);
+  line-height: var(--mos-line-tight);
+}
+
+.metaos-ui .mos-page-header__description {
+  margin: var(--mos-space-3) 0 0;
+  color: var(--mos-text-muted);
+  font-size: var(--mos-font-md);
+  line-height: var(--mos-line-body);
+}
+
+.metaos-ui .mos-page-header__actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--mos-space-3);
+}
+
+@media (max-width: 48rem) {
+  .metaos-ui .mos-page-header {
+    flex-direction: column;
+    gap: var(--mos-space-5);
+  }
+
+  .metaos-ui .mos-page-header__actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metaos-ui *,
+  .metaos-ui *::before,
+  .metaos-ui *::after {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+}

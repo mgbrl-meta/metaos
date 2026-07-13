@@ -1,0 +1,150 @@
+{
+  "version": "2026-07-10",
+  "purpose": "Freeze the functional contract of all remaining Meta screens before architecture-owned migration.",
+  "moduleCount": 11,
+  "sourceFileCount": 10,
+  "modules": [
+    {
+      "id": "summary",
+      "label": "Summary",
+      "sourceFile": "components/metaos-ui/modules/SummaryModule.tsx",
+      "exportName": "SummaryModule",
+      "rendererToken": "return <SummaryModule />",
+      "migrationGroup": "6B",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2ExecutiveSummary",
+        "DataTable"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "top_descaling",
+      "label": "Top De-scaling Priorities",
+      "sourceFile": "components/metaos-ui/modules/PriorityModule.tsx",
+      "exportName": "TopDescalingModule",
+      "rendererToken": "return <TopDescalingModule />",
+      "migrationGroup": "6B",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2PriorityMatrix",
+        "PriorityTrendChart",
+        "DataTable"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "top_scaling",
+      "label": "Top Scaling Priorities",
+      "sourceFile": "components/metaos-ui/modules/PriorityModule.tsx",
+      "exportName": "TopScalingModule",
+      "rendererToken": "return <TopScalingModule />",
+      "migrationGroup": "6B",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2PriorityMatrix",
+        "PriorityTrendChart",
+        "DataTable"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "influencer_ads",
+      "label": "Influencer Ads",
+      "sourceFile": "components/metaos-ui/modules/InfluencerModule.tsx",
+      "exportName": "InfluencerModule",
+      "rendererToken": "return <InfluencerModule />",
+      "migrationGroup": "6B",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "normalizeMetaV2Rows",
+        "buildMetaV2InfluencerQueue",
+        "exportInfluencerExcel",
+        "DataTable"
+      ],
+      "migrationStatus": "migrated"
+    },
+    {
+      "id": "high_cpa",
+      "label": "High CPA",
+      "sourceFile": "components/meta/HighCpaTab.tsx",
+      "exportName": "HighCpaTab",
+      "rendererToken": "return <HighCpaTab />",
+      "migrationGroup": "6C",
+      "requiredCapabilities": [
+        "useMetaStore",
+        "navigator.clipboard",
+        "persistentHighCpaItems"
+      ]
+    },
+    {
+      "id": "gpt",
+      "label": "GPT",
+      "sourceFile": "components/meta/GptTab.tsx",
+      "exportName": "GptTab",
+      "rendererToken": "return <GptTab />",
+      "migrationGroup": "6C",
+      "requiredCapabilities": [
+        "useMetaStore"
+      ]
+    },
+    {
+      "id": "high_roas",
+      "label": "High ROAS",
+      "sourceFile": "components/meta/HighRoasTab.tsx",
+      "exportName": "HighRoasTab",
+      "rendererToken": "return <HighRoasTab />",
+      "migrationGroup": "6C",
+      "requiredCapabilities": [
+        "useMetaStore"
+      ]
+    },
+    {
+      "id": "spend_visuals",
+      "label": "Spend",
+      "sourceFile": "components/dashboard/SpendVisuals.tsx",
+      "exportName": "SpendVisuals",
+      "rendererToken": "return <SpendVisuals />",
+      "migrationGroup": "6D",
+      "requiredCapabilities": [
+        "useMetaStore"
+      ]
+    },
+    {
+      "id": "creative",
+      "label": "Creative",
+      "sourceFile": "components/meta/CreativeTab.tsx",
+      "exportName": "CreativeTab",
+      "rendererToken": "return <CreativeTab />",
+      "migrationGroup": "6D",
+      "requiredCapabilities": [
+        "useMetaStore"
+      ]
+    },
+    {
+      "id": "creative_ageing",
+      "label": "Creative Ageing",
+      "sourceFile": "components/meta/CreativeAgeingTab.tsx",
+      "exportName": "CreativeAgeingTab",
+      "rendererToken": "return <CreativeAgeingTab />",
+      "migrationGroup": "6D",
+      "requiredCapabilities": [
+        "useMetaStore"
+      ]
+    },
+    {
+      "id": "monthly",
+      "label": "Monthly",
+      "sourceFile": "components/meta/EnhancedMonthlyReport.tsx",
+      "exportName": "EnhancedMonthlyReport",
+      "rendererToken": "return <EnhancedMonthlyReport />",
+      "migrationGroup": "6D",
+      "requiredCapabilities": [
+        "useMetaStore"
+      ]
+    }
+  ]
+}

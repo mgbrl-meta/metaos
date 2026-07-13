@@ -1,0 +1,212 @@
+{
+  "version": "2026-07-10",
+  "product": "MetaOS",
+  "purpose": "Freeze every current production frontend module before the architecture-first redesign.",
+  "routes": [
+    {
+      "path": "/",
+      "file": "app/(legacy)/page.tsx",
+      "role": "Current production workspace containing all retained Meta, Google and system modules."
+    },
+    {
+      "path": "/v2",
+      "file": "app/(legacy)/v2/page.tsx",
+      "role": "Parallel V2 workspace containing protected engine-backed dashboards."
+    },
+    {
+      "path": "/workspace",
+      "file": "app/workspace/page.tsx",
+      "role": "Parallel architecture-first MetaOS application shell."
+    }
+  ],
+  "infrastructure": {
+    "rootLayout": "app/layout.tsx",
+    "legacyShell": "components/layout/MetaOSShell.tsx",
+    "v2Shell": "components/meta-v2/shell/MetaOSV2App.tsx",
+    "dataLoader": "components/meta/AutoMetaSheetLoader.tsx",
+    "dataStore": "store/metaStore.ts",
+    "themeProvider": "components/theme/ThemeProvider.tsx",
+    "apiRoute": "app/api/meta-sheet/route.ts"
+  },
+  "modules": [
+    {
+      "platform": "meta",
+      "id": "data_qc",
+      "label": "Data QC",
+      "component": "components/meta/DataQCTab.tsx",
+      "pageToken": "activeMetaTab === \"data_qc\""
+    },
+    {
+      "platform": "meta",
+      "id": "summary",
+      "label": "Summary",
+      "component": "components/meta/MetaExecutiveSummary.tsx",
+      "pageToken": "activeMetaTab === \"summary\""
+    },
+    {
+      "platform": "meta",
+      "id": "top_descaling",
+      "label": "Top De-scaling Priorities",
+      "component": "components/meta/PrioritySplitTabs.tsx",
+      "pageToken": "activeMetaTab === \"top_descaling\""
+    },
+    {
+      "platform": "meta",
+      "id": "top_scaling",
+      "label": "Top Scaling Priorities",
+      "component": "components/meta/PrioritySplitTabs.tsx",
+      "pageToken": "activeMetaTab === \"top_scaling\""
+    },
+    {
+      "platform": "meta",
+      "id": "influencer_ads",
+      "label": "Influencer Ads",
+      "component": "components/meta/InfluencerAdsTab.tsx",
+      "pageToken": "activeMetaTab === \"influencer_ads\""
+    },
+    {
+      "platform": "meta",
+      "id": "zero_purchase",
+      "label": "Zero Purchase",
+      "component": "components/meta/ZeroPurchaseTabV2.tsx",
+      "pageToken": "activeMetaTab === \"zero_purchase\""
+    },
+    {
+      "platform": "meta",
+      "id": "high_cpa",
+      "label": "High CPA",
+      "component": "components/meta/HighCpaTab.tsx",
+      "pageToken": "activeMetaTab === \"high_cpa\""
+    },
+    {
+      "platform": "meta",
+      "id": "gpt",
+      "label": "GPT",
+      "component": "components/meta/GptTab.tsx",
+      "pageToken": "activeMetaTab === \"gpt\""
+    },
+    {
+      "platform": "meta",
+      "id": "funnel",
+      "label": "Funnel",
+      "component": "components/meta/FunnelTabV2.tsx",
+      "pageToken": "activeMetaTab === \"funnel\""
+    },
+    {
+      "platform": "meta",
+      "id": "high_roas",
+      "label": "High ROAS",
+      "component": "components/meta/HighRoasTab.tsx",
+      "pageToken": "activeMetaTab === \"high_roas\""
+    },
+    {
+      "platform": "meta",
+      "id": "spend_visuals",
+      "label": "Spend",
+      "component": "components/dashboard/SpendVisuals.tsx",
+      "pageToken": "activeMetaTab === \"spend_visuals\""
+    },
+    {
+      "platform": "meta",
+      "id": "creative",
+      "label": "Creative",
+      "component": "components/meta/CreativeTab.tsx",
+      "pageToken": "activeMetaTab === \"creative\""
+    },
+    {
+      "platform": "meta",
+      "id": "creative_ageing",
+      "label": "Creative Ageing",
+      "component": "components/meta/CreativeAgeingTab.tsx",
+      "pageToken": "activeMetaTab === \"creative_ageing\""
+    },
+    {
+      "platform": "meta",
+      "id": "monthly",
+      "label": "Monthly",
+      "component": "components/meta/EnhancedMonthlyReport.tsx",
+      "pageToken": "activeMetaTab === \"monthly\""
+    },
+    {
+      "platform": "google",
+      "id": "google_search_terms",
+      "label": "Search Term Audit",
+      "component": "components/google/GoogleSearchTermAudit.tsx",
+      "pageToken": "activeGoogleTab === \"google_search_terms\"",
+      "variantToken": "initialTab=\"search_terms\""
+    },
+    {
+      "platform": "google",
+      "id": "google_campaign_audit",
+      "label": "Campaign Audit",
+      "component": "components/google/GoogleSearchTermAudit.tsx",
+      "pageToken": "activeGoogleTab === \"google_campaign_audit\"",
+      "variantToken": "initialTab=\"campaigns\""
+    },
+    {
+      "platform": "google",
+      "id": "google_adgroup_audit",
+      "label": "Ad Group Audit",
+      "component": "components/google/GoogleSearchTermAudit.tsx",
+      "pageToken": "activeGoogleTab === \"google_adgroup_audit\"",
+      "variantToken": "initialTab=\"adgroups\""
+    },
+    {
+      "platform": "google",
+      "id": "google_keyword_audit",
+      "label": "Keyword Audit",
+      "component": "components/google/GoogleSearchTermAudit.tsx",
+      "pageToken": "activeGoogleTab === \"google_keyword_audit\"",
+      "variantToken": "initialTab=\"keywords\""
+    },
+    {
+      "platform": "google",
+      "id": "google_ad_audit",
+      "label": "Ad Audit",
+      "component": "components/google/GoogleSearchTermAudit.tsx",
+      "pageToken": "activeGoogleTab === \"google_ad_audit\"",
+      "variantToken": "initialTab=\"ads\""
+    },
+    {
+      "platform": "google",
+      "id": "google_team_summary",
+      "label": "Google Summary",
+      "component": "components/google/GoogleSearchTermAudit.tsx",
+      "pageToken": "activeGoogleTab === \"google_team_summary\"",
+      "variantToken": "initialTab=\"summary\""
+    },
+    {
+      "platform": "system",
+      "id": "settings",
+      "label": "Settings",
+      "component": "components/settings/SettingsPanel.tsx",
+      "pageToken": "activeSystemTab === \"settings\""
+    }
+  ],
+  "engineBackedV2Modules": [
+    {
+      "id": "command",
+      "label": "Command Center",
+      "component": "components/meta-v2/dashboard/CommandCenter.tsx",
+      "shellToken": "activeTab === \"command\""
+    },
+    {
+      "id": "data_qc",
+      "label": "Data QC",
+      "component": "components/meta-v2/dashboard/DataQcDashboard.tsx",
+      "shellToken": "activeTab === \"data_qc\""
+    },
+    {
+      "id": "zero_purchase",
+      "label": "Zero Purchase",
+      "component": "components/meta-v2/dashboard/ZeroPurchaseDashboard.tsx",
+      "shellToken": "activeTab === \"zero_purchase\""
+    },
+    {
+      "id": "funnel",
+      "label": "Funnel",
+      "component": "components/meta-v2/dashboard/FunnelDashboard.tsx",
+      "shellToken": "activeTab === \"funnel\""
+    }
+  ]
+}

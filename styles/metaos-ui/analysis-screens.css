@@ -1,0 +1,180 @@
+.metaos-ui .mos-analysis-chart,
+.metaos-ui .mos-analysis-bar-chart {
+  width: 100%;
+  min-width: 0;
+  height: 260px;
+}
+
+.metaos-ui .mos-analysis-chart-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metaos-ui .mos-analysis-comparison-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.metaos-ui .mos-analysis-comparison-metrics,
+.metaos-ui .mos-analysis-mini-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.metaos-ui .mos-analysis-control-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.metaos-ui .mos-analysis-date-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px;
+}
+
+.metaos-ui .mos-analysis-date-control {
+  display: grid;
+  gap: 4px;
+  min-width: 170px;
+}
+
+.metaos-ui .mos-analysis-date-control span {
+  color: var(--mos-text-tertiary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.metaos-ui .mos-analysis-date-control input {
+  min-height: 30px;
+  border: 1px solid var(--mos-border);
+  border-radius: var(--mos-radius-sm);
+  background: var(--mos-surface);
+  color: var(--mos-text);
+  padding: 5px 8px;
+  font: inherit;
+  font-size: 11px;
+}
+
+.metaos-ui .mos-analysis-date-control input:focus {
+  border-color: var(--mos-text-secondary);
+  outline: 2px solid var(--mos-focus);
+  outline-offset: 1px;
+}
+
+.metaos-ui .mos-analysis-signal-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.metaos-ui .mos-analysis-detail {
+  display: grid;
+  gap: 8px;
+}
+
+.metaos-ui .mos-analysis-detail-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@media (max-width: 1180px) {
+  .metaos-ui .mos-analysis-chart-grid,
+  .metaos-ui .mos-analysis-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metaos-ui .mos-analysis-signal-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .metaos-ui .mos-analysis-comparison-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .metaos-ui .mos-analysis-signal-grid,
+  .metaos-ui .mos-analysis-comparison-metrics,
+  .metaos-ui .mos-analysis-mini-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metaos-ui .mos-analysis-date-controls {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .metaos-ui .mos-analysis-date-control {
+    min-width: 0;
+  }
+}
+
+/* STEP 6D2B TEMPORAL ANALYSIS */
+
+.metaos-ui .mos-analysis-month-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--mos-border);
+  border-radius: var(--mos-radius-md);
+  background: var(--mos-surface);
+}
+
+.metaos-ui .mos-analysis-select-control {
+  display: grid;
+  gap: 4px;
+  min-width: 190px;
+}
+
+.metaos-ui .mos-analysis-select-control span {
+  color: var(--mos-text-tertiary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.metaos-ui .mos-analysis-select-control select {
+  min-height: 32px;
+  border: 1px solid var(--mos-border);
+  border-radius: var(--mos-radius-sm);
+  background: var(--mos-surface);
+  color: var(--mos-text);
+  padding: 5px 28px 5px 8px;
+  font: inherit;
+  font-size: 11px;
+}
+
+.metaos-ui .mos-analysis-select-control select:focus {
+  border-color: var(--mos-text-secondary);
+  outline: 2px solid var(--mos-focus);
+  outline-offset: 1px;
+}
+
+@media (max-width: 640px) {
+  .metaos-ui .mos-analysis-month-controls {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .metaos-ui .mos-analysis-select-control {
+    min-width: 0;
+  }
+}
+

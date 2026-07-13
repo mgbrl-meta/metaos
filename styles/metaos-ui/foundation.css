@@ -1,0 +1,95 @@
+.metaos-workspace,
+.metaos-workspace * {
+  box-sizing: border-box;
+}
+
+.metaos-workspace {
+  min-height: 100vh;
+  background: var(--mos-bg);
+  color: var(--mos-text);
+  font-family: var(--mos-font-sans);
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+
+.metaos-workspace button,
+.metaos-workspace input,
+.metaos-workspace select,
+.metaos-workspace textarea {
+  font: inherit;
+}
+
+.metaos-workspace button {
+  cursor: pointer;
+}
+
+.metaos-workspace a {
+  color: inherit;
+}
+
+.metaos-workspace ::selection {
+  background: var(--mos-text);
+  color: var(--mos-bg);
+}
+
+.mos-focus-ring:focus-visible,
+.metaos-workspace button:focus-visible,
+.metaos-workspace input:focus-visible {
+  outline: 2px solid var(--mos-text);
+  outline-offset: 2px;
+}
+
+.mos-positive {
+  color: var(--mos-positive);
+}
+
+.mos-negative {
+  color: var(--mos-negative);
+}
+
+.mos-warning {
+  color: var(--mos-warning);
+}
+
+.mos-panel {
+  border: 1px solid var(--mos-border);
+  border-radius: var(--mos-radius-lg);
+  background: var(--mos-surface);
+  box-shadow: var(--mos-shadow);
+}
+
+.mos-label {
+  color: var(--mos-text-secondary);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mos-number {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+}
+
+.mos-empty-state {
+  display: grid;
+  min-height: 240px;
+  place-items: center;
+  padding: 32px;
+  border: 1px dashed var(--mos-border-strong);
+  border-radius: var(--mos-radius-lg);
+  background: var(--mos-surface);
+  text-align: center;
+}
+
+.mos-empty-state strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+
+.mos-empty-state span {
+  color: var(--mos-text-secondary);
+  font-size: 12px;
+}

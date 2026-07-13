@@ -1,0 +1,160 @@
+.metaos-ui .mos-summary-issue-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.metaos-ui .mos-summary-direction-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.metaos-ui .mos-priority-detail {
+  display: grid;
+  gap: 10px;
+}
+
+.metaos-ui .mos-priority-detail-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.metaos-ui .mos-priority-window-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.metaos-ui .mos-priority-trend-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.metaos-ui .mos-priority-chart {
+  width: 100%;
+  min-width: 0;
+  height: 220px;
+  margin-top: 10px;
+}
+
+.metaos-ui .mos-chart-tooltip {
+  min-width: 150px;
+  padding: 9px;
+  border: 1px solid var(--mos-border-strong);
+  border-radius: var(--mos-radius-sm);
+  background: var(--mos-surface);
+  color: var(--mos-text);
+  box-shadow: var(--mos-shadow);
+  font-size: 9px;
+}
+
+.metaos-ui .mos-chart-tooltip > strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 10px;
+}
+
+.metaos-ui .mos-chart-tooltip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  color: var(--mos-text-secondary);
+}
+
+.metaos-ui .mos-chart-tooltip-row b {
+  color: var(--mos-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.metaos-ui .mos-inline-empty {
+  display: grid;
+  min-height: 130px;
+  place-items: center;
+  margin-top: 10px;
+  border: 1px dashed var(--mos-border);
+  border-radius: var(--mos-radius-md);
+  color: var(--mos-text-secondary);
+  font-size: 10px;
+}
+
+.metaos-ui .mos-influencer-detail {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 1.1fr)
+    minmax(260px, 1fr)
+    minmax(260px, 1fr);
+  gap: 8px;
+}
+
+.metaos-ui .mos-influencer-window-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+@media (max-width: 1180px) {
+  .metaos-ui .mos-summary-issue-grid,
+  .metaos-ui .mos-summary-direction-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .metaos-ui .mos-priority-detail-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .metaos-ui .mos-priority-detail-grid
+    > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .metaos-ui .mos-influencer-detail {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .metaos-ui .mos-influencer-detail
+    > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .metaos-ui .mos-summary-issue-grid,
+  .metaos-ui .mos-summary-direction-grid,
+  .metaos-ui .mos-priority-detail-grid,
+  .metaos-ui .mos-influencer-detail {
+    grid-template-columns: 1fr;
+  }
+
+  .metaos-ui .mos-priority-detail-grid
+    > :last-child,
+  .metaos-ui .mos-influencer-detail
+    > :last-child {
+    grid-column: auto;
+  }
+
+  .metaos-ui .mos-priority-window-grid,
+  .metaos-ui .mos-influencer-window-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .metaos-ui .mos-priority-window-grid,
+  .metaos-ui .mos-influencer-window-grid {
+    grid-template-columns: 1fr;
+  }
+}

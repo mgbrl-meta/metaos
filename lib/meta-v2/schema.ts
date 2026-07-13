@@ -16,6 +16,8 @@ export interface MetaV2CleanRow {
   campaignName: string;
   adSetName: string;
   adName: string;
+  creativeName?: string;
+  deliveryStatus?: string;
   adId: string;
 
   spend: number;
@@ -31,6 +33,7 @@ export interface MetaV2CleanRow {
   atc: number;
   checkout: number;
   payment: number;
+  video3s?: number;
 
   roas: number;
   cpa: number;

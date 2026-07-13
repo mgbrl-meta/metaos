@@ -2,7 +2,19 @@ export const META_V2_COLUMN_ALIASES = {
   date: ["date", "day", "reporting starts", "reporting start"],
   campaignName: ["campaign name", "campaign"],
   adSetName: ["ad set name", "adset name", "ad set"],
-  adName: ["ad name", "ad", "creative name"],
+  adName: ["ad name", "ad"],
+  creativeName: [
+    "creative name",
+    "creative",
+    "video name",
+    "asset name",
+  ],
+  deliveryStatus: [
+    "delivery status",
+    "delivery",
+    "ad delivery status",
+    "ad delivery",
+  ],
   adId: ["ad id", "adid"],
   spend: ["spend", "amount spent", "amount spent inr", "amount spent (inr)"],
   revenue: ["revenue", "purchase value", "purchase conversion value", "purchases conversion value", "conversion value"],
@@ -16,6 +28,13 @@ export const META_V2_COLUMN_ALIASES = {
   atc: ["adds to cart", "add to cart", "atc"],
   checkout: ["checkouts initiated", "checkout initiated", "initiate checkout"],
   payment: ["adds of payment info", "payment info", "add payment info"],
+  video3s: [
+    "video plays at 3 seconds",
+    "3 second video plays",
+    "3-second video plays",
+    "video 3s plays",
+    "thruplays",
+  ],
 } as const;
 
 export type MetaV2Column = keyof typeof META_V2_COLUMN_ALIASES;

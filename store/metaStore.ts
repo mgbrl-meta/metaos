@@ -17,7 +17,7 @@ import {
 import { extractMetaRows, getMetaLatestDate } from "@/lib/meta/dataFreshness";
 
 export async function fetchFreshMetaRowsForStore() {
-  const response = await fetch(`/api/meta-sheet?source=raw&t=${Date.now()}`, {
+  const response = await fetch(`/api/meta-data?limit=1000000&t=${Date.now()}`, {
     cache: "no-store",
     headers: {
       "Cache-Control": "no-cache",
@@ -26,7 +26,7 @@ export async function fetchFreshMetaRowsForStore() {
   });
 
   if (!response.ok) {
-    throw new Error(`Meta sheet fetch failed: ${response.status}`);
+    throw new Error(`Meta BigQuery fetch failed: ${response.status}`);
   }
 
   const payload = await response.json();
@@ -37,7 +37,7 @@ export async function fetchFreshMetaRowsForStore() {
     latestDate: getMetaLatestDate(rows),
     rowCount: rows.length,
     source: payload?.source || "unknown",
-    sheetTab: payload?.sheetTab || "",
+    sheetTab: payload?.table || "",
     fetchedAt: new Date().toISOString(),
   };
 }

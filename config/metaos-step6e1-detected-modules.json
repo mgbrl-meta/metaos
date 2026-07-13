@@ -1,0 +1,14 @@
+{
+  "dataQc": {
+    "file": "components/metaos-ui/modules/DataQcModule.tsx",
+    "alias": "@/components/metaos-ui/modules/DataQcModule",
+    "name": "DataQcModule",
+    "kind": "named"
+  },
+  "zeroPurchase": {
+    "file": "components/metaos-ui/modules/ZeroPurchaseModule.tsx",
+    "alias": "@/components/metaos-ui/modules/ZeroPurchaseModule",
+    "name": "ZeroPurchaseModule",
+    "kind": "named"
+  }
+}

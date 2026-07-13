@@ -22,3 +22,5 @@ tsconfig.tsbuildinfo
 *.before-*
 .vercel
 .env*
+.frontend-architecture-backups/
+.metaos-frontend-baselines/

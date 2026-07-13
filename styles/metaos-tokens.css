@@ -1,0 +1,210 @@
+/*
+ * MetaOS Design Tokens
+ *
+ * Ownership:
+ * - Neutral colour system
+ * - Positive and negative performance colours
+ * - Typography scale
+ * - Spacing scale
+ * - Radius scale
+ * - Control dimensions
+ * - Motion and elevation
+ *
+ * This file must remain calculation-free and component-free.
+ */
+
+.metaos-ui,
+.metaos-ui[data-metaos-theme="light"] {
+  color-scheme: light;
+
+  /* Neutral canvas and surfaces */
+  --mos-canvas: oklch(0.976 0.002 85);
+  --mos-surface: oklch(1 0 0);
+  --mos-surface-subtle: oklch(0.958 0.002 85);
+  --mos-surface-muted: oklch(0.932 0.002 85);
+  --mos-surface-raised: oklch(1 0 0);
+  --mos-surface-inverse: oklch(0.145 0 0);
+
+  /* Typography */
+  --mos-text: oklch(0.145 0 0);
+  --mos-text-secondary: oklch(0.355 0 0);
+  --mos-text-muted: oklch(0.49 0 0);
+  --mos-text-subtle: oklch(0.61 0 0);
+  --mos-text-inverse: oklch(0.985 0 0);
+  --mos-text-disabled: oklch(0.68 0 0);
+
+  /* Structure */
+  --mos-border: oklch(0.885 0 0);
+  --mos-border-subtle: oklch(0.925 0 0);
+  --mos-border-strong: oklch(0.65 0 0);
+  --mos-divider: oklch(0.91 0 0);
+  --mos-focus: oklch(0.145 0 0);
+
+  /* Positive performance */
+  --mos-positive: oklch(0.47 0.145 145);
+  --mos-positive-strong: oklch(0.38 0.13 145);
+  --mos-positive-surface: oklch(0.96 0.035 145);
+  --mos-positive-border: oklch(0.79 0.075 145);
+
+  /* Negative performance */
+  --mos-negative: oklch(0.52 0.19 25);
+  --mos-negative-strong: oklch(0.43 0.18 25);
+  --mos-negative-surface: oklch(0.965 0.035 25);
+  --mos-negative-border: oklch(0.82 0.075 25);
+
+  /* Neutral chart sequence */
+  --mos-chart-1: oklch(0.18 0 0);
+  --mos-chart-2: oklch(0.34 0 0);
+  --mos-chart-3: oklch(0.49 0 0);
+  --mos-chart-4: oklch(0.64 0 0);
+  --mos-chart-5: oklch(0.79 0 0);
+  --mos-chart-positive: var(--mos-positive);
+  --mos-chart-negative: var(--mos-negative);
+
+  /* Interaction */
+  --mos-hover: oklch(0.945 0 0);
+  --mos-active: oklch(0.91 0 0);
+  --mos-selected: oklch(0.905 0 0);
+  --mos-overlay: oklch(0.1 0 0 / 0.48);
+
+  /* Elevation */
+  --mos-shadow-xs: 0 1px 2px oklch(0.12 0 0 / 0.05);
+  --mos-shadow-sm:
+    0 1px 2px oklch(0.12 0 0 / 0.05),
+    0 4px 12px oklch(0.12 0 0 / 0.035);
+  --mos-shadow-md:
+    0 2px 4px oklch(0.12 0 0 / 0.06),
+    0 12px 28px oklch(0.12 0 0 / 0.06);
+
+  /* Typography family */
+  --mos-font-sans:
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  --mos-font-mono:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    monospace;
+
+  /* Compact typography scale */
+  --mos-font-2xs: 0.625rem;
+  --mos-font-xs: 0.6875rem;
+  --mos-font-sm: 0.75rem;
+  --mos-font-md: 0.8125rem;
+  --mos-font-lg: 0.9375rem;
+  --mos-font-xl: 1.125rem;
+  --mos-font-2xl: 1.375rem;
+  --mos-font-3xl: 1.75rem;
+
+  --mos-line-tight: 1.18;
+  --mos-line-compact: 1.32;
+  --mos-line-body: 1.48;
+
+  --mos-weight-regular: 400;
+  --mos-weight-medium: 500;
+  --mos-weight-semibold: 600;
+  --mos-weight-bold: 700;
+
+  --mos-tracking-tight: -0.02em;
+  --mos-tracking-normal: 0;
+  --mos-tracking-label: 0.055em;
+
+  /* Spacing */
+  --mos-space-0: 0;
+  --mos-space-1: 0.125rem;
+  --mos-space-2: 0.25rem;
+  --mos-space-3: 0.375rem;
+  --mos-space-4: 0.5rem;
+  --mos-space-5: 0.75rem;
+  --mos-space-6: 1rem;
+  --mos-space-7: 1.25rem;
+  --mos-space-8: 1.5rem;
+  --mos-space-9: 2rem;
+  --mos-space-10: 2.5rem;
+
+  /* Restrained radius scale */
+  --mos-radius-none: 0;
+  --mos-radius-xs: 0.25rem;
+  --mos-radius-sm: 0.375rem;
+  --mos-radius-md: 0.5rem;
+  --mos-radius-lg: 0.75rem;
+  --mos-radius-full: 999px;
+
+  /* Controls */
+  --mos-control-xs: 1.5rem;
+  --mos-control-sm: 1.75rem;
+  --mos-control-md: 2rem;
+  --mos-control-lg: 2.25rem;
+
+  /* Layout */
+  --mos-sidebar-expanded: 14.5rem;
+  --mos-sidebar-collapsed: 3.5rem;
+  --mos-header-height: 3.5rem;
+  --mos-content-max: 112rem;
+  --mos-table-row-height: 2.375rem;
+
+  /* Motion */
+  --mos-duration-fast: 100ms;
+  --mos-duration-base: 160ms;
+  --mos-duration-slow: 240ms;
+  --mos-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.metaos-ui[data-metaos-theme="dark"] {
+  color-scheme: dark;
+
+  --mos-canvas: oklch(0.105 0 0);
+  --mos-surface: oklch(0.145 0 0);
+  --mos-surface-subtle: oklch(0.18 0 0);
+  --mos-surface-muted: oklch(0.215 0 0);
+  --mos-surface-raised: oklch(0.17 0 0);
+  --mos-surface-inverse: oklch(0.97 0 0);
+
+  --mos-text: oklch(0.97 0 0);
+  --mos-text-secondary: oklch(0.79 0 0);
+  --mos-text-muted: oklch(0.65 0 0);
+  --mos-text-subtle: oklch(0.53 0 0);
+  --mos-text-inverse: oklch(0.12 0 0);
+  --mos-text-disabled: oklch(0.43 0 0);
+
+  --mos-border: oklch(0.29 0 0);
+  --mos-border-subtle: oklch(0.235 0 0);
+  --mos-border-strong: oklch(0.45 0 0);
+  --mos-divider: oklch(0.235 0 0);
+  --mos-focus: oklch(0.97 0 0);
+
+  --mos-positive: oklch(0.72 0.15 145);
+  --mos-positive-strong: oklch(0.8 0.135 145);
+  --mos-positive-surface: oklch(0.25 0.055 145);
+  --mos-positive-border: oklch(0.43 0.085 145);
+
+  --mos-negative: oklch(0.72 0.18 25);
+  --mos-negative-strong: oklch(0.8 0.155 25);
+  --mos-negative-surface: oklch(0.25 0.07 25);
+  --mos-negative-border: oklch(0.45 0.1 25);
+
+  --mos-chart-1: oklch(0.92 0 0);
+  --mos-chart-2: oklch(0.76 0 0);
+  --mos-chart-3: oklch(0.6 0 0);
+  --mos-chart-4: oklch(0.45 0 0);
+  --mos-chart-5: oklch(0.31 0 0);
+
+  --mos-hover: oklch(0.215 0 0);
+  --mos-active: oklch(0.255 0 0);
+  --mos-selected: oklch(0.275 0 0);
+  --mos-overlay: oklch(0 0 0 / 0.72);
+
+  --mos-shadow-xs: 0 1px 2px oklch(0 0 0 / 0.24);
+  --mos-shadow-sm:
+    0 1px 2px oklch(0 0 0 / 0.22),
+    0 4px 14px oklch(0 0 0 / 0.18);
+  --mos-shadow-md:
+    0 2px 4px oklch(0 0 0 / 0.24),
+    0 14px 32px oklch(0 0 0 / 0.25);
+}

@@ -1,0 +1,72 @@
+.metaos-ui .mos-economic-detail {
+  display: grid;
+  gap: 10px;
+}
+
+.metaos-ui .mos-economic-detail-grid,
+.metaos-ui .mos-gpt-detail-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.metaos-ui .mos-economic-window-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.metaos-ui .mos-economic-trend-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.metaos-ui .mos-economic-chart {
+  width: 100%;
+  min-width: 0;
+  height: 220px;
+  margin-top: 10px;
+}
+
+@media (max-width: 1180px) {
+  .metaos-ui .mos-economic-detail-grid,
+  .metaos-ui .mos-gpt-detail-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .metaos-ui .mos-economic-detail-grid
+    > :last-child,
+  .metaos-ui .mos-gpt-detail-grid
+    > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .metaos-ui .mos-economic-detail-grid,
+  .metaos-ui .mos-gpt-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metaos-ui .mos-economic-detail-grid
+    > :last-child,
+  .metaos-ui .mos-gpt-detail-grid
+    > :last-child {
+    grid-column: auto;
+  }
+
+  .metaos-ui .mos-economic-window-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .metaos-ui .mos-economic-window-grid {
+    grid-template-columns: 1fr;
+  }
+}

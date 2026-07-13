@@ -12,7 +12,26 @@ function mustContain(file, fragments) {
   const source = read(file);
 
   for (const fragment of fragments) {
-    if (!source.includes(fragment)) {
+    const acceptsSharedAnalysisTotals =
+      fragment ===
+        "calculateMetaV2Totals" &&
+      [
+        "lib/meta-v2/engines/spendAnalysisEngine.ts",
+        "lib/meta-v2/engines/creativeFatigueEngine.ts",
+        "lib/meta-v2/engines/creativeAgeingEngine.ts",
+        "lib/meta-v2/engines/monthlyAnalysisEngine.ts",
+      ].includes(file) &&
+      source.includes(
+        "calculateMetaV2AnalysisTotals"
+      ) &&
+      source.includes(
+        'from "@/lib/meta-v2/analysisLayerUtils"'
+      );
+
+    if (
+      !source.includes(fragment) &&
+      !acceptsSharedAnalysisTotals
+    ) {
       throw new Error(`${file} is missing required fragment:\n${fragment}`);
     }
   }

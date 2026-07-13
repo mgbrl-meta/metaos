@@ -1,0 +1,554 @@
+.metaos-ui .mos-button,
+.metaos-ui .mos-icon-control {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--mos-radius-sm);
+  font-weight: 640;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    opacity 120ms ease;
+}
+
+.metaos-ui .mos-button {
+  gap: 7px;
+}
+
+.metaos-ui .mos-button.is-xs {
+  min-height: 26px;
+  padding: 0 8px;
+  font-size: 9px;
+}
+
+.metaos-ui .mos-button.is-sm {
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: 10px;
+}
+
+.metaos-ui .mos-button.is-md {
+  min-height: 34px;
+  padding: 0 13px;
+  font-size: 11px;
+}
+
+.metaos-ui .mos-button.is-full-width {
+  width: 100%;
+}
+
+.metaos-ui .mos-button.is-primary,
+.metaos-ui .mos-icon-control.is-primary {
+  border-color: var(--mos-surface-strong);
+  background: var(--mos-surface-strong);
+  color: var(--mos-text-inverse);
+}
+
+.metaos-ui .mos-button.is-secondary,
+.metaos-ui .mos-icon-control.is-secondary {
+  border-color: var(--mos-border);
+  background: var(--mos-surface);
+  color: var(--mos-text);
+}
+
+.metaos-ui .mos-button.is-ghost,
+.metaos-ui .mos-icon-control.is-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--mos-text-secondary);
+}
+
+.metaos-ui .mos-button.is-positive,
+.metaos-ui .mos-icon-control.is-positive {
+  border-color: var(--mos-positive-border);
+  background: var(--mos-positive-soft);
+  color: var(--mos-positive);
+}
+
+.metaos-ui .mos-button.is-danger,
+.metaos-ui .mos-icon-control.is-danger {
+  border-color: var(--mos-negative-border);
+  background: var(--mos-negative-soft);
+  color: var(--mos-negative);
+}
+
+.metaos-ui .mos-button:hover:not(:disabled),
+.metaos-ui .mos-icon-control:hover:not(:disabled) {
+  border-color: var(--mos-border-strong);
+}
+
+.metaos-ui .mos-button.is-primary:hover:not(:disabled),
+.metaos-ui
+  .mos-icon-control.is-primary:hover:not(:disabled) {
+  opacity: 0.84;
+}
+
+.metaos-ui .mos-button:disabled,
+.metaos-ui .mos-icon-control:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.metaos-ui .mos-button-icon,
+.metaos-ui .mos-button-icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+.metaos-ui .mos-button-spinner,
+.metaos-ui .mos-state-spinner {
+  width: 13px;
+  height: 13px;
+  animation: mos-spin 700ms linear infinite;
+}
+
+.metaos-ui .mos-icon-control {
+  padding: 0;
+}
+
+.metaos-ui .mos-icon-control.is-xs {
+  width: 26px;
+  height: 26px;
+}
+
+.metaos-ui .mos-icon-control.is-sm {
+  width: 30px;
+  height: 30px;
+}
+
+.metaos-ui .mos-icon-control.is-md {
+  width: 34px;
+  height: 34px;
+}
+
+.metaos-ui .mos-icon-control svg {
+  width: 14px;
+  height: 14px;
+}
+
+.metaos-ui .mos-badge {
+  display: inline-flex;
+  min-height: 22px;
+  align-items: center;
+  gap: 5px;
+  padding: 0 7px;
+  border: 1px solid var(--mos-border);
+  border-radius: 999px;
+  background: var(--mos-surface);
+  color: var(--mos-text-secondary);
+  font-size: 9px;
+  font-weight: 660;
+  letter-spacing: 0.015em;
+  white-space: nowrap;
+}
+
+.metaos-ui .mos-badge.is-positive {
+  border-color: var(--mos-positive-border);
+  background: var(--mos-positive-soft);
+  color: var(--mos-positive);
+}
+
+.metaos-ui .mos-badge.is-negative {
+  border-color: var(--mos-negative-border);
+  background: var(--mos-negative-soft);
+  color: var(--mos-negative);
+}
+
+.metaos-ui .mos-badge.is-warning {
+  border-color: var(--mos-warning-border);
+  background: var(--mos-warning-soft);
+  color: var(--mos-warning);
+}
+
+.metaos-ui .mos-badge.is-inverse {
+  border-color: var(--mos-surface-strong);
+  background: var(--mos-surface-strong);
+  color: var(--mos-text-inverse);
+}
+
+.metaos-ui .mos-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.metaos-ui .mos-badge-icon,
+.metaos-ui .mos-badge-icon svg {
+  width: 11px;
+  height: 11px;
+}
+
+.metaos-ui .mos-card {
+  min-width: 0;
+  border: 1px solid var(--mos-border);
+  border-radius: var(--mos-radius-lg);
+  background: var(--mos-surface);
+  box-shadow: var(--mos-shadow);
+}
+
+.metaos-ui .mos-card.is-compact {
+  padding: 12px;
+}
+
+.metaos-ui .mos-card.is-regular {
+  padding: 16px;
+}
+
+.metaos-ui .mos-card.is-subtle {
+  background: var(--mos-surface-subtle);
+  box-shadow: none;
+}
+
+.metaos-ui .mos-card.is-positive {
+  border-color: var(--mos-positive-border);
+  background: var(--mos-positive-soft);
+  box-shadow: none;
+}
+
+.metaos-ui .mos-card.is-negative {
+  border-color: var(--mos-negative-border);
+  background: var(--mos-negative-soft);
+  box-shadow: none;
+}
+
+.metaos-ui .mos-card.is-warning {
+  border-color: var(--mos-warning-border);
+  background: var(--mos-warning-soft);
+  box-shadow: none;
+}
+
+.metaos-ui .mos-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.metaos-ui .mos-card-header-text {
+  min-width: 0;
+}
+
+.metaos-ui .mos-card-title {
+  margin: 0;
+  color: var(--mos-text);
+  font-size: 12px;
+  font-weight: 690;
+  letter-spacing: -0.015em;
+}
+
+.metaos-ui .mos-card-description {
+  margin: 4px 0 0;
+  color: var(--mos-text-secondary);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.metaos-ui .mos-card-action {
+  flex: 0 0 auto;
+}
+
+.metaos-ui .mos-card-body {
+  margin-top: 13px;
+}
+
+.metaos-ui .mos-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 13px;
+  padding-top: 12px;
+  border-top: 1px solid var(--mos-border);
+}
+
+.metaos-ui .mos-page-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.metaos-ui .mos-page-header {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 3px 1px 5px;
+}
+
+.metaos-ui .mos-page-header-copy {
+  min-width: 0;
+  max-width: 980px;
+}
+
+.metaos-ui .mos-page-header-title {
+  margin: 4px 0 0;
+  color: var(--mos-text);
+  font-size: 20px;
+  font-weight: 730;
+  letter-spacing: -0.04em;
+}
+
+.metaos-ui .mos-page-header-description {
+  margin: 5px 0 0;
+  color: var(--mos-text-secondary);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.metaos-ui .mos-page-header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.metaos-ui .mos-page-header-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.metaos-ui .mos-metric-card {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--mos-border);
+  border-radius: var(--mos-radius-md);
+  background: var(--mos-surface);
+}
+
+.metaos-ui .mos-metric-card.is-compact {
+  padding: 9px 10px;
+}
+
+.metaos-ui .mos-metric-card.is-positive {
+  border-color: var(--mos-positive-border);
+}
+
+.metaos-ui .mos-metric-card.is-negative {
+  border-color: var(--mos-negative-border);
+}
+
+.metaos-ui .mos-metric-card.is-warning {
+  border-color: var(--mos-warning-border);
+}
+
+.metaos-ui .mos-metric-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+}
+
+.metaos-ui .mos-metric-card-icon,
+.metaos-ui .mos-metric-card-icon svg {
+  width: 14px;
+  height: 14px;
+  color: var(--mos-text-tertiary);
+}
+
+.metaos-ui .mos-metric-card-value {
+  overflow: hidden;
+  margin-top: 6px;
+  color: var(--mos-text);
+  font-size: 18px;
+  font-weight: 720;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metaos-ui
+  .mos-metric-card.is-positive
+  .mos-metric-card-value {
+  color: var(--mos-positive);
+}
+
+.metaos-ui
+  .mos-metric-card.is-negative
+  .mos-metric-card-value {
+  color: var(--mos-negative);
+}
+
+.metaos-ui
+  .mos-metric-card.is-warning
+  .mos-metric-card-value {
+  color: var(--mos-warning);
+}
+
+.metaos-ui .mos-metric-card-note {
+  overflow: hidden;
+  margin-top: 4px;
+  color: var(--mos-text-secondary);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metaos-ui .mos-filter-bar {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 9px;
+  padding: 7px;
+  border: 1px solid var(--mos-border);
+  border-radius: var(--mos-radius-md);
+  background: var(--mos-surface);
+}
+
+.metaos-ui .mos-filter-controls,
+.metaos-ui .mos-filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.metaos-ui .mos-filter-controls {
+  min-width: 0;
+  flex: 1;
+}
+
+.metaos-ui .mos-filter-actions {
+  justify-content: flex-end;
+}
+
+.metaos-ui .mos-filter-summary {
+  margin-left: auto;
+  color: var(--mos-text-secondary);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.metaos-ui .mos-segmented-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--mos-border);
+  border-radius: var(--mos-radius-sm);
+  background: var(--mos-surface-subtle);
+}
+
+.metaos-ui .mos-segmented-option {
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--mos-text-secondary);
+  font-size: 9px;
+  font-weight: 620;
+}
+
+.metaos-ui .mos-segmented-option:hover:not(:disabled) {
+  color: var(--mos-text);
+}
+
+.metaos-ui .mos-segmented-option.is-active {
+  background: var(--mos-surface);
+  color: var(--mos-text);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.07);
+}
+
+.metaos-ui .mos-segmented-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.metaos-ui .mos-segmented-icon,
+.metaos-ui .mos-segmented-icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+.metaos-ui .mos-state-panel {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  padding: 28px;
+  border: 1px dashed var(--mos-border-strong);
+  border-radius: var(--mos-radius-lg);
+  background: var(--mos-surface);
+  text-align: center;
+}
+
+.metaos-ui .mos-state-panel-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--mos-border);
+  border-radius: var(--mos-radius-md);
+  color: var(--mos-text-secondary);
+}
+
+.metaos-ui .mos-state-panel h2 {
+  margin: 0;
+  color: var(--mos-text);
+  font-size: 14px;
+  font-weight: 690;
+}
+
+.metaos-ui .mos-state-panel p {
+  max-width: 480px;
+  margin: 5px auto 0;
+  color: var(--mos-text-secondary);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.metaos-ui .mos-state-panel-action {
+  margin-top: 3px;
+}
+
+@keyframes mos-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 720px) {
+  .metaos-ui .mos-page-header {
+    display: grid;
+  }
+
+  .metaos-ui .mos-page-header-actions {
+    justify-content: flex-start;
+  }
+
+  .metaos-ui .mos-filter-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .metaos-ui .mos-filter-summary {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metaos-ui .mos-button,
+  .metaos-ui .mos-icon-control {
+    transition: none;
+  }
+
+  .metaos-ui .mos-button-spinner,
+  .metaos-ui .mos-state-spinner {
+    animation-duration: 1400ms;
+  }
+}

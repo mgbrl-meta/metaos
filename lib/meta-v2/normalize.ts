@@ -15,6 +15,16 @@ function text(value: unknown, fallback: string): string {
 export function normalizeMetaV2Row(row: MetaV2RawRow, sourceIndex: number): MetaV2CleanRow {
   const date = toIsoDateKey(getColumnValue(row, "date"));
 
+  const adName = text(
+    getColumnValue(row, "adName"),
+    "Unknown Ad"
+  );
+
+  const creativeName = text(
+    getColumnValue(row, "creativeName"),
+    adName
+  );
+
   const base: MetaV2BaseNumbers = {
     spend: safeNumber(getColumnValue(row, "spend")),
     revenue: safeNumber(getColumnValue(row, "revenue")),
@@ -41,10 +51,18 @@ export function normalizeMetaV2Row(row: MetaV2RawRow, sourceIndex: number): Meta
 
     campaignName: text(getColumnValue(row, "campaignName"), "Unknown Campaign"),
     adSetName: text(getColumnValue(row, "adSetName"), "Unknown Ad Set"),
-    adName: text(getColumnValue(row, "adName"), "Unknown Ad"),
+    adName,
+    creativeName,
+    deliveryStatus: text(
+      getColumnValue(row, "deliveryStatus"),
+      ""
+    ),
     adId: text(getColumnValue(row, "adId"), ""),
 
     ...base,
+    video3s: safeNumber(
+      getColumnValue(row, "video3s")
+    ),
     ...derived,
   };
 }
