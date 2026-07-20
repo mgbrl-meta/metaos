@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, useState, useMemo } from "react";
 import { ChevronDown, Copy, ShieldAlert, SlidersHorizontal } from "lucide-react";
 import type { MetaV2CleanRow } from "@/lib/meta-v2/schema";
 import { useZeroPurchaseData } from "@/components/meta-v2/hooks/useZeroPurchaseData";
@@ -16,6 +16,10 @@ import { StatusPill } from "@/components/meta-v2/shared/StatusPill";
 import { EmptyState } from "@/components/meta-v2/shared/EmptyState";
 import { ErrorBoundary } from "@/components/meta-v2/shared/ErrorBoundary";
 import { DateRangeFilter, DateRangeDisplay } from "@/components/meta-v2/shared/DateRangeFilter";
+import { AdvancedFilters } from "@/components/meta-v2/shared/AdvancedFilters";
+import { ExportButton } from "@/components/meta-v2/shared/ExportButton";
+import { TrendChart } from "@/components/meta-v2/shared/TrendChart";
+import { FilterService } from "@/lib/meta-v2/services/filterService";
 
 function Cell({
   value,
@@ -50,6 +54,19 @@ export function ZeroPurchaseDashboard({ rows }: { rows: MetaV2CleanRow[] }) {
   const { openId, toggleRow } = useExpandedRows();
   const { copied, copy } = useCopyToClipboard();
   const { dateRange, isOpen, updateDateRange, openFilter, closeFilter } = useDateRange();
+  const [filteredItems, setFilteredItems] = useState(output?.items || []);
+
+  // Apply filters whenever date range or output changes
+  const displayItems = useMemo(() => {
+    if (!output?.items) return [];
+
+    return FilterService.applyFilters(output.items, {
+      dateRange: {
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+      },
+    });
+  }, [output?.items, dateRange]);
 
   if (error) {
     return (
@@ -231,6 +248,25 @@ export function ZeroPurchaseDashboard({ rows }: { rows: MetaV2CleanRow[] }) {
         </div>
       </SectionCard>
 
+      {/* Advanced Filters */}
+      <AdvancedFilters items={displayItems} onFiltersChange={setFilteredItems} />
+
+      {/* Trend Chart */}
+      {filteredItems.length > 0 && (
+        <TrendChart items={filteredItems} title="Waste Trend Over Date Range" />
+      )}
+
+      {/* Table Header with Export */}
+      <div className="flex items-center justify-between gap-3">
+        <h2
+          className="text-lg font-black"
+          style={{ color: themeColor('text-primary') }}
+        >
+          Filtered Results ({filteredItems.length} ads)
+        </h2>
+        <ExportButton items={filteredItems} dateRange={dateRange} />
+      </div>
+
       {/* Table */}
       <SectionCard title="Ads With Spend But Zero Purchases" eyebrow="Budget Recovery">
         <div
@@ -264,7 +300,7 @@ export function ZeroPurchaseDashboard({ rows }: { rows: MetaV2CleanRow[] }) {
               }}
               className="divide-y"
             >
-              {output.items.map((item) => {
+              {filteredItems.map((item) => {
                 const isOpen = openId === item.id;
 
                 return (
