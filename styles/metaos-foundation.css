@@ -488,6 +488,157 @@
   }
 }
 
+/* Typography Hierarchy */
+
+/* Display - Large hero text */
+.metaos-ui .mos-display-lg {
+  font-size: var(--mos-font-3xl);
+  font-weight: var(--mos-weight-bold);
+  line-height: var(--mos-line-tight);
+  letter-spacing: var(--mos-tracking-tight);
+}
+
+.metaos-ui .mos-display-md {
+  font-size: var(--mos-font-2xl);
+  font-weight: var(--mos-weight-bold);
+  line-height: var(--mos-line-tight);
+  letter-spacing: var(--mos-tracking-tight);
+}
+
+.metaos-ui .mos-display-sm {
+  font-size: var(--mos-font-xl);
+  font-weight: var(--mos-weight-bold);
+  line-height: var(--mos-line-tight);
+  letter-spacing: var(--mos-tracking-tight);
+}
+
+/* Heading - Section titles */
+.metaos-ui h1,
+.metaos-ui .mos-heading-1 {
+  font-size: var(--mos-font-2xl);
+  font-weight: var(--mos-weight-bold);
+  line-height: var(--mos-line-tight);
+  letter-spacing: var(--mos-tracking-tight);
+  margin: 0;
+}
+
+.metaos-ui h2,
+.metaos-ui .mos-heading-2 {
+  font-size: var(--mos-font-xl);
+  font-weight: var(--mos-weight-semibold);
+  line-height: var(--mos-line-compact);
+  letter-spacing: var(--mos-tracking-normal);
+  margin: 0;
+}
+
+.metaos-ui h3,
+.metaos-ui .mos-heading-3 {
+  font-size: var(--mos-font-lg);
+  font-weight: var(--mos-weight-semibold);
+  line-height: var(--mos-line-compact);
+  letter-spacing: var(--mos-tracking-normal);
+  margin: 0;
+}
+
+.metaos-ui h4,
+.metaos-ui .mos-heading-4 {
+  font-size: var(--mos-font-md);
+  font-weight: var(--mos-weight-semibold);
+  line-height: var(--mos-line-compact);
+  letter-spacing: var(--mos-tracking-normal);
+  margin: 0;
+}
+
+.metaos-ui h5,
+.metaos-ui .mos-heading-5 {
+  font-size: var(--mos-font-sm);
+  font-weight: var(--mos-weight-semibold);
+  line-height: var(--mos-line-compact);
+  letter-spacing: var(--mos-tracking-label);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.metaos-ui h6,
+.metaos-ui .mos-heading-6 {
+  font-size: var(--mos-font-xs);
+  font-weight: var(--mos-weight-semibold);
+  line-height: var(--mos-line-compact);
+  letter-spacing: var(--mos-tracking-label);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Body text - Default paragraph style */
+.metaos-ui .mos-body-lg {
+  font-size: var(--mos-font-lg);
+  font-weight: var(--mos-weight-regular);
+  line-height: var(--mos-line-body);
+}
+
+.metaos-ui .mos-body-md,
+.metaos-ui p {
+  font-size: var(--mos-font-md);
+  font-weight: var(--mos-weight-regular);
+  line-height: var(--mos-line-body);
+  margin: 0;
+}
+
+.metaos-ui .mos-body-sm {
+  font-size: var(--mos-font-sm);
+  font-weight: var(--mos-weight-regular);
+  line-height: var(--mos-line-body);
+}
+
+/* Label text - Form labels, badges, metadata */
+.metaos-ui .mos-label-lg {
+  font-size: var(--mos-font-sm);
+  font-weight: var(--mos-weight-semibold);
+  line-height: var(--mos-line-compact);
+  letter-spacing: var(--mos-tracking-label);
+  text-transform: uppercase;
+}
+
+.metaos-ui .mos-label-md {
+  font-size: var(--mos-font-xs);
+  font-weight: var(--mos-weight-semibold);
+  line-height: var(--mos-line-compact);
+  letter-spacing: var(--mos-tracking-label);
+  text-transform: uppercase;
+}
+
+.metaos-ui .mos-label-sm {
+  font-size: var(--mos-font-2xs);
+  font-weight: var(--mos-weight-semibold);
+  line-height: var(--mos-line-tight);
+  letter-spacing: var(--mos-tracking-label);
+  text-transform: uppercase;
+}
+
+/* Caption text - Helper text, secondary information */
+.metaos-ui .mos-caption {
+  font-size: var(--mos-font-xs);
+  font-weight: var(--mos-weight-regular);
+  line-height: var(--mos-line-compact);
+  color: var(--mos-text-secondary);
+}
+
+.metaos-ui .mos-caption-sm {
+  font-size: var(--mos-font-2xs);
+  font-weight: var(--mos-weight-regular);
+  line-height: var(--mos-line-compact);
+  color: var(--mos-text-muted);
+}
+
+/* Code - Monospace for code blocks */
+.metaos-ui code,
+.metaos-ui .mos-code {
+  font-family: var(--mos-font-mono);
+  font-size: 0.9em;
+  font-weight: var(--mos-weight-regular);
+  line-height: var(--mos-line-compact);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .metaos-ui *,
   .metaos-ui *::before,

@@ -7,10 +7,14 @@
   min-height: 100vh;
   background: var(--mos-bg);
   color: var(--mos-text);
-  font-family: var(--mos-font-sans);
+  font-family: "Helvetica Neue", Helvetica, Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 13px;
+  font-weight: 400;
   line-height: 1.45;
   letter-spacing: -0.005em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .metaos-workspace button,
@@ -92,6 +96,125 @@
 .mos-empty-state span {
   color: var(--mos-text-secondary);
   font-size: 12px;
+}
+
+/* Typography Hierarchy */
+
+/* Heading styles */
+.metaos-workspace h1,
+.metaos-workspace .mos-heading-1 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.metaos-workspace h2,
+.metaos-workspace .mos-heading-2 {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.27;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.metaos-workspace h3,
+.metaos-workspace .mos-heading-3 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.33;
+  letter-spacing: -0.005em;
+  margin: 0;
+}
+
+.metaos-workspace h4,
+.metaos-workspace .mos-heading-4 {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.metaos-workspace h5,
+.metaos-workspace .mos-heading-5 {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.metaos-workspace h6,
+.metaos-workspace .mos-heading-6 {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Body text styles */
+.metaos-workspace .mos-body-lg {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.53;
+}
+
+.metaos-workspace .mos-body-md,
+.metaos-workspace p {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.54;
+  margin: 0;
+}
+
+.metaos-workspace .mos-body-sm {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* Label and caption styles */
+.metaos-workspace .mos-label-lg {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.33;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.metaos-workspace .mos-label-md {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.36;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.metaos-workspace .mos-label-sm {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.metaos-workspace .mos-caption {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--mos-text-secondary);
+}
+
+.metaos-workspace .mos-caption-sm {
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--mos-text-secondary);
 }
 
 /* METAOS REDUCED MOTION CONTRACT */
