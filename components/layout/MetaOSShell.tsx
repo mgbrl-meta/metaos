@@ -8,14 +8,11 @@ import {
   BarChart3,
   FileText,
   Grid2X2,
-  Layers,
   LineChart,
   Menu,
-  Search,
   Settings,
   ShieldAlert,
   ShieldCheck,
-  Sparkles,
   X,
   Zap,
   PiggyBank,
@@ -30,7 +27,7 @@ import {
 import { ThemeFrame, ThemeToggle, useThemeStore } from "@/components/theme/ThemeProvider";
 import { useMetaStore } from "@/store/metaStore";
 
-export type OSMode = "meta" | "google";
+export type OSMode = "meta";
 
 export type MetaTab =
   | "gpt"
@@ -47,14 +44,6 @@ export type MetaTab =
   | "spend_visuals"
   | "summary"
   | "monthly";
-
-export type GoogleTab =
-  | "google_search_terms"
-  | "google_campaign_audit"
-  | "google_adgroup_audit"
-  | "google_keyword_audit"
-  | "google_ad_audit"
-  | "google_team_summary";
 
 type SystemTab = "settings";
 
@@ -170,59 +159,12 @@ const metaNav: NavItem<MetaTab>[] = [
   },
 ];
 
-const googleNav: NavItem<GoogleTab>[] = [
-  {
-    id: "google_search_terms",
-    label: "Search Term Audit",
-    shortLabel: "Terms",
-    description: "Negatives and exact keywords",
-    icon: Search,
-  },
-  {
-    id: "google_campaign_audit",
-    label: "Campaign Audit",
-    shortLabel: "Campaign",
-    description: "Campaign efficiency",
-    icon: BarChart3,
-  },
-  {
-    id: "google_adgroup_audit",
-    label: "Ad Group Audit",
-    shortLabel: "Ad Group",
-    description: "Ad-group control",
-    icon: Layers,
-  },
-  {
-    id: "google_keyword_audit",
-    label: "Keyword Audit",
-    shortLabel: "Keywords",
-    description: "Keyword pruning and scaling",
-    icon: Sparkles,
-  },
-  {
-    id: "google_ad_audit",
-    label: "Ad Audit",
-    shortLabel: "Ads",
-    description: "Ad copy and LP match",
-    icon: FileText,
-  },
-  {
-    id: "google_team_summary",
-    label: "Google Summary",
-    shortLabel: "Summary",
-    description: "Daily Google action report",
-    icon: ShieldCheck,
-  },
-];
-
 export function MetaOSShell({
   children,
   osMode,
   setOsMode,
   activeMetaTab,
   setActiveMetaTab,
-  activeGoogleTab,
-  setActiveGoogleTab,
   activeSystemTab,
   setActiveSystemTab,
 }: {
@@ -231,8 +173,6 @@ export function MetaOSShell({
   setOsMode: (mode: OSMode) => void;
   activeMetaTab: MetaTab;
   setActiveMetaTab: (tab: MetaTab) => void;
-  activeGoogleTab: GoogleTab;
-  setActiveGoogleTab: (tab: GoogleTab) => void;
   activeSystemTab: SystemTab | null;
   setActiveSystemTab: (tab: SystemTab | null) => void;
 }) {
@@ -243,8 +183,6 @@ export function MetaOSShell({
   const qcCriticalCount = Number(metaQcSummary?.rowsWithCritical || 0);
   const qcShiftedCount = Number(metaQcSummary?.shiftedRowsFixed || 0);
   const qcWarningCount = Number(metaQcSummary?.rowsWithWarnings || 0);
-
-  const isGoogle = false;
 
   function osModePillClass(isActive: boolean) {
     return isActive
@@ -268,34 +206,21 @@ export function MetaOSShell({
 
   const activeTitle = useMemo(() => {
     if (activeSystemTab === "settings") return "Settings";
-    if (isGoogle) return googleNav.find((x) => x.id === activeGoogleTab)?.label || "Google OS";
     return metaNav.find((x) => x.id === activeMetaTab)?.label || "Meta OS";
-  }, [activeSystemTab, isGoogle, activeGoogleTab, activeMetaTab]);
+  }, [activeSystemTab, activeMetaTab]);
 
   const activeDescription = useMemo(() => {
     if (activeSystemTab === "settings") return "Targets, thresholds and operating rules";
-    if (isGoogle) return googleNav.find((x) => x.id === activeGoogleTab)?.description || "";
     return metaNav.find((x) => x.id === activeMetaTab)?.description || "";
-  }, [activeSystemTab, isGoogle, activeGoogleTab, activeMetaTab]);
+  }, [activeSystemTab, activeMetaTab]);
 
   useEffect(() => {
     setMobileOpen(false);
-  }, [osMode, activeMetaTab, activeGoogleTab, activeSystemTab]);
-
-  function switchOS(_mode: OSMode) {
-    setOsMode("meta");
-    setActiveSystemTab(null);
-  }
+  }, [osMode, activeMetaTab, activeSystemTab]);
 
   function selectMeta(tab: MetaTab) {
     setOsMode("meta");
     setActiveMetaTab(tab);
-    setActiveSystemTab(null);
-  }
-
-  function selectGoogle(tab: GoogleTab) {
-    setOsMode("google");
-    setActiveGoogleTab(tab);
     setActiveSystemTab(null);
   }
 
@@ -318,18 +243,8 @@ export function MetaOSShell({
               </button>
 
               <div className="flex min-w-0 items-center gap-2">
-                <div
-                  className={
-                    isGoogle
-                      ? "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#4285F4] via-[#34A853] to-[#FBBC05]"
-                      : "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0A84FF]"
-                  }
-                >
-                  {isGoogle ? (
-                    <Search className="h-4.5 w-4.5 text-white" />
-                  ) : (
-                    <Zap className="h-4.5 w-4.5 fill-white text-white" />
-                  )}
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0A84FF]">
+                  <Zap className="h-4.5 w-4.5 fill-white text-white" />
                 </div>
 
               </div>
@@ -367,15 +282,10 @@ export function MetaOSShell({
                 return (
                   <button
                     key={item.id}
-                    onClick={() => {
-                      if (isGoogle) selectGoogle(item.id as GoogleTab);
-                      else selectMeta(item.id as MetaTab);
-                    }}
+                    onClick={() => selectMeta(item.id as MetaTab)}
                     className={
                       active
-                        ? isGoogle
-                          ? "inline-flex shrink-0 items-center gap-2 rounded-xl bg-emerald-400 px-3 py-2 text-xs font-black text-black"
-                          : "inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#0A84FF] px-3 py-2 text-xs font-black text-white"
+                        ? "inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#0A84FF] px-3 py-2 text-xs font-black text-white"
                         : "inline-flex shrink-0 items-center gap-2 rounded-xl border border-current/10 bg-current/[0.035] px-3 py-2 text-xs font-black opacity-60 hover:text-white"
                     }
                   >
@@ -441,15 +351,10 @@ export function MetaOSShell({
                   return (
                     <button
                       key={item.id}
-                      onClick={() => {
-                        if (isGoogle) selectGoogle(item.id as GoogleTab);
-                        else selectMeta(item.id as MetaTab);
-                      }}
+                      onClick={() => selectMeta(item.id as MetaTab)}
                       className={
                         active
-                          ? isGoogle
-                            ? "grid grid-cols-[20px_1fr] gap-3 rounded-xl bg-emerald-400 px-4 py-3 text-left text-black"
-                            : "grid grid-cols-[20px_1fr] gap-3 rounded-xl bg-[#0A84FF] px-4 py-3 text-left text-white"
+                          ? "grid grid-cols-[20px_1fr] gap-3 rounded-xl bg-[#0A84FF] px-4 py-3 text-left text-white"
                           : "grid grid-cols-[20px_1fr] gap-3 rounded-xl border border-current/10 bg-current/[0.035] px-4 py-3 text-left opacity-70"
                       }
                     >
