@@ -150,15 +150,15 @@ export function getThemeColorClass(
 export function themeStyles(
   colorMap: Partial<Record<keyof React.CSSProperties, ThemeColorKey>>
 ): React.CSSProperties {
-  const styles: React.CSSProperties = {};
+  const styles: Record<string, string> = {};
 
   for (const [cssKey, themeKey] of Object.entries(colorMap)) {
     if (themeKey && COLOR_MAPPING[themeKey as ThemeColorKey]) {
-      (styles as any)[cssKey] = COLOR_MAPPING[themeKey as ThemeColorKey];
+      styles[cssKey] = COLOR_MAPPING[themeKey as ThemeColorKey];
     }
   }
 
-  return styles;
+  return styles as React.CSSProperties;
 }
 
 /**
