@@ -6,6 +6,7 @@ import type { MetaV2CleanRow } from "@/lib/meta-v2/schema";
 import { useZeroPurchaseData } from "@/components/meta-v2/hooks/useZeroPurchaseData";
 import { useCopyToClipboard } from "@/components/meta-v2/hooks/useCopyToClipboard";
 import { useExpandedRows } from "@/components/meta-v2/hooks/useExpandedRows";
+import { useDateRange } from "@/components/meta-v2/hooks/useDateRange";
 import { ZeroPurchaseService } from "@/lib/meta-v2/services/zeroPurchaseService";
 import { formatINRCompact, formatNumberCompact, formatRoas } from "@/lib/meta-v2/formatters";
 import { themeColor } from "@/lib/meta-v2/theming/useThemeColor";
@@ -14,6 +15,7 @@ import { SectionCard } from "@/components/meta-v2/shared/SectionCard";
 import { StatusPill } from "@/components/meta-v2/shared/StatusPill";
 import { EmptyState } from "@/components/meta-v2/shared/EmptyState";
 import { ErrorBoundary } from "@/components/meta-v2/shared/ErrorBoundary";
+import { DateRangeFilter, DateRangeDisplay } from "@/components/meta-v2/shared/DateRangeFilter";
 
 function Cell({
   value,
@@ -47,6 +49,7 @@ export function ZeroPurchaseDashboard({ rows }: { rows: MetaV2CleanRow[] }) {
   const { output, threshold, updateThreshold, error } = useZeroPurchaseData(rows);
   const { openId, toggleRow } = useExpandedRows();
   const { copied, copy } = useCopyToClipboard();
+  const { dateRange, isOpen, updateDateRange, openFilter, closeFilter } = useDateRange();
 
   if (error) {
     return (
@@ -86,10 +89,17 @@ export function ZeroPurchaseDashboard({ rows }: { rows: MetaV2CleanRow[] }) {
           backgroundColor: `var(--theme-bg-surface)`,
         }}
       >
-        <div className="mb-3 flex flex-wrap gap-2">
-          <StatusPill label="Zero Purchase V2" tone="red" />
-          <StatusPill label={`${output.totalItems} ads`} tone={output.totalItems > 0 ? "red" : "green"} />
-          <StatusPill label={`Latest ${output.latestDate || "NA"}`} tone="slate" />
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap gap-2">
+            <StatusPill label="Zero Purchase V2" tone="red" />
+            <StatusPill label={`${output.totalItems} ads`} tone={output.totalItems > 0 ? "red" : "green"} />
+            <StatusPill label={`Latest ${output.latestDate || "NA"}`} tone="slate" />
+          </div>
+          <DateRangeDisplay
+            startDate={dateRange.startDate}
+            endDate={dateRange.endDate}
+            onClick={openFilter}
+          />
         </div>
 
         <div className="flex items-start gap-3">
@@ -118,6 +128,16 @@ export function ZeroPurchaseDashboard({ rows }: { rows: MetaV2CleanRow[] }) {
           </div>
         </div>
       </section>
+
+      {/* Date Filter Modal */}
+      {isOpen && (
+        <DateRangeFilter
+          onApply={updateDateRange}
+          onClose={closeFilter}
+          initialStartDate={dateRange.startDate}
+          initialEndDate={dateRange.endDate}
+        />
+      )}
 
       {/* Metrics */}
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
