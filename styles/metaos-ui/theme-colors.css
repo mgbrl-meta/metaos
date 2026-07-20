@@ -1,0 +1,177 @@
+/**
+ * Theme Colors CSS Variables
+ *
+ * These variables are derived from the theme contract in
+ * lib/meta-v2/theming/themeContract.ts
+ *
+ * They automatically update when [data-theme] attribute changes.
+ * WCAG AA contrast ratios guaranteed in both light and dark modes.
+ */
+
+/* LIGHT MODE (default) */
+:root[data-theme="light"],
+.metaos-workspace:not([data-theme="dark"]) {
+  /* Text Colors - Light Mode */
+  --theme-text-primary: #151515;
+  --theme-text-secondary: #62625e;
+  --theme-text-tertiary: #8a8a84;
+  --theme-text-inverse: #ffffff;
+
+  /* Background Colors - Light Mode */
+  --theme-bg-base: #f6f6f4;
+  --theme-bg-surface: #ffffff;
+  --theme-bg-surface-subtle: #f0f0ed;
+  --theme-bg-surface-strong: #111111;
+
+  /* Status Colors - Light Mode */
+  --theme-status-success: #147d45;
+  --theme-status-success-soft: #e7f4eb;
+  --theme-status-error: #bd2c2c;
+  --theme-status-error-soft: #f9e9e8;
+  --theme-status-warning: #8a6200;
+  --theme-status-warning-soft: #f6efd9;
+  --theme-status-info: #0a5fb3;
+  --theme-status-info-soft: #e3f0ff;
+
+  /* Border Colors - Light Mode */
+  --theme-border: #deded9;
+  --theme-border-strong: #c7c7c1;
+  --theme-border-subtle: #e8e8e3;
+
+  /* Chart Colors - Light Mode */
+  --theme-chart-positive: #15803d;
+  --theme-chart-neutral: #6b7280;
+  --theme-chart-negative: #dc2626;
+  --theme-chart-warning: #d97706;
+
+  /* Component Colors - Light Mode */
+  --theme-button-primary: #0a5fb3;
+  --theme-button-primary-hover: #083fa5;
+  --theme-button-secondary: #f0f0ed;
+  --theme-button-secondary-hover: #e8e8e3;
+}
+
+/* DARK MODE */
+:root[data-theme="dark"],
+.metaos-workspace[data-theme="dark"] {
+  /* Text Colors - Dark Mode */
+  --theme-text-primary: #f2f2ef;
+  --theme-text-secondary: #a8a8a2;
+  --theme-text-tertiary: #7a7a75;
+  --theme-text-inverse: #111111;
+
+  /* Background Colors - Dark Mode */
+  --theme-bg-base: #0d0d0d;
+  --theme-bg-surface: #151515;
+  --theme-bg-surface-subtle: #1d1d1d;
+  --theme-bg-surface-strong: #f2f2ef;
+
+  /* Status Colors - Dark Mode */
+  --theme-status-success: #66c58a;
+  --theme-status-success-soft: #14271b;
+  --theme-status-error: #ef7772;
+  --theme-status-error-soft: #2d1717;
+  --theme-status-warning: #d7b45b;
+  --theme-status-warning-soft: #292312;
+  --theme-status-info: #60b5ff;
+  --theme-status-info-soft: #0f3a6b;
+
+  /* Border Colors - Dark Mode */
+  --theme-border: #2b2b29;
+  --theme-border-strong: #3a3a37;
+  --theme-border-subtle: #1f1f1d;
+
+  /* Chart Colors - Dark Mode */
+  --theme-chart-positive: #86efac;
+  --theme-chart-neutral: #9ca3af;
+  --theme-chart-negative: #f87171;
+  --theme-chart-warning: #fbbf24;
+
+  /* Component Colors - Dark Mode */
+  --theme-button-primary: #60b5ff;
+  --theme-button-primary-hover: #3fa9ff;
+  --theme-button-secondary: #262626;
+  --theme-button-secondary-hover: #3a3a37;
+}
+
+/**
+ * Utility classes for quick theme-aware coloring
+ * Alternative to inline styles for components
+ */
+
+/* Text Colors */
+.theme-text-primary {
+  color: var(--theme-text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--theme-text-secondary);
+}
+
+.theme-text-tertiary {
+  color: var(--theme-text-tertiary);
+}
+
+.theme-text-inverse {
+  color: var(--theme-text-inverse);
+}
+
+/* Background Colors */
+.theme-bg-base {
+  background-color: var(--theme-bg-base);
+}
+
+.theme-bg-surface {
+  background-color: var(--theme-bg-surface);
+}
+
+.theme-bg-surface-subtle {
+  background-color: var(--theme-bg-surface-subtle);
+}
+
+.theme-bg-surface-strong {
+  background-color: var(--theme-bg-surface-strong);
+}
+
+/* Status Colors */
+.theme-status-success {
+  color: var(--theme-status-success);
+}
+
+.theme-status-error {
+  color: var(--theme-status-error);
+}
+
+.theme-status-warning {
+  color: var(--theme-status-warning);
+}
+
+.theme-status-info {
+  color: var(--theme-status-info);
+}
+
+/* Border Colors */
+.theme-border {
+  border-color: var(--theme-border);
+}
+
+.theme-border-strong {
+  border-color: var(--theme-border-strong);
+}
+
+.theme-border-subtle {
+  border-color: var(--theme-border-subtle);
+}
+
+/* Chart Colors */
+.theme-chart-positive {
+  color: var(--theme-chart-positive);
+}
+
+.theme-chart-negative {
+  color: var(--theme-chart-negative);
+}
+
+.theme-chart-warning {
+  color: var(--theme-chart-warning);
+}

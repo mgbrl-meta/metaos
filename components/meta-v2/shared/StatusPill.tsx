@@ -1,11 +1,38 @@
 import type { MetaV2Tone } from "@/lib/meta-v2/schema";
+import { themeColor, type ThemeColorKey } from "@/lib/meta-v2/theming/useThemeColor";
 
-const toneMap: Record<MetaV2Tone, string> = {
-  blue: "border-[#0A84FF]/35 bg-[#0A84FF]/10 text-[#6BB6FF]",
-  green: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
-  red: "border-red-400/30 bg-red-400/10 text-red-300",
-  amber: "border-amber-300/30 bg-amber-300/10 text-amber-200",
-  slate: "border-white/10 bg-white/5 text-white/65",
+interface ToneStyle {
+  border: string;
+  bg: string;
+  text: ThemeColorKey;
+}
+
+const toneMap: Record<MetaV2Tone, ToneStyle> = {
+  blue: {
+    border: "status-info",
+    bg: "status-info-soft",
+    text: "status-info",
+  },
+  green: {
+    border: "status-success",
+    bg: "status-success-soft",
+    text: "status-success",
+  },
+  red: {
+    border: "status-error",
+    bg: "status-error-soft",
+    text: "status-error",
+  },
+  amber: {
+    border: "status-warning",
+    bg: "status-warning-soft",
+    text: "status-warning",
+  },
+  slate: {
+    border: "border",
+    bg: "bg-surface-subtle",
+    text: "text-secondary",
+  },
 };
 
 export function StatusPill({
@@ -15,8 +42,16 @@ export function StatusPill({
   label: string;
   tone?: MetaV2Tone;
 }) {
+  const style = toneMap[tone];
   return (
-    <span className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[0.13em] ${toneMap[tone]}`}>
+    <span
+      className="inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[0.13em]"
+      style={{
+        borderColor: themeColor(style.border as ThemeColorKey),
+        backgroundColor: `var(--theme-${style.bg})`,
+        color: themeColor(style.text),
+      }}
+    >
       {label}
     </span>
   );

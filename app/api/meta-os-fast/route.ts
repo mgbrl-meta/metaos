@@ -11,10 +11,10 @@ type CacheValue = {
 };
 
 declare global {
-  // eslint-disable-next-line no-var
+   
   var __META_SHEET_RAW_CACHE__: CacheValue | undefined;
 
-  // eslint-disable-next-line no-var
+   
   var __META_OS_FAST_VIEW_CACHE__: Map<string, CacheValue> | undefined;
 }
 
