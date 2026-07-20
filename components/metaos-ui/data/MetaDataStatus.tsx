@@ -13,7 +13,8 @@ import {
   useState,
 } from "react";
 
-import { enrichRows } from "@/lib/metrics";
+import { MetaFileUploadButton } from "@/components/metaos-ui/data/MetaFileUploadButton";
+import { loadMetaSheetData } from "@/lib/meta-sheet/client";
 import { useMetaStore } from "@/store/metaStore";
 
 type RefreshState =
@@ -53,10 +54,6 @@ function formatSyncTime(value: string) {
 }
 
 export function MetaDataStatus() {
-  const settings = useMetaStore(
-    (state) => state.settings
-  );
-
   const performanceRows = useMetaStore(
     (state) => state.performanceRows
   );
@@ -73,6 +70,18 @@ export function MetaDataStatus() {
     (state) => state.metaRowCount
   );
 
+  const metaSource = useMetaStore(
+    (state) => state.metaSource
+  );
+
+  const metaSourceLabel = useMetaStore(
+    (state) => state.metaSourceLabel
+  );
+
+  const hydrateMetaDataset = useMetaStore(
+    (state) => state.hydrateMetaDataset
+  );
+
   const [refreshState, setRefreshState] =
     useState<RefreshState>("idle");
 
@@ -84,87 +93,51 @@ export function MetaDataStatus() {
   const rowCount =
     storedRowCount || performanceRows.length;
 
-  const refresh = useCallback(async () => {
-    setRefreshState("loading");
-    setErrorMessage("");
+  const loadData = useCallback(
+    async (forceRefresh: boolean) => {
+      setRefreshState("loading");
+      setErrorMessage("");
 
-    const controller = new AbortController();
-    const timeout = window.setTimeout(
-      () => controller.abort(),
-      60000
-    );
+      const controller = new AbortController();
+      const timeout = window.setTimeout(
+        () => controller.abort(),
+        120000
+      );
 
-    try {
-      const response = await fetch(
-        `/api/meta-sheet?source=raw&t=${Date.now()}`,
-        {
-          cache: "no-store",
+      try {
+        const response = await loadMetaSheetData({
+          forceRefresh,
           signal: controller.signal,
-          headers: {
-            "Cache-Control": "no-cache",
-            Pragma: "no-cache",
-          },
-        }
-      );
-
-      const payload = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          payload?.error ||
-            `Meta Sheet request failed: ${response.status}`
-        );
-      }
-
-      const rows = enrichRows(
-        payload?.rows || [],
-        settings
-      );
-
-      const now =
-        payload?.generatedAt ||
-        new Date().toISOString();
-
-      useMetaStore
-        .getState()
-        .setPerformanceRows(rows as never[]);
-
-      useMetaStore
-        .getState()
-        .setMetaFreshness({
-          latestDate:
-            payload?.latestDate || "",
-          fetchedAt: now,
-          rowCount: rows.length,
         });
 
-      if (payload?.qcSummary) {
-        useMetaStore
-          .getState()
-          .setMetaQcSummary(
-            payload.qcSummary
-          );
+        hydrateMetaDataset({
+          rows: response.dataset.rows,
+          latestDate: response.dataset.latestDate,
+          fetchedAt: response.dataset.fetchedAt,
+          rowCount: response.dataset.rowCount,
+        });
+
+        setRefreshState("success");
+
+        window.setTimeout(() => {
+          setRefreshState("idle");
+        }, 1400);
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.name === "AbortError"
+              ? "The Google Sheet request timed out."
+              : error.message
+            : "Meta Sheet refresh failed.";
+
+        setErrorMessage(message);
+        setRefreshState("error");
+      } finally {
+        window.clearTimeout(timeout);
       }
-
-      setRefreshState("success");
-
-      window.setTimeout(() => {
-        setRefreshState("idle");
-      }, 1400);
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.name === "AbortError"
-            ? "The sheet request timed out."
-            : error.message
-          : "Meta Sheet refresh failed.";
-
-      setErrorMessage(message);
-      setRefreshState("error");
-    } finally {
-      window.clearTimeout(timeout);
-    }
-  }, [settings]);
+    },
+    [hydrateMetaDataset]
+  );
 
   useEffect(() => {
     if (
@@ -175,12 +148,26 @@ export function MetaDataStatus() {
     }
 
     initialLoadStarted.current = true;
-    void refresh();
-  }, [performanceRows.length, refresh]);
+    void loadData(false);
+  }, [loadData, performanceRows.length]);
 
   const isLive =
     performanceRows.length > 0 &&
     refreshState !== "error";
+
+  const sourceTitle =
+    metaSource === "file"
+      ? `Uploaded file: ${metaSourceLabel}`
+      : "Meta Google Sheet connection";
+
+  const sourceLabel =
+    refreshState === "error"
+      ? "Data error"
+      : isLive
+        ? metaSource === "file"
+          ? "Excel loaded"
+          : "Sheet live"
+        : "Connecting";
 
   return (
     <div
@@ -195,10 +182,7 @@ export function MetaDataStatus() {
             ? "is-error"
             : "",
         ].join(" ")}
-        title={
-          errorMessage ||
-          "Meta Google Sheet connection"
-        }
+        title={errorMessage || sourceTitle}
       >
         {refreshState === "error" ? (
           <AlertCircle />
@@ -208,11 +192,7 @@ export function MetaDataStatus() {
           <Database />
         )}
 
-        {refreshState === "error"
-          ? "Data error"
-          : isLive
-            ? "Sheet live"
-            : "Connecting"}
+        {sourceLabel}
       </span>
 
       <span className="mos-status-chip">
@@ -227,14 +207,16 @@ export function MetaDataStatus() {
         Sync {formatSyncTime(fetchedAt)}
       </span>
 
+      <MetaFileUploadButton />
+
       <button
         type="button"
         className="mos-header-action"
-        onClick={() => void refresh()}
+        onClick={() => void loadData(true)}
         disabled={refreshState === "loading"}
         title={
           errorMessage ||
-          "Refresh all Meta data"
+          "Refresh all Meta data from Google Sheets"
         }
       >
         <RefreshCw

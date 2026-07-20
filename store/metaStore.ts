@@ -1,150 +1,412 @@
 "use client";
 
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import {
+  create,
+} from "zustand";
+
+import {
+  persist,
+} from "zustand/middleware";
+
+import type {
   DataHealth,
   MetaNormalizedRow,
   MetaPerformanceRow,
   MetaSettings,
 } from "@/types/meta";
-import { defaultMetaSettings } from "@/lib/defaultSettings";
+
+import {
+  defaultMetaSettings,
+} from "@/lib/defaultSettings";
+
 import {
   buildMetaDataQualitySummary,
   normalizeMetaRows,
+} from "@/lib/metaDataQuality";
+
+import type {
   MetaQcSummary,
 } from "@/lib/metaDataQuality";
-import { extractMetaRows, getMetaLatestDate } from "@/lib/meta/dataFreshness";
+
+import {
+  loadMetaSheetData,
+} from "@/lib/meta-sheet/client";
 
 export async function fetchFreshMetaRowsForStore() {
-  const response = await fetch(`/api/meta-data?limit=1000000&t=${Date.now()}`, {
-    cache: "no-store",
-    headers: {
-      "Cache-Control": "no-cache",
-      "Pragma": "no-cache",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Meta BigQuery fetch failed: ${response.status}`);
-  }
-
-  const payload = await response.json();
-  const rows = extractMetaRows(payload);
+  const response =
+    await loadMetaSheetData({
+      forceRefresh:
+        true,
+    });
 
   return {
-    rows,
-    latestDate: getMetaLatestDate(rows),
-    rowCount: rows.length,
-    source: payload?.source || "unknown",
-    sheetTab: payload?.table || "",
-    fetchedAt: new Date().toISOString(),
+    rows:
+      response.dataset.rows,
+
+    latestDate:
+      response.dataset
+        .latestDate,
+
+    rowCount:
+      response.dataset
+        .rowCount,
+
+    source:
+      response.source,
+
+    sheetTab:
+      response.diagnostics
+        .sheetTab,
+
+    fetchedAt:
+      response.dataset
+        .fetchedAt,
   };
 }
 
 interface MetaStore {
-  settings: MetaSettings;
-  rawRows: MetaNormalizedRow[];
-  performanceRows: MetaPerformanceRow[];
-  dataHealth: DataHealth | null;
-  metaQcSummary: MetaQcSummary | null;
-  metaLatestDate: string;
-  metaFetchedAt: string;
-  metaRowCount: number;
+  settings:
+    MetaSettings;
 
-  updateSettings: (settings: Partial<MetaSettings>) => void;
-  resetSettings: () => void;
+  rawRows:
+    MetaNormalizedRow[];
 
-  setRawRows: (rows: MetaNormalizedRow[]) => void;
-  setPerformanceRows: (rows: MetaPerformanceRow[]) => void;
-  setDataHealth: (dataHealth: DataHealth) => void;
-  setMetaQcSummary: (summary: MetaQcSummary | null) => void;
-  setMetaFreshness: (freshness: { latestDate?: string; fetchedAt?: string; rowCount?: number }) => void;
+  performanceRows:
+    MetaPerformanceRow[];
 
-  clearUpload: () => void;
+  dataHealth:
+    DataHealth | null;
+
+  metaQcSummary:
+    MetaQcSummary | null;
+
+  metaLatestDate:
+    string;
+
+  metaFetchedAt:
+    string;
+
+  metaRowCount:
+    number;
+
+  metaSource:
+    "sheet" | "file" | "";
+
+  metaSourceLabel:
+    string;
+
+  updateSettings: (
+    settings:
+      Partial<MetaSettings>
+  ) => void;
+
+  resetSettings:
+    () => void;
+
+  setRawRows: (
+    rows:
+      MetaNormalizedRow[]
+  ) => void;
+
+  setPerformanceRows: (
+    rows:
+      MetaPerformanceRow[]
+  ) => void;
+
+  setDataHealth: (
+    dataHealth:
+      DataHealth
+  ) => void;
+
+  setMetaQcSummary: (
+    summary:
+      MetaQcSummary | null
+  ) => void;
+
+  setMetaFreshness: (
+    freshness: {
+      latestDate?:
+        string;
+
+      fetchedAt?:
+        string;
+
+      rowCount?:
+        number;
+
+      source?:
+        "sheet" | "file" | "";
+
+      sourceLabel?:
+        string;
+    }
+  ) => void;
+
+  hydrateMetaDataset: (
+    input: {
+      rows:
+        Record<
+          string,
+          unknown
+        >[];
+
+      latestDate:
+        string;
+
+      fetchedAt:
+        string;
+
+      rowCount:
+        number;
+    }
+  ) => void;
+
+  clearUpload:
+    () => void;
 }
 
-function normalizeAndSummarize(rows: any[]) {
-  const normalizedRows = normalizeMetaRows(rows || []);
+function normalizeAndSummarize(
+  rows:
+    unknown[]
+) {
+  const normalizedRows =
+    normalizeMetaRows(
+      (rows || []) as Record<string, any>[]
+    );
+
   return {
     normalizedRows,
-    summary: buildMetaDataQualitySummary(normalizedRows),
+
+    summary:
+      buildMetaDataQualitySummary(
+        normalizedRows
+      ),
   };
 }
 
-export const useMetaStore = create<MetaStore>()(
-  persist(
-    (set) => ({
-      settings: defaultMetaSettings,
-      rawRows: [],
-      performanceRows: [],
-      dataHealth: null,
-      metaQcSummary: null,
-      metaLatestDate: "",
-      metaFetchedAt: "",
-      metaRowCount: 0,
+export const useMetaStore =
+  create<MetaStore>()(
+    persist(
+      (set) => ({
+        settings:
+          defaultMetaSettings,
 
-      updateSettings: (settings) =>
-        set((state) => ({
-          settings: {
-            ...state.settings,
-            ...settings,
-          },
-        })),
+        rawRows: [],
 
-      resetSettings: () =>
-        set({
-          settings: defaultMetaSettings,
-        }),
+        performanceRows:
+          [],
 
-      setRawRows: (rows) => {
-        const { normalizedRows, summary } = normalizeAndSummarize(rows as any[]);
+        dataHealth:
+          null,
 
-        set({
-          rawRows: normalizedRows as any,
-          metaQcSummary: summary,
-        });
-      },
+        metaQcSummary:
+          null,
 
-      setPerformanceRows: (rows) => {
-        const { normalizedRows, summary } = normalizeAndSummarize(rows as any[]);
+        metaLatestDate:
+          "",
 
-        set({
-          performanceRows: normalizedRows as any,
-          metaQcSummary: summary,
-        });
-      },
+        metaFetchedAt:
+          "",
 
-      setDataHealth: (dataHealth) =>
-        set({
-          dataHealth,
-        }),
+        metaRowCount:
+          0,
 
-      setMetaQcSummary: (summary) =>
-        set({
-          metaQcSummary: summary,
-        }),
+        metaSource:
+          "",
 
-      setMetaFreshness: (freshness) =>
-        set((state) => ({
-          metaLatestDate: freshness.latestDate ?? state.metaLatestDate,
-          metaFetchedAt: freshness.fetchedAt ?? state.metaFetchedAt,
-          metaRowCount: freshness.rowCount ?? state.metaRowCount,
-        })),
+        metaSourceLabel:
+          "",
 
-      clearUpload: () =>
-        set({
-          rawRows: [],
-          performanceRows: [],
-          dataHealth: null,
-          metaQcSummary: null,
-        }),
-    }),
-    {
-      name: "meta-ai-growth-os-store",
-      partialize: (state) => ({
-        settings: state.settings,
+        updateSettings: (
+          settings
+        ) =>
+          set(
+            (state) => ({
+              settings: {
+                ...state.settings,
+                ...settings,
+              },
+            })
+          ),
+
+        resetSettings:
+          () =>
+            set({
+              settings:
+                defaultMetaSettings,
+            }),
+
+        setRawRows: (
+          rows
+        ) => {
+          const {
+            normalizedRows,
+            summary,
+          } =
+            normalizeAndSummarize(
+              rows
+            );
+
+          set({
+            rawRows:
+              normalizedRows as MetaNormalizedRow[],
+
+            metaQcSummary:
+              summary,
+          });
+        },
+
+        setPerformanceRows: (
+          rows
+        ) => {
+          const {
+            normalizedRows,
+            summary,
+          } =
+            normalizeAndSummarize(
+              rows
+            );
+
+          set({
+            performanceRows:
+              normalizedRows as MetaPerformanceRow[],
+
+            metaQcSummary:
+              summary,
+          });
+        },
+
+        setDataHealth: (
+          dataHealth
+        ) =>
+          set({
+            dataHealth,
+          }),
+
+        setMetaQcSummary: (
+          summary
+        ) =>
+          set({
+            metaQcSummary:
+              summary,
+          }),
+
+        setMetaFreshness: (
+          freshness
+        ) =>
+          set(
+            (state) => ({
+              metaLatestDate:
+                freshness
+                  .latestDate ??
+                state
+                  .metaLatestDate,
+
+              metaFetchedAt:
+                freshness
+                  .fetchedAt ??
+                state
+                  .metaFetchedAt,
+
+              metaRowCount:
+                freshness
+                  .rowCount ??
+                state
+                  .metaRowCount,
+
+              metaSource:
+                freshness
+                  .source ??
+                state
+                  .metaSource,
+
+              metaSourceLabel:
+                freshness
+                  .sourceLabel ??
+                state
+                  .metaSourceLabel,
+            })
+          ),
+
+        hydrateMetaDataset: (
+          input
+        ) => {
+          const {
+            normalizedRows,
+            summary,
+          } =
+            normalizeAndSummarize(
+              input.rows
+            );
+
+          set({
+            rawRows:
+              normalizedRows as MetaNormalizedRow[],
+
+            performanceRows:
+              normalizedRows as MetaPerformanceRow[],
+
+            metaQcSummary:
+              summary,
+
+            metaLatestDate:
+              input.latestDate,
+
+            metaFetchedAt:
+              input.fetchedAt,
+
+            metaRowCount:
+              input.rowCount,
+
+            metaSource:
+              "sheet",
+
+            metaSourceLabel:
+              "Google Sheet",
+          });
+        },
+
+        clearUpload:
+          () =>
+            set({
+              rawRows: [],
+
+              performanceRows:
+                [],
+
+              dataHealth:
+                null,
+
+              metaQcSummary:
+                null,
+
+              metaLatestDate:
+                "",
+
+              metaFetchedAt:
+                "",
+
+              metaRowCount:
+                0,
+
+              metaSource:
+                "",
+
+              metaSourceLabel:
+                "",
+            }),
       }),
-    }
-  )
-);
+
+      {
+        name:
+          "meta-ai-growth-os-store",
+
+        partialize: (
+          state
+        ) => ({
+          settings:
+            state.settings,
+        }),
+      }
+    )
+  );

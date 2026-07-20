@@ -185,13 +185,6 @@
   white-space: nowrap;
 }
 
-.is-sidebar-collapsed .mos-brand-copy,
-.is-sidebar-collapsed .mos-sidebar-search,
-.is-sidebar-collapsed .mos-nav-section-title,
-.is-sidebar-collapsed .mos-nav-label {
-  display: none;
-}
-
 
 .mos-app-column {
   min-width: 0;
@@ -811,6 +804,33 @@
     width: min(280px, 86vw);
     box-shadow: 18px 0 48px rgba(0, 0, 0, 0.15);
   }
+}
+
+
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-nav-label,
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-nav-section-title,
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-brand-copy,
+.metaos-workspace.is-sidebar-collapsed
+  .mos-sidebar.is-preview-expanded
+  .mos-sidebar-search {
+  display: block;
+  color: inherit;
+}
+
+.mos-visually-hidden {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* METAOS SIDEBAR PREVIEW PANEL END */
